@@ -25,6 +25,8 @@ $settings = array (
                                           'format' => "[%date%][%type%]: %message%",
                                         ),
                        ),
-    
+    'cache' => array (
+                      
+                      ),
 
 );
