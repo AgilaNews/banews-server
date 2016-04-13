@@ -8,8 +8,13 @@
  * 
  * 
  */
-use Phalcon\Mvc\Model;
 
-class ConfigModel extends Model {
+class ConfigModel extends BaseModel {
+    public $confkey;
 
+    public $config;
+
+    public function getSource(){
+        
+    }
 }
