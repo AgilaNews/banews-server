@@ -16,7 +16,7 @@ class IndexController extends BaseController {
 
         $vendor = $this->get_request_param("vendor", "string");
         $mmc = $this->get_request_param("mmc", "int");
-        $client_version = $this->get_request_param("client_version", "string");
+        $client_version = $this->get_request_param("client_version", "string", true);
         $resolution = $this->get_request_param("resolution", "string");
         $os = $this->get_request_param("os", "string");
         $os_version = $this->get_request_param("os", "version");
@@ -26,17 +26,55 @@ class IndexController extends BaseController {
         $lang = $this->get_request_param("lang", "string");
         $client_time = $this->get_request_param("os", "int");
 
-        
+        if (empty($client_version)) {
+            throw new HttpException(400, 'client version not found');    
+        }
+
+        $vm = VersionModel::find(array(
+                  "conditions" => "client_version = ?1",
+                  "bind" => array(1 => $client_version),
+                  "cache" => array(
+                                   "lifetime" => 1,
+                                   "key" => $this->config->cache->keys->version,
+                                   ),
+                   ));
+
+        if (count($vm) == 0) {
+            throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND,
+                                    "client version not supoprted");
+        }
+
+        $vm = $vm[0];
+        $ret = array(
+                "interfaces" => array(
+                    "home" => sprintf($this->config->entries->home, $vm->server_version),
+                    "mon" => sprintf($this->config->entries->mon, $vm->server_version),
+                    "log" => sprintf($this->config->entries->log, $vm->server_version),
+                     ),
+                "updates" => array(
+                    "min_version" => MIN_VERSION,
+                    "new_version" => NEW_VERSION,
+                    "update_url"=> UPDATE_URL,
+                      ),
+                );
+        echo json_encode($ret);
     }
 
     public function ErrorAction() {
         $exception = $this->dispatcher->getParam(0);
 
-        if ($exception) {
-            $this->response->status_code = $exception->getStatusCode();
+        if ($exception instanceof HttpException) {
+            $this->response->setStatusCode($exception->getStatusCode());
             echo $exception->getBody();
         } else {
-            $this->response->status_code = 404;
+            $this->response->setStatusCode(500);
+
+            if (BA_DEBUG) {
+                echo "ERRROR!!!!!!\n";
+                if ($exception) {
+                    echo $exception;
+                }
+            }
         }
 
     }

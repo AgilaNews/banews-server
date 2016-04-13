@@ -6,7 +6,8 @@ $settings = array (
     "appdirs" => array (
         "libraryDir" => APP_PATH . "/app/library/",
         "validatorDir" => APP_PATH . "/app/validators",
-        "controllerDir" => APP_PATH . "/app/controllers/"
+        "controllerDir" => APP_PATH . "/app/controllers/",
+        "modelDir" => APP_PATH . "/app/models",
     ),
 
     'db' => array (
@@ -26,7 +27,19 @@ $settings = array (
                                         ),
                        ),
     'cache' => array (
-                      
+                      "life_time" => 0,
+                      "redis" => array (
+                                        "host" => "127.0.0.1",
+                                        "port" => 6379,
+                                        ),
+                      "keys" => array(
+                                 "version" => "BA_version",
+                                 ),
                       ),
+    'entries' => array (
+                        "home" => SERVER_NAME . "/v%d",
+                        "log" => LOG_SERVER_NAME . "/v%d",
+                        "mon" => MON_SERVER_NAME . "/v%d",
+                        ),
 
 );

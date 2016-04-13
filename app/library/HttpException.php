@@ -21,7 +21,7 @@ class HttpException extends Exception{
 
 
     public function getStatusCode() {
-        return $this->code;
+        return $this->status_code;
     }
 
     public function getBody($format = "json") {

@@ -28,7 +28,13 @@ class BaseController extends Controller{
         $this->logger->commit();
     }
 
-    protected function get_request_param($name, $type) {
-        return $this->filter->sanitize($_REQUEST[$name], $type);
+    protected function get_request_param($name, $type, $is_required=false) {
+        if (isset($_REQUEST[$name])) {
+            return $this->filter->sanitize($_REQUEST[$name], $type);
+        }
+        if ($is_required) {
+            throw new HttpException(400, "'$name' is not set");
+        }
+        return "";
     }
 }

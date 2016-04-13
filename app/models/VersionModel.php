@@ -9,12 +9,15 @@
  * 
  */
 
-class ConfigModel extends BaseModel {
-    public $confkey;
+class VersionModel extends BaseModel {
+    public $id;
 
-    public $config;
+    public $client_version;
 
+    public $server_version;
+
+    
     public function getSource(){
-        
+        return "tb_version";
     }
 }
