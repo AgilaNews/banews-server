@@ -3,6 +3,15 @@
 error_reporting(E_ALL);
 
 define('APP_PATH', realpath('..') . '/');
+define('SERVER_NAME', "110.96.191.65:9080");
+define('LOG_SERVER_NAME', '110.96.191.65:9080');
+define('MON_SERVER_NAME', '110.96.191.65:9080');
+define('MIN_VERSION', "0.0.1"); //TODO change this to a configuration center
+define('NEW_VERSION', "0.0.2");
+define('UPDATE_URL', "http://demoupdate.googleplay.com");
+define('BA_DEBUG', true);
+
+define('ERR_CLIENT_VERSION_NOT_FOUND', 40011);
 
 use Phalcon\Mvc\Application;
 use phalcon\Config;
