@@ -9,10 +9,8 @@
  * 
  */
 use Phalcon\Validation\Validator\PresenceOf;
+
 class IndexValidator extends BaseValidation {
     public function initialize(){
-        $this->add('test', new PresenceOf ( array (
-                                                  'message' => "test must set",
-                                                  )));
     }
 }

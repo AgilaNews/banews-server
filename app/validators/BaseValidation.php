@@ -14,7 +14,7 @@ use Phalcon\Validation\Validator\PresenceOf;
 class BaseValidation extends Validation {
     public function afterValidation($data, $entity, $messages){
         if (count($messages)) {
-            throw new HttpException(400, $messages[0]);
+            throw new HttpException(400, $messages[0]->getMessage());
         }
     }
 }
