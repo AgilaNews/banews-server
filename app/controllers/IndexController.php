@@ -16,23 +16,23 @@ class IndexController extends BaseController {
 
         $vendor = $this->get_request_param("vendor", "string");
         $mmc = $this->get_request_param("mmc", "int");
-        $client_version = $this->get_request_param("client_version", "string", true);
+        $clientVersion = $this->get_request_param("client_version", "string", true);
         $resolution = $this->get_request_param("resolution", "string");
         $os = $this->get_request_param("os", "string");
-        $os_version = $this->get_request_param("os", "version");
+        $osVersion = $this->get_request_param("os", "version");
         $net = $this->get_request_param("os", "net");
         $isp = $this->get_request_param("isp", "string");
         $tz = $this->get_request_param("tz", "int");
         $lang = $this->get_request_param("lang", "string");
-        $client_time = $this->get_request_param("os", "int");
+        $clientTime = $this->get_request_param("os", "int");
 
-        if (empty($client_version)) {
+        if (empty($clientVersion)) {
             throw new HttpException(400, 'client version not found');    
         }
 
         $vm = VersionModel::find(array(
                   "conditions" => "client_version = ?1",
-                  "bind" => array(1 => $client_version),
+                  "bind" => array(1 => $clientVersion),
                   "cache" => array(
                                    "lifetime" => 1,
                                    "key" => $this->config->cache->keys->version,
@@ -57,6 +57,8 @@ class IndexController extends BaseController {
                     "update_url"=> UPDATE_URL,
                       ),
                 );
+        
+
         echo json_encode($ret);
     }
 
