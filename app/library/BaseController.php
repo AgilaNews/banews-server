@@ -38,7 +38,7 @@ class BaseController extends Controller{
             return $this->filter->sanitize($_REQUEST[$name], $type);
         }
         if ($is_required) {
-            throw new HttpException(400, "'$name' is not set");
+            throw new HttpException(40000, "'$name' is not set");
         }
         return "";
     }

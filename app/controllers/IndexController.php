@@ -27,7 +27,7 @@ class IndexController extends BaseController {
         $clientTime = $this->get_request_param("os", "int");
 
         if (empty($clientVersion)) {
-            throw new HttpException(400, 'client version not found');    
+            throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND, 'client version not found');    
         }
 
         $vm = VersionModel::find(array(
