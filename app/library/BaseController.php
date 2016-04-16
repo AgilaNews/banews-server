@@ -14,10 +14,12 @@ class BaseController extends Controller{
         if ($this->cookies->has('session')) {
             $this->sessionId = $this->cookies->get('session')->getValue();
         } else {
+            /*
             $cookies = new Cookies();
             $cookies->useEncryption(false);
             $cookies->set("session", UserSession::genSessionId($this->deviceToken));
             $this->di->set("cookies", $cookies);
+            */
         }
         $this->logger = $this->di->get('logger');
         $this->logger->begin();
