@@ -17,12 +17,15 @@ class IndexController extends BaseController {
         $vendor = $this->get_request_param("vendor", "string");
         $mmc = $this->get_request_param("mmc", "int");
         $clientVersion = $this->get_request_param("client_version", "string", true);
-        $resolution = $this->get_request_param("resolution", "string");
+        $resolution = $this->get_request_param("r_w", "string");
+        $resolution = $this->get_request_param("r_h", "string");
         $os = $this->get_request_param("os", "string");
-        $osVersion = $this->get_request_param("os", "version");
-        $net = $this->get_request_param("os", "net");
+        $osVersion = $this->get_request_param("os_version", "string");
+        $net = $this->get_request_param("net", "string");
         $isp = $this->get_request_param("isp", "string");
         $tz = $this->get_request_param("tz", "int");
+        $lng = $this->get_request_param("lng", "float");
+        $lat = $this->get_request_param("lat", "float");
         $lang = $this->get_request_param("lang", "string");
         $clientTime = $this->get_request_param("os", "int");
 
@@ -81,4 +84,3 @@ class IndexController extends BaseController {
 
     }
 }
-

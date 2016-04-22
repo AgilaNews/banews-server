@@ -11,7 +11,11 @@ define('NEW_VERSION', "0.0.2");
 define('UPDATE_URL', "http://demoupdate.googleplay.com");
 define('BA_DEBUG', true);
 
+define('ERR_KEY_ERR', 40001);
+define('ERR_BODY_ERR', 40002);
 define('ERR_CLIENT_VERSION_NOT_FOUND', 40011);
+define('ERR_INVALID_METHOD', 40501);
+define('ERR_INTERNAL_DB', 50002);
 
 use Phalcon\Mvc\Application;
 use phalcon\Config;
