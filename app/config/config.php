@@ -27,13 +27,15 @@ $settings = array (
                                         ),
                        ),
     'cache' => array (
-                      "life_time" => 0,
+                      "general_life_time" => 0,
                       "redis" => array (
                                         "host" => "127.0.0.1",
                                         "port" => 6379,
                                         ),
                       "keys" => array(
                                  "version" => "BA_version",
+                                 "news" => "BA_news",
+                                 "user" => "BA_user",
                                  ),
                       ),
     'entries' => array (

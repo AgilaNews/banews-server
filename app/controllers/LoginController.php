@@ -74,6 +74,7 @@ class LoginController extends BaseController {
            "id" => $user->sign,
            "name" => $user->name,
            "gender" => $user->gender,
+           "source" => User::SOURCE_UNMAP[$user->source],
            "portrait" => $user->portrait_url ? $user->portrait_url : $user->portrait_srcurl,
            "email" => $user->email,
            "create_time" => $user->create_time,
