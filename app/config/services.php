@@ -58,7 +58,7 @@ $di->set('logger', function() use ($config) {
 $di->set('modelsCache', function() use ($config) {
         $frontCache = new DataFront(
                                     array(
-                                          "lifetime" => $config->cache->life_time,
+                                          "lifetime" => $config->cache->general_life_time,
                                           )
                                     );
         $cache = new BackRedis($frontCache,

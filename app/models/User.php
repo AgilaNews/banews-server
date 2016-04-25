@@ -13,6 +13,11 @@ class User extends Model {
         "goolgeplus" => self::SOURCE_GP,
         "twitter" => self::SOURCE_TW,
     );
+    const SOURCE_UNMAP = array(
+        self::SOURCE_FB => "facebook",
+        self::SOURCE_GP => "googleplus",
+        self::SOURCE_TW => "twitter",
+    );
 
     public $id;
 

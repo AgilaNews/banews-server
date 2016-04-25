@@ -7,7 +7,7 @@ use Phalcon\Filter;
 class BaseController extends Controller{
     public function onConstruct(){
         $this->deviceId = $this->request->getHeader('X-USER-D');
-        $this->userId = $this->request->getHeader('X-USER-A');
+        $this->userSign = $this->request->getHeader('X-USER-A');
         
         $this->session = $this->request->getHeader("X-SESSION-ID");
         $this->logger = $this->di->get('logger');
@@ -31,6 +31,7 @@ class BaseController extends Controller{
         if (isset($_REQUEST[$name])) {
             return $this->filter->sanitize($_REQUEST[$name], $type);
         }
+        
         if ($is_required) {
             throw new HttpException(ERR_KEY_ERR, "'$name' is not set");
         }
@@ -56,5 +57,41 @@ class BaseController extends Controller{
     protected function setJsonResponse($arr) {
         $this->response->setContent(json_encode($arr));
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
+    }
+
+    protected function getUserBySign($sign) {
+        $user_model = User::findFirst(array ("conditions" => "sign = ?1",
+                                             "bind" => array (1 => $sign),
+                                             /*
+                                             "cache" => array (
+                                                              "lifetime" => $this->config->cache->general_life_time,
+                                                               "key" => $this->config->cache->keys->user
+                                                               ),
+                                             */
+
+                                             ));
+        if (!$user_model) {
+            throw new HttpException(ERR_USER_NON_EXISTS,
+                                    "user $sign not exists");
+        }
+        
+        return $user_model;
+    }
+
+    protected function getUserById($id) {
+        $user_model = User::findFirst(array ("conditions" => "id = ?1",
+                                             "bind" => array (1 => $id),
+                                             /*
+                                             "cache" => array (
+                                                               "lifetime" => $this->config->cache->general_life_time,
+                                                               "key" => $this->config->cache->keys->user
+                                                               ),*/
+                                             ));
+        if (!$user_model) {
+            throw new HttpException(ERR_USER_NON_EXISTS,
+                                    "user $id bit exists");
+        }
+        
+        return $user_model;
     }
 }
