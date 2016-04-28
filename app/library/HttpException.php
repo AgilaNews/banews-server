@@ -33,7 +33,7 @@ class HttpException extends Exception{
     
     protected function get_http_code($code) {
         if (is_int($code)) {
-            return $code / 100;
+            return (int) ($code / 100);
         } else {
             return 500;
         }

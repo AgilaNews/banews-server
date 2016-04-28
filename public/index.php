@@ -17,8 +17,11 @@ define('ERR_NEWS_ERR', 40003);
 define('ERR_CLIENT_VERSION_NOT_FOUND', 40011);
 define('ERR_NOT_AUTH', 40101);
 define('ERR_USER_NON_EXISTS', 40102);
+define('ERR_NEWS_NON_EXISTS', 40103);
 
 define('ERR_INVALID_METHOD', 40501);
+
+define('ERR_COLLECT_CONFLICT', 40901);
 define('ERR_INTERNAL_DB', 50002);
 
 use Phalcon\Mvc\Application;
