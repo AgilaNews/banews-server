@@ -26,15 +26,10 @@ class LoginController extends BaseController {
         $uid = $this->get_or_fail($req, "uid", "string");
         $source_name = $this->get_or_fail($req, "source", "string");
         $source = $this->get_or_fail(User::SOURCE_MAP, $source_name, "int");
-        $user = User::findFirst( 
-            array(
-            "conditions" => "source = ?1 and uid = ?2",
-            "bind" => array(1 => $source, 
-                            2 => $uid),
-            )
-        );
+        $user = User::getBySourceAndId($source, $uid);
+        var_dump($user);
 
-        if ($user === false) {
+        if (!$user) {
             $user = new User();
             $user->uid = $uid;
             $user->source = $source;
@@ -63,11 +58,13 @@ class LoginController extends BaseController {
         return $this->response;
     }
 
+
     public function sign_user($uid, $source) {
         // I think there will not be any confliction
         $salt = "buierh013!@$!#%";
         return hash ("sha1", $uid . $salt . $source, false);
     }
+
 
     public function serializeUser($user) {
         return array (

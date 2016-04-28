@@ -67,20 +67,23 @@ class IndexController extends BaseController {
 
     public function ErrorAction() {
         $exception = $this->dispatcher->getParam(0);
+        $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
 
         if ($exception instanceof HttpException) {
             $this->response->setStatusCode($exception->getStatusCode());
-            echo $exception->getBody();
+            $this->response->setContent($exception->getBody());
         } else {
             $this->response->setStatusCode(500);
 
             if (BA_DEBUG) {
                 echo "ERRROR!!!!!!\n";
                 if ($exception) {
-                    echo $exception;
+                    $this->response->setContent($exception);
                 }
             }
         }
+
+        return $this->response;
 
     }
 }

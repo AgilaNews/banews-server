@@ -3,14 +3,14 @@
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
-class User extends Model {
+class User extends BaseModel {
     const SOURCE_FB = 1;
     const SOURCE_GP = 2;
     const SOURCE_TW = 3;
 
     const SOURCE_MAP = array(
         "facebook" => self::SOURCE_FB,
-        "goolgeplus" => self::SOURCE_GP,
+        "googleplus" => self::SOURCE_GP,
         "twitter" => self::SOURCE_TW,
     );
     const SOURCE_UNMAP = array(
@@ -54,5 +54,45 @@ class User extends Model {
 
     public function getSource() {
         return "tb_user";
+    }
+
+    public static function getBySign($sign) {
+        $user_model = User::findFirst(array ("conditions" => "sign = ?1",
+                                             "bind" => array (1 => $sign),
+                                             /*
+                                             "cache" => array (
+                                                              "lifetime" => $this->config->cache->general_life_time,
+                                                               "key" => $this->config->cache->keys->user
+                                                               ),
+                                             */
+
+                                             ));
+        
+        return $user_model;
+    }
+
+    public static function getById($id) {
+        $user_model = User::findFirst(array ("conditions" => "id = ?1",
+                                             "bind" => array (1 => $id),
+                                             /*
+                                               "cache" => array (
+                                               "lifetime" => $this->config->cache->general_life_time,
+                                               "key" => $this->config->cache->keys->user
+                                               ),*/
+                                             ));
+        
+        return $user_model;
+    }
+
+    public static function getBySourceAndId($source, $uid){
+        $user = User::findFirst( 
+            array(
+            "conditions" => "source = ?1 and uid = ?2",
+            "bind" => array(1 => $source, 
+                            2 => $uid),
+            )
+        );
+
+        return $user;
     }
 }

@@ -58,40 +58,4 @@ class BaseController extends Controller{
         $this->response->setContent(json_encode($arr));
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
     }
-
-    protected function getUserBySign($sign) {
-        $user_model = User::findFirst(array ("conditions" => "sign = ?1",
-                                             "bind" => array (1 => $sign),
-                                             /*
-                                             "cache" => array (
-                                                              "lifetime" => $this->config->cache->general_life_time,
-                                                               "key" => $this->config->cache->keys->user
-                                                               ),
-                                             */
-
-                                             ));
-        if (!$user_model) {
-            throw new HttpException(ERR_USER_NON_EXISTS,
-                                    "user $sign not exists");
-        }
-        
-        return $user_model;
-    }
-
-    protected function getUserById($id) {
-        $user_model = User::findFirst(array ("conditions" => "id = ?1",
-                                             "bind" => array (1 => $id),
-                                             /*
-                                             "cache" => array (
-                                                               "lifetime" => $this->config->cache->general_life_time,
-                                                               "key" => $this->config->cache->keys->user
-                                                               ),*/
-                                             ));
-        if (!$user_model) {
-            throw new HttpException(ERR_USER_NON_EXISTS,
-                                    "user $id bit exists");
-        }
-        
-        return $user_model;
-    }
 }
