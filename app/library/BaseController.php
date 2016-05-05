@@ -5,12 +5,9 @@ use Phalcon\Http\Response;
 use Phalcon\Filter;
 
 class BaseController extends Controller{
-    public function onConstruct(){
-        $this->deviceId = $this->request->getHeader('X-USER-D');
-        $this->userSign = $this->request->getHeader('X-USER-A');
-        
-        $this->session = $this->request->getHeader("X-SESSION-ID");
+    public function initialize(){
         $this->logger = $this->di->get('logger');
+        $this->eventlogger = $this->di->get('eventlogger');
         $this->logger->begin();
 
         $this->response = new Response();
@@ -18,12 +15,15 @@ class BaseController extends Controller{
         $this->filter = new Filter();
         $this->view->disable();
     }
-
-    public function initialize(){
-
+    
+    public function onConstruct(){
+        $this->deviceId = $this->request->getHeader('X-USER-D');
+        $this->userSign = $this->request->getHeader('X-USER-A');
+        
+        $this->session = $this->request->getHeader("X-SESSION-ID");
     }
-	
-    public function __deconstruct(){
+
+    public function __destruct(){
         $this->logger->commit();
     }
 
@@ -57,5 +57,10 @@ class BaseController extends Controller{
     protected function setJsonResponse($arr) {
         $this->response->setContent(json_encode($arr));
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
+    }
+
+    protected function logEvent($event_id, $param) {
+        $param["id"] = $event_id;
+        $this->eventlogger->info(json_encode($param) . "\n");
     }
 }
