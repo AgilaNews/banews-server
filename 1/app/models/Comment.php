@@ -40,7 +40,18 @@ class Comment extends BaseModel {
                                   );
         return $comments;
     }
-    
+
+    public static function getCount($news_id) {
+        $ret = Comment::count(
+            array(
+                "conditions" => "news_id=?1",
+                "bind" => array(1=>$news_id),
+            )
+        );
+
+        return $ret;
+    }
+
     public function getSource(){
         return "tb_comment";
     }

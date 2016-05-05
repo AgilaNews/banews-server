@@ -1,0 +1,90 @@
+[Thu, 05 May 16 15:06:24 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/app/controllers/IndexController.php(19): BaseController->get_request_param('client_version', 'string', true)
+#1 [internal function]: IndexController->IndexAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/public/index.php(38): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Thu, 05 May 16 19:44:47 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/IndexController.php(19): BaseController->get_request_param('client_version', 'string', true)
+#1 [internal function]: IndexController->IndexAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/1/public/index.php(34): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Thu, 05 May 16 20:08:51 +0800][NOTICE]: [HttpError]: #0 [internal function]: Phalcon\Mvc\Dispatcher->_throwDispatchException('Action 'index' ...', 5)
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(34): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 20:08:55 +0800][NOTICE]: [HttpError]: #0 [internal function]: Phalcon\Mvc\Dispatcher->_throwDispatchException('Action 'index' ...', 5)
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(34): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 20:12:10 +0800][NOTICE]: [HttpError]: #0 [internal function]: Phalcon\Mvc\Dispatcher->_throwDispatchException('Action 'index' ...', 5)
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(34): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 20:13:49 +0800][NOTICE]: [HttpError]: #0 [internal function]: Phalcon\Mvc\Dispatcher->_throwDispatchException('Action 'index' ...', 5)
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(34): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 20:13:53 +0800][NOTICE]: [HttpError]: #0 [internal function]: Phalcon\Mvc\Dispatcher->_throwDispatchException('Action 'index' ...', 5)
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(34): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 20:16:17 +0800][NOTICE]: [HttpError]: #0 [internal function]: LoginController->IndexAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(37): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 20:16:44 +0800][NOTICE]: [HttpError]: #0 [internal function]: LoginController->IndexAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 20:16:58 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/LoginController.php(26): BaseController->get_or_fail(Array, 'uid', 'string')
+#1 [internal function]: LoginController->IndexAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Thu, 05 May 16 20:17:04 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/LoginController.php(27): BaseController->get_or_fail(Array, 'source', 'string')
+#1 [internal function]: LoginController->IndexAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Thu, 05 May 16 21:16:12 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->DetailAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Thu, 05 May 16 21:16:48 +0800][NOTICE]: [HttpError]: #0 [internal function]: PDO->query('SELECT `tb_news...')
+#1 [internal function]: Phalcon\Db\Adapter\Pdo->query('SELECT `tb_news...', NULL, NULL)
+#2 [internal function]: Phalcon\Mvc\Model\Query->_executeSelect(Array, NULL, NULL)
+#3 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#4 /home/work/banews-server/1/app/models/NewsImage.php(28): Phalcon\Mvc\Model::find(Array)
+#5 /home/work/banews-server/1/app/controllers/NewsController.php(27): NewsImage::getImagesOfNews(NULL)
+#6 [internal function]: NewsController->DetailAction()
+#7 [internal function]: Phalcon\Dispatcher->dispatch()
+#8 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#9 {main}
+[Thu, 05 May 16 21:26:00 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/UserController.php(14): UserController->postComments()
+#1 [internal function]: UserController->CommentAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Thu, 05 May 16 21:26:24 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/UserController.php(14): UserController->postComments()
+#1 [internal function]: UserController->CommentAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Thu, 05 May 16 21:26:28 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/UserController.php(94): BaseController->get_or_fail(Array, 'news_id', 'string')
+#1 /home/work/banews-server/1/app/controllers/UserController.php(14): UserController->postComments()
+#2 [internal function]: UserController->CommentAction()
+#3 [internal function]: Phalcon\Dispatcher->dispatch()
+#4 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#5 {main}
+[Thu, 05 May 16 21:26:44 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/UserController.php(95): BaseController->get_or_fail(Array, 'comment_detail', 'string')
+#1 /home/work/banews-server/1/app/controllers/UserController.php(14): UserController->postComments()
+#2 [internal function]: UserController->CommentAction()
+#3 [internal function]: Phalcon\Dispatcher->dispatch()
+#4 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#5 {main}
+[Thu, 05 May 16 21:27:02 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/UserController.php(95): BaseController->get_or_fail(Array, 'comment_detail', 'string')
+#1 /home/work/banews-server/1/app/controllers/UserController.php(14): UserController->postComments()
+#2 [internal function]: UserController->CommentAction()
+#3 [internal function]: Phalcon\Dispatcher->dispatch()
+#4 /home/work/banews-server/1/public/index.php(35): Phalcon\Mvc\Application->handle()
+#5 {main}
