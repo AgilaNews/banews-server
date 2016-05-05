@@ -58,7 +58,7 @@ class News extends BaseModel {
         return $news_model;
     }
     
-    public static function getBySign($sign, $colunms = null) {
+    public static function getBySign($sign, $columns = null) {
         $crit = array ("conditions" => "url_sign = ?1",
                        "bind" => array (1 => $sign),
                        /*
