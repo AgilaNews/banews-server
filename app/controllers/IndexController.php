@@ -36,10 +36,12 @@ class IndexController extends BaseController {
         $vm = VersionModel::find(array(
                   "conditions" => "client_version = ?1",
                   "bind" => array(1 => $clientVersion),
+                  /*
                   "cache" => array(
                                    "lifetime" => 1,
                                    "key" => $this->config->cache->keys->version,
                                    ),
+                  */
                    ));
 
         if (count($vm) == 0) {
@@ -62,13 +64,16 @@ class IndexController extends BaseController {
                 );
         
 
-        echo json_encode($ret);
+        $this->logEvent(102010, array("hello" => "world"));
+        $this->setJsonResponse($ret);
+        return $this->response;
     }
 
     public function ErrorAction() {
         $exception = $this->dispatcher->getParam(0);
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
 
+        $this->logger->notice("[HttpError]: " . $exception->getTraceAsString());
         if ($exception instanceof HttpException) {
             $this->response->setStatusCode($exception->getStatusCode());
             $this->response->setContent($exception->getBody());
@@ -76,7 +81,6 @@ class IndexController extends BaseController {
             $this->response->setStatusCode(500);
 
             if (BA_DEBUG) {
-                echo "ERRROR!!!!!!\n";
                 if ($exception) {
                     $this->response->setContent($exception);
                 }
@@ -84,6 +88,5 @@ class IndexController extends BaseController {
         }
 
         return $this->response;
-
     }
 }

@@ -25,6 +25,10 @@ $settings = array (
                                           'level' => Logger::INFO,
                                           'format' => "[%date%][%type%]: %message%",
                                         ),
+                       "event" => array(
+                                        "addr" => "tcp://127.0.0.1:7069",
+                                        "category" => "useraction",
+                                        ),
                        ),
     'cache' => array (
                       "general_life_time" => 0,
