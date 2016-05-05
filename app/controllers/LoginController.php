@@ -27,7 +27,6 @@ class LoginController extends BaseController {
         $source_name = $this->get_or_fail($req, "source", "string");
         $source = $this->get_or_fail(User::SOURCE_MAP, $source_name, "int");
         $user = User::getBySourceAndId($source, $uid);
-        var_dump($user);
 
         if (!$user) {
             $user = new User();
