@@ -8,6 +8,9 @@
  * 
  * 
  */
+
+use Phalcon\Mvc\Model\Query;
+
 class NewsController extends BaseController {
     public function DetailAction() {
         if (!$this->request->isGet()){
@@ -32,7 +35,7 @@ class NewsController extends BaseController {
             "comments" => array(), 
             "imgs" => array(),
             "recommend_news" => array(),
-            "newsid" => $news_model->url_sign,
+            "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
             "source" => $news_model->source_name,
             "source_url" => $news_model->source_url,
@@ -40,7 +43,8 @@ class NewsController extends BaseController {
             "share_url" => $news_model->shared_url,
             "template" => $news_model->display_type,
             "content_type" => $news_model->content_type,
-            "likedCount" => 100,
+            "channel_id" => $news_model->channel_id,
+            "likedCount" => $news_model->liked,
         );
 
         foreach ($topComment as $comment) {
@@ -55,11 +59,47 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
+    public function likeAction() {
+        if (!$this->request->isPost()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        } 
+
+        $req = $this->request->getJsonRawBody(true);
+        if (null === $req) {
+            throw new HttpException(ERR_BODY_ERR, "body format error");
+        }
+
+        $newsSign = $this->get_or_fail($req, "news_id", "string");
+        $now = News::getBySign($newsSign, array("liked"));
+        if (!$now) {
+            throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
+        }
+
+        $ret = $this->getDi()
+                    ->getShared('db')->query(
+                    "UPDATE tb_news 
+                    SET liked = liked + 1 WHERE url_sign = '". mysql_real_escape_string($newsSign) . "'");
+        if (!$ret) {
+            throw new HttpException(ERR_INTERNAL_DB, "internal error");
+        }
+        
+        $ret = array (
+            "message" => "ok",
+            "liked" => $now->liked + 1,
+        );
+
+        $this->setJsonResponse($ret);
+        return $this->response;
+    }
+
     protected function serializeImage($img){
         return array (
-            "src" => $img->saved_url ? $img->saved_url : $img->source_url,
-            "width" => 128,
-            "height" => 128,
+            "IMG" . $img->news_pos_id => 
+                array (
+                    "src" => $img->saved_url ? $img->saved_url : $img->source_url,
+                    "width" => 128,
+                    "height" => 128,
+                    ),
         );
     }
 

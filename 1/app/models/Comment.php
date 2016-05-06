@@ -10,44 +10,53 @@ class Comment extends BaseModel {
 
     public $create_time;
 
+    public static function getCacheKeys($news_id) {
+        return CACHE_COMMENTS_PREFIX . $news_id;
+    }
+
     public static function getAll($news_id, $last_id, $pn) {
-        if (!$pn) {
-            $pn = 20;
+        $crit = array (
+            "limit" => 20,
+            "order" => "create_time DESC",
+        );
+        
+        if (!$pn && !$last_id) {
+            $crit["cache"] = array (
+            "lifetime" => CACHE_COMMENTS_TTL,
+            "key" => self::getCacheKeys($news_id),
+            );
         }
-        if ($pn >= 100) {
-            $pn = 100;
+
+        if ($pn) {
+            $crit["limit"] = $pn = $pn >= 100 ? 100 : $pn;
         }
 
         if ($last_id) {
-            $condition = "news_id = ?1 AND id > ?2";
-            $bind = array(1 => $news_id, 2=>$last_id);
+            $crit["conditions"] = "news_id = ?1 AND id > ?2";
+            $crit["bind"] = array(1 => $news_id, 2=>$last_id);
         } else {
-            $condition = "news_id = ?1";
-            $bind = array(1 => $news_id);
+            // if it is pagnation request, we won't cache
+            $crit["conditions"] = "news_id = ?1";
+            $crit["bind"] = array(1 => $news_id);
         }
+
         
-        $comments = Comment::Find(array (
-                                         "conditions" => $condition,
-                                         "bind" => $bind,
-                                         "limit" => $pn,
-                                         "order" => "create_time DESC",
-                                         /*
-                                           "cache" => array (
-                                           "lifetime" => 1200,
-                                           "key" => $this->config->cache->keys->comments,
-                                           )*/
-                                         )
-                                  );
+        $comments = Comment::Find($crit);
         return $comments;
     }
 
-    public static function getCount($news_id) {
-        $ret = Comment::count(
-            array(
-                "conditions" => "news_id=?1",
-                "bind" => array(1=>$news_id),
-            )
-        );
+    public static function getCount($news_id, $user_id = null) {
+        $crit = array ();
+
+        if ($user_id) {
+            $crit["conditions"] = "news_id = ?1 AND user_id = ?2";
+            $crit["bind"] = array(1 => $news_id, 2 => $user_id);
+        } else {
+            $crit["conditions"] = "news_id = ?1";
+            $crit["bind"] = array(1 => $news_id);
+        }
+
+        $ret = Comment::count($crit);
 
         return $ret;
     }

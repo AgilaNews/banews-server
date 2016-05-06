@@ -13,3 +13,13 @@
 #2 [internal function]: Phalcon\Dispatcher->dispatch()
 #3 /home/work/banews-api/public/index.php(32): Phalcon\Mvc\Application->handle()
 #4 {main}
+[Fri, 06 May 16 16:21:35 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/entry/app/controllers/IndexController.php(19): BaseController->get_request_param('client_version', 'string', true)
+#1 [internal function]: IndexController->IndexAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/entry/public/index.php(25): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Fri, 06 May 16 16:21:41 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/entry/app/controllers/IndexController.php(19): BaseController->get_request_param('client_version', 'string', true)
+#1 [internal function]: IndexController->IndexAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/entry/public/index.php(25): Phalcon\Mvc\Application->handle()
+#4 {main}

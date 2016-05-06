@@ -37,23 +37,38 @@ class News extends BaseModel {
 
     public $content_type;
 
+    public $liked;
 
     public function getSource(){
         return "tb_news";
     }
 
+    private static function getCacheKey($pfx, $columns) {
+        $key = CACHE_NEWS_PREFIX . $pfx;
+
+        if ($columns) {
+            sort($columns);
+
+            foreach ($columns as $column) {
+                $key = $key . "_" . $column;
+            }
+        }
+        return $key;
+    }
+
     public static function getById($id, $columns = null) {
         $crit = array ("conditions" => "id = ?1",
                        "bind" => array (1 => $id),
-                       /*
-                         "cache" => array (
-                         "lifetime" => $this->config->cache->general_life_time,
-                         "key" => $this->config->cache->keys->news,
-                         )*/);
+                       "cache" => array(
+                           "lifetime" => CACHE_USER_TTL,
+                           "key" => self::getCacheKey("_ID_$id", $columns),
+                       )
+		                );
+	
         if ($columns) {
             $crit["columns"] = $columns;
         }
-        
+	    
         $news_model = News::findFirst($crit);
         return $news_model;
     }
@@ -61,11 +76,11 @@ class News extends BaseModel {
     public static function getBySign($sign, $columns = null) {
         $crit = array ("conditions" => "url_sign = ?1",
                        "bind" => array (1 => $sign),
-                       /*
                          "cache" => array (
-                         "lifetime" => $this->config->cache->general_life_time,
-                         "key" => $this->config->cache->keys->news,
-                         )*/);
+                         "lifetime" => CACHE_USER_TTL, 
+                         "key" => self::getCacheKey("_SIGN_$sign", $columns),
+                         ));
+
         if ($columns) {
             $crit["columns"] = $columns;
         }

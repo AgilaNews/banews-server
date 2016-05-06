@@ -47,41 +47,6 @@ class UserController extends BaseController {
         return $this->response;
     }
 
-    private function serializeComment($comment){
-        $ret = array (
-                      "id" => $comment->id,
-                      "time" => $comment->create_time,
-                      "comment" => $comment->user_comment,
-                      "user_id" => $comment->user_id,
-                      "user_name" => "anonymous",
-                      "user_portrait_url" => "",
-                      );
-        
-        $user_model = User::getById($comment->user_id);
-        if ($user_model) {
-            $ret["user_name"] = $user_model->name;
-            $ret["user_portrait_url"] = $user_model->portrait_url;
-        }
-        return $ret;
-    }
-
-    private function serializeCollect($collect){
-        $news_model = News::getById($collect->news_id, array("id", "url_sign", "title", "source_name", "source_url"));
-        if (!$news_model) {
-            continue;
-        }
-        
-        $ret = array (
-                      "collect_id" => $collect->id,
-                      "time" => $collect->create_time,
-                      "id" => $news_model->url_sign,
-                      "title" => $news_model->title,
-                      "source" => $news_model->source_name,
-                      "source_url" => $news_model->source_url,
-                      );
-        return $ret;
-    }
-    
     private function postComments() {
         if (!$this->userSign) {
             throw new HttpException(ERR_NOT_AUTH, "userid not seted");
@@ -93,14 +58,24 @@ class UserController extends BaseController {
         }
         $newsSign = $this->get_or_fail($req, "news_id", "string");
         $comment_detail = $this->get_or_fail($req, "comment_detail", "string");
+        if (strlen($comment_detail) > MAX_COMMENT_SIZE) {
+            throw new HttpException(ERR_COMMENT_TOO_LONG, "comment too long");   
+        }
 
         $news_model = News::getBySign($newsSign);
-
         $comment = new Comment();
         $user_model = User::getBySign($this->userSign);
         if (!$user_model) {
             throw new HttpException(ERR_USER_NON_EXISTS,
                                     "user not exists");
+        }
+        if (!$news_model) {
+            throw new HttpException(ERR_NEWS_NON_EXISTS,
+                                    "news not exists");
+        }
+        $count = Comment::getCount($news_model->id, $user_model->id);
+        if ($count > MAX_COMMENT_COUNT) {
+            throw new HttpException(ERR_COMMENT_TOO_MUCH, "user commented too much");
         }
         
         $comment->user_id = $user_model->id;
@@ -110,8 +85,17 @@ class UserController extends BaseController {
         
         $ret = $comment->save();
         if ($ret === false) {
+            $this->logger->warning("save comment error : " . $comment->getMessages());
             throw new HttpException(ERR_INTERNAL_DB,
                                     "save comment info error");
+        }
+
+        $cache = $this->di->get('cache');
+        if ($cache) {
+            $cache->delete(Comment::getCacheKeys($news_model->id));
+            $this->logger->info("clear cache success");
+        } else {
+            $this->logger->info("clear cache error");
         }
 
         $this->setJsonResponse(array("message" => "ok"));
@@ -156,7 +140,6 @@ class UserController extends BaseController {
         $this->setJsonResponse(array("message" => "ok"));
         return $this->response;
     }
-
     
     private function getCollect(){
         if (!$this->userSign) {
@@ -209,6 +192,39 @@ class UserController extends BaseController {
         $this->setJsonResponse(array("message"=>"ok"));
         return $this->response;
     }
+    
+    private function serializeComment($comment){
+        $ret = array (
+                      "id" => $comment->id,
+                      "time" => $comment->create_time,
+                      "comment" => $comment->user_comment,
+                      "user_id" => $comment->user_id,
+                      "user_name" => "anonymous",
+                      "user_portrait_url" => "",
+                      );
+        
+        $user_model = User::getById($comment->user_id);
+        if ($user_model) {
+            $ret["user_name"] = $user_model->name;
+            $ret["user_portrait_url"] = $user_model->portrait_url;
+        }
+        return $ret;
+    }
+
+    private function serializeCollect($collect){
+        $news_model = News::getById($collect->news_id, array("id", "url_sign", "title", "source_name", "source_url"));
+        if (!$news_model) {
+            continue;
+        }
+        
+        $ret = array (
+                      "collect_id" => $collect->id,
+                      "time" => $collect->create_time,
+                      "id" => $news_model->url_sign,
+                      "title" => $news_model->title,
+                      "source" => $news_model->source_name,
+                      "source_url" => $news_model->source_url,
+                      );
+        return $ret;
+    }
 }
-
-
