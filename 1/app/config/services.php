@@ -7,11 +7,11 @@ use Phalcon\Mvc\Url as UrlProvider;
 use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Logger\Formatter\Line as LineFormatter;
 use Phalcon\Logger\Formatter\Json as JsonFormatter;
-use Phalcon\Cache\Backend\Redis as BackRedis;
 use Phalcon\Cache\Frontend\Json as JsonFront;
 use Phalcon\Cache\Frontend\Data as DataFront;
 
 $di = new FactoryDefault();
+
 
 $di->set('dispatcher', function () {
     $em = new EventsManager();
@@ -33,16 +33,19 @@ $di->set('dispatcher', function () {
     return $dispatcher;
     });
 
+
 $di->set('db', function() use ($config) {
     $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db->adapter;
     
     return new $db_clz($config->db->conf->toArray());
     });
 
+
 $di->set('view', function () use ($config) {
     $view = new View();
     return $view;
 });
+
 
 $di->set('logger', function() use ($config) {
     $logger = new BanewsLogger($config->logger->banews->path);
@@ -52,25 +55,27 @@ $di->set('logger', function() use ($config) {
     return $logger;
     });
 
+
 $di->set('eventlogger', function() use ($config) {
+    try {
         $logger = new EventLogger($config->logger->event->addr, $config->logger->event->category);
+    } catch (\Exception $e) {
+        
+    }
     //    $logger->setLogLevel(Logger::INFO);
     //    $logger->setFormatter(new JsonFomatter());
     return $logger;
 });
 
-
-$di->set('modelsCache', function() use ($config) {
-    $frontCache = new DataFront(
-                                array(
-                                      "lifetime" => $config->cache->general_life_time,
-                                      )
-                                );
-    $cache = new BackRedis($frontCache,
-                           $config->cache->redis->toArray()
+$frontCache = new DataFront(
+                            array(
+                                  "lifetime" => $config->cache->general_life_time,
+                                 )
                            );
-    
-    return $cache;
-    });
 
+$cache = new BanewsRedis($frontCache, 
+                         $config->cache->redis->toArray());
+
+$di->set('modelsCache', $cache);
+$di->set('cache', $cache);
 $di->set("config", $config);

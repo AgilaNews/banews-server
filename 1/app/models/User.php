@@ -56,40 +56,47 @@ class User extends BaseModel {
         return "tb_user";
     }
 
+    protected static function getCacheKey($param) {
+      return CACHE_USER_PREFIX . $param;
+    }
+
+    
     public static function getBySign($sign) {
         $user_model = User::findFirst(array ("conditions" => "sign = ?1",
                                              "bind" => array (1 => $sign),
-                                             /*
+                                             
                                              "cache" => array (
-                                                              "lifetime" => $this->config->cache->general_life_time,
-                                                               "key" => $this->config->cache->keys->user
+                                                              "lifetime" => CACHE_USER_TTL,
+							                                  "key" => self::getCacheKey("_sign_" . $sign),
                                                                ),
-                                             */
-
                                              ));
-        
         return $user_model;
     }
 
+    
     public static function getById($id) {
         $user_model = User::findFirst(array ("conditions" => "id = ?1",
                                              "bind" => array (1 => $id),
-                                             /*
-                                               "cache" => array (
-                                               "lifetime" => $this->config->cache->general_life_time,
-                                               "key" => $this->config->cache->keys->user
-                                               ),*/
-                                             ));
+                                             "cache" => array (
+								                 "lifetime" => CACHE_USER_TTL,
+								                 "key" => self::getCacheKey("_id_" . $sign),
+                                             )));
         
         return $user_model;
     }
 
+	  
     public static function getBySourceAndId($source, $uid){
         $user = User::findFirst( 
             array(
             "conditions" => "source = ?1 and uid = ?2",
             "bind" => array(1 => $source, 
-                            2 => $uid),
+                            2 => $uid,
+			    ),
+	    "cache" => array(
+			     "lifetime" => $this->config->cache->user_life_time,
+			     "key" => $this->getCacheKey("_is_", $sign),
+			     ),
             )
         );
 

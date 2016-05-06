@@ -43,9 +43,9 @@ $settings = array (
                                  ),
                       ),
     'entries' => array (
-                        "home" => SERVER_NAME . "/v%d",
-                        "log" => LOG_SERVER_NAME . "/v%d",
-                        "mon" => MON_SERVER_NAME . "/v%d",
+                        "home" => "http://" . SERVER_NAME . "/v%d",
+                        "log" => "http://" . LOG_SERVER_NAME . "/v%d",
+                        "mon" => "http://" .  MON_SERVER_NAME . "/v%d",
                         ),
 
 );

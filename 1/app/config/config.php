@@ -32,20 +32,23 @@ $settings = array (
                        ),
     'cache' => array (
                       "general_life_time" => 0,
+		              "user_life_time" => 86400,
+		              "news_life_time" => 3600 * 4,
+                      "comments_life_time" => 600,
                       "redis" => array (
                                         "host" => "127.0.0.1",
                                         "port" => 6379,
                                         ),
                       "keys" => array(
                                  "version" => "BA_version",
-                                 "news" => "BA_news",
-                                 "user" => "BA_user",
+                                 "news" => "BA_news_",
+                                 "user" => "BA_user_",
+                                 "comments" => "BA_comments",
+                                 "img" => "BA_images_",
                                  ),
                       ),
     'entries' => array (
                         "home" => SERVER_NAME . "/v%d",
-                        "log" => LOG_SERVER_NAME . "/v%d",
-                        "mon" => MON_SERVER_NAME . "/v%d",
                         ),
 
 );

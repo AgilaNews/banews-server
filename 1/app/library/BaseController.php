@@ -60,7 +60,14 @@ class BaseController extends Controller{
     }
 
     protected function logEvent($event_id, $param) {
+        $msg = json_encode($param);
+
+        if (!$this->eventlogger) {
+            $this->logger->info("[EVENT] $msg");
+            return;
+        }
+
         $param["id"] = $event_id;
-        $this->eventlogger->info(json_encode($param) . "\n");
+        $this->eventlogger->info($msg . "\n");
     }
 }
