@@ -8,6 +8,7 @@ $settings = array (
         "validatorDir" => APP_PATH . "/app/validators",
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models",
+        "policyDir" => APP_PATH . "/app/policies",
     ),
 
     'db' => array (

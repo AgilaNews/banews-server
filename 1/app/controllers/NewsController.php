@@ -9,6 +9,12 @@
  * 
  */
 
+define('NEWS_LIST_TPL_LARGE_IMG', 2);
+define('NEWS_LIST_TPL_THREE_IMG', 3);
+define('NEWS_LIST_TPL_TEXT_IMG', 4);
+define('NEWS_LIST_TPL_RAW_TEXT', 5);
+define('MAX_NEWS_SENT_COUNT', 200);
+
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
@@ -18,7 +24,7 @@ class NewsController extends BaseController {
                 "read news must be get");
         }
 
-        $newsSign = $this->get_request_param("id", "string", true);
+        $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
         if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
@@ -59,6 +65,31 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
+    public function listAction(){
+        if (!$this->request->isGet()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device-id not found");
+        }
+
+        $channel_id = $this->get_request_param("channel_id", "int", true);
+        $policy = new RandomPolicy($this->getDi());
+        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, 
+                                MAX_NEWS_SENT_COUNT);
+        $ret = array();
+
+        foreach ($selected_news_list as $selected_news) {
+            $news_model = News::getBySign($selected_news);
+            if ($news_model) {
+                $ret []= $this->serializeNewsCell($news_model);
+            }
+        }
+
+        $this->setJsonResponse($ret);
+        return $this->response;
+    }
+
     public function likeAction() {
         if (!$this->request->isPost()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
@@ -92,18 +123,21 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
+
+    protected function getRecommendNewsList($news_model) {
+    
+    }
+
     protected function serializeImage($img){
         return array (
-            "IMG" . $img->news_pos_id => 
-                array (
-                    "src" => $img->saved_url ? $img->saved_url : $img->source_url,
-                    "width" => 128,
-                    "height" => 128,
-                    ),
+            "name" => "<!--IMG" . $img->news_pos_id . '-->',
+            "src" => $img->saved_url ? $img->saved_url : $img->source_url,
+            "width" => 128, // TODO
+            "height" => 128,
         );
     }
 
-   private function serializeComment($comment){
+   protected function serializeComment($comment){
         $ret = array (
                       "id" => $comment->id,
                       "time" => $comment->create_time,
@@ -118,6 +152,34 @@ class NewsController extends BaseController {
             $ret["user_name"] = $user_model->name;
             $ret["user_portrait_url"] = $user_model->portrait_url;
         }
+        return $ret;
+    }
+
+    protected function serializeNewsCell($news_model) {
+        $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
+        $commentCount = Comment::getCount($news_model->id);
+        
+        $ret = array (
+            "commentCount" => $commentCount,
+            "news_id" => $news_model->url_sign,
+            "source" => $news_model->source_name,
+            "source_url" => $news_model->source_url,
+            "public_time" => $news_model->publish_time,
+            "imgs" => array(),
+        );
+
+        foreach (array_slice($imgs,0,3) as $img) {
+            array_push($ret["imgs"], $this->serializeImage($img));
+        }
+
+        if (count($imgs) == 0) {
+            $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
+        } else if (count($imgs) <= 2) {
+            $ret["tpl"] = NEWS_LIST_TPL_TEXT_IMG;
+        } else if (count($imgs) >= 3) {
+            $ret["tpl"] = NEWS_LIST_TPL_THREE_IMG;
+        }
+
         return $ret;
     }
 }
