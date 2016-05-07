@@ -199,3 +199,24 @@
 #2 [internal function]: Phalcon\Dispatcher->dispatch()
 #3 /home/work/banews-server/1/public/index.php(52): Phalcon\Mvc\Application->handle()
 #4 {main}
+[Sat, 07 May 16 16:24:14 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(53): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Sat, 07 May 16 16:24:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(53): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Sat, 07 May 16 16:24:46 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(53): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Sat, 07 May 16 16:25:09 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(53): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Sat, 07 May 16 16:26:12 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/NewsController.php(75): BaseController->get_request_param('channel_id', 'int', true)
+#1 [internal function]: NewsController->listAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/1/public/index.php(53): Phalcon\Mvc\Application->handle()
+#4 {main}

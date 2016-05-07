@@ -93,13 +93,13 @@ class User extends BaseModel {
             "bind" => array(1 => $source, 
                             2 => $uid,
 			    ),
-	    "cache" => array(
-			     "lifetime" => $this->config->cache->user_life_time,
-			     "key" => $this->getCacheKey("_is_", $sign),
-			     ),
+
+        "cache" => array(
+                 "lifetime" => CACHE_USER_TTL,
+                 "key" => self::getCacheKey("_is_" .  $source . "_" . $uid . ""),
+                 ),
             )
         );
-
         return $user;
     }
 }
