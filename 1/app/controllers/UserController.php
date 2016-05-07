@@ -219,15 +219,16 @@ class UserController extends BaseController {
         if (!$news_model) {
             continue;
         }
+        $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         
         $ret = array (
                       "collect_id" => $collect->id,
-                      "time" => $collect->create_time,
-                      "id" => $news_model->url_sign,
+                      "public_time" => $collect->create_time,
+                      "news_id" => $news_model->url_sign,
                       "title" => $news_model->title,
                       "source" => $news_model->source_name,
                       "source_url" => $news_model->source_url,
                       );
-        return $ret;
+        return array_merge($ret, ImageHelper::serializeImgs($imgs));
     }
 }

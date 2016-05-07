@@ -39,7 +39,7 @@ class NewsController extends BaseController {
             "body" => $news_model->json_text,
             "commentCount" => $commentCount,
             "comments" => array(), 
-            "imgs" => array(),
+            "imgs" => ImageHelp::formatImgs($imgs),
             "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
@@ -55,10 +55,6 @@ class NewsController extends BaseController {
 
         foreach ($topComment as $comment) {
             array_push($ret["comments"], $this->serializeComment($comment));
-        }
-
-        foreach($imgs as $img) {
-            array_push($ret["imgs"], $this->serializeImage($img));
         }
 
         $this->setJsonResponse($ret);
@@ -128,15 +124,6 @@ class NewsController extends BaseController {
     
     }
 
-    protected function serializeImage($img){
-        return array (
-            "name" => "<!--IMG" . $img->news_pos_id . '-->',
-            "src" => $img->saved_url ? $img->saved_url : $img->source_url,
-            "width" => 128, // TODO
-            "height" => 128,
-        );
-    }
-
    protected function serializeComment($comment){
         $ret = array (
                       "id" => $comment->id,
@@ -155,30 +142,20 @@ class NewsController extends BaseController {
         return $ret;
     }
 
+
     protected function serializeNewsCell($news_model) {
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         $commentCount = Comment::getCount($news_model->id);
-        
+
         $ret = array (
             "commentCount" => $commentCount,
             "news_id" => $news_model->url_sign,
             "source" => $news_model->source_name,
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
-            "imgs" => array(),
         );
 
-        foreach (array_slice($imgs,0,3) as $img) {
-            array_push($ret["imgs"], $this->serializeImage($img));
-        }
-
-        if (count($imgs) == 0) {
-            $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
-        } else if (count($imgs) <= 2) {
-            $ret["tpl"] = NEWS_LIST_TPL_TEXT_IMG;
-        } else if (count($imgs) >= 3) {
-            $ret["tpl"] = NEWS_LIST_TPL_THREE_IMG;
-        }
+        $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs));
 
         return $ret;
     }
