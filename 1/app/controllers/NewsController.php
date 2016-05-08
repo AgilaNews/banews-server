@@ -153,7 +153,7 @@ class NewsController extends BaseController {
         $commentCount = Comment::getCount($news_model->id);
 
         $ret = array (
-            "news" => $news_model->title,
+            "title" => $news_model->title,
             "commentCount" => $commentCount,
             "news_id" => $news_model->url_sign,
             "source" => $news_model->source_name,
