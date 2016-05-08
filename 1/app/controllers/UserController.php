@@ -101,7 +101,7 @@ class UserController extends BaseController {
             $this->logger->info("clear cache error");
         }
 
-        $this->setJsonResponse(array("message" => "ok"));
+        $this->setJsonResponse(array_merge(array("message" => "ok"), $this->serializeComment($comment));
         return $this->response;
     }
 
