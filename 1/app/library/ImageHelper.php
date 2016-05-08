@@ -1,7 +1,11 @@
 <?php
+define('NEWS_LIST_TPL_LARGE_IMG', 2);
+define('NEWS_LIST_TPL_THREE_IMG', 3);
+define('NEWS_LIST_TPL_TEXT_IMG', 4);
+define('NEWS_LIST_TPL_RAW_TEXT', 5);
 
 class ImageHelper {
-    private function serializeImage($img, $use_name){
+    private static function serializeImage($img, $use_name){
         $ret =  array (
             "src" => $img->saved_url ? $img->saved_url : $img->source_url,
             "width" => 128, // TODO
@@ -23,30 +27,32 @@ class ImageHelper {
         return $ret;
     }
 
-    public static function formatImageAndTpl($imgs){
+    public static function formatImageAndTpl($img_set){
         $ret = array(
             "imgs" => array(),
             "tpl" => NEWS_LIST_TPL_RAW_TEXT,
         );
-        if (!$imgs) {
+        if (!$img_set) {
             return $ret;
         }
+        
+        $imgs = array();
+        foreach($img_set as $img_single_set) {
+            $imgs []= $img_single_set;
+        }
 
-        $count = 0;
-        if ($imgs->count() == 0) {
+        if (count($imgs) == 0) {
             $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
-        } else if ($imgs->count() <= 2) {
-            $count = 1;
+        } else if (count($imgs) <= 2) {
+            $imgs = array_slice($imgs, 0 ,1);
             $ret["tpl"] = NEWS_LIST_TPL_TEXT_IMG;
-        } else if ($imgs->count() >= 3) {
-            $count = 3;
+        } else if (count($imgs) >= 3) {
+            $imgs = array_slice($imgs, 0 ,3);
             $ret["tpl"] = NEWS_LIST_TPL_THREE_IMG;
         }
 
-        while ($imgs->valid() && $count > 0) { 
-            $ret["imgs"] []= self::serializeImage($imgs->current());
-            $imgs->next();
-            $count--;
+        foreach ($imgs as $img) {
+            $ret["imgs"] []= self::serializeImage($img, false);
         }
 
         return $ret;

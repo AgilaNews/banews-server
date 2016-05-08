@@ -36,7 +36,13 @@ use Phalcon\Config;
 use Phalcon\Mvc\Application;
 
 try {
-    require APP_PATH . "app/config/config.php";
+    $env = getenv("BANEWS_ENV");
+    
+    if ($env == "rd") {
+        require APP_PATH . "app/config/config.php.rd";
+    } else {
+        require APP_PATH . "app/config/config.php";
+    }
     $config = new Config($settings);
 
     $settings["appdirs"] = array (

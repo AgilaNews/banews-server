@@ -9,10 +9,6 @@
  * 
  */
 
-define('NEWS_LIST_TPL_LARGE_IMG', 2);
-define('NEWS_LIST_TPL_THREE_IMG', 3);
-define('NEWS_LIST_TPL_TEXT_IMG', 4);
-define('NEWS_LIST_TPL_RAW_TEXT', 5);
 define('MAX_NEWS_SENT_COUNT', 200);
 
 use Phalcon\Mvc\Model\Query;
@@ -39,7 +35,7 @@ class NewsController extends BaseController {
             "body" => $news_model->json_text,
             "commentCount" => $commentCount,
             "comments" => array(), 
-            "imgs" => ImageHelp::formatImgs($imgs),
+            "imgs" => ImageHelper::formatImgs($imgs),
             "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
@@ -51,7 +47,16 @@ class NewsController extends BaseController {
             "content_type" => $news_model->content_type,
             "channel_id" => $news_model->channel_id,
             "likedCount" => $news_model->liked,
+            "collect_id" => 0,
         );
+
+
+        if ($this->userSign) {
+            $user_model = User::getBySign($this->userSign);
+            if ($user_model) {
+                $ret["collect_id"] = Collect::getCollectId($user_model->id, $news_model->id);
+            }
+        }
 
         foreach ($topComment as $comment) {
             array_push($ret["comments"], $this->serializeComment($comment));
@@ -148,6 +153,7 @@ class NewsController extends BaseController {
         $commentCount = Comment::getCount($news_model->id);
 
         $ret = array (
+            "news" => $news_model->title,
             "commentCount" => $commentCount,
             "news_id" => $news_model->url_sign,
             "source" => $news_model->source_name,
