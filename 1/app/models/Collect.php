@@ -8,13 +8,14 @@ class Collect extends BaseModel {
 
     public $create_time;
 
-    public static function isCollected($user_id, $news_id) {
-        $ret = Collect::count(array (
+    public static function getCollectId($user_id, $news_id) {
+        $ret = Collect::findFirst(array (
+                                    "columns" => "id",
                                      "conditions" => "user_id = ?1 AND news_id = ?2",
                                      "bind" => array(1=>$user_id, 2=>$news_id),
                                      ));
 
-        return $ret > 0;
+        return $ret ? $ret->id : 0;
     }
     
     public static function getAll($user_id, $last_id, $pn) {

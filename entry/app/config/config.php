@@ -13,10 +13,10 @@ $settings = array (
     'db' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-            'host' => 'localhost',
+            'host' => '10.8.22.123',
             'username' => 'root',
-            'password' => 'MhxzKhl-Happy!@#',
-            'dbname' => 'banews'
+            'password' => 'MhxzKhl-Happy',
+            'dbname' => 'banews-test'
                         )
                    ),
     'logger' => array (

@@ -140,7 +140,7 @@ class UserController extends BaseController {
                                     "save collect model error");
         }
 
-        $this->setJsonResponse(array("message" => "ok"));
+        $this->setJsonResponse(array("collect_id" => $collect_model->id, "message" => "ok"));
         return $this->response;
     }
     
@@ -229,6 +229,6 @@ class UserController extends BaseController {
                       "source" => $news_model->source_name,
                       "source_url" => $news_model->source_url,
                       );
-        return array_merge($ret, ImageHelper::serializeImgs($imgs));
+        return array_merge($ret, ImageHelper::formatImageAndTpl($imgs));
     }
 }
