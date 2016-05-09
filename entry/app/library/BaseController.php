@@ -33,7 +33,7 @@ class BaseController extends Controller{
         }
         
         if ($is_required) {
-            throw new HttpException(ERR_KEY_ERR, "'$name' is not set");
+            throw new HttpException(ERR_KEY, "'$name' is not set");
         }
         return "";
     }
@@ -50,7 +50,7 @@ class BaseController extends Controller{
         if (array_key_exists($k, $table)) {
             return $this->filter->sanitize($table[$k], $type);
         } else {
-            throw new HttpException(ERR_KEY_ERR, "'$k' is not set");
+            throw new HttpException(ERR_KEY, "'$k' is not set");
         }
     }
 

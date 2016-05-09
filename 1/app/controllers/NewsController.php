@@ -9,7 +9,7 @@
  * 
  */
 
-define('MAX_NEWS_SENT_COUNT', 200);
+define('MAX_NEWS_SENT_COUNT', 10);
 
 use Phalcon\Mvc\Model\Query;
 
@@ -75,9 +75,15 @@ class NewsController extends BaseController {
         }
 
         $channel_id = $this->get_request_param("channel_id", "int", true);
-        $policy = new RandomPolicy($this->getDi());
-        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, 
-                                MAX_NEWS_SENT_COUNT);
+        $policy = new ExpDecayPolicy($this->getDi());
+        $prefer = $this->get_request_param('dir', "string", false, "later");
+
+        if (!($prefer == 'later' || $prefer == 'older')) {
+            throw new HttpException(ERR_BODY, "'dir' error");
+        }
+
+        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, MAX_NEWS_SENT_COUNT,
+                                                $prefer);
         $ret = array();
 
         foreach ($selected_news_list as $selected_news) {
@@ -87,6 +93,7 @@ class NewsController extends BaseController {
             }
         }
 
+        $policy->setDeviceSent($this->deviceId, $selected_news_list);
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -98,7 +105,7 @@ class NewsController extends BaseController {
 
         $req = $this->request->getJsonRawBody(true);
         if (null === $req) {
-            throw new HttpException(ERR_BODY_ERR, "body format error");
+            throw new HttpException(ERR_BODY, "body format error");
         }
 
         $newsSign = $this->get_or_fail($req, "news_id", "string");

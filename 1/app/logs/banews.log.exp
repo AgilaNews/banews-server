@@ -308,3 +308,942 @@
 #4 [internal function]: Phalcon\Dispatcher->dispatch()
 #5 /home/work/banews-server/1/public/index.php(59): Phalcon\Mvc\Application->handle()
 #6 {main}
+[Mon, 09 May 16 12:17:00 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 12:17:26 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/NewsController.php(77): BaseController->get_request_param('channel_id', 'int', true)
+#1 [internal function]: NewsController->listAction()
+#2 [internal function]: Phalcon\Dispatcher->dispatch()
+#3 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#4 {main}
+[Mon, 09 May 16 12:52:50 +0800][NOTICE]: [HttpError]: #0 [internal function]: PDOStatement->execute()
+#1 [internal function]: Phalcon\Db\Adapter\Pdo->executePrepared(Object(PDOStatement), Array, Array)
+#2 [internal function]: Phalcon\Db\Adapter\Pdo->query('SELECT `tb_news...', Array, Array)
+#3 [internal function]: Phalcon\Mvc\Model\Query->_executeSelect(Array, Array, Array)
+#4 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#5 /home/work/banews-server/1/app/models/News.php(88): Phalcon\Mvc\Model::findFirst(Array)
+#6 /home/work/banews-server/1/app/controllers/NewsController.php(86): News::getBySign(Array)
+#7 [internal function]: NewsController->listAction()
+#8 [internal function]: Phalcon\Dispatcher->dispatch()
+#9 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#10 {main}
+[Mon, 09 May 16 12:53:25 +0800][NOTICE]: [HttpError]: #0 [internal function]: PDOStatement->execute()
+#1 [internal function]: Phalcon\Db\Adapter\Pdo->executePrepared(Object(PDOStatement), Array, Array)
+#2 [internal function]: Phalcon\Db\Adapter\Pdo->query('SELECT `tb_news...', Array, Array)
+#3 [internal function]: Phalcon\Mvc\Model\Query->_executeSelect(Array, Array, Array)
+#4 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#5 /home/work/banews-server/1/app/models/News.php(88): Phalcon\Mvc\Model::findFirst(Array)
+#6 /home/work/banews-server/1/app/controllers/NewsController.php(86): News::getBySign(Array)
+#7 [internal function]: NewsController->listAction()
+#8 [internal function]: Phalcon\Dispatcher->dispatch()
+#9 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#10 {main}
+[Mon, 09 May 16 16:32:51 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:29 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:30 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:31 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:32 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:33 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:34 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:35 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:57 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:59 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 09 May 16 16:36:59 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->listAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
