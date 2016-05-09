@@ -93,6 +93,9 @@ class NewsController extends BaseController {
             }
         }
 
+
+        $this->logger->notice(sprintf("[NewsList] [policy:ExpDecay][di:%s][pfer:%s][cnl:%d][sent:%d]",
+                                        $device_id, $prefer, $channel_id, count($selected_news_list)));
         $policy->setDeviceSent($this->deviceId, $selected_news_list);
         $this->setJsonResponse($ret);
         return $this->response;

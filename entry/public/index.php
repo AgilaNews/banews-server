@@ -6,14 +6,13 @@ define('APP_PATH', realpath('..') . '/');
 define('SERVER_NAME', "api.agilanews.com");
 define('ERR_KEY', 40001);
 define('ERR_INTERNAL_DB', 50002);
-define('LOG_SERVER_NAME', 'api.agilanews.com');
-define('MON_SERVER_NAME', 'api.agilanews.com');
+define('LOG_SERVER_NAME', 'log.agilanews.com');
+define('MON_SERVER_NAME', 'mon.agilanews.com');
+define('H5_SERVER_NAME', "m.agilanews.com");
 
 define('MIN_VERSION', "0.0.1"); //TODO change this to a configuration center
 define('NEW_VERSION', "0.0.2");
 define('UPDATE_URL', "http://demoupdate.googleplay.com");
-
-
 
 use Phalcon\Config;
 use Phalcon\Mvc\Application;
