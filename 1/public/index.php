@@ -7,9 +7,8 @@ define('APP_PATH', realpath('..') . '/');
 define('SERVER_NAME', "api.agilanews.com");
 define('BA_DEBUG', true);
 
-define('ERR_KEY_ERR', 40001);
-define('ERR_BODY_ERR', 40002);
-define('ERR_NEWS_ERR', 40003);
+define('ERR_KEY', 40001);
+define('ERR_BODY', 40002);
 define('ERR_COMMENT_TOO_LONG', 40004);
 define('ERR_CLIENT_VERSION_NOT_FOUND', 40011);
 define('ERR_NOT_AUTH', 40101);

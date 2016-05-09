@@ -20,7 +20,7 @@ class LoginController extends BaseController {
 
         // $req = json_decode(file_get_content("php://input"));
         if (null === $req) {
-            throw new HttpException(ERR_BODY_ERR, "body format error");
+            throw new HttpException(ERR_BODY, "body format error");
         }
 
         $uid = $this->get_or_fail($req, "uid", "string");

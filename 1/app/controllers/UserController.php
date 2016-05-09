@@ -57,7 +57,7 @@ class UserController extends BaseController {
 
         $req = $this->request->getJsonRawBody(true);
         if (null === $req) {
-            throw new HttpException(ERR_BODY_ERR, "body format error");
+            throw new HttpException(ERR_BODY, "body format error");
         }
         $newsSign = $this->get_or_fail($req, "news_id", "string");
         $comment_detail = $this->get_or_fail($req, "comment_detail", "string");
@@ -114,7 +114,7 @@ class UserController extends BaseController {
 
         $req = $this->request->getJsonRawBody(true);
         if (null == $req) {
-            throw new HttpException(ERR_BODY_ERR, "body format error");
+            throw new HttpException(ERR_BODY, "body format error");
         }
 
         $user_model = User::getBySign($this->userSign);
@@ -182,11 +182,11 @@ class UserController extends BaseController {
         
         $req = $this->request->getJsonRawBody(true);
         if (null === $req) {
-            throw new HttpException(ERR_BODY_ERR, "body format error");
+            throw new HttpException(ERR_BODY, "body format error");
         }
         
         if (!is_array($req["ids"])) {
-            throw new HttpException(ERR_BODY_ERR, "ids must be array");
+            throw new HttpException(ERR_BODY, "ids must be array");
         }
         
         foreach (array_chunk($req["ids"], 500) as $subid) {

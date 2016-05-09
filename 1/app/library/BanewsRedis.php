@@ -15,6 +15,7 @@ class BanewsRedis extends BackRedis {
             $this->_connect();
         } 
 
+
         if (method_exists($this->_redis, $name)) {
             return
             call_user_func_array(array($this->_redis, $name),

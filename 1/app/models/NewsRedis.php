@@ -1,7 +1,9 @@
 <?php
-define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_LRU_");
+define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
 define('CACHE_SENT_MASK_MAX', 500);
-define('CACHE_SENT_TTL', 4 * 3600); //cache for 4 hour
+//define('CACHE_SENT_TTL', 4 * 3600); 
+define('CACHE_SENT_TTL', 600); //TODO change this to online
+
 
 class NewsRedis {
     public function __construct($redis) {
@@ -20,9 +22,11 @@ class NewsRedis {
     }
  
     public function setDeviceSeen($device_id, $news_ids) {
-        $key = $this->getUserSentKey($device_id);
+        $key = $this->getDeviceSentKey($device_id);
         
-        $this->_redis->lpush($key, $news_ids);
+        call_user_func_array(array($this->_redis, "lPush"), 
+                                   array_merge(array($key), $news_ids)
+                            );
         $this->_redis->ltrim($key, 0, CACHE_SENT_MASK_MAX);
         $this->_redis->expire($key, CACHE_SENT_TTL);
     }

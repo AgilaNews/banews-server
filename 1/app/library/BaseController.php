@@ -27,15 +27,15 @@ class BaseController extends Controller{
         $this->logger->commit();
     }
 
-    protected function get_request_param($name, $type, $is_required=false) {
+    protected function get_request_param($name, $type, $is_required=false, $default="") {
         if (isset($_REQUEST[$name])) {
             return $this->filter->sanitize($_REQUEST[$name], $type);
         }
         
         if ($is_required) {
-            throw new HttpException(ERR_KEY_ERR, "'$name' is not set");
+            throw new HttpException(ERR_KEY, "'$name' is not set");
         }
-        return "";
+        return $default;
     }
 
     protected function get_or_default($table, $k, $type, $default) {
@@ -50,7 +50,7 @@ class BaseController extends Controller{
         if (array_key_exists($k, $table)) {
             return $this->filter->sanitize($table[$k], $type);
         } else {
-            throw new HttpException(ERR_KEY_ERR, "'$k' is not set");
+            throw new HttpException(ERR_KEY, "'$k' is not set");
         }
     }
 
