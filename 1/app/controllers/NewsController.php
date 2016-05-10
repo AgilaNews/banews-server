@@ -47,7 +47,7 @@ class NewsController extends BaseController {
             //"content_type" => $news_model->content_type,
             "channel_id" => $news_model->channel_id,
             "likedCount" => $news_model->liked,
-            "collect_id" => 0,
+            "collect_id" => 0, 
         );
 
 

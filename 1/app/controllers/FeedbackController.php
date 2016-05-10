@@ -17,13 +17,14 @@ class FeedbackController extends BaseController {
         }
         $fb = new Feedback();
 
-        if (!$this->userId) {
+        if ($this->userSign) {
             $user_model = User::getBySign($this->userSign);
             if (!$user_model) {
                 throw new HttpException(ERR_USER_NON_EXISTS, "user non exists");
             }
             $fb->user_id = $user_model->id;
         }
+
         if (!$this->deviceId) {
             throw new HttpException(ERR_DEVICE_NON_EXISTS, "device id not found");
         }
