@@ -38,7 +38,7 @@ class BaseController extends Controller{
         return $default;
     }
 
-    protected function get_or_default($table, $k, $type, $default) {
+    protected function get_or_default($table, $k, $type, $default = null) {
         if (array_key_exists($k, $table)) {
             return $this->filter->sanitize($table[$k], $type);
         } else {

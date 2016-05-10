@@ -2,14 +2,13 @@
 
 error_reporting(E_ALL);
 
-
 define('APP_PATH', realpath('..') . '/');
 define('SERVER_NAME', "api.agilanews.com");
-define('BA_DEBUG', true);
 
 define('ERR_KEY', 40001);
 define('ERR_BODY', 40002);
 define('ERR_COMMENT_TOO_LONG', 40004);
+define('ERR_FB_TOO_LONG', 40005);
 define('ERR_CLIENT_VERSION_NOT_FOUND', 40011);
 define('ERR_NOT_AUTH', 40101);
 define('ERR_USER_NON_EXISTS', 40102);
@@ -39,6 +38,7 @@ try {
     
     if ($env == "rd") {
         require APP_PATH . "app/config/config.php.rd";
+        define('BA_DEBUG', true);
     } else {
         require APP_PATH . "app/config/config.php";
     }
@@ -57,5 +57,5 @@ try {
 
     echo $app->handle()->getContent();
 } catch (\Exception $e) {
-     echo "Exception: ", $e->getMessage();
+     echo "Exception: ", $e->getMessage(); // TODO
 }
