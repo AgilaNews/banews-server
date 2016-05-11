@@ -1313,3 +1313,33 @@
 #1 [internal function]: Phalcon\Dispatcher->dispatch()
 #2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
 #3 {main}
+[Wed, 11 May 16 15:43:41 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/UserController.php(125): BaseController->get_or_fail(Array, 'news_id', 'string')
+#1 /home/work/banews-server/1/app/controllers/UserController.php(24): UserController->postCollect()
+#2 [internal function]: UserController->CollectAction()
+#3 [internal function]: Phalcon\Dispatcher->dispatch()
+#4 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#5 {main}
+[Wed, 11 May 16 15:43:58 +0800][NOTICE]: [HttpError]: #0 [internal function]: Phalcon\Mvc\Model\Query->parse()
+#1 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#2 /home/work/banews-server/1/app/models/Collect.php(48): Phalcon\Mvc\Model::find(Array)
+#3 /home/work/banews-server/1/app/controllers/UserController.php(162): Collect::getAll('24', '', '')
+#4 /home/work/banews-server/1/app/controllers/UserController.php(26): UserController->getCollect()
+#5 [internal function]: UserController->CollectAction()
+#6 [internal function]: Phalcon\Dispatcher->dispatch()
+#7 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#8 {main}
+[Wed, 11 May 16 15:44:14 +0800][NOTICE]: [HttpError]: #0 /home/work/banews-server/1/app/controllers/UserController.php(160): BaseController->get_request_param('pn', 'int', 10)
+#1 /home/work/banews-server/1/app/controllers/UserController.php(26): UserController->getCollect()
+#2 [internal function]: UserController->CollectAction()
+#3 [internal function]: Phalcon\Dispatcher->dispatch()
+#4 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#5 {main}
+[Wed, 11 May 16 15:44:42 +0800][NOTICE]: [HttpError]: #0 [internal function]: Phalcon\Mvc\Model\Query->parse()
+#1 [internal function]: Phalcon\Mvc\Model\Query->execute()
+#2 /home/work/banews-server/1/app/models/Collect.php(48): Phalcon\Mvc\Model::find(Array)
+#3 /home/work/banews-server/1/app/controllers/UserController.php(162): Collect::getAll('24', 0, 10)
+#4 /home/work/banews-server/1/app/controllers/UserController.php(26): UserController->getCollect()
+#5 [internal function]: UserController->CollectAction()
+#6 [internal function]: Phalcon\Dispatcher->dispatch()
+#7 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#8 {main}
