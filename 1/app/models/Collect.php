@@ -38,7 +38,7 @@ class Collect extends BaseModel {
                                          "conditions" => $condition,
                                          "bind" => $bind,
                                          "limit" => $pn,
-                                         "order" => "id AESC",
+                                         "order" => "id",
                                          /*
                                            "cache" => array (
                                            "lifetime" => 1200,
