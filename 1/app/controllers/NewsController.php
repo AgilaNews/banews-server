@@ -91,7 +91,7 @@ class NewsController extends BaseController {
         foreach ($selected_news_list as $selected_news) {
             $news_model = News::getBySign($selected_news);
             if ($news_model) {
-                $ret [$dispatch_id]= $this->serializeNewsCell($news_model);
+                $ret [$dispatch_id][] = $this->serializeNewsCell($news_model);
             }
         }
 
