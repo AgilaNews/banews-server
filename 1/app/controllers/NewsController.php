@@ -84,18 +84,20 @@ class NewsController extends BaseController {
 
         $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, MAX_NEWS_SENT_COUNT,
                                                 $prefer);
-        $ret = array();
+
+        $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
+        $ret = array($dispatch_id => array());
 
         foreach ($selected_news_list as $selected_news) {
             $news_model = News::getBySign($selected_news);
             if ($news_model) {
-                $ret []= $this->serializeNewsCell($news_model);
+                $ret [$dispatch_id]= $this->serializeNewsCell($news_model);
             }
         }
 
 
-        $this->logger->notice(sprintf("[NewsList] [policy:ExpDecay][di:%s][pfer:%s][cnl:%d][sent:%d]",
-                                        $device_id, $prefer, $channel_id, count($selected_news_list)));
+        $this->logger->notice(sprintf("[NewsList][id:%s][policy:ExpDecay][di:%s][pfer:%s][cnl:%d][sent:%d]",
+                                        $dispatch_id, $device_id, $prefer, $channel_id, count($selected_news_list)));
         $policy->setDeviceSent($this->deviceId, $selected_news_list);
         $this->setJsonResponse($ret);
         return $this->response;

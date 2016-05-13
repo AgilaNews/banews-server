@@ -1401,3 +1401,8 @@
 #6 [internal function]: Phalcon\Dispatcher->dispatch()
 #7 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
 #8 {main}
+[Fri, 13 May 16 14:50:38 +0800][NOTICE]: [NewsList][id:3fdc1608281f7e1e][policy:ExpDecay][di:][pfer:later][cnl:10003][sent:6]
+[Fri, 13 May 16 14:50:45 +0800][NOTICE]: [NewsList][id:a1f7f42275982fcf][policy:ExpDecay][di:][pfer:later][cnl:10003][sent:0]
+[Fri, 13 May 16 14:50:53 +0800][NOTICE]: [NewsList][id:c0326dd85d00c138][policy:ExpDecay][di:][pfer:later][cnl:10003][sent:6]
+[Fri, 13 May 16 14:50:54 +0800][NOTICE]: [NewsList][id:f1b635a8e502ee1c][policy:ExpDecay][di:][pfer:later][cnl:10003][sent:0]
+[Fri, 13 May 16 14:51:03 +0800][NOTICE]: [NewsList][id:b05bb0e67a46e05c][policy:ExpDecay][di:][pfer:later][cnl:10003][sent:6]
