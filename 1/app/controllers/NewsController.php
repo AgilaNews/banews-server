@@ -40,9 +40,9 @@ class NewsController extends BaseController {
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
             "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
+            "source_url" => urlencode($news_model->source_url),
             "public_time" => $news_model->publish_time,
-            "share_url" => $news_model->shared_url,
+            "share_url" => urlencode($news_model->shared_url),
             "channel_id" => $news_model->channel_id,
             "likedCount" => $news_model->liked,
             "collect_id" => 0, 
@@ -146,7 +146,7 @@ class NewsController extends BaseController {
         $user_model = User::getById($comment->user_id);
         if ($user_model) {
             $ret["user_name"] = $user_model->name;
-            $ret["user_portrait_url"] = $user_model->portrait_url;
+            $ret["user_portrait_url"] = urlencode($user_model->portrait_url);
         }
         return $ret;
     }
@@ -161,7 +161,7 @@ class NewsController extends BaseController {
             "commentCount" => $commentCount,
             "news_id" => $news_model->url_sign,
             "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
+            "source_url" => urlencode($news_model->source_url),
             "public_time" => $news_model->publish_time,
         );
 
@@ -175,7 +175,7 @@ class NewsController extends BaseController {
             "title" => $news_model->title,
             "news_id" => $news_model->url_sign,
             "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
+            "source_url" => urlencode($news_model->source_url),
             "public_time" => $news_model->publish_time,
         );
         return $ret;

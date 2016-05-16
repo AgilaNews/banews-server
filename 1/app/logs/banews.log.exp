@@ -1385,3 +1385,11 @@
 #1 [internal function]: Phalcon\Dispatcher->dispatch()
 #2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
 #3 {main}
+[Mon, 16 May 16 20:22:21 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->DetailAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Mon, 16 May 16 20:22:39 +0800][NOTICE]: [HttpError]: #0 [internal function]: NewsController->DetailAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/1/public/index.php(58): Phalcon\Mvc\Application->handle()
+#3 {main}
