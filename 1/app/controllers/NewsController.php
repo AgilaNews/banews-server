@@ -152,7 +152,7 @@ class NewsController extends BaseController {
     }
 
 
-    protected function serializeNewsCell($news_model, $need_image = true) {
+    protected function serializeNewsCell($news_model) {
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         $commentCount = Comment::getCount($news_model->id);
 
@@ -165,10 +165,19 @@ class NewsController extends BaseController {
             "public_time" => $news_model->publish_time,
         );
 
-        if ($need_image) {
-            $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
-        }
+        $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
  
+        return $ret;
+    }
+
+    protected function serializeRecommendCell($news_model) {
+        $ret = array (
+            "title" => $news_model->title,
+            "news_id" => $news_model->url_sign,
+            "source" => $news_model->source_name,
+            "source_url" => $news_model->source_url,
+            "public_time" => $news_model->publish_time,
+        );
         return $ret;
     }
 
@@ -181,7 +190,7 @@ class NewsController extends BaseController {
         foreach ($recommend_news_list as $recommend_news) {
             $news_model = News::getBySign($recommend_news);
             if ($news_model) {
-                $ret []= $this->serializeNewsCell($news_model, false);
+                $ret []= $this->serializeRecommendCell($news_model);
             }
         }
 
