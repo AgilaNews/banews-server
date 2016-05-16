@@ -9,7 +9,7 @@ class ImageHelper {
         $img_obj = json_decode($img->saved_url, true);
         if (!$img_obj){
             return array(
-                         "src"=> $img->source_url,
+                         "src"=> urlencode($img->source_url),
                          "height"=> 128,
                          "width"=> 128,
                          );
