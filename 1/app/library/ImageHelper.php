@@ -5,29 +5,38 @@ define('NEWS_LIST_TPL_TEXT_IMG', 4);
 define('NEWS_LIST_TPL_RAW_TEXT', 5);
 
 class ImageHelper {
-    private static function serializeImage($img, $use_name){
-        $ret =  array (
-            "src" => $img->saved_url ? $img->saved_url : $img->source_url,
-            "width" => 128, // TODO
-            "height" => 128,
-        );
-        if ($use_name) {
-            $ret["name"] = "<!--IMG" . $img->news_pos_id . '-->';
+    protected static function selectImg($img, $model, $is_thumb) {
+        $img_obj = json_decode($img->saved_url, true);
+        if (!$img_obj){
+            return array(
+                         "src"=> $img->source_url,
+                         "height"=> 128,
+                         "width"=> 128,
+                         );
         }
-        return $ret;
+        
+        if ($is_thumb) {
+            $model = "thumb_" . $model;
+        }
+        
+        return $img_obj[$model];
     }
-
-    public static function formatImgs($imgs) {
+    
+    public static function formatImgs($imgs, $model, $is_thumb, $use_name = true) {
         $ret = array();
 
         foreach ($imgs as $img) {
-            $ret []= self::serializeImage($img, true);
+            $cell = self::selectImg($img, $model, $is_thumb);
+            if ($use_name) {
+                $cell["name"] = "<!--IMG" . $img->news_pos_id . '-->';
+            }
+            $ret []= $cell;
         }
 
         return $ret;
     }
 
-    public static function formatImageAndTpl($img_set){
+    public static function formatImageAndTpl($img_set, $model, $is_thumb){
         $ret = array(
             "imgs" => array(),
             "tpl" => NEWS_LIST_TPL_RAW_TEXT,
@@ -35,24 +44,18 @@ class ImageHelper {
         if (!$img_set) {
             return $ret;
         }
+
+        $ret["imgs"][] = self::formatImgs($img_set, $model, $is_thumb, false);
         
         $imgs = array();
-        foreach($img_set as $img_single_set) {
-            $imgs []= $img_single_set;
-        }
-
-        if (count($imgs) == 0) {
+        if (count($ret["imgs"]) == 0) {
             $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
-        } else if (count($imgs) <= 2) {
-            $imgs = array_slice($imgs, 0 ,1);
+        } else if (count($ret["imgs"]) <= 2) {
+            $ret["imgs"] = array_slice($ret["imgs"], 0 ,1);
             $ret["tpl"] = NEWS_LIST_TPL_TEXT_IMG;
-        } else if (count($imgs) >= 3) {
-            $imgs = array_slice($imgs, 0 ,3);
+        } else if (count($ret["imgs"]) >= 3) {
+            $ret["imgs"] = array_slice($ret["imgs"], 0 ,3);
             $ret["tpl"] = NEWS_LIST_TPL_THREE_IMG;
-        }
-
-        foreach ($imgs as $img) {
-            $ret["imgs"] []= self::serializeImage($img, false);
         }
 
         return $ret;
