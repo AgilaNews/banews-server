@@ -4,6 +4,10 @@ use Phalcon\Mvc\Controller;
 use Phalcon\Http\Response;
 use Phalcon\Filter;
 
+define("DEVICE_LARGE", "xxhdpi");
+define("DEVICE_MEDIUM", "xhdpi");
+define("DEVICE_SMALL", "hdpi");
+
 class BaseController extends Controller{
     public function initialize(){
         $this->logger = $this->di->get('logger');
@@ -19,7 +23,37 @@ class BaseController extends Controller{
     public function onConstruct(){
         $this->deviceId = $this->request->getHeader('X-USER-D');
         $this->userSign = $this->request->getHeader('X-USER-A');
-        
+        $this->density = $this->request->getHeader('X-DENSITY');
+        $this->deviceModel = DEVICE_MEDIUM;
+        $this->resolution_w = 720;
+        $this->resolution_h = 1280;
+        $this->dpi = 145;
+
+        if ($this->density) {
+            $ret = explode(";", $this->density);
+            if (count($ret) == 3) {
+                $res_ret = explode("x", $ret[0]) || explode("X", $ret[0]);
+                if (count($res_ret) == 2) {
+                    $this->resolution_w = $res_ret[0];
+                    $this->resolution_h = $res_ret[1];
+                }
+
+                $this->dpi = $ret[1];
+                switch ($ret[1]) {
+                case 'l':
+                    $this->deviceModel = DEVICE_LARGE;
+                    break;
+                case 'm':
+                    $this->deviceModel = DEVICE_MEDIUM;
+                    break;
+                case 's':
+                    $this->deviceModel = DEVICE_SMALL;
+                    break;
+                default:
+                    $this->deviceMxodel = DEVICE_MEDIUM;
+                }
+            }
+        }
         $this->session = $this->request->getHeader("X-SESSION-ID");
     }
 
