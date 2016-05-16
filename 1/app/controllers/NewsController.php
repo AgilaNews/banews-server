@@ -36,7 +36,7 @@ class NewsController extends BaseController {
             "commentCount" => $commentCount,
             "comments" => array(), 
             "imgs" => ImageHelper::formatImgs($imgs, $this->deviceModel, false),
-            "recommend_news" => $this->getRecommendNews($news_model->channel_id),
+            "recommend_news" => $this->getRecommendNews($news_model->channel_id, false),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
             "source" => $news_model->source_name,
@@ -152,7 +152,7 @@ class NewsController extends BaseController {
     }
 
 
-    protected function serializeNewsCell($news_model) {
+    protected function serializeNewsCell($news_model, $need_image = true) {
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         $commentCount = Comment::getCount($news_model->id);
 
@@ -165,7 +165,9 @@ class NewsController extends BaseController {
             "public_time" => $news_model->publish_time,
         );
 
-        $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
+        if ($need_image) {
+            $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
+        }
  
         return $ret;
     }
@@ -179,7 +181,7 @@ class NewsController extends BaseController {
         foreach ($recommend_news_list as $recommend_news) {
             $news_model = News::getBySign($recommend_news);
             if ($news_model) {
-                $ret []= $this->serializeNewsCell($news_model);
+                $ret []= $this->serializeNewsCell($news_model, false);
             }
         }
 
