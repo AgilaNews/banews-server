@@ -45,7 +45,7 @@ class ImageHelper {
             return $ret;
         }
 
-        $ret["imgs"][] = self::formatImgs($img_set, $model, $is_thumb, false);
+        $ret["imgs"] = self::formatImgs($img_set, $model, $is_thumb, false);
         
         $imgs = array();
         if (count($ret["imgs"]) == 0) {
