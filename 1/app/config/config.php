@@ -22,7 +22,7 @@ $settings = array (
                    ),
     'logger' => array (
                        'banews' => array (
-                                          'path' => APP_PATH . "app/logs/banews.log",
+                                          'path' => "/home/work/logs/banews.log",
                                           'level' => Logger::INFO,
                                           'format' => "[%date%][%type%]: %message%",
                                         ),

@@ -55,9 +55,10 @@ $di->set('logger', function() use ($config) {
 $di->set('eventlogger', function() use ($config) {
     try {
         $logger = new EventLogger($config->logger->event->addr, $config->logger->event->category);
+        return $logger;
     } catch (\Exception $e) {
+        return null;
     }
-    return $logger;
 });
 
 

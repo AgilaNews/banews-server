@@ -46,6 +46,8 @@ class UserController extends BaseController {
             array_push($ret, $this->serializeComment($comment));
         }
 
+        $this->logger->info(sprintf("[GetComment][user:%s][di:%s][news:%s][last:%d][limit:%d][cmtcnt:%d]", $this->userSign,
+                                       $this->deviceId, $newsSign, $last_id, $pn, count($comments)));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -96,11 +98,10 @@ class UserController extends BaseController {
         $cache = $this->di->get('cache');
         if ($cache) {
             $cache->delete(Comment::getCacheKeys($news_model->id));
-            $this->logger->info("clear cache success");
-        } else {
-            $this->logger->info("clear cache error");
         }
 
+        $this->logger->info(sprintf("[PostComment][user:%s][di:%s][news:%s][ci:%s]",
+                                      $this->userSign, $this->deviceId, $newsSign, $comment->id));
         $this->setJsonResponse(array("message" => "ok", 
                                     "comment" => $this->serializeComment($comment))
                                     );
@@ -141,7 +142,9 @@ class UserController extends BaseController {
             throw new HttpException(ERR_INTERNAL_DB,
                                     "save collect model error");
         }
-
+        
+        $this->logger->info(sprintf("[PostCollect][user:%s][di:%s][news:%s][ci:%s]",
+                                      $this->userSign, $this->deviceId, $newsSign, $collect_model->id));
         $this->setJsonResponse(array("collect_id" => $collect_model->id, "message" => "ok"));
         return $this->response;
     }
@@ -166,6 +169,8 @@ class UserController extends BaseController {
             array_push($ret, $this->serializeCollect($collect));
         }
 
+        $this->logger->info(sprintf("[GetCollect][user:%s][di:%s][last:%d][limit:%d][ret:%d]", $this->userSign,
+                                       $this->deviceId, $last_id, $pn, count($ret)));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -194,6 +199,10 @@ class UserController extends BaseController {
             $this->di->get('db')->execute($phql);
         }
 
+        
+        $this->logger->info(sprintf("[DelCollect][user:%s][di:%s][news:%s]", $this->userSign,
+                                      $this->deviceId, json_encode($req["ids"])));
+        
         $this->setJsonResponse(array("message"=>"ok"));
         return $this->response;
     }

@@ -59,6 +59,8 @@ class NewsController extends BaseController {
             array_push($ret["comments"], $this->serializeComment($comment));
         }
 
+        $this->logger->info(sprintf("[Detail][sign:%s][imgs:%d][user:%s][di:%s]", $newsSign, count($ret["imgs"]),
+                                       $this->userSign, $this->deviceId));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -92,8 +94,8 @@ class NewsController extends BaseController {
             }
         }
 
-        $this->logger->notice(sprintf("[NewsList][id:%s][policy:ExpDecay][di:%s][pfer:%s][cnl:%d][sent:%d]",
-                                        $dispatch_id, $this->deviceId, $prefer, $channel_id, count($selected_news_list)));
+        $this->logger->info(sprintf("[List][id:%s][policy:ExpDecay][di:%s][user:%s][pfer:%s][cnl:%d][sent:%d]",
+                                      $dispatch_id, $this->deviceId, $this->userSign, $prefer, $channel_id, count($selected_news_list)));
         $policy->setDeviceSent($this->deviceId, $selected_news_list);
         $this->setJsonResponse($ret);
         return $this->response;
@@ -128,6 +130,7 @@ class NewsController extends BaseController {
             "liked" => $now->liked + 1,
         );
 
+        $this->logger->info(sprintf("[Like][user:%s][di:%s][liked:%s]", $this->userSign, $this->deviceId, $ret["liked"]));
         $this->setJsonResponse($ret);
         return $this->response;
     }

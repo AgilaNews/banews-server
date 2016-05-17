@@ -14,28 +14,28 @@ class IndexController extends BaseController {
         $validator = new IndexValidator();
         $validator->validate($_GET);
 
-        $vendor = $this->get_request_param("vendor", "string");
-        $mmc = $this->get_request_param("mmc", "int");
-        $clientVersion = $this->get_request_param("client_version", "string", true);
-        $resolution = $this->get_request_param("r_w", "string");
-        $resolution = $this->get_request_param("r_h", "string");
-        $os = $this->get_request_param("os", "string");
-        $osVersion = $this->get_request_param("os_version", "string");
-        $net = $this->get_request_param("net", "string");
-        $isp = $this->get_request_param("isp", "string");
-        $tz = $this->get_request_param("tz", "int");
-        $lng = $this->get_request_param("lng", "float");
-        $lat = $this->get_request_param("lat", "float");
-        $lang = $this->get_request_param("lang", "string");
-        $clientTime = $this->get_request_param("os", "int");
+        $kw = array();
+        $kw["vendor"] = $this->get_request_param("vendor", "string");
+        $kw["mmc"] = $this->get_request_param("mmc", "int");
+        $kw["clientVersion"] = $this->get_request_param("client_version", "string", true);
+        $kw["os"] = $this->get_request_param("os", "string");
+        $kw["osVersion"] = $this->get_request_param("os_version", "string");
+        $kw["net"] = $this->get_request_param("net", "string");
+        $kw["isp"] = $this->get_request_param("isp", "string");
+        $kw["tz"] = $this->get_request_param("tz", "int");
+        $kw["lng"] = $this->get_request_param("lng", "float");
+        $kw["lat"] = $this->get_request_param("lat", "float");
+        $kw["lang"] = $this->get_request_param("lang", "string");
+        $kw["clientTime"] = $this->get_request_param("os", "int");
+        $kw["device_id"] = $this->deviceId;
 
-        if (empty($clientVersion)) {
+        if (empty($kw["clientVersion"])) {
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND, 'client version not found');    
         }
 
         $vm = VersionModel::find(array(
                   "conditions" => "client_version = ?1",
-                  "bind" => array(1 => $clientVersion),
+                  "bind" => array(1 => $kw["clientVersion"]),
                   /*
                   "cache" => array(
                                    "lifetime" => 1,
@@ -65,7 +65,13 @@ class IndexController extends BaseController {
                 );
         
 
-        $this->logEvent(102010, array("hello" => "world"));
+        $log = "[ColdSetting]";
+        foreach ($kw as $k=>$v) {
+            $log .= "[$k:$v]";
+        }
+
+        $this->logger->notice($log);
+        #$this->logEvent(102010, array("hello" => "world"));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -74,11 +80,12 @@ class IndexController extends BaseController {
         $exception = $this->dispatcher->getParam(0);
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
 
-        $this->logger->notice("[HttpError]: " . $exception->getTraceAsString());
         if ($exception instanceof HttpException) {
             $this->response->setStatusCode($exception->getStatusCode());
             $this->response->setContent($exception->getBody());
+            $this->logger->warning("[HttpError][code:" . $exception->getStatusCode() . "]:" . $exception->getBody());
         } else {
+            $this->logger->warning("[InternalError]: " . $exception->getTraceAsString());
             $this->response->setStatusCode(500);
 
             if (BA_DEBUG) {

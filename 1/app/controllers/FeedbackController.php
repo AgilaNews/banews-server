@@ -52,5 +52,7 @@ class FeedbackController extends BaseController {
             $this->logger->warning("[FB_SAVE_ERR][NEED_CARE:yes][err: " . $fb->getMessages()[0]);
             throw new HttpException(ERR_INTERNAL_DB, "db error");
         }
+
+        $this->logger->info(sprintf("[Feedback][user:%s][di:%s]", $userSign, $this->deviceId));
     }  
 }

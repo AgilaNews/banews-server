@@ -53,3 +53,23 @@
 #2 [internal function]: Phalcon\Dispatcher->dispatch()
 #3 /home/work/banews-server/entry/public/index.php(33): Phalcon\Mvc\Application->handle()
 #4 {main}
+[Tue, 17 May 16 16:01:21 +0800][INFO]: [EVENT] {"hello":"world"}
+[Tue, 17 May 16 17:50:48 +0800][INFO]: [EVENT] {"hello":"world"}
+[Tue, 17 May 16 18:09:41 +0800][NOTICE]: [HttpError]: #0 [internal function]: IndexController->IndexAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/entry/public/index.php(33): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Tue, 17 May 16 18:10:43 +0800][NOTICE]: [HttpError]: #0 [internal function]: IndexController->IndexAction()
+#1 [internal function]: Phalcon\Dispatcher->dispatch()
+#2 /home/work/banews-server/entry/public/index.php(34): Phalcon\Mvc\Application->handle()
+#3 {main}
+[Tue, 17 May 16 18:11:14 +0800][NOTICE]: [ColdSetting][vendor:][mmc:][clientVersion:1.0.0][os:][osVersion:][net:][isp:][tz:][lng:][lat:][lang:][clientTime:][device_id:]
+[Tue, 17 May 16 18:11:14 +0800][INFO]: [EVENT] {"hello":"world"}
+[Tue, 17 May 16 18:11:48 +0800][NOTICE]: [ColdSetting][vendor:][mmc:][clientVersion:1.0.0][os:][osVersion:][net:][isp:][tz:][lng:][lat:][lang:][clientTime:][device_id:]
+[Tue, 17 May 16 18:11:48 +0800][INFO]: [EVENT] {"hello":"world"}
+[Tue, 17 May 16 18:28:47 +0800][NOTICE]: [ColdSetting][vendor:][mmc:][clientVersion:1.0.0][os:][osVersion:][net:][isp:][tz:][lng:][lat:][lang:][clientTime:][device_id:]
+[Tue, 17 May 16 18:28:47 +0800][INFO]: [EVENT] {"hello":"world"}
+[Tue, 17 May 16 18:29:30 +0800][NOTICE]: [ColdSetting][vendor:][mmc:][clientVersion:1.0.0][os:][osVersion:][net:][isp:][tz:][lng:][lat:][lang:][clientTime:][device_id:]
+[Tue, 17 May 16 18:29:30 +0800][INFO]: [EVENT] {"hello":"world"}
+[Tue, 17 May 16 18:29:43 +0800][NOTICE]: [ColdSetting][vendor:][mmc:][clientVersion:1.0.0][os:][osVersion:][net:][isp:][tz:][lng:][lat:][lang:][clientTime:][device_id:]
+[Tue, 17 May 16 18:29:43 +0800][INFO]: [EVENT] {"hello":"world"}

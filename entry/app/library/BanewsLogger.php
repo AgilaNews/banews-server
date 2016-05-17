@@ -24,17 +24,11 @@ class BanewsLogger extends FA {
         if (!$this->handler) {
             throw new Exception("open $name error");
         }
-        $this->exp_handler = fopen($name . ".exp", $mode);
-        if (!$this->exp_handler) {
-            throw new Exception("open $name.exp error");
-        }
         $this->path = $name;
     }
     
     public function logInternal($message, $type, $time, array $ctx) {
-        if ($type == Logger::NOTICE) {
-            fwrite($this->exp_handler, $this->getFormatter()->format($message, $type, $time, $ctx));
-        } if ($type <= Logger::WARNING) {
+        if ($type <= Logger::WARNING) {
             fwrite($this->wf_handler, $this->getFormatter()->format($message, $type, $time, $ctx));
         } else {
             fwrite($this->handler, $this->getFormatter()->format($message, $type, $time, $ctx));
@@ -50,7 +44,6 @@ class BanewsLogger extends FA {
         $mode = "ab";
         $this->handler = fopen($name, $mode);
         $this->wf_handler = fopen($name . ".wf", $mode);
-        $this->exp_handler = fopen($name . ".exp", $mode);
     }
 }
 
