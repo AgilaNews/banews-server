@@ -26,6 +26,9 @@ class ImageHelper {
         $ret = array();
 
         foreach ($imgs as $img) {
+            if ($img->is_deadlink) {
+                continue;
+            }
             $cell = self::selectImg($img, $model, $is_thumb);
             if ($use_name) {
                 $cell["name"] = "<!--IMG" . $img->news_pos_id . '-->';
