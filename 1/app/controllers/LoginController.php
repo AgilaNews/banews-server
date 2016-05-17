@@ -53,6 +53,7 @@ class LoginController extends BaseController {
                 "save user info error");
         }
 
+        $this->logger->info(sprintf("[Login][source:%s][uid:%s][id:%s]", $source_name, $uid, $user->id))
         $this->setJsonResponse($this->serializeUser($user));
         return $this->response;
     }

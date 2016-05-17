@@ -14,11 +14,12 @@ class IndexController extends BaseController {
         $exception = $this->dispatcher->getParam(0);
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
 
-        $this->logger->notice("[HttpError]: " . $exception->getTraceAsString());
         if ($exception instanceof HttpException) {
             $this->response->setStatusCode($exception->getStatusCode());
             $this->response->setContent($exception->getBody());
+            $this->logger->warning("[HttpError][code:" . $exception->getStatusCode() . "]:" . $exception->getBody());
         } else {
+            $this->logger->warning("[InternalError]: " . $exception->getTraceAsString());
             $this->response->setStatusCode(500);
 
             if (BA_DEBUG) {

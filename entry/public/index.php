@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 define('APP_PATH', realpath('..') . '/');
 define('SERVER_NAME', "api.agilanews.com");
 define('ERR_KEY', 40001);
+define('ERR_CLIENT_VERSION_NOT_FOUND', 40011);
 define('ERR_INTERNAL_DB', 50002);
 define('LOG_SERVER_NAME', 'log.agilanews.com');
 define('MON_SERVER_NAME', 'mon.agilanews.com');
