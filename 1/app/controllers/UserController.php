@@ -166,7 +166,10 @@ class UserController extends BaseController {
         $ret = array();
         
         foreach ($collects as $collect) {
-            array_push($ret, $this->serializeCollect($collect));
+            $ser = $this->serializeCollect($collect);
+            if ($ser) {
+                array_push($ret, $ser);
+            }
         }
 
         $this->logger->info(sprintf("[GetCollect][user:%s][di:%s][last:%d][limit:%d][ret:%d]", $this->userSign,
@@ -228,7 +231,8 @@ class UserController extends BaseController {
     private function serializeCollect($collect){
         $news_model = News::getById($collect->news_id, array("id", "url_sign", "title", "source_name", "source_url"));
         if (!$news_model) {
-            continue;
+            $this->logger->warning(sprintf("collect id [%s]'s news [%s]not exists not exists", $collect->id, $collect->news_id));
+            return null;
         }
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         
