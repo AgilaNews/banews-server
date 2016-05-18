@@ -173,17 +173,6 @@ class NewsController extends BaseController {
         return $ret;
     }
 
-    protected function serializeRecommendCell($news_model) {
-        $ret = array (
-            "title" => $news_model->title,
-            "news_id" => $news_model->url_sign,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-        );
-        return $ret;
-    }
-
     protected function getRecommendNews($channel_id) {
         $ret = array();
         $policy = new RandomRecommendPolicy($this->getDi());
@@ -193,7 +182,7 @@ class NewsController extends BaseController {
         foreach ($recommend_news_list as $recommend_news) {
             $news_model = News::getBySign($recommend_news);
             if ($news_model) {
-                $ret []= $this->serializeRecommendCell($news_model);
+                $ret []= $this->serializeNewsCell($news_model);
             }
         }
 
