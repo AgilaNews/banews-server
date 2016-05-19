@@ -244,6 +244,6 @@ class UserController extends BaseController {
                       "source" => $news_model->source_name,
                       "source_url" => $news_model->source_url,
                       );
-        return array_merge($ret, ImageHelper::formatImageAndTpl($imgs));
+        return array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
     }
 }
