@@ -9,7 +9,8 @@
  * 
  */
 
-define('MAX_NEWS_SENT_COUNT', 10);
+define('MIN_NEWS_SEND_COUNT', 8);
+define('MAX_NEWS_SENT_COUNT', 12);
 
 use Phalcon\Mvc\Model\Query;
 
@@ -82,7 +83,9 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, MAX_NEWS_SENT_COUNT,
+
+        $rand = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
+        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, $rand,
                                                 $prefer);
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         $ret = array($dispatch_id => array());
