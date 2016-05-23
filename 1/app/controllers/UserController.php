@@ -95,9 +95,8 @@ class UserController extends BaseController {
                                     "save comment info error");
         }
 
-        $cache = $this->di->get('cache');
         if ($cache) {
-            $cache->delete(Comment::getCacheKeys($news_model->id));
+            $this->di->get('modelsCache')->delete(Comment::getCacheKeys($news_model->id));
         }
 
         $this->logger->info(sprintf("[PostComment][user:%s][di:%s][news:%s][ci:%s]",
