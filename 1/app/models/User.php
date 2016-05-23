@@ -104,6 +104,6 @@ class User extends BaseModel {
     }
 
     public function expireSourceAndIdCache($source, $uid) {
-        $this->deleteCache(self::getCacheKey("is_" .  $source . "_" . $uid . ""));
+        $this->di->get('modelsCache')->delete(self::getCacheKey("is_" .  $source . "_" . $uid . ""));
     }
 }
