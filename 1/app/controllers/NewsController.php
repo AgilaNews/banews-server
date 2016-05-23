@@ -43,7 +43,7 @@ class NewsController extends BaseController {
             "source" => $news_model->source_name,
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
-            "share_url" => $news_model->shared_url,
+            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
             "channel_id" => $news_model->channel_id,
             "likedCount" => $news_model->liked,
             "collect_id" => 0, 

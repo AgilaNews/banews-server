@@ -30,6 +30,8 @@ define('CACHE_NEWS_TTL', 14400);
 define('CACHE_COMMENTS_TTL', 600);
 define('CACHE_COMMENTS_PREFIX', "BA_COMMENTS_");
 
+define('SHARE_TEMPLATE', "http://m.agilanews.com/news?id=%s");
+
 use Phalcon\Config;
 use Phalcon\Mvc\Application;
 
