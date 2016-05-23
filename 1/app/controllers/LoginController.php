@@ -49,6 +49,7 @@ class LoginController extends BaseController {
 
         $ret = $user->save();
         if ($ret === false) {
+            $this->logger->warning("[FB_SAVE_ERR][NEED_CARE:yes][err: " . $user->getMessages()[0]);
             throw new HttpException(ERR_INTERNAL_DB,
                 "save user info error");
         }
