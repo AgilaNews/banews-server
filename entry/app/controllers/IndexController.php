@@ -55,9 +55,9 @@ class IndexController extends BaseController {
                     "home" => sprintf($this->config->entries->home, $vm->server_version),
                     "mon" => sprintf($this->config->entries->mon, $vm->server_version),
                     "log" => sprintf($this->config->entries->log, $vm->server_version),
-                    "h5" => $this->config->entries->h5,
                      ),
                 "updates" => array(
+                    "avc" => ANDROID_VERSION_CODE, 
                     "min_version" => MIN_VERSION,
                     "new_version" => NEW_VERSION,
                     "update_url"=> UPDATE_URL,
