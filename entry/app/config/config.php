@@ -33,7 +33,7 @@ $settings = array (
     'cache' => array (
                       "general_life_time" => 0,
                       "redis" => array (
-                                        "host" => "127.0.0.1",
+                                        "host" => "10.8.2.29",
                                         "port" => 6379,
                                         ),
                       "keys" => array(
