@@ -228,9 +228,10 @@ class UserController extends BaseController {
     }
 
     private function serializeCollect($collect){
-        $news_model = News::getById($collect->news_id, array("id", "url_sign", "title", "source_name", "source_url"));
+        $news_model = News::getById($collect->news_id);
+
         if (!$news_model) {
-            $this->logger->warning(sprintf("collect id [%s]'s news [%s]not exists not exists", $collect->id, $collect->news_id));
+            $this->logger->warning(sprintf("collect id [%s]'s news [%s] non-exists", $collect->id, $collect->news_id));
             return null;
         }
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
