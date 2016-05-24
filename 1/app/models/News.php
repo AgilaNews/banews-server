@@ -43,25 +43,16 @@ class News extends BaseModel {
         return "tb_news";
     }
 
-    private static function getCacheKey($pfx, $columns) {
-        $key = CACHE_NEWS_PREFIX . $pfx;
-
-        if ($columns) {
-            sort($columns);
-
-            foreach ($columns as $column) {
-                $key = $key . "_" . $column;
-            }
-        }
-        return $key;
+    private static function getCacheKey($pfx) {
+        return CACHE_NEWS_PREFIX . $pfx;
     }
 
-    public static function getById($id, $columns = null) {
+    public static function getById($id) {
         $crit = array ("conditions" => "id = ?1",
                        "bind" => array (1 => $id),
                        "cache" => array(
-                           "lifetime" => CACHE_USER_TTL,
-                           "key" => self::getCacheKey("id_$id", $columns),
+                           "lifetime" => CACHE_NEWS_TTL,
+                           "key" => self::getCacheKey("id_$id"),
                        )
 		                );
 	
@@ -73,12 +64,12 @@ class News extends BaseModel {
         return $news_model;
     }
     
-    public static function getBySign($sign, $columns = null) {
+    public static function getBySign($sign) {
         $crit = array ("conditions" => "url_sign = ?1",
                        "bind" => array (1 => $sign),
                          "cache" => array (
-                         "lifetime" => CACHE_USER_TTL, 
-                         "key" => self::getCacheKey("sign_$sign", $columns),
+                         "lifetime" => CACHE_NEWS_TTL,
+                         "key" => self::getCacheKey("sign_$sign"),
                          ));
 
         if ($columns) {
