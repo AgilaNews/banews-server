@@ -28,7 +28,9 @@ class SampleUtils {
 
         sort($sel_indices);
         foreach ($sel_indices as $sel_index) {
-            $ret []= $datas[$sel_index];
+            if (isset($datas[$sel_index])) {
+                $ret []= $datas[$sel_index];
+            }
         }
 
         return $ret;

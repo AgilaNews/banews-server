@@ -37,6 +37,7 @@ class UserController extends BaseController {
         if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not exists");
         }
+        
         $pn = $this->get_request_param("pn", "int");
         $last_id = $this->get_request_param("last_id", "string");
         $comments = Comment::getAll($news_model->id, $last_id, $pn);
