@@ -12,7 +12,7 @@ class NewsRedis {
 
     
     public function getNewsOfChannel($channel_id, $day = 7) {
-        $key = "banews:$channel_id";
+        $key = "banews:ph:$channel_id";
         $now = time();
         $start = ($now - ($day * 86400));
         $start = $start - ($start % 86400);

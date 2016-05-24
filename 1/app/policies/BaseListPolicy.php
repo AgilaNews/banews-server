@@ -29,11 +29,8 @@ abstract class BaseListPolicy {
         $valid_news_list = array();
 
         foreach ($ready_news_list as $ready_news) {
-            $ready_news = json_decode($ready_news, true);
-            if ($ready_news) {
-                if (!in_array($ready_news["id"], $sent)) {
-                    $valid_news_list []= $ready_news;
-                } 
+            if (!in_array($ready_news, $sent)) {
+                $valid_news_list []= $ready_news;
             }
         }
 
