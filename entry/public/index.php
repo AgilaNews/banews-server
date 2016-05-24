@@ -34,5 +34,9 @@ try {
 
     echo $app->handle()->getContent();
 } catch (\Exception $e) {
-    echo "Exception ", $e->getMessage();
+    if ($env == "rd") {
+        echo "Exception ", $e->getMessage();
+    } else {
+        echo json_encode(array("error"=>ERR_INTERNAL_DB, "message"=>"internal error"));
+    }
 }
