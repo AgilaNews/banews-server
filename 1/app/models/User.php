@@ -79,7 +79,7 @@ class User extends BaseModel {
                                              "bind" => array (1 => $id),
                                              "cache" => array (
                                                                "lifetime" => CACHE_USER_TTL,
-                                                               "key" => self::getCacheKey("id_" . $sign),
+                                                               "key" => self::getCacheKey("id_" . $id),
                                                                )));
         
         return $user_model;
