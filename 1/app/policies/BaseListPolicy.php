@@ -28,9 +28,10 @@ abstract class BaseListPolicy {
         $ready_news_list = $this->redis->getNewsOfchannel($channel_id);
         $valid_news_list = array();
 
-        foreach ($ready_news_list as $ready_news) {
+        foreach ($ready_news_list as $ready_news=>$weight) {
             if (!in_array($ready_news, $sent)) {
-                $valid_news_list []= $ready_news;
+                $valid_news_list = array("id" => $ready_news,
+                                         "ptime" => $weight));
             }
         }
 

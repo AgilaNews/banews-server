@@ -18,7 +18,8 @@ class NewsRedis {
         $start = $start - ($start % 86400);
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
-        return $this->_redis->zRevRangeByScore($key, $end, $start);
+        return $this->_redis->zRevRangeByScore($key, $end, $start, 
+                                                array("withscores"=>true));
     }
  
     public function setDeviceSeen($device_id, $news_ids) {
