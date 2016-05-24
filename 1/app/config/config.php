@@ -27,7 +27,7 @@ $settings = array (
                                           'format' => "[%date%][%type%]: %message%",
                                         ),
                        "event" => array(
-                                        "addr" => "tcp://127.0.0.1:7069",
+                                        "addr" => "tcp://127.0.0.1:7070",
                                         "category" => "useraction",
                                         ),
                        ),
