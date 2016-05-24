@@ -115,7 +115,7 @@ class NewsController extends BaseController {
         }
 
         $newsSign = $this->get_or_fail($req, "news_id", "string");
-        $now = News::getBySign($newsSign, array("liked"));
+        $now = News::getBySign($newsSign);
         if (!$now) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
         }
