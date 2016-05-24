@@ -61,7 +61,7 @@ class News extends BaseModel {
                        "bind" => array (1 => $id),
                        "cache" => array(
                            "lifetime" => CACHE_USER_TTL,
-                           "key" => self::getCacheKey("_ID_$id", $columns),
+                           "key" => self::getCacheKey("id_$id", $columns),
                        )
 		                );
 	
@@ -78,7 +78,7 @@ class News extends BaseModel {
                        "bind" => array (1 => $sign),
                          "cache" => array (
                          "lifetime" => CACHE_USER_TTL, 
-                         "key" => self::getCacheKey("_SIGN_$sign", $columns),
+                         "key" => self::getCacheKey("sign_$sign", $columns),
                          ));
 
         if ($columns) {
