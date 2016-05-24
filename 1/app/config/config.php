@@ -40,13 +40,6 @@ $settings = array (
                                         "host" => "10.8.2.29",
                                         "port" => 6379,
                                         ),
-                      "keys" => array(
-                                 "version" => "BA_version",
-                                 "news" => "BA_news_",
-                                 "user" => "BA_user_",
-                                 "comments" => "BA_comments",
-                                 "img" => "BA_images_",
-                                 ),
                       ),
     'entries' => array (
                         "home" => SERVER_NAME . "/v%d",
