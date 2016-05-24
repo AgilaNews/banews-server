@@ -54,6 +54,7 @@ try {
     );
 
     require APP_PATH . "app/config/loader.php";
+
     require APP_PATH . "app/config/services.php";
     $app = new Application($di);
 
