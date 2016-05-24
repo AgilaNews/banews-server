@@ -31,7 +31,7 @@ abstract class BaseListPolicy {
         foreach ($ready_news_list as $ready_news=>$weight) {
             if (!in_array($ready_news, $sent)) {
                 $valid_news_list []= array("id" => $ready_news,
-                                         "ptime" => $weight);
+                                           "ptime" => $weight);
             }
         }
 
