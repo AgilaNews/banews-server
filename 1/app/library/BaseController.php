@@ -15,8 +15,11 @@ class BaseController extends Controller{
         $this->logger->begin();
 
         $this->response = new Response();
-
         $this->filter = new Filter();
+        $this->_start_time = microtime(true);
+        $this->logger->notice(sprintf("[%s:%s]",
+                                      $_SERVER["REQUEST_METHOD"],
+                                      $_SERVER["REQUEST_URI"]));
         $this->view->disable();
     }
     
@@ -58,6 +61,8 @@ class BaseController extends Controller{
     }
 
     public function __destruct(){
+        $this->logger->notice(sprintf("[cost:%sms]",
+                                      round(microtime(true) - $this->_start_time, 6) * 1000));
         $this->logger->commit();
     }
 

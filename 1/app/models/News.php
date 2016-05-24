@@ -56,10 +56,6 @@ class News extends BaseModel {
                        )
 		                );
 	
-        if ($columns) {
-            $crit["columns"] = $columns;
-        }
-	    
         $news_model = News::findFirst($crit);
         return $news_model;
     }
@@ -72,10 +68,6 @@ class News extends BaseModel {
                          "key" => self::getCacheKey("sign_$sign"),
                          ));
 
-        if ($columns) {
-            $crit["columns"] = $columns;
-        }
-        
         $news_model = News::findFirst($crit);
         return $news_model;
     }

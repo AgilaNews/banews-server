@@ -27,11 +27,29 @@ class BanewsLogger extends FA {
         $this->path = $name;
     }
     
-    public function logInternal($message, $type, $time, array $ctx) {
-        if ($type <= Logger::WARNING) {
-            fwrite($this->wf_handler, $this->getFormatter()->format($message, $type, $time, $ctx));
-        } else {
-            fwrite($this->handler, $this->getFormatter()->format($message, $type, $time, $ctx));
+    public function commit(){
+        $wf_msg = "";
+        $msg = "";
+        $time = time();
+
+        foreach ($this->_queue as $record) {
+            $type = $record->gettype();
+            $message = $record->getmessage();
+            if ($type <= Logger::WARNING) {
+                $wf_msg .= $message;
+            } else {
+                $msg .= $message;
+            }
+        }
+
+        if ($wf_msg) {
+            fwrite($this->wf_handler,
+                   $this->getFormatter()->format($wf_msg, Logger::WARNING, $time));
+        }
+
+        if ($msg) {
+            fwrite($this->handler,
+                   $this->getFormatter()->format($msg, Logger::NOTICE, $time));
         }
     }
 
