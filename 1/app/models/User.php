@@ -78,9 +78,9 @@ class User extends BaseModel {
         $user_model = User::findFirst(array ("conditions" => "id = ?1",
                                              "bind" => array (1 => $id),
                                              "cache" => array (
-								                 "lifetime" => CACHE_USER_TTL,
-								                 "key" => self::getCacheKey("id_" . $sign),
-                                             )));
+                                                               "lifetime" => CACHE_USER_TTL,
+                                                               "key" => self::getCacheKey("id_" . $sign),
+                                                               )));
         
         return $user_model;
     }
