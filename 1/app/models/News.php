@@ -39,6 +39,8 @@ class News extends BaseModel {
 
     public $liked;
 
+    public $is_visible;
+
     public function getSource(){
         return "tb_news";
     }

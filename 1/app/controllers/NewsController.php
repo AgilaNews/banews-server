@@ -84,16 +84,21 @@ class NewsController extends BaseController {
         }
 
 
-        $rand = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
-        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, $rand,
+        $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
+        $base = round(MAX_NEWS_SENT_COUNT * 1.5);
+        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, $base,
                                                 $prefer);
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         $ret = array($dispatch_id => array());
 
         foreach ($selected_news_list as $selected_news) {
             $news_model = News::getBySign($selected_news);
-            if ($news_model) {
+            if ($news_model && $news_model->is_visible == 1) {
                 $ret [$dispatch_id][] = $this->serializeNewsCell($news_model);
+            }
+
+            if (count($ret[$dispatch_id]) >= $required) {
+                break;
             }
         }
 
