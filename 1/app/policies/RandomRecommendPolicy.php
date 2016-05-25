@@ -11,7 +11,7 @@ class RandomRecommendPolicy extends BaseRecommendPolicy {
 
         return array_map (
             function ($key) use ($ret) {
-                return json_decode($key, true)["id"];
+                return $key["id"];
             },
             $ret
         );

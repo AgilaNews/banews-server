@@ -1,9 +1,7 @@
 <?php
 define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
 define('CACHE_SENT_MASK_MAX', 500);
-//define('CACHE_SENT_TTL', 4 * 3600); 
-define('CACHE_SENT_TTL', 600); //TODO change this to online
-
+define('CACHE_SENT_TTL', 4 * 3600); 
 
 class NewsRedis {
     public function __construct($redis) {
@@ -18,8 +16,14 @@ class NewsRedis {
         $start = $start - ($start % 86400);
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
-        return $this->_redis->zRevRangeByScore($key, $end, $start, 
+        $ret = array();
+        $tmp =  $this->_redis->zRevRangeByScore($key, $end, $start, 
                                                 array("withscores"=>true));
+        foreach ($tmp as $id=>$weight) {
+            $ret []= array("id" => $id, "ptime"=>$weight);
+        }
+
+        return $ret;
     }
  
     public function setDeviceSeen($device_id, $news_ids) {
