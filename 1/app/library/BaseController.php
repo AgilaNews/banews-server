@@ -8,6 +8,11 @@ define("DEVICE_LARGE", "xxhdpi");
 define("DEVICE_MEDIUM", "xhdpi");
 define("DEVICE_SMALL", "hdpi");
 
+define("EVENT_NEWS_DETAIL", "020103");
+define("EVENT_NEWS_LIST", "020101");
+define("EVENT_NEWS_LIKE", "020203");
+define("EVENT_NEWS_COLLECT", "020304");
+
 class BaseController extends Controller{
     public function initialize(){
         $this->logger = $this->di->get('logger');
@@ -107,6 +112,14 @@ class BaseController extends Controller{
         }
 
         $param["id"] = $event_id;
+        $param["session"] = $this->session;
+        $param["device_model"] = $this->deviceModel;
+        $param["r_w"] = $this->resolution_w;
+        $param["r_h"] = $this->resolution_h;
+        if ($this->userSign) {
+            $param["user"] = $this->userSign;
+        }
+        $param["deviceId"] = $this->deviceId;
         $this->eventlogger->info($msg . "\n");
     }
 }

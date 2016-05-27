@@ -139,7 +139,8 @@ class UserController extends BaseController {
             throw new HttpException(ERR_INTERNAL_DB,
                                     "save collect model error");
         }
-        
+
+        $this->logEvent(EVENT_NEWS_COLLECT, array("news_id" => $newsSign));
         $this->logger->info(sprintf("[PostCollect][user:%s][di:%s][news:%s][ci:%s]",
                                       $this->userSign, $this->deviceId, $newsSign, $collect_model->id));
         $this->setJsonResponse(array("collect_id" => $collect_model->id, "message" => "ok"));
