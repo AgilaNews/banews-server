@@ -37,7 +37,7 @@ class NewsController extends BaseController {
             "commentCount" => $commentCount,
             "comments" => array(), 
             "imgs" => ImageHelper::formatImgs($imgs, $this->deviceModel, false),
-            "recommend_news" => $this->getRecommendNews($news_model->channel_id, false),
+            "recommend_news" => array();
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
             "source" => $news_model->source_name,
@@ -48,6 +48,18 @@ class NewsController extends BaseController {
             "likedCount" => $news_model->liked,
             "collect_id" => 0, 
         );
+
+        $recommend_policy = new RandomRecommendPolicy($this->getDi());
+        $recommend_news_list =
+            $recommend_policy->sampling($news_model->channel_id,
+                                        $this->deviceId, null, 3);
+
+        foreach ($recommend_news_list as $recommend_news) {
+            $news_model = News::getBySign($recommend_news);
+            if ($news_model) {
+                $ret["recommend_news"][]= $this->serializeNewsCell($news_model);
+            }
+        }
 
         if ($this->userSign) {
             $user_model = User::getBySign($this->userSign);
@@ -60,8 +72,17 @@ class NewsController extends BaseController {
             array_push($ret["comments"], $this->serializeComment($comment));
         }
 
+        $this->logEvent(EVENT_NEWS_DETAIL, array(
+                                               "news_id"=> $newsSign,
+                                               "recommend"=> array(
+                                                                   "news" => $recommend_news_list,
+                                                                   "policy"=> "random",
+                                                                   ),
+                                                 ));
+        
         $this->logger->info(sprintf("[Detail][sign:%s][imgs:%d][user:%s][di:%s]", $newsSign, count($ret["imgs"]),
-                                       $this->userSign, $this->deviceId));
+                                    $this->userSign, $this->deviceId));
+        
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -105,6 +126,11 @@ class NewsController extends BaseController {
         $this->logger->info(sprintf("[List][id:%s][policy:ExpDecay][di:%s][user:%s][pfer:%s][cnl:%d][sent:%d]",
                                       $dispatch_id, $this->deviceId, $this->userSign, $prefer, $channel_id, count($selected_news_list)));
         $policy->setDeviceSent($this->deviceId, $selected_news_list);
+        $this->logEvent(EVENT_NEW_LIST, array(
+                                              "dispatch_id"=> $dispatch_id,
+                                              "news"=> $selected_news,
+                                              "policy"=> "expdecay", //we just have one policy
+                                              ));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -139,6 +165,7 @@ class NewsController extends BaseController {
         );
 
         $this->logger->info(sprintf("[Like][user:%s][di:%s][liked:%s]", $this->userSign, $this->deviceId, $ret["liked"]));
+        $this->logEvent(EVENT_NEWS_LIKE, array("news_id"=>$newsSign, "liked"=>$ret["liked"]));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -178,22 +205,6 @@ class NewsController extends BaseController {
 
         $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
  
-        return $ret;
-    }
-
-    protected function getRecommendNews($channel_id) {
-        $ret = array();
-        $policy = new RandomRecommendPolicy($this->getDi());
-
-        $recommend_news_list = $policy->sampling($channel_id, $this->deviceId, null, 3);
-
-        foreach ($recommend_news_list as $recommend_news) {
-            $news_model = News::getBySign($recommend_news);
-            if ($news_model) {
-                $ret []= $this->serializeNewsCell($news_model);
-            }
-        }
-
         return $ret;
     }
 }
