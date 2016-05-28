@@ -12,8 +12,8 @@ define('MON_SERVER_NAME', 'mon.agilanews.com');
 define('H5_SERVER_NAME', "m.agilanews.com");
 
 define('ANDROID_VERSION_CODE', 2);
-define('MIN_VERSION', "0.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "0.0.2");
+define('MIN_VERSION', "1.0.0"); //TODO change this to a configuration center
+define('NEW_VERSION', "1.0.0");
 define('UPDATE_URL', "http://demoupdate.googleplay.com");
 
 use Phalcon\Config;
