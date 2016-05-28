@@ -9,9 +9,9 @@ define("DEVICE_MEDIUM", "xhdpi");
 define("DEVICE_SMALL", "hdpi");
 
 define("EVENT_NEWS_DETAIL", "020103");
-define("EVENT_NEWS_LIST", "020101");
-define("EVENT_NEWS_LIKE", "020203");
-define("EVENT_NEWS_COLLECT", "020304");
+define("EVENT_NEWS_LIST", "020103");
+define("EVENT_NEWS_LIKE", "020204");
+define("EVENT_NEWS_COLLECT", "020305");
 
 class BaseController extends Controller{
     public function initialize(){
