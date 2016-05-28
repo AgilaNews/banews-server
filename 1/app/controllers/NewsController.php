@@ -37,7 +37,7 @@ class NewsController extends BaseController {
             "commentCount" => $commentCount,
             "comments" => array(), 
             "imgs" => ImageHelper::formatImgs($imgs, $this->deviceModel, false),
-            "recommend_news" => array();
+            "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
             "source" => $news_model->source_name,
