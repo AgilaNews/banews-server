@@ -126,7 +126,7 @@ class NewsController extends BaseController {
         $this->logger->info(sprintf("[List][id:%s][policy:ExpDecay][di:%s][user:%s][pfer:%s][cnl:%d][sent:%d]",
                                       $dispatch_id, $this->deviceId, $this->userSign, $prefer, $channel_id, count($selected_news_list)));
         $policy->setDeviceSent($this->deviceId, $selected_news_list);
-        $this->logEvent(EVENT_NEW_LIST, array(
+        $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
                                               "news"=> $selected_news,
                                               "policy"=> "expdecay", //we just have one policy
