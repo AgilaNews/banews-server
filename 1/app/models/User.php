@@ -2,6 +2,7 @@
 
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\DI;
 
 class User extends BaseModel {
     const SOURCE_FB = 1;
@@ -39,53 +40,37 @@ class User extends BaseModel {
 
     public $update_time;
 
-    public function validation(){
-        $this->validate(
-            new Uniqueness(
-                array(
-                    "field" => array("uid", "source"),
-                    "message" => "uid and source dup",
-                )
-            )
-        ); 
-
-        return $this->validationHasFailed() != true;
-    }
-
+    
     public function getSource() {
         return "tb_user";
     }
 
-    protected static function getCacheKey($param) {
-      return CACHE_USER_PREFIX . $param;
-    }
-
     
     public static function getBySign($sign) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $value = $cache->get(CACHE_USER_PREFIX . $sign);
+            if ($value) {
+                $user_model = new User();
+                $user_model->unserialize($value);
+                return $user_model;
+            }
+        }
+        
         $user_model = User::findFirst(array ("conditions" => "sign = ?1",
                                              "bind" => array (1 => $sign),
-                                             
-                                             "cache" => array (
-                                                              "lifetime" => CACHE_USER_TTL,
-							                                  "key" => self::getCacheKey("sign_" . $sign),
-                                                               ),
                                              ));
-        return $user_model;
-    }
 
-    
-    public static function getById($id) {
-        $user_model = User::findFirst(array ("conditions" => "id = ?1",
-                                             "bind" => array (1 => $id),
-                                             "cache" => array (
-                                                               "lifetime" => CACHE_USER_TTL,
-                                                               "key" => self::getCacheKey("id_" . $id),
-                                                               )));
+        if ($user_model && $cache) {
+            $cache->multi();
+            $cache->set(CACHE_USER_PREFIX . $sign, $user_model->serialize());
+            $cache->expire(CACHE_USER_TTL);
+            $cache->exec();
+        }
         
         return $user_model;
     }
-
-	  
+    
     public static function getBySourceAndId($source, $uid){
         $user = User::findFirst( 
             array(
@@ -93,17 +78,8 @@ class User extends BaseModel {
             "bind" => array(1 => $source, 
                             2 => $uid,
 			    ),
-
-        "cache" => array(
-                 "lifetime" => CACHE_USER_TTL,
-                 "key" => self::getCacheKey("is_" .  $source . "_" . $uid . ""),
-                 ),
             )
         );
         return $user;
-    }
-
-    public function expireSourceAndIdCache($source, $uid) {
-        $this->di->get('modelsCache')->delete(self::getCacheKey("is_" .  $source . "_" . $uid . ""));
     }
 }

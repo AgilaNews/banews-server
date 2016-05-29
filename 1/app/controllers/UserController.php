@@ -84,8 +84,8 @@ class UserController extends BaseController {
             throw new HttpException(ERR_COMMENT_TOO_MUCH, "user commented too much");
         }
         
-        $comment->user_id = $user_model->id;
-        $comment->news_id = $news_model->id;
+        $comment->user_sign = $this->userSign;
+        $comment->news_sign = $news_model->url_sign;
         $comment->user_comment = $comment_detail;
         $comment->create_time = time();
         
@@ -126,13 +126,13 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
         
-        if (Collect::getCollectId($user_model->id, $news_model->id)) {
+        if (Collect::getCollectId($this->userSign, $news_model->url_sign)) {
             throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this");
         }
 
         $collect_model = new Collect();
-        $collect_model->user_id = $user_model->id;
-        $collect_model->news_id = $news_model->id;
+        $collect_model->user_sign = $this->userSign;
+        $collect_model->news_sign = $news_model->url_sign;
         $collect_model->create_time = time();
         $ret = $collect_model->save();
         if (!$ret) {
@@ -195,12 +195,7 @@ class UserController extends BaseController {
             throw new HttpException(ERR_BODY, "ids must be array");
         }
         
-        foreach (array_chunk($req["ids"], 500) as $subid) {
-            $phql = "DELETE FROM tb_collect WHERE id IN (" . implode(",", $subid) . ")";
-            $this->di->get('db')->execute($phql);
-        }
-
-        
+        Collect::batchDelete($req["ids"]);
         $this->logger->info(sprintf("[DelCollect][user:%s][di:%s][news:%s]", $this->userSign,
                                       $this->deviceId, json_encode($req["ids"])));
         
@@ -213,12 +208,12 @@ class UserController extends BaseController {
                       "id" => $comment->id,
                       "time" => $comment->create_time,
                       "comment" => $comment->user_comment,
-                      "user_id" => $comment->user_id,
+                      "user_id" => $comment->user_sign,
                       "user_name" => "anonymous",
                       "user_portrait_url" => "",
                       );
         
-        $user_model = User::getById($comment->user_id);
+        $user_model = User::getBySign($comment->user_sign);
         if ($user_model) {
             $ret["user_name"] = $user_model->name;
             $ret["user_portrait_url"] = $user_model->portrait_url;
@@ -227,10 +222,10 @@ class UserController extends BaseController {
     }
 
     private function serializeCollect($collect){
-        $news_model = News::getById($collect->news_id);
+        $news_model = News::getBySign($collect->news_sign);
 
         if (!$news_model) {
-            $this->logger->warning(sprintf("collect id [%s]'s news [%s] non-exists", $collect->id, $collect->news_id));
+            $this->logger->warning(sprintf("collect id [%s]'s news [%s] non-exists", $collect->id, $collect->news_sign));
             return null;
         }
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
@@ -238,7 +233,7 @@ class UserController extends BaseController {
         $ret = array (
                       "collect_id" => $collect->id,
                       "public_time" => $collect->create_time,
-                      "news_id" => $news_model->url_sign,
+                      "news_id" => $news_model->news_sign,
                       "title" => $news_model->title,
                       "source" => $news_model->source_name,
                       "source_url" => $news_model->source_url,

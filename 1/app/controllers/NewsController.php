@@ -54,18 +54,13 @@ class NewsController extends BaseController {
             $recommend_policy->sampling($news_model->channel_id,
                                         $this->deviceId, null, 3);
 
-        foreach ($recommend_news_list as $recommend_news) {
-            $news_model = News::getBySign($recommend_news);
-            if ($news_model) {
-                $ret["recommend_news"][]= $this->serializeNewsCell($news_model);
-            }
+        $recommend_models = News::batchGet($recommend_news_list);
+        foreach ($recommend_models as $recommend_model) {
+            $ret["recommend_news"][]= $this->serializeNewsCell($recommend_model);
         }
 
         if ($this->userSign) {
-            $user_model = User::getBySign($this->userSign);
-            if ($user_model) {
-                $ret["collect_id"] = Collect::getCollectId($user_model->id, $news_model->id);
-            }
+            $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
         }
 
         foreach ($topComment as $comment) {
@@ -104,31 +99,33 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-
         $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
         $base = round(MAX_NEWS_SENT_COUNT * 1.5);
         $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, $base,
                                                 $prefer);
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         $ret = array($dispatch_id => array());
+    
+        $dispatched = array();
 
-        foreach ($selected_news_list as $selected_news) {
-            $news_model = News::getBySign($selected_news);
+        $models = News::batchGet($selected_news_list);
+        foreach ($models as $sign => $news_model) {
             if ($news_model && $news_model->is_visible == 1) {
                 $ret [$dispatch_id][] = $this->serializeNewsCell($news_model);
+                $dispatched []= $sign;
             }
 
-            if (count($ret[$dispatch_id]) >= $required) {
+            if (count($dispatched) >= $required) {
                 break;
             }
         }
 
         $this->logger->info(sprintf("[List][id:%s][policy:ExpDecay][di:%s][user:%s][pfer:%s][cnl:%d][sent:%d]",
-                                      $dispatch_id, $this->deviceId, $this->userSign, $prefer, $channel_id, count($selected_news_list)));
-        $policy->setDeviceSent($this->deviceId, $selected_news_list);
+                                      $dispatch_id, $this->deviceId, $this->userSign, $prefer, $channel_id, count($dispatched)));
+        $policy->setDeviceSent($this->deviceId, $dispatched);
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
-                                              "news"=> $selected_news,
+                                              "news"=> $dispatched,
                                               "policy"=> "expdecay", //we just have one policy
                                               ));
         $this->setJsonResponse($ret);
@@ -151,17 +148,16 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
         }
 
-        $ret = $this->getDi()
-                    ->getShared('db')->query(
-                    "UPDATE tb_news 
-                    SET liked = liked + 1 WHERE url_sign = '". mysql_real_escape_string($newsSign) . "'");
+        $now->liked++;
+        $ret = $now->save();
         if (!$ret) {
+            $this->logger->warning("save error: %s", $now->getMessages());
             throw new HttpException(ERR_INTERNAL_DB, "internal error");
         }
-        
+
         $ret = array (
             "message" => "ok",
-            "liked" => $now->liked + 1,
+            "liked" => $now->liked,
         );
 
         $this->logger->info(sprintf("[Like][user:%s][di:%s][liked:%s]", $this->userSign, $this->deviceId, $ret["liked"]));
@@ -181,7 +177,7 @@ class NewsController extends BaseController {
                       "user_portrait_url" => "",
                       );
         
-        $user_model = User::getById($comment->user_id);
+        $user_model = User::getBySign($comment->news_sign);
         if ($user_model) {
             $ret["user_name"] = $user_model->name;
             $ret["user_portrait_url"] = $user_model->portrait_url;

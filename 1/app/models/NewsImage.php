@@ -1,5 +1,8 @@
 <?php
 
+use Phalcon\DI;
+use Phalcon\Mvc\Model\Resultset\Simple;
+
 class NewsImage extends BaseModel {
     public $id;
 
@@ -19,13 +22,30 @@ class NewsImage extends BaseModel {
 
     
     public static function getImagesOfNews($news_sign){
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $value = $cache->get(CACHE_IMAGES_PREFIX . $news_sign);
+            if ($value) {
+                $rs = unserialize($value);
+                return $rs;
+            }
+        }
+
+        $key = CACHE_IMAGES_PREFIX . $news_sign;
         $crit = array (
             "conditions" => "news_url_sign=?1",
             "bind" => array(1 => $news_sign),
-            //"order" => "news_pos_id",
             );
 
-        return NewsImage::Find($crit);
+        $rs = NewsImage::find($crit);
+        if ($cache) {
+            $cache->multi();
+            $cache->set(CACHE_IMAGES_PREFIX . $news_sign, serialize($rs));
+            $cache->expire(CACHE_IMAGES_PREFIX . $news_sign, CACHE_IMAGES_TTL);
+            $cache->exec();
+        }
+
+        return $rs;
     }
 
     public function getSource(){

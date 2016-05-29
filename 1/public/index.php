@@ -23,12 +23,16 @@ define('ERR_INTERNAL_DB', 50002);
 
 define("MAX_COMMENT_SIZE", 300);
 define("MAX_COMMENT_COUNT", 50);
-define('CACHE_USER_PREFIX', "USER_");
+define('CACHE_USER_PREFIX', "BS_USER_");
 define('CACHE_USER_TTL', 86400);
-define('CACHE_NEWS_PREFIX', "NEWS_");
+define('CACHE_NEWS_PREFIX', "BS_NEWS_");
 define('CACHE_NEWS_TTL', 14400);
 define('CACHE_COMMENTS_TTL', 600);
-define('CACHE_COMMENTS_PREFIX', "COMMENTS_");
+define('CACHE_COMMENTS_PREFIX', "BS_COMMENTS_");
+define('CACHE_IMAGES_PREFIX', "BS_IMAGES_");
+define('CACHE_IMAGES_TTL', 14400);
+define('CACHE_COLLECT_PREFIX', "BS_COLLECT_");
+define('CACHE_COLLECT_TTL', 300);
 
 define('SHARE_TEMPLATE', "http://m.agilanews.com/news?id=%s");
 

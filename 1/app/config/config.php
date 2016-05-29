@@ -32,10 +32,6 @@ $settings = array (
                                         ),
                        ),
     'cache' => array (
-                      "general_life_time" => 0,
-		              "user_life_time" => 86400,
-		              "news_life_time" => 3600 * 4,
-                      "comments_life_time" => 600,
                       "redis" => array (
                                         "host" => "10.8.2.29",
                                         "port" => 6379,
