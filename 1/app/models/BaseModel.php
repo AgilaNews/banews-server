@@ -9,6 +9,8 @@
  * 
  */
 use Phalcon\Mvc\Model;
+use Phalcon\DI;
 
 class BaseModel extends Model {
 }
+

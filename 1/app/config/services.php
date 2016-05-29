@@ -46,34 +46,32 @@ $di->set('view', function () use ($config) {
     return $view;
 });
 
-
-$di->set('logger', function() use ($config) {
-    $logger = new BanewsLogger($config->logger->banews->path);
-    $logger->setLogLevel($config->logger->banews->level);
-    $logger->setFormatter(new LineFormatter($config->logger->banews->format));
+$logger = new BanewsLogger($config->logger->banews->path);
+$logger->setLogLevel($config->logger->banews->level);
+$logger->setFormatter(new LineFormatter($config->logger->banews->format));
     
-    return $logger;
-    });
-
-
-$di->set('eventlogger', function() use ($config) {
+$di->set('logger', $logger);
+$di->set('eventlogger', function() use ($config, $logger) {
     try {
-        $logger = new EventLogger($config->logger->event->addr, $config->logger->event->category);
-        return $logger;
+        $el = new EventLogger($config->logger->event->addr, $config->logger->event->category);
+        return $el;
     } catch (\Exception $e) {
-        
+        $logger->warning("init event logger error : " . $e);
+        return null;
     }
 });
 
-$frontCache = new DataFront(
-                            array(
-                                  "lifetime" => $config->cache->general_life_time,
-                                 )
-                           );
 
-$cache = new BanewsRedis($frontCache, 
-                         $config->cache->redis->toArray());
+$di->set('cache', function() use ($config, $logger) {
+    $cache = new Redis();
+    $ret = $cache->connect($config->cache->redis->host, 
+                           $config->cache->redis->port);
+    if (!$ret) {
+        $logger->warning("connect to redis error");
+        return null;
+    }
 
-$di->set('modelsCache', $cache);
-$di->set('cache', $cache);
+    return $cache;
+});
+
 $di->set("config", $config);
