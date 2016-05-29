@@ -40,7 +40,7 @@ class UserController extends BaseController {
         
         $pn = $this->get_request_param("pn", "int");
         $last_id = $this->get_request_param("last_id", "string");
-        $comments = Comment::getAll($news_model->id, $last_id, $pn);
+        $comments = Comment::getAll($newsSign, $last_id, $pn);
         $ret = array();
         
         foreach ($comments as $comment) {
@@ -79,7 +79,7 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS,
                                     "news not exists");
         }
-        $count = Comment::getCount($news_model->id, $user_model->id);
+        $count = Comment::getCount($newsSign, $this->userSign);
         if ($count > MAX_COMMENT_COUNT) {
             throw new HttpException(ERR_COMMENT_TOO_MUCH, "user commented too much");
         }
@@ -159,7 +159,7 @@ class UserController extends BaseController {
         $last_id = $this->get_request_param("last_id", "string");
         $pn = $this->get_request_param("pn", "int");
 
-        $collects = Collect::getAll($user_model->id, $last_id, $pn);
+        $collects = Collect::getAll($this->userSign, $last_id, $pn);
         $ret = array();
         
         foreach ($collects as $collect) {
