@@ -96,7 +96,6 @@ class UserController extends BaseController {
                                     "save comment info error");
         }
 
-        $this->di->get('modelsCache')->delete(Comment::getCacheKeys($news_model->id));
         $this->logger->info(sprintf("[PostComment][user:%s][di:%s][news:%s][ci:%s]",
                                       $this->userSign, $this->deviceId, $newsSign, $comment->id));
         $this->setJsonResponse(array("message" => "ok", 
