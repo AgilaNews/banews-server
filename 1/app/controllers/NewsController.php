@@ -112,7 +112,7 @@ class NewsController extends BaseController {
         $models = News::batchGet($selected_news_list);
         foreach ($models as $sign => $news_model) {
             if ($news_model && $news_model->is_visible == 1) {
-                if ($uniq[$news_model->content_sign] && 
+                if (array_key_exists($news_model->content_sign, $uniq) && 
                     $uniq[$news_model->content_sign]->source_name == $news_model->source_name) {
                     //content sign dup and same source, continue
                     continue;
