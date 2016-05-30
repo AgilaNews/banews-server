@@ -129,7 +129,7 @@ class BaseController extends Controller{
         $param["lng"] = $this->lng;
         $param["lat"] = $this->lat;
         $param["lang"] = $this->lang;
-        $param["time"] = int(microtime(true) * 1000);
+        $param["time"] = round(microtime(true) * 1000);
 
         $this->eventlogger->info(json_encode($param));
     }
