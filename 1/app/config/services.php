@@ -47,7 +47,7 @@ $di->set('view', function () use ($config) {
 });
 
     
-$di->set('logger', function use($config)){
+$di->set('logger', function ()use($config) {
     $logger = new BanewsLogger($config->logger->banews->path);
     $logger->setLogLevel($config->logger->banews->level);
     $logger->setFormatter(new LineFormatter($config->logger->banews->format));
