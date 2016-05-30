@@ -64,7 +64,7 @@ class User extends BaseModel {
         if ($user_model && $cache) {
             $cache->multi();
             $cache->set(CACHE_USER_PREFIX . $sign, $user_model->serialize());
-            $cache->expire(CACHE_USER_TTL);
+            $cache->expire(CACHE_USER_PREFIX . $sign, CACHE_USER_TTL);
             $cache->exec();
         }
         
