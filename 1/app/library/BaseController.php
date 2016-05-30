@@ -106,8 +106,6 @@ class BaseController extends Controller{
     }
 
     protected function logEvent($event_id, $param) {
-        $msg = json_encode($param);
-
         if (!$this->eventlogger) {
             return;
         }
@@ -121,6 +119,7 @@ class BaseController extends Controller{
             $param["user"] = $this->userSign;
         }
         $param["deviceId"] = $this->deviceId;
-        $this->eventlogger->info($msg);
+
+        $this->eventlogger->info(json_encode($param));
     }
 }
