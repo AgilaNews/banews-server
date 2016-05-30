@@ -90,7 +90,7 @@ class Collect extends BaseModel {
 
     public static function getAll($user_sign, $last_id, $pn) {
         if (!$pn) {
-            $pn = 20;
+            $pn = 5;
         }
         if ($pn >= 100) {
             $pn = 100;
