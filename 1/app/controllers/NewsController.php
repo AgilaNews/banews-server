@@ -27,8 +27,8 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
-        $commentCount = Comment::getCount($news_model->id);
-        $topComment = Comment::getAll($news_model->id, null, 3);
+        $commentCount = Comment::getCount($newsSign);
+        $topComment = Comment::getAll($newsSign, null, 3);
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
 
