@@ -97,7 +97,7 @@ class Collect extends BaseModel {
         }
         
         if ($last_id) {
-            $condition = "user_sign = ?1 AND id > ?2";
+            $condition = "user_sign = ?1 AND id < ?2";
             $bind = array(1 => $user_sign, 2=>$last_id);
         } else {
             $condition = "user_sign = ?1";
@@ -108,7 +108,7 @@ class Collect extends BaseModel {
                                          "conditions" => $condition,
                                          "bind" => $bind,
                                          "limit" => $pn,
-                                         "order" => "id",
+                                         "order" => "id DESC",
                                          )
                                   );
         return $collects;
