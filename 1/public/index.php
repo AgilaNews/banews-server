@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 
 define('APP_PATH', realpath('..') . '/');
-define('SERVER_NAME', "api.agilanews.com");
+define('SERVER_NAME', "api.agilanews.today");
 
 define('ERR_KEY', 40001);
 define('ERR_BODY', 40002);
