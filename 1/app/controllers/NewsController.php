@@ -107,12 +107,20 @@ class NewsController extends BaseController {
         $ret = array($dispatch_id => array());
     
         $dispatched = array();
+        $uniq = array();
 
         $models = News::batchGet($selected_news_list);
         foreach ($models as $sign => $news_model) {
             if ($news_model && $news_model->is_visible == 1) {
+                if ($uniq[$news_model->content_sign] && 
+                    $uniq[$news_model->content_sign]->source_name == $news_model->source_name) {
+                    //content sign dup and same source, continue
+                    continue;
+                }
+
                 $ret [$dispatch_id][] = $this->serializeNewsCell($news_model);
                 $dispatched []= $sign;
+                $uniq[$news_model->content_sign] = $news_model;
             }
 
             if (count($dispatched) >= $required) {
