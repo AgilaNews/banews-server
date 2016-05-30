@@ -164,9 +164,6 @@ class News extends BaseModel {
             }
         }
 
-        $logger = DI::getDefault()->get('logger');
-        $logger->info(sprintf("[fromCache:%d][fromDB:%d]", count($signs) - count($left), count($left)));
-
         if (count($left) != 0) {
             $left_models = self::_batchGetFromDB($left);
             $ret = array_merge($ret, $left_models);
