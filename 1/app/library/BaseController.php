@@ -9,9 +9,9 @@ define("DEVICE_MEDIUM", "xhdpi");
 define("DEVICE_SMALL", "hdpi");
 
 define("EVENT_NEWS_DETAIL", "020103");
-define("EVENT_NEWS_LIST", "020103");
+define("EVENT_NEWS_LIST", "020104");
 define("EVENT_NEWS_LIKE", "020204");
-define("EVENT_NEWS_COLLECT", "020305");
+define("EVENT_NEWS_COLLECT", "020205");
 
 class BaseController extends Controller{
     public function initialize(){
@@ -121,6 +121,6 @@ class BaseController extends Controller{
             $param["user"] = $this->userSign;
         }
         $param["deviceId"] = $this->deviceId;
-        $this->eventlogger->info($msg . "\n");
+        $this->eventlogger->info($msg);
     }
 }
