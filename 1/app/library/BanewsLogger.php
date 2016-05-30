@@ -26,7 +26,7 @@ class BanewsLogger extends FA {
         }
         $this->path = $name;
     }
-    
+
     public function commit(){
         $wf_msg = "";
         $msg = "";
