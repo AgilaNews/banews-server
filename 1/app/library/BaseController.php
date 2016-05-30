@@ -36,6 +36,12 @@ class BaseController extends Controller{
         $this->resolution_w = 720;
         $this->resolution_h = 1280;
         $this->dpi = 145;
+        $this->net = $this->get_request_param("net", "string");
+        $this->isp = $this->get_request_param("isp", "string");
+        $this->tz = $this->get_request_param("tz", "string");
+        $this->lng = $this->get_request_param("lng", "float");
+        $this->lat = $this->get_request_param("lat", "float");
+        $this->lang = $this->get_requst_param("lang", "string");
 
         if ($this->density) {
             $ret = explode(";", $this->density);
@@ -110,15 +116,19 @@ class BaseController extends Controller{
             return;
         }
 
-        $param["id"] = $event_id;
+        $param["event-id"] = $event_id;
         $param["session"] = $this->session;
-        $param["device_model"] = $this->deviceModel;
-        $param["r_w"] = $this->resolution_w;
-        $param["r_h"] = $this->resolution_h;
+        $param["density"] = $this->density;
         if ($this->userSign) {
-            $param["user"] = $this->userSign;
+            $param["uid"] = $this->userSign;
         }
-        $param["deviceId"] = $this->deviceId;
+        $param["did"] = $this->deviceId;
+        $param["net"] = $this->net;
+        $param("isp") = $this->isp;
+        $param["tz"] = $this->tz;
+        $param["lng"] = $this->lng;
+        $param["lat"] = $this->lat;
+        $param["lang"] = $this->lang;
 
         $this->eventlogger->info(json_encode($param));
     }
