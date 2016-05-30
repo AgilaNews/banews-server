@@ -3,13 +3,13 @@
 error_reporting(E_ALL);
 
 define('APP_PATH', realpath('..') . '/');
-define('SERVER_NAME', "api.agilanews.com");
+define('SERVER_NAME', "api.agilanews.today");
 define('ERR_KEY', 40001);
 define('ERR_CLIENT_VERSION_NOT_FOUND', 40011);
 define('ERR_INTERNAL_DB', 50002);
-define('LOG_SERVER_NAME', 'log.agilanews.com');
-define('MON_SERVER_NAME', 'mon.agilanews.com');
-define('H5_SERVER_NAME', "m.agilanews.com");
+define('LOG_SERVER_NAME', 'log.agilanews.today');
+define('MON_SERVER_NAME', 'mon.agilanews.today');
+define('H5_SERVER_NAME', "m.agilanews.today");
 
 define('ANDROID_VERSION_CODE', 2);
 define('MIN_VERSION', "1.0.0"); //TODO change this to a configuration center
