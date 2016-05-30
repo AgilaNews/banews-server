@@ -103,7 +103,6 @@ class BaseController extends Controller{
         $msg = json_encode($param);
 
         if (!$this->eventlogger) {
-            $this->logger->info("[EVENT] $msg");
             return;
         }
 
