@@ -65,6 +65,12 @@ class BaseController extends Controller{
         $this->session = $this->request->getHeader("X-SESSION-ID");
     }
 
+    public function afterDispatch($event, $dispatcher) {
+        $this->logger->notice(sprintf("[cost:%sms]",
+                                      round(microtime(true) - $this->_start_time, 6) * 1000));
+        $this->logger->commit();
+    }
+    
     protected function get_request_param($name, $type, $is_required=false, $default="") {
         if (isset($_REQUEST[$name])) {
             return $this->filter->sanitize($_REQUEST[$name], $type);
