@@ -41,7 +41,7 @@ class BaseController extends Controller{
         $this->tz = $this->get_request_param("tz", "string");
         $this->lng = $this->get_request_param("lng", "float");
         $this->lat = $this->get_request_param("lat", "float");
-        $this->lang = $this->get_requst_param("lang", "string");
+        $this->lang = $this->get_request_param("lang", "string");
 
         if ($this->density) {
             $ret = explode(";", $this->density);
