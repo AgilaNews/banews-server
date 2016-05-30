@@ -124,7 +124,7 @@ class BaseController extends Controller{
         }
         $param["did"] = $this->deviceId;
         $param["net"] = $this->net;
-        $param("isp") = $this->isp;
+        $param["isp"] = $this->isp;
         $param["tz"] = $this->tz;
         $param["lng"] = $this->lng;
         $param["lat"] = $this->lat;
