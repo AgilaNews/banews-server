@@ -65,12 +65,6 @@ class BaseController extends Controller{
         $this->session = $this->request->getHeader("X-SESSION-ID");
     }
 
-    public function afterDispatchLoop($event, $dispatcher){
-        $this->logger->notice(sprintf("[cost:%sms]",
-                                      round(microtime(true) - $this->_start_time, 6) * 1000));
-        $this->logger->commit();
-    }
-
     protected function get_request_param($name, $type, $is_required=false, $default="") {
         if (isset($_REQUEST[$name])) {
             return $this->filter->sanitize($_REQUEST[$name], $type);
@@ -101,6 +95,8 @@ class BaseController extends Controller{
     protected function setJsonResponse($arr) {
         $this->response->setContent(json_encode($arr));
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
+        $this->logger->notice(sprintf("[cost:%sms]",
+                                      round(microtime(true) - $this->_start_time, 6) * 1000));
     }
 
     protected function logEvent($event_id, $param) {
