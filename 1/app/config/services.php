@@ -65,7 +65,7 @@ $di->set('eventlogger', function() use ($config) {
 });
 
 
-$di->set('cache', function() use ($config, $logger) {
+$di->set('cache', function() use ($config) {
     $cache = new Redis();
     $ret = $cache->connect($config->cache->redis->host, 
                            $config->cache->redis->port);
