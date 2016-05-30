@@ -69,7 +69,6 @@ class BaseController extends Controller{
                 }
             }
         }
-        $this->session = $this->request->getHeader("X-SESSION-ID");
     }
 
     public function __destruct() {
