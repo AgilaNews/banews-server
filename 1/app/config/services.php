@@ -47,7 +47,7 @@ $di->set('view', function () use ($config) {
 });
 
     
-$di->set('logger', function ()use($config) {
+$di->set('logger', function() use($config) {
     $logger = new BanewsLogger($config->logger->banews->path);
     $logger->setLogLevel($config->logger->banews->level);
     $logger->setFormatter(new LineFormatter($config->logger->banews->format));
@@ -55,7 +55,7 @@ $di->set('logger', function ()use($config) {
     return $logger;
 });
 
-$di->set('eventlogger', function() use ($config, $logger) {
+$di->set('eventlogger', function() use ($config) {
     try {
         $el = new EventLogger($config->logger->event->addr, $config->logger->event->category);
         return $el;
@@ -70,7 +70,6 @@ $di->set('cache', function() use ($config, $logger) {
     $ret = $cache->connect($config->cache->redis->host, 
                            $config->cache->redis->port);
     if (!$ret) {
-        $logger->warning("connect to redis error");
         return null;
     }
 
