@@ -46,17 +46,20 @@ $di->set('view', function () use ($config) {
     return $view;
 });
 
-$logger = new BanewsLogger($config->logger->banews->path);
-$logger->setLogLevel($config->logger->banews->level);
-$logger->setFormatter(new LineFormatter($config->logger->banews->format));
     
-$di->set('logger', $logger);
+$di->set('logger', function use($config)){
+    $logger = new BanewsLogger($config->logger->banews->path);
+    $logger->setLogLevel($config->logger->banews->level);
+    $logger->setFormatter(new LineFormatter($config->logger->banews->format));
+
+    return $logger;
+});
+
 $di->set('eventlogger', function() use ($config, $logger) {
     try {
         $el = new EventLogger($config->logger->event->addr, $config->logger->event->category);
         return $el;
     } catch (\Exception $e) {
-        $logger->warning("init event logger error : " . $e);
         return null;
     }
 });
