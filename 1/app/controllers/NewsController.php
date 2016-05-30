@@ -172,7 +172,7 @@ class NewsController extends BaseController {
                       "id" => $comment->id,
                       "time" => $comment->create_time,
                       "comment" => $comment->user_comment,
-                      "user_id" => $comment->user_id,
+                      "user_id" => $comment->user_sign,
                       "user_name" => "anonymous",
                       "user_portrait_url" => "",
                       );
