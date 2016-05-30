@@ -26,21 +26,15 @@ $settings = array (
                                           'format' => "[%date%][%type%]: %message%",
                                         ),
                        "event" => array(
-                                        "addr" => "tcp://127.0.0.1:7069",
+                                        "addr" => "tcp://127.0.0.1:7070",
                                         "category" => "useraction",
                                         ),
                        ),
     'cache' => array (
-                      "general_life_time" => 0,
                       "redis" => array (
                                         "host" => "127.0.0.1",
                                         "port" => 6379,
                                         ),
-                      "keys" => array(
-                                 "version" => "BA_version",
-                                 "news" => "BA_news",
-                                 "user" => "BA_user",
-                                 ),
                       ),
     'entries' => array (
                         "home" => "http://" . SERVER_NAME . "/v%d",
