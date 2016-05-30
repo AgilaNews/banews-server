@@ -47,6 +47,7 @@ try {
         define('BA_DEBUG', true);
     } else {
         require APP_PATH . "app/config/config.php";
+        define('BA_DEBUG', false);
     }
     $config = new Config($settings);
 
