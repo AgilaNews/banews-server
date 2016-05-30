@@ -232,7 +232,7 @@ class UserController extends BaseController {
         $ret = array (
                       "collect_id" => $collect->id,
                       "public_time" => $collect->create_time,
-                      "news_id" => $news_model->news_sign,
+                      "news_id" => $news_model->url_sign,
                       "title" => $news_model->title,
                       "source" => $news_model->source_name,
                       "source_url" => $news_model->source_url,
