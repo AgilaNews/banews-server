@@ -65,7 +65,7 @@ class BaseController extends Controller{
         $this->session = $this->request->getHeader("X-SESSION-ID");
     }
 
-    public function afterDispatch($event, $dispatcher) {
+    public function __destruct($event, $dispatcher) {
         $this->logger->notice(sprintf("[cost:%sms]",
                                       round(microtime(true) - $this->_start_time, 6) * 1000));
         $this->logger->commit();
