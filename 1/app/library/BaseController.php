@@ -32,6 +32,7 @@ class BaseController extends Controller{
         $this->deviceId = $this->request->getHeader('X-USER-D');
         $this->userSign = $this->request->getHeader('X-USER-A');
         $this->density = $this->request->getHeader('X-DENSITY');
+        $this->session = $this->request->getHeader('X-SESSION');
         $this->deviceModel = DEVICE_MEDIUM;
         $this->resolution_w = 720;
         $this->resolution_h = 1280;
