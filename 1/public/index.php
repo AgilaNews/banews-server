@@ -34,7 +34,7 @@ define('CACHE_IMAGES_TTL', 14400);
 define('CACHE_COLLECT_PREFIX', "BS_COLLECT_");
 define('CACHE_COLLECT_TTL', 300);
 
-define('SHARE_TEMPLATE', "http://m.agilanews.today/news?id=%s");
+define('SHARE_TEMPLATE', "http://share.agilanews.today/news?id=%s");
 
 use Phalcon\Config;
 use Phalcon\Mvc\Application;
