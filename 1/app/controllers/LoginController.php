@@ -47,7 +47,6 @@ class LoginController extends BaseController {
 
         $user->create_time = $user->update_time = time();
 
-        $user->expireSourceAndIdCache($source, $uid);
         $ret = $user->save();
         if ($ret === false) {
             $this->logger->warning("[FB_SAVE_ERR][NEED_CARE:yes][err: " . $user->getMessages()[0]);
