@@ -21,7 +21,7 @@ $settings = array (
                    ),
     'logger' => array (
                        'banews' => array (
-                                          'path' => "/data/logs/banews-server/banews.log",
+                                          'path' => "/data/logs/banews-server/banews-server.log",
                                           'level' => Logger::INFO,
                                           'format' => "[%date%][%type%]: %message%",
                                         ),
