@@ -1,8 +1,4 @@
 <?php
-define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
-define('CACHE_SENT_MASK_MAX', 500);
-define('CACHE_SENT_TTL', 4 * 3600); 
-
 class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
