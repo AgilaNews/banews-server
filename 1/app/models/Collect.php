@@ -82,7 +82,9 @@ class Collect extends BaseModel {
         $cache = $this->getDI()->get('cache');
         if ($ret) {
             $key = self::getKey($this->user_sign, $this->news_sign);
-            $cache->delete($key);
+            if ($cache) {
+                $cache->delete($key);
+            }
         } else {
             $this->getDI()->get('logger')->warning("delete collect model error : " . $this->getMessages());
         }
