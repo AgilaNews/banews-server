@@ -76,7 +76,7 @@ class BaseController extends Controller{
                                        $this->density, $this->net, $this->isp, $this->tz,
                                        $this->lat, $this->lng, $this->lang));
         $this->logger->notice(sprintf("[cost:%sms]",
-                                      round(microtime(true) - $this->_start_time, 6) * 1000));
+                                      round((microtime(true) - $this->_start_time) * 1000));
         $this->logger->commit();
     }
     
