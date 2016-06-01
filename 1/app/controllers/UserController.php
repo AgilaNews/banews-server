@@ -90,7 +90,7 @@ class UserController extends BaseController {
         $comment->create_time = time();
         
         $ret = $comment->save();
-        if ($ret === false) {
+        if (!$ret) {
             $this->logger->warning("save comment error : " . $comment->getMessages()[0]);
             throw new HttpException(ERR_INTERNAL_DB,
                                     "save comment info error");
