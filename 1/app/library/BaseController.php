@@ -69,6 +69,9 @@ class BaseController extends Controller{
                 }
             }
         }
+        $this->logger->notice(sprintf("[density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s]",
+                                       $this->density, $this->net, $this->isp, $this->tz,
+                                       $this->lat, $this->lng, $this->lang));
     }
 
     public function __destruct() {
