@@ -52,10 +52,13 @@ class NewsController extends BaseController {
         $recommend_policy = new RandomRecommendPolicy($this->getDi());
         $recommend_news_list =
             $recommend_policy->sampling($news_model->channel_id,
-                                        $this->deviceId, null, 3);
+                                        $this->deviceId, null, 4);
 
         $recommend_models = News::batchGet($recommend_news_list);
         foreach ($recommend_models as $recommend_model) {
+            if ($recommend_model->url_sign == $newsSign) {
+                continue;
+            }
             $ret["recommend_news"][]= $this->serializeNewsCell($recommend_model);
         }
 
