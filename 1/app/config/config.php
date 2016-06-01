@@ -18,8 +18,9 @@ $settings = array (
             'username' => 'root',
             'password' => 'MhxzKhl-Happy',
             'dbname' => 'banews-test',
-                        )
-                   ),
+            "charset" => 'utf8',
+            )
+         ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/data/logs/banews.log",
