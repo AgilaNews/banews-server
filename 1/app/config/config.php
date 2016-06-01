@@ -18,8 +18,10 @@ $settings = array (
             'username' => 'root',
             'password' => 'MhxzKhl-Happy',
             'dbname' => 'banews-test',
-            "charset" => 'utf8',
-            )
+            "options" => array(
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+                ),
+            ),
          ),
     'logger' => array (
                        'banews' => array (
