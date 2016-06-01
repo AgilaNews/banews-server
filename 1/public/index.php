@@ -34,6 +34,12 @@ define('CACHE_IMAGES_TTL', 14400);
 define('CACHE_COLLECT_PREFIX', "BS_COLLECT_");
 define('CACHE_COLLECT_TTL', 300);
 
+define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
+
+//TODO if user grows, set this value lesser, this will absolutely consume more memory
+define('CACHE_SENT_MASK_MAX', 2000); 
+define('CACHE_SENT_TTL', 4 * 3600); 
+
 define('SHARE_TEMPLATE', "http://share.agilanews.today/news?id=%s");
 
 use Phalcon\Config;
