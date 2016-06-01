@@ -69,12 +69,12 @@ class BaseController extends Controller{
                 }
             }
         }
-        $this->logger->notice(sprintf("[density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s]",
-                                       $this->density, $this->net, $this->isp, $this->tz,
-                                       $this->lat, $this->lng, $this->lang));
     }
 
     public function __destruct() {
+        $this->logger->notice(sprintf("[density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s]",
+                                       $this->density, $this->net, $this->isp, $this->tz,
+                                       $this->lat, $this->lng, $this->lang));
         $this->logger->notice(sprintf("[cost:%sms]",
                                       round(microtime(true) - $this->_start_time, 6) * 1000));
         $this->logger->commit();
@@ -110,8 +110,6 @@ class BaseController extends Controller{
     protected function setJsonResponse($arr) {
         $this->response->setContent(json_encode($arr));
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
-        $this->logger->notice(sprintf("[cost:%sms]",
-                                      round(microtime(true) - $this->_start_time, 6) * 1000));
     }
 
     protected function logEvent($event_id, $param) {
