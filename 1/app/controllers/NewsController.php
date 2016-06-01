@@ -60,6 +60,9 @@ class NewsController extends BaseController {
                 continue;
             }
             $ret["recommend_news"][]= $this->serializeNewsCell($recommend_model);
+            if (count($ret["recommend_news"]) == 3) {
+                break;
+            }
         }
 
         if ($this->userSign) {
