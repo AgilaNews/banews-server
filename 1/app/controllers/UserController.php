@@ -47,8 +47,8 @@ class UserController extends BaseController {
             array_push($ret, $this->serializeComment($comment));
         }
 
-        $this->logger->info(sprintf("[GetComment][user:%s][di:%s][news:%s][last:%d][limit:%d][cmtcnt:%d]", $this->userSign,
-                                       $this->deviceId, $newsSign, $last_id, $pn, count($comments)));
+        $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][cmtcnt:%d]", $this->userSign,
+                                     $last_id, $pn, count($comments)));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -96,8 +96,8 @@ class UserController extends BaseController {
                                     "save comment info error");
         }
 
-        $this->logger->info(sprintf("[PostComment][user:%s][di:%s][news:%s][ci:%s]",
-                                      $this->userSign, $this->deviceId, $newsSign, $comment->id));
+        $this->logger->info(sprintf("[PostComment][news:%s][ci:%s]",
+                                     $newsSign, $comment->id));
         $this->setJsonResponse(array("message" => "ok", 
                                     "comment" => $this->serializeComment($comment))
                                     );
@@ -140,8 +140,8 @@ class UserController extends BaseController {
         }
 
         $this->logEvent(EVENT_NEWS_COLLECT, array("news_id" => $newsSign));
-        $this->logger->info(sprintf("[PostCollect][user:%s][di:%s][news:%s][ci:%s]",
-                                      $this->userSign, $this->deviceId, $newsSign, $collect_model->id));
+        $this->logger->info(sprintf("[PostCollect][news:%s][ci:%s]",
+                                     $newsSign, $collect_model->id));
         $this->setJsonResponse(array("collect_id" => $collect_model->id, "message" => "ok"));
         return $this->response;
     }
@@ -169,8 +169,8 @@ class UserController extends BaseController {
             }
         }
 
-        $this->logger->info(sprintf("[GetCollect][user:%s][di:%s][last:%d][limit:%d][ret:%d]", $this->userSign,
-                                       $this->deviceId, $last_id, $pn, count($ret)));
+        $this->logger->info(sprintf("[GetCollect][last:%d][limit:%d][ret:%d]",
+                                     $last_id, $pn, count($ret)));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -195,8 +195,7 @@ class UserController extends BaseController {
         }
         
         Collect::batchDelete($req["ids"]);
-        $this->logger->info(sprintf("[DelCollect][user:%s][di:%s][news:%s]", $this->userSign,
-                                      $this->deviceId, json_encode($req["ids"])));
+        $this->logger->info(sprintf("[DelCollect][news:%s]", json_encode($req["ids"])));
         
         $this->setJsonResponse(array("message"=>"ok"));
         return $this->response;
