@@ -34,12 +34,17 @@ $di->set('dispatcher', function () {
     });
 
 
-$di->set('db', function() use ($config) {
-    $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db->adapter;
+$di->set('db_w', function() use ($config) {
+    $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db_w->adapter;
     
-    return new $db_clz($config->db->conf->toArray());
+    return new $db_clz($config->db_w->conf->toArray());
     });
 
+$di->set('db_r', function() use ($config) {
+    $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db_r->adapter;
+    
+    return new $db_clz($config->db_r->conf->toArray());
+    });
 
 $di->set('view', function () use ($config) {
     $view = new View();
