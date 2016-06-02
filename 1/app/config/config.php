@@ -17,7 +17,7 @@ $settings = array (
             'host' => '10.8.31.41',
             'username' => 'root',
             'password' => 'MhxzKhl-Happy',
-            'dbname' => 'banews-test',
+            'dbname' => 'banews',
             "options" => array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
                 ),

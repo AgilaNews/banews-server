@@ -16,7 +16,7 @@ $settings = array (
             'host' => '10.8.31.41',
             'username' => 'root',
             'password' => 'MhxzKhl-Happy',
-            'dbname' => 'banews-test'
+            'dbname' => 'banews'
                         )
                    ),
     'logger' => array (
