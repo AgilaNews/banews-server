@@ -65,11 +65,16 @@ try {
     );
 
     require APP_PATH . "app/config/loader.php";
-
     require APP_PATH . "app/config/services.php";
     $app = new Application($di);
 
     echo $app->handle()->getContent();
 } catch (\Exception $e) {
-     echo "Exception: ", $e->getMessage(); // TODO
+    error_log(sprintf("Exception [%s:%s]: %s", $e->getFile(), $e->getLine(),  
+                     $e->getTraceAsString()));
+
+    $response = new \Phalcon\Http\Response();
+    $response->setStatusCode(500);
+    $response->setContent(json_encode(array("code" => ERR_INTERNAL_DB, "message" => "internal error")));
+    $response->send();
 }

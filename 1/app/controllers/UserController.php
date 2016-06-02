@@ -47,7 +47,7 @@ class UserController extends BaseController {
             array_push($ret, $this->serializeComment($comment));
         }
 
-        $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][cmtcnt:%d]", $this->userSign,
+        $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][cmtcnt:%d]", $newsSign,
                                      $last_id, $pn, count($comments)));
         $this->setJsonResponse($ret);
         return $this->response;
