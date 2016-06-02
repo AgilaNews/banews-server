@@ -91,8 +91,8 @@ class NewsController extends BaseController {
                                                                    ),
                                                  ));
         
-        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d]", $newsSign, count($ret["imgs"],
-                                     $news_model->channel_id)));
+        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d]", $newsSign, count($ret["imgs"]),
+                                     $news_model->channel_id));
         
         $this->setJsonResponse($ret);
         return $this->response;
