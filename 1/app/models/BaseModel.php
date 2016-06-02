@@ -12,5 +12,8 @@ use Phalcon\Mvc\Model;
 use Phalcon\DI;
 
 class BaseModel extends Model {
+    public function initialize() {
+        $this->setReadConnectionService('db_r');
+        $this->setWriteConnectionService('db_w');
+    }
 }
-

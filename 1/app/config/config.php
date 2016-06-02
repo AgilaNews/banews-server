@@ -10,11 +10,10 @@ $settings = array (
         "modelDir" => APP_PATH . "/app/models",
         "policyDir" => APP_PATH . "/app/policies",
     ),
-
-    'db' => array (
+    'db_w' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-            'host' => '10.8.31.41',
+            'host' => '10.8.22.123',
             'username' => 'root',
             'password' => 'MhxzKhl-Happy',
             'dbname' => 'banews',
@@ -23,6 +22,18 @@ $settings = array (
                 ),
             ),
          ),
+    'db_r' => array (
+        'adapter' => 'Mysql',
+        'conf' => array (
+            'host' => '10.8.31.41',
+            'username' => 'root',
+             'password' => 'MhxzKhl-Happy',
+            'dbname' => 'banews',
+            "options" => array(
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+                ),
+            ),
+        ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/data/logs/banews-server/banews-server.log",
