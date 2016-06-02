@@ -153,7 +153,7 @@ class UserController extends BaseController {
         
         $user_model = User::getBySign($this->userSign);
         if (!$user_model) {
-            throw new HttpException(ERR_INTERNAL_DB, "user not found");
+            throw new HttpException(ERR_USER_NON_EXISTS, "user not found");
         }
         
         $last_id = $this->get_request_param("last_id", "string");
@@ -182,7 +182,7 @@ class UserController extends BaseController {
         
         $user_model = User::getBySign($this->userSign);
         if (!$user_model) {
-            throw new HttpException(ERR_INTERNAL_DB, "user not found");
+            throw new HttpException(ERR_USER_NON_EXISTS, "user not found");
         }
         
         $req = $this->request->getJsonRawBody(true);
