@@ -69,13 +69,12 @@ class BaseController extends Controller{
                 }
             }
         }
-        $this->logger->info(sprintf("[di:%s][user:%s]", $this->deviceId, $this->userSign));
     }
 
     public function __destruct() {
-        $this->logger->info(sprintf("[density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s]",
-                                       $this->density, $this->net, $this->isp, $this->tz,
-                                       $this->lat, $this->lng, $this->lang));
+        $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s]",
+                                      $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
+                                      $this->tz, $this->lat, $this->lng, $this->lang));
         $this->logger->info(sprintf("[cost:%sms]",
                                       round((microtime(true) - $this->_start_time) * 1000)));
         $this->logger->commit();
