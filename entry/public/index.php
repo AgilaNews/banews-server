@@ -14,7 +14,7 @@ define('H5_SERVER_NAME', "m.agilanews.today");
 define('ANDROID_VERSION_CODE', 5);
 define('MIN_VERSION', "1.0.0"); //TODO change this to a configuration center
 define('NEW_VERSION', "1.0.1");
-define('UPDATE_URL', "https://play.google.com/apps/testing/com.upeninsula.banews");
+define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
 use Phalcon\Config;
 use Phalcon\Mvc\Application;
