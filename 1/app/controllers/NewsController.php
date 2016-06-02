@@ -73,12 +73,14 @@ class NewsController extends BaseController {
             array_push($ret["comments"], $this->serializeComment($comment));
         }
 
+        // ----------------- pseduo like, this feature should be removed later -----------------
         $pseduoLike = mt_rand(1, 10);
-        if ($pseduoLike == 1) {
+        if ($pseduoLike == 1 && ($news_model->channel_id == 10004 || $news_model->channel_id == 10006)) {
             $news_model->liked++;
             $news_model->save();
             $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
         }
+        // ----------------- end -------TODO remove later---------------------------------------
 
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
@@ -89,7 +91,8 @@ class NewsController extends BaseController {
                                                                    ),
                                                  ));
         
-        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d]", $newsSign, count($ret["imgs"])));
+        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d]", $newsSign, count($ret["imgs"],
+                                     $news_model->channel_id)));
         
         $this->setJsonResponse($ret);
         return $this->response;
