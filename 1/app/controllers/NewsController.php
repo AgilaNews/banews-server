@@ -73,6 +73,14 @@ class NewsController extends BaseController {
             array_push($ret["comments"], $this->serializeComment($comment));
         }
 
+        $pseduoLike = mt_rand(1, 10);
+        if ($pseduoLike == 1) {
+            $news_model->liked++;
+            $news_model->save();
+            $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
+        }
+
+
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
                                                "recommend"=> array(
