@@ -81,8 +81,7 @@ class NewsController extends BaseController {
                                                                    ),
                                                  ));
         
-        $this->logger->info(sprintf("[Detail][sign:%s][imgs:%d][user:%s][di:%s]", $newsSign, count($ret["imgs"]),
-                                    $this->userSign, $this->deviceId));
+        $this->logger->info(sprintf("[Detail][sign:%s][imgs:%d]", $newsSign, count($ret["imgs"])));
         
         $this->setJsonResponse($ret);
         return $this->response;
@@ -134,8 +133,8 @@ class NewsController extends BaseController {
             }
         }
 
-        $this->logger->info(sprintf("[List][id:%s][policy:ExpDecay][di:%s][user:%s][pfer:%s][cnl:%d][sent:%d]",
-                                      $dispatch_id, $this->deviceId, $this->userSign, $prefer, $channel_id, count($dispatched)));
+        $this->logger->info(sprintf("[List][id:%s][policy:ExpDecay][pfer:%s][cnl:%d][sent:%d]",
+                                      $dispatch_id, $prefer, $channel_id, count($dispatched)));
         $policy->setDeviceSent($this->deviceId, $dispatched);
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
@@ -174,7 +173,7 @@ class NewsController extends BaseController {
             "liked" => $now->liked,
         );
 
-        $this->logger->info(sprintf("[Like][user:%s][di:%s][liked:%s]", $this->userSign, $this->deviceId, $ret["liked"]));
+        $this->logger->info(sprintf("[Like][liked:%s]", $ret["liked"]));
         $this->logEvent(EVENT_NEWS_LIKE, array("news_id"=>$newsSign, "liked"=>$ret["liked"]));
         $this->setJsonResponse($ret);
         return $this->response;

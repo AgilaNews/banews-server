@@ -15,7 +15,6 @@ class VersionModel extends BaseModel {
     public $client_version;
 
     public $server_version;
-
     
     public function getSource(){
         return "tb_version";

@@ -53,6 +53,6 @@ class FeedbackController extends BaseController {
             throw new HttpException(ERR_INTERNAL_DB, "db error");
         }
 
-        $this->logger->info(sprintf("[Feedback][user:%s][di:%s]", $userSign, $this->deviceId));
+        $this->logger->info(sprintf("[Feedback][fb_email:%s]", $email));
     }  
 }

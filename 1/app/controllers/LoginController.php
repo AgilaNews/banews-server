@@ -33,25 +33,21 @@ class LoginController extends BaseController {
             $user->uid = $uid;
             $user->source = $source;
             $user->sign = $this->sign_user($uid, $source);
-        } else {
-            $this->setJsonResponse($this->serializeUser($user));
-            return $this->response;
-        }
+            $user->name = $this->get_or_fail($req, "name", "string");
+            $user->gender = $this->get_or_default($req, "gender", "int", 0);
+            $user->portrait_srcurl = $this->get_or_default($req, "portrait", "string", "");
+            //TODO change this
+            $user->portrait_url = $user->portrait_srcurl;
+            $user->email = $this->get_or_default($req, "email", "string", "");
 
-        $user->name = $this->get_or_fail($req, "name", "string");
-        $user->gender = $this->get_or_default($req, "gender", "int", 0);
-        $user->portrait_srcurl = $this->get_or_default($req, "portrait", "string", "");
-        //change this
-        $user->portrait_url = $user->portrait_srcurl;
-        $user->email = $this->get_or_default($req, "email", "string", "");
+            $user->create_time = $user->update_time = time();
 
-        $user->create_time = $user->update_time = time();
-
-        $ret = $user->save();
-        if ($ret === false) {
-            $this->logger->warning("[FB_SAVE_ERR][NEED_CARE:yes][err: " . $user->getMessages()[0]);
-            throw new HttpException(ERR_INTERNAL_DB,
-                "save user info error");
+            $ret = $user->save();
+            if ($ret === false) {
+                $this->logger->warning("[FB_SAVE_ERR][NEED_CARE:yes][err: " . $user->getMessages()[0]);
+                throw new HttpException(ERR_INTERNAL_DB,
+                    "save user info error");
+            }
         }
 
         $this->logger->info(sprintf("[Login][source:%s][uid:%s][id:%s][gender:%d][email:%s]", 
