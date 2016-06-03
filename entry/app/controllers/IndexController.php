@@ -71,7 +71,7 @@ class IndexController extends BaseController {
         }
 
         $this->logger->notice($log);
-        #$this->logEvent(102010, array("hello" => "world"));
+        $this->logEvent(EVENT_NEWS_COLDSETTING, $kw);
         $this->setJsonResponse($ret);
         return $this->response;
     }
