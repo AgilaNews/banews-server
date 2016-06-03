@@ -46,7 +46,7 @@ class IndexController extends BaseController {
 
         if (count($vm) == 0) {
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND,
-                                    "client version not supoprted");
+                                    "client version not supported");
         }
 
         $vm = $vm[0];
