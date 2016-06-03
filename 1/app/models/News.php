@@ -43,6 +43,16 @@ class News extends BaseModel {
 
     public $is_visible;
 
+    public function initialize(){
+        $this->skipAttributes(
+            array ("summary",
+                    "ext_json_text",
+                    "tag",
+                    "related_sign",)
+        );
+
+        parent::initialize();
+    }
     public function getSource(){
         return "tb_news";
     }
