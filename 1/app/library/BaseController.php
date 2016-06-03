@@ -34,6 +34,7 @@ class BaseController extends Controller{
         $this->userSign = $this->request->getHeader('X-USER-A');
         $this->density = $this->request->getHeader('X-DENSITY');
         $this->session = $this->request->getHeader('X-SESSION');
+        $this->ua = $this->request->getHeader('USER-AGENT');
         $this->deviceModel = DEVICE_MEDIUM;
         $this->resolution_w = 720;
         $this->resolution_h = 1280;
@@ -132,6 +133,7 @@ class BaseController extends Controller{
         $param["lat"] = $this->lat;
         $param["lang"] = $this->lang;
         $param["time"] = round(microtime(true) * 1000);
+        $param["ua"] = $this->ua;
 
         $this->eventlogger->info(json_encode($param));
     }
