@@ -175,7 +175,7 @@ class NewsController extends BaseController {
         $now->liked++;
         $ret = $now->save();
         if (!$ret) {
-            $this->logger->warning("save error: %s", $now->getMessages());
+            $this->logger->warning(sprintf("save error: %s", join(",",$now->getMessages())));
             throw new HttpException(ERR_INTERNAL_DB, "internal error");
         }
 
