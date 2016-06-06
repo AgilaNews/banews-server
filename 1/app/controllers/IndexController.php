@@ -19,7 +19,7 @@ class IndexController extends BaseController {
             $this->response->setContent($exception->getBody());
             $this->logger->warning("[HttpError][code:" . $exception->getStatusCode() . "]:" . $exception->getBody());
         } else {
-            $this->logger->warning("[InternalError]: " . $exception->getTraceAsString());
+            $this->logger->warning("[InternalError]: " . $exception->getMessage() . $exception->getTraceAsString());
             $this->response->setStatusCode(500);
 
             if (BA_DEBUG) {
