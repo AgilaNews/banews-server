@@ -57,9 +57,6 @@ class EventLogger extends Adapter implements AdapterInterface {
             $content .
             hex2bin("00");
 
-        $fp = fopen("/home/zhangguanxing/banews-server/app/logs/scribe.dump", "w+");
-        fwrite($fp, $packet);
-        fclose($fp);
         return $packet;
     }
 
