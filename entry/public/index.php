@@ -19,18 +19,20 @@ try {
     $env = getenv("BANEWS_ENV");
 
     if ($env == "rd") {
-        require APP_PATH . "app/config/config.php.rd";
         define('SERVER_NAME', "api.agilanews.today");
         define('LOG_SERVER_NAME', 'log.agilanews.today');
         define('MON_SERVER_NAME', 'mon.agilanews.today');
         define('H5_SERVER_NAME', "m.agilanews.today");
         define('BA_DEBUG', true);
+
+        require APP_PATH . "app/config/config.php.rd";
     } if ($env == "sandbox") {
-        require APP_PATH . "app/config/config.php.sandbox";
         define('SERVER_NAME', "api.agilanews.info");
         define('LOG_SERVER_NAME', 'log.agilanews.info');
         define('MON_SERVER_NAME', 'mon.agilanews.info');
         define('H5_SERVER_NAME', "m.agilanews.info");
+
+        require APP_PATH . "app/config/config.php.sandbox";
         define('BA_DEBUG', true);
     } else {
         define('SERVER_NAME', "api.agilanews.today");
@@ -39,6 +41,7 @@ try {
         define('H5_SERVER_NAME', "m.agilanews.today");
 
         require APP_PATH . "app/config/config.php";
+        define('BA_DEBUG', false);
     }
     $config = new Config($settings);
     require APP_PATH . "app/config/loader.php";
