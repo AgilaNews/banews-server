@@ -51,6 +51,9 @@ try {
     if ($env == "rd") {
         require APP_PATH . "app/config/config.php.rd";
         define('BA_DEBUG', true);
+    } if ($env == "sandbox") {
+        require APP_PATH . "app/config/config.php.sandbox";
+        define('BA_DEBUG', true);
     } else {
         require APP_PATH . "app/config/config.php";
         define('BA_DEBUG', false);
