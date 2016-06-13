@@ -1,4 +1,6 @@
 <?php
+use Phalcon\DI;
+
 class Channel extends BaseModel {
     public $channel_id;
 
@@ -6,22 +8,39 @@ class Channel extends BaseModel {
 
     public $name;
 
+    public $priority;
+
+    public $fixed;
+
     public $is_visible;
 
-    public function getChannelById($id, $columns = null) {
-        $crit = array (
-            "conditions" => "id => ?1",
-            "bind" => array(1 => $id),
-        );
-
-        if ($column) {
-            $crit["columns"] = $columns;
-        }
-
-        return Channel::findFirst($crit);
-    }
-
-    public function getSource(){
+    public function getSource() {
         return "tb_channel";
     }
+
+    public static function getAllVisible(){
+        $cache = DI::getDefault()->get('cache');
+
+        if ($cache) {
+            $value = $cache->get(CHANNELS_CACHE_KEY);
+            if ($value) {
+                return deserialize($value);
+            }
+        }
+
+        $channels = 
+            Channel::find(array(
+                "conditions" => "visible = 1",
+                "order" => "priority"
+            ));
+
+        if ($cache && $channels) {
+            $cache->multi();
+            $cache->set(CHANNELS_CACHE_KEY, $channels->serialize());
+            $cache->expire(CHANNELS_CACHE_KEY, CHANNELS_CACHE_TTL);
+            $cache->exec();
+        }
+
+        return $channels;
+    } 
 }
