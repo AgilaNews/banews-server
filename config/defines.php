@@ -40,8 +40,10 @@ define('NEW_VERSION', "v1.0.1");
 define('CACHE_SENT_MASK_MAX', 2000); 
 define('CACHE_SENT_TTL', 4 * 3600); 
 
-define('SHARE_TEMPLATE', "http://share.agilanews.today/news?id=%s");
 define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
-define('LOG_SERVER_NAME', 'log.agilanews.today');
-define('MON_SERVER_NAME', 'mon.agilanews.today');
-define('H5_SERVER_NAME', "m.agilanews.today");
+
+define('SHARE_TEMPLATE', "http://share." . SERVER_HOSTS . "/news?id=%s");
+define('SERVER_NAME', "api." . SERVER_HOSTS);
+define('LOG_SERVER_NAME', 'log.' . SERVER_HOSTS);
+define('MON_SERVER_NAME', 'mon.' . SERVER_HOSTS);
+define('H5_SERVER_NAME', "m." . SERVER_HOSTS);
