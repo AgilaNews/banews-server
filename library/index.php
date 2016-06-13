@@ -12,15 +12,15 @@ try {
     
     require ROOT_PATH . "config/defines.php";
     if ($env == "rd") {
-        define ("SERVER_NAME", "api.agilanews.com");
+        define ("SERVER_HOSTS", "agilanews.com");
         require ROOT_PATH . "config/config.php.rd";
         define('BA_DEBUG', true);
     } else if ($env == "sandbox") {
-        define ("SERVER_NAME", "api.agilanews.info");
+        define ("SERVER_HOSTS", "agilanews.info");
         require ROOT_PATH . "config/config.php.sandbox";
         define('BA_DEBUG', true);
     } else {
-        define ("SERVER_NAME", "api.agilanews.today");
+        define ("SERVER_HOSTS", "agilanews.today");
         require ROOT_PATH . "config/config.php";
         define('BA_DEBUG', false);
     }
