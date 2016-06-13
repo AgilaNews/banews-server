@@ -11,9 +11,6 @@
  */
 class IndexController extends BaseController {
     public function IndexAction(){
-        $validator = new IndexValidator();
-        $validator->validate($_GET);
-
         $kw = array();
         $kw["vendor"] = $this->get_request_param("vendor", "string");
         $kw["mmc"] = $this->get_request_param("mmc", "int");
@@ -33,7 +30,7 @@ class IndexController extends BaseController {
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND, 'client version not found');    
         }
 
-        $vm = VersionModel::find(array(
+        $vm = Version::find(array(
                   "conditions" => "client_version = ?1",
                   "bind" => array(1 => $kw["clientVersion"]),
                   /*
@@ -62,7 +59,19 @@ class IndexController extends BaseController {
                     "new_version" => NEW_VERSION,
                     "update_url"=> UPDATE_URL,
                       ),
+                "categories" => array(),
                 );
+
+        $channels = Channel::getAllVisible();
+        $i = 0;
+        foreach ($channels as $channel) {
+            $ret["categories"][] = array(
+                "id" => $channel->channel_id,
+                "name" => $channel->name,
+                "fixed" => $channel->fixed,
+                "index" => $i++,
+            );
+        } 
         
 
         $log = "[ColdSetting]";
