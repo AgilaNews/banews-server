@@ -10,17 +10,19 @@ use Phalcon\Mvc\Application;
 try {
     $env = getenv("BANEWS_ENV");
     
-    require ROOT_PATH . "config/defines.php";
     if ($env == "rd") {
-        define ("SERVER_HOSTS", "agilanews.com");
+        define ("SERVER_HOST", "agilanews.com");
+        require ROOT_PATH . "config/defines.php";
         require ROOT_PATH . "config/config.php.rd";
         define('BA_DEBUG', true);
     } else if ($env == "sandbox") {
-        define ("SERVER_HOSTS", "agilanews.info");
+        define ("SERVER_HOST", "agilanews.info");
+        require ROOT_PATH . "config/defines.php";
         require ROOT_PATH . "config/config.php.sandbox";
         define('BA_DEBUG', true);
     } else {
-        define ("SERVER_HOSTS", "agilanews.today");
+        define ("SERVER_HOST", "agilanews.today");
+        require ROOT_PATH . "config/defines.php";
         require ROOT_PATH . "config/config.php";
         define('BA_DEBUG', false);
     }

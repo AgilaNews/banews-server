@@ -42,8 +42,8 @@ define('CACHE_SENT_TTL', 4 * 3600);
 
 define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
-define('SHARE_TEMPLATE', "http://share." . SERVER_HOSTS . "/news?id=%s");
-define('SERVER_NAME', "api." . SERVER_HOSTS);
-define('LOG_SERVER_NAME', 'log.' . SERVER_HOSTS);
-define('MON_SERVER_NAME', 'mon.' . SERVER_HOSTS);
-define('H5_SERVER_NAME', "m." . SERVER_HOSTS);
+define('SHARE_TEMPLATE', "http://share." . SERVER_HOST . "/news?id=%s");
+define('SERVER_NAME', "api." . SERVER_HOST);
+define('LOG_SERVER_NAME', 'log.' . SERVER_HOST);
+define('MON_SERVER_NAME', 'mon.' . SERVER_HOST);
+define('H5_SERVER_NAME', "m." . SERVER_HOST);
