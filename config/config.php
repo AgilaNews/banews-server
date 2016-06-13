@@ -52,6 +52,9 @@ $settings = array (
                       ),
     'entries' => array (
                         "home" => SERVER_NAME . "/v%d",
+                        "log" => "http://" . LOG_SERVER_NAME . "/v%d",
+                        "mon" => "http://" .  MON_SERVER_NAME . "/v%d",
+                        "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
                         ),
 
 );
