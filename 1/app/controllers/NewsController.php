@@ -201,7 +201,7 @@ class NewsController extends BaseController {
                       "user_portrait_url" => "",
                       );
         
-        $user_model = User::getBySign($comment->news_sign);
+        $user_model = User::getBySign($comment->user_sign);
         if ($user_model) {
             $ret["user_name"] = $user_model->name;
             $ret["user_portrait_url"] = $user_model->portrait_url;
