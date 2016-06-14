@@ -85,18 +85,6 @@ class IndexController extends BaseController {
         return $this->response;
     }
 
-    public function checkAction(){
-        $this->setJsonResponse(
-            array(
-                "min_version" => MIN_VERSION,
-                "new_version" => NEW_VERSION,
-                "avc" => ANDROID_VERSION_CODE,
-                "update_url" => UPDATE_URL
-                )
-            );
-       return $this->response;
-    }
-
     public function ErrorAction() {
         $exception = $this->dispatcher->getParam(0);
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
