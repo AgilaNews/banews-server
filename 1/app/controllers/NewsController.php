@@ -144,6 +144,12 @@ class NewsController extends BaseController {
             }
         }
 
+        if ($channel_id == 10011) {
+            for ($i = 0; $i < 10; $i++) {
+                $ret [$dispatch_id][] = $this->serializePhotoChannelCell(array());
+            }
+        }
+
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:expdecay][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $prefer, $channel_id, count($dispatched)));
         $policy->setDeviceSent($this->deviceId, $dispatched);
@@ -210,7 +216,38 @@ class NewsController extends BaseController {
     }
 
 
-    protected function serializeNewsCell($news_model) {
+   protected function serializePhotoChannelCell($news_model) {
+       return array(
+                    "commentCount" => 0,
+                    "likedCount" => 10,
+                    "imgs" =>
+                    array_rand(array(
+                               array(
+                                     "height" => 399,
+                                     "width" => 360,
+                                     "url" => "http://img-9gag-fun.9cache.com/photo/a84WymY_700b.jpg",
+                                     ),
+                               array(
+                                     "height" => 525,
+                                     "width" => 360,
+                                                     "url" => "http://img-9gag-fun.9cache.com/photo/aNWeqYG_700b.jpg",
+                                     ),
+                               array(
+                                     "url" => "http://img-9gag-fun.9cache.com/photo/aWMZgPK_700b.jpg",
+                                     "height" => 239,
+                                     "width" => 360,
+                                     ))
+                               ),
+                    "news_id" => mt_rand(),
+                    "public_time" => "1466093640",
+                    "source" => "9gag",
+                    "source_url" => "http://img-9gag-fun.9cache.com/photo/a84WymY_700b.jpg",
+                    "title" => "sexy zhan",
+                    "tpl" => 6,
+                    );
+   }
+   
+   protected function serializeNewsCell($news_model) {
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         $commentCount = Comment::getCount($news_model->id);
 
