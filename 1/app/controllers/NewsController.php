@@ -219,19 +219,19 @@ class NewsController extends BaseController {
    protected function serializePhotoChannelCell($news_model) {
        $choice =array(
                                array(
-                                     "height" => 399,
-                                     "width" => 360,
+                                     "height" => 770,
+                                     "width" => 700,
                                      "src" => "http://img-9gag-fun.9cache.com/photo/a84WymY_700b.jpg",
                                      ),
                                array(
-                                     "height" => 525,
-                                     "width" => 360,
+                                     "height" => 1022,
+                                     "width" => 700,
                                      "src" => "http://img-9gag-fun.9cache.com/photo/aNWeqYG_700b.jpg",
                                      ),
                                array(
                                      "src" => "http://img-9gag-fun.9cache.com/photo/aWMZgPK_700b.jpg",
-                                     "height" => 239,
-                                     "width" => 360,
+                                     "height" => 465,
+                                     "width" => 700,
                                      ) 
                     );
 
