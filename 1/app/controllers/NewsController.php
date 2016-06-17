@@ -221,15 +221,15 @@ class NewsController extends BaseController {
                                array(
                                      "height" => 399,
                                      "width" => 360,
-                                     "url" => "http://img-9gag-fun.9cache.com/photo/a84WymY_700b.jpg",
+                                     "src" => "http://img-9gag-fun.9cache.com/photo/a84WymY_700b.jpg",
                                      ),
                                array(
                                      "height" => 525,
                                      "width" => 360,
-                                                     "url" => "http://img-9gag-fun.9cache.com/photo/aNWeqYG_700b.jpg",
+                                     "src" => "http://img-9gag-fun.9cache.com/photo/aNWeqYG_700b.jpg",
                                      ),
                                array(
-                                     "url" => "http://img-9gag-fun.9cache.com/photo/aWMZgPK_700b.jpg",
+                                     "src" => "http://img-9gag-fun.9cache.com/photo/aWMZgPK_700b.jpg",
                                      "height" => 239,
                                      "width" => 360,
                                      ) 
