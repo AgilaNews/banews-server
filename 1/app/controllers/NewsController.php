@@ -217,11 +217,7 @@ class NewsController extends BaseController {
 
 
    protected function serializePhotoChannelCell($news_model) {
-       return array(
-                    "commentCount" => 0,
-                    "likedCount" => 10,
-                    "imgs" =>
-                    array_rand(array(
+       $choice =array(
                                array(
                                      "height" => 399,
                                      "width" => 360,
@@ -236,8 +232,13 @@ class NewsController extends BaseController {
                                      "url" => "http://img-9gag-fun.9cache.com/photo/aWMZgPK_700b.jpg",
                                      "height" => 239,
                                      "width" => 360,
-                                     ))
-                               ),
+                                     ) 
+                    );
+
+       return array(
+                    "commentCount" => 0,
+                    "likedCount" => 10,
+                    "imgs" => array($choice[array_rand($choice)]),
                     "news_id" => mt_rand(),
                     "public_time" => "1466093640",
                     "source" => "9gag",
