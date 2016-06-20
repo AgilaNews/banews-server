@@ -37,7 +37,7 @@ define('MIN_VERSION', "v1.0.0"); //TODO change this to a configuration center
 define('NEW_VERSION', "v1.0.1");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
-define('CACHE_SENT_MASK_MAX', 2000); 
+define('CACHE_SENT_MASK_MAX', 400); 
 define('CACHE_SENT_TTL', 4 * 3600); 
 
 define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
