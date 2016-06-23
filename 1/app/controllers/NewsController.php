@@ -209,6 +209,7 @@ class NewsController extends BaseController {
         return $ret;
     }
 
+
    protected function serializeNewsCell($news_model) {
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         $commentCount = Comment::getCount($news_model->id);
