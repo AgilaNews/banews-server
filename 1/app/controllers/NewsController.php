@@ -223,8 +223,12 @@ class NewsController extends BaseController {
             "public_time" => $news_model->publish_time,
         );
 
-        $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
- 
+        $ret = array_merge($ret, 
+            ImageHelper::formatNewsList($imgs, 
+                $news_model->channel_id, 
+                $this->resolution_w, 
+                $this->resolution_h, 
+                $this->dpi));
         return $ret;
     }
 }
