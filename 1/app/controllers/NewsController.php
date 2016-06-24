@@ -140,6 +140,9 @@ class NewsController extends BaseController {
 
                 $cell = $this->serializeNewsCell($news_model);
                 //drop cell when no image when meet image channel
+                if ($channel_id == 10011 && !$cell["imgs"]) {
+                    continue;
+                }
                 $ret[$dispatch_id][] = $cell;
                 $dispatched []= $sign;
                 $uniq[$news_model->content_sign] = $news_model;
