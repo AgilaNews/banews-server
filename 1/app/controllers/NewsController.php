@@ -23,7 +23,7 @@ class NewsController extends BaseController {
 
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
-        if (!$news_model) {
+        if (!$news_model || !$this->canNewsDetailed($news_model->channel_id)) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
@@ -108,7 +108,7 @@ class NewsController extends BaseController {
         }
 
         $channel_id = $this->get_request_param("channel_id", "int", true);
-        $policy = new ExpDecayListPolicy($this->getDi());
+        $policy = $this->getPolicyByChannel($channel_id);
         $prefer = $this->get_request_param('dir', "string", false, "later");
 
         if (!($prefer == 'later' || $prefer == 'older')) {
@@ -116,6 +116,7 @@ class NewsController extends BaseController {
         }
 
         $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
+        #I don't known if 1.5 is enough
         $base = round(MAX_NEWS_SENT_COUNT * 1.5);
         $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, $base,
                                                 $prefer);
@@ -128,13 +129,18 @@ class NewsController extends BaseController {
         $models = News::batchGet($selected_news_list);
         foreach ($models as $sign => $news_model) {
             if ($news_model && $news_model->is_visible == 1) {
-                if (array_key_exists($news_model->content_sign, $uniq) && 
-                    $uniq[$news_model->content_sign]->source_name == $news_model->source_name) {
+                if ($this->needCheckContentSign($channel_id) && 
+                    array_key_exists($news_model->content_sign, $uniq) && 
+                    $uniq[$news_model->content_sign]->source_name == $news_model->source_name
+                   ) 
+                {
                     //content sign dup and same source, continue
                     continue;
                 }
 
-                $ret [$dispatch_id][] = $this->serializeNewsCell($news_model);
+                $cell = $this->serializeNewsCell($news_model);
+                //drop cell when no image when meet image channel
+                $ret[$dispatch_id][] = $cell;
                 $dispatched []= $sign;
                 $uniq[$news_model->content_sign] = $news_model;
             }
@@ -222,13 +228,37 @@ class NewsController extends BaseController {
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
         );
-
-        $ret = array_merge($ret, 
-            ImageHelper::formatNewsList($imgs, 
+        $img_list = ImageHelper::formatNewsList($imgs, 
                 $news_model->channel_id, 
                 $this->resolution_w, 
                 $this->resolution_h, 
-                $this->dpi));
+                $this->dpi);
+
+        $ret = array_merge($ret, $img_list);
         return $ret;
+    }
+
+    protected function getPolicyByChannel($channel_id) {
+        if ($channel_id == 10011) {
+            return new RandomListPolicy($this->getDI());
+        } else {
+            return new ExpDecayListPolicy($this->getDI());
+        }
+    }
+
+    protected function needCheckContentSign($channel_id) {
+        if ($channel_id == 10011) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    protected function canNewsDetailed($channel_id) {
+        if ($channel_id == 10011) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

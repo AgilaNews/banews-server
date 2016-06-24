@@ -7,10 +7,16 @@ class NewsRedis {
     
     public function getNewsOfChannel($channel_id, $day = 7) {
         $key = "banews:ph:$channel_id";
-        $now = time();
-        $start = ($now - ($day * 86400));
-        $start = $start - ($start % 86400);
-        $end = ($now + 86400) - (($now + 86400) % 86400);
+
+        if ($channel_id == 10011) {
+            $start = 0;
+            $end = 'inf';
+        } else {
+            $now = time();
+            $start = ($now - ($day * 86400));
+            $start = $start - ($start % 86400);
+            $end = ($now + 86400) - (($now + 86400) % 86400);
+        }
 
         $ret = array();
         $tmp =  $this->_redis->zRevRangeByScore($key, $end, $start, 
