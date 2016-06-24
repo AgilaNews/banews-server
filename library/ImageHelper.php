@@ -5,7 +5,7 @@ define('NEWS_LIST_TPL_TEXT_IMG', 4);
 define('NEWS_LIST_TPL_RAW_TEXT', 5);
 define('NEWS_LIST_TPL_RAW_IMG', 6);
 define('IMAGE_CHANNEL_ID', 10011); //TODO change this config to read from db
-define('IMAGE_CHANNEL_PATTERN', IMAGE_SERVER_NAME . '/' . IMAGE_PREFIX . "/%s.jpg?p=%dX_w|c=%dX%d@0X0|q=" . IMAGE_QUALITY);
+define('IMAGE_CHANNEL_PATTERN', "http://" . IMAGE_SERVER_NAME . '/' . IMAGE_PREFIX . "/%s.jpg?p=%dX_w|c=%dX%d@0X0|q=" . IMAGE_QUALITY);
 
 class ImageHelper {
     public static function formatNewsList($img_set, $channel_id, $screen_width, $screen_height, $dpi) {
