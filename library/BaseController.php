@@ -50,7 +50,11 @@ class BaseController extends Controller{
             $ret = explode(";", $this->density);
             var_dump($ret);
             if (count($ret) == 3) {
-                $res_ret = explode("x", $ret[0]) or explode("X", $ret[0]);
+                $res_ret = explode("x", $ret[0]);
+                if (count($res_ret) != 2) {
+                    $res_ret = explode('X', $ret[0]);
+                }
+
                 if (count($res_ret) == 2) {
                     $this->resolution_w = $res_ret[0];
                     $this->resolution_h = $res_ret[1];
