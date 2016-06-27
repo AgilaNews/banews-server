@@ -48,7 +48,6 @@ class BaseController extends Controller{
 
         if ($this->density) {
             $ret = explode(";", $this->density);
-            var_dump($ret);
             if (count($ret) == 3) {
                 $res_ret = explode("x", $ret[0]);
                 if (count($res_ret) != 2) {

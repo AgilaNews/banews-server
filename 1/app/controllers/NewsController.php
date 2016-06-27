@@ -8,10 +8,6 @@
  * 
  * 
  */
-
-define('MIN_NEWS_SEND_COUNT', 8);
-define('MAX_NEWS_SENT_COUNT', 12);
-
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
@@ -23,7 +19,7 @@ class NewsController extends BaseController {
 
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
-        if (!$news_model || !$this->canNewsDetailed($news_model->channel_id)) {
+        if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
@@ -108,59 +104,31 @@ class NewsController extends BaseController {
         }
 
         $channel_id = $this->get_request_param("channel_id", "int", true);
-        $policy = $this->getPolicyByChannel($channel_id);
         $prefer = $this->get_request_param('dir', "string", false, "later");
-
         if (!($prefer == 'later' || $prefer == 'older')) {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
-        #I don't known if 1.5 is enough
-        $base = round(MAX_NEWS_SENT_COUNT * 1.5);
-        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, $base,
-                                                $prefer);
-        $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret = array($dispatch_id => array());
-    
-        $dispatched = array();
-        $uniq = array();
-
-        $models = News::batchGet($selected_news_list);
-        foreach ($models as $sign => $news_model) {
-            if ($news_model && $news_model->is_visible == 1) {
-                if ($this->needCheckContentSign($channel_id) && 
-                    array_key_exists($news_model->content_sign, $uniq) && 
-                    $uniq[$news_model->content_sign]->source_name == $news_model->source_name
-                   ) 
-                {
-                    //content sign dup and same source, continue
-                    continue;
-                }
-
-                $cell = $this->serializeNewsCell($news_model);
-                //drop cell when no image when meet image channel
-                if ($channel_id == 10011 && !$cell["imgs"]) {
-                    continue;
-                }
-                $ret[$dispatch_id][] = $cell;
-                $dispatched []= $sign;
-                $uniq[$news_model->content_sign] = $news_model;
-            }
-
-            if (count($dispatched) >= $required) {
-                break;
-            }
+        
+        $cname = "Render$channel_id";
+        if (class_exists($cname)) {
+            $render = new $cname($channel_id, $this->deviceId, $this->getDI());
+        } else {
+            $render = new BaseListRender($channel_id, $this->deviceId, $this->getDI());
         }
 
-        $this->logger->info(sprintf("[List][dispatch_id:%s][policy:expdecay][pfer:%s][cnl:%d][sent:%d]",
-                                    $dispatch_id, $prefer, $channel_id, count($dispatched)));
-        $policy->setDeviceSent($this->deviceId, $dispatched);
+        $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
+        $ret = $render->render($dispatch_id, $prefer);
+
+        $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
+                                    $dispatch_id, $render->getPolicyTag(), $prefer, 
+                                    $channel_id, count($ret["dispatched"])));
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
-                                              "news"=> $dispatched,
-                                              "policy"=> "expdecay", //we just have one policy
+                                              "news"=> $ret["dispatched"],
+                                              "policy"=> $render->getPolicyTag(),
                                               ));
+        unset($ret["dispatched"]);
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -216,52 +184,5 @@ class NewsController extends BaseController {
             $ret["user_portrait_url"] = $user_model->portrait_url;
         }
         return $ret;
-    }
-
-
-   protected function serializeNewsCell($news_model) {
-        $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
-        $commentCount = Comment::getCount($news_model->id);
-
-        $ret = array (
-            "title" => $news_model->title,
-            "commentCount" => $commentCount,
-            "news_id" => $news_model->url_sign,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-        );
-        $img_list = ImageHelper::formatNewsList($imgs, 
-                $news_model->channel_id, 
-                $this->resolution_w, 
-                $this->resolution_h, 
-                $this->dpi);
-
-        $ret = array_merge($ret, $img_list);
-        return $ret;
-    }
-
-    protected function getPolicyByChannel($channel_id) {
-        if ($channel_id == 10011) {
-            return new RandomListPolicy($this->getDI());
-        } else {
-            return new ExpDecayListPolicy($this->getDI());
-        }
-    }
-
-    protected function needCheckContentSign($channel_id) {
-        if ($channel_id == 10011) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    protected function canNewsDetailed($channel_id) {
-        if ($channel_id == 10011) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }
