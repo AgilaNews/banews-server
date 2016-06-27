@@ -11,7 +11,7 @@ define('NEWS_LIST_TPL_RAW_IMG', 6);
 define('BASE_CHANNEL_IMG_QUALITY', 30);
 define("IMAGE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
-        "/%s.jpg?p=t=%sx%s|q=" . IMAGE_CHANNEL_QUALITY);
+        "/%s.jpg?p=t=%sx%s|q=" . BASE_CHANNEL_IMG_QUALITY);
 
 class BaseListRender {
     public function __construct($channel_id, $device_id, 
