@@ -48,5 +48,6 @@ define('LOG_SERVER_NAME', 'log.' . SERVER_HOST);
 define('MON_SERVER_NAME', 'mon.' . SERVER_HOST);
 define('H5_SERVER_NAME', "m." . SERVER_HOST);
 define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
-define('IMAGE_PREFIX', "image");
-define('IMAGE_QUALITY', 50);
+define('IMAGE_PREFIX', "http://" . 
+                       IMAGE_SERVER_NAME . 
+                      '/image');

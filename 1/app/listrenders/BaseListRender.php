@@ -8,11 +8,17 @@ define('NEWS_LIST_TPL_TEXT_IMG', 4);
 define('NEWS_LIST_TPL_RAW_TEXT', 5);
 define('NEWS_LIST_TPL_RAW_IMG', 6);
 
+define('BASE_CHANNEL_IMG_QUALITY', 30);
+
 class BaseListRender {
-    public function __construct($channel_id, $device_id, $di) {
+    public function __construct($channel_id, $device_id, 
+                                $screen_width, $screen_height, 
+                                $di) {
         $this->_di = $di;
         $this->_device_id = $device_id;
         $this->_channel_id = $channel_id;
+        $this->_screen_w = $screen_width;
+        $this->_screen_h = $screen_height;
     }
 
     public function getPolicyTag(){
