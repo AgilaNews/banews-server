@@ -5,10 +5,10 @@ use Phalcon\Logger;
 $settings = array (
     "appdirs" => array (
         "libraryDir" => "/home/work/banews-server/library/",
-        "validatorDir" => APP_PATH . "/app/validators",
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models",
         "policyDir" => APP_PATH . "/app/policies",
+        "renderDir" => APP_PATH . "/app/listrenders/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
