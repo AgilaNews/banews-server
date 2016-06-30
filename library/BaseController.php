@@ -12,7 +12,7 @@ define("EVENT_NEWS_DETAIL", "020103");
 define("EVENT_NEWS_LIST", "020104");
 define("EVENT_NEWS_LIKE", "020204");
 define("EVENT_NEWS_COLLECT", "020205");
-define('EVENT_NEWS_COLDSETTING', 030101);
+define('EVENT_NEWS_COLDSETTING', "030101");
 
 class BaseController extends Controller{
     public function initialize(){

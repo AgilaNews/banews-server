@@ -27,12 +27,36 @@ class NewsController extends BaseController {
         $topComment = Comment::getAll($newsSign, null, 3);
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
+        $imgcell = array();
+        foreach ($imgs as $img) {
+            if (!$img || $img->is_deadlink == 1 || !$img->meta) {
+                continue;
+            }
+
+            if ($img->origin_url) {
+                $meta = json_decode($img->meta, true);
+                if (!$meta || !$meta["width"] || !$meta["height"]) {
+                    continue;
+                }
+            }
+    
+            $ow = $meta["width"];
+            $oh = $meta["height"];
+            $aw = (int) ($this->resolution_w * 11 / 12);
+            $ah = (int) min($this->resolution_h * 0.9, $aw * $oh / $ow);
+
+            $imgcell[] = array(
+                "src" => sprintf(DETAIL_IMAGE_PATTERN, $img->url_sign, $aw),
+                "width" => $aw,
+                "height" => $ah,
+            );
+        }
 
         $ret = array(
             "body" => $news_model->json_text,
             "commentCount" => $commentCount,
             "comments" => array(), 
-            "imgs" => ImageHelper::formatImgs($imgs, $this->deviceModel, false),
+            "imgs" => $imgcell, 
             "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
@@ -45,22 +69,15 @@ class NewsController extends BaseController {
             "collect_id" => 0, 
         );
 
-        $recommend_policy = new RandomRecommendPolicy($this->getDi());
-        $recommend_news_list =
-            $recommend_policy->sampling($news_model->channel_id,
-                                        $this->deviceId, null, 4);
-
-        $recommend_models = News::batchGet($recommend_news_list);
-        foreach ($recommend_models as $recommend_model) {
-            if ($recommend_model->url_sign == $newsSign) {
-                continue;
-            }
-            $ret["recommend_news"][]= $this->serializeNewsCell($recommend_model);
-            if (count($ret["recommend_news"]) == 3) {
-                break;
-            }
+        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->getDI());
+        $models = $recommend_selector->select($this->deviceId, $this->userSign, $news_model->url_sign);
+        if (class_exists($cname)) {
+            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
+        } else {
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h);
         }
 
+        $ret["recommend_news"][]= $render->render($models);
         if ($this->userSign) {
             $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
         }
@@ -109,26 +126,41 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        
+
+        $cname = "Selector$channel_id";
+        if (class_exists($cname)) {
+            $selector = new $cname($channel_id, $this->getDI()); 
+        } else {
+            $selector = new BaseNewsSelector($channel_id, $this->getDI());
+        }
+
+        $models = $selector->select($this->deviceId, $this->userSign, $prefer);
+        $dispatch_ids = array();
+        foreach ($models as $sign => $model) {
+            $dispatch_ids []= $sign;
+        }
+
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
-            $render = new $cname($channel_id, $this->deviceId, $this->resolution_w, $this->resolution_h, $this->getDI());
+            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
         } else {
-            $render = new BaseListRender($channel_id, $this->deviceId, $this->resolution_w, $this->resolution_h, $this->getDI());
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h);
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret = $render->render($dispatch_id, $prefer);
+        $ret[$dispatch_id] = $render->render($models);
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
-                                    $dispatch_id, $render->getPolicyTag(), $prefer, 
-                                    $channel_id, count($ret["dispatched"])));
+                                    $dispatch_id, $selector->getPolicyTag(), $prefer, 
+                                    $channel_id, count($ret[$dispatch_id])));
+
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
-                                              "news"=> $ret["dispatched"],
-                                              "policy"=> $render->getPolicyTag(),
+                                              "news"=> $dispatch_ids,
+                                              "policy"=> $selector->getPolicyTag(),
+                                              "channel_id" => $channel_id,
+                                              "prefer" => $prefer,
                                               ));
-        unset($ret["dispatched"]);
         $this->setJsonResponse($ret);
         return $this->response;
     }
