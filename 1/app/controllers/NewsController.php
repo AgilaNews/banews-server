@@ -71,7 +71,7 @@ class NewsController extends BaseController {
 
         $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->getDI());
         $models = $recommend_selector->select($this->deviceId, $this->userSign, $news_model->url_sign);
-        $cname = "Recommend$channel_id";
+        $cname = "Recommend" . $news_model->channel_id;
         if (class_exists($cname)) {
             $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
         } else {
