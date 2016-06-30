@@ -4,6 +4,7 @@ define('NEWS_LIST_TPL_THREE_IMG', 3);
 define('NEWS_LIST_TPL_TEXT_IMG', 4);
 define('NEWS_LIST_TPL_RAW_TEXT', 5);
 define('NEWS_LIST_TPL_RAW_IMG', 6);
+define('NEWS_LIST_TPL_VIDEO', 7);
 class BaseListRender {
     public function __construct($device_id, $screen_width, $screen_height) {
         $this->_device_id = $device_id;

@@ -64,3 +64,6 @@ define('BASE_CHANNEL_IMG_QUALITY', 30);
 define("BASE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
         "/%s.jpg?p=t=%sx%s|q=" . BASE_CHANNEL_IMG_QUALITY);
+
+define('GIF_COVER_PATTERN', 
+        IMAGE_PREFIX . "/%s_cover.jpg");
