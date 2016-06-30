@@ -26,7 +26,7 @@ class NewsGif extends BaseModel {
 
     public $gif_meta;
 
-    public static function getGifsOfNews($news_sign){
+    public static function getGifOfNews($news_sign){
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
             $value = $cache->get(CACHE_GIFS_PREFIX . $news_sign);
