@@ -8,7 +8,7 @@ class NewsRedis {
     public function getNewsOfChannel($channel_id, $day = 7) {
         $key = "banews:ph:$channel_id";
 
-        if ($channel_id == 10011) {
+        if ($channel_id == 10011 || $channel_id == 10012) {
             $start = 0;
             $end = 'inf';
         } else {
