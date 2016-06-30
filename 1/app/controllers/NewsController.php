@@ -71,13 +71,14 @@ class NewsController extends BaseController {
 
         $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->getDI());
         $models = $recommend_selector->select($this->deviceId, $this->userSign, $news_model->url_sign);
+        $cname = "Recommend$channel_id";
         if (class_exists($cname)) {
             $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
         } else {
             $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h);
         }
 
-        $ret["recommend_news"][]= $render->render($models);
+        $ret["recommend_news"]= $render->render($models);
         if ($this->userSign) {
             $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
         }
@@ -99,7 +100,7 @@ class NewsController extends BaseController {
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
                                                "recommend"=> array(
-                                                                   "news" => $recommend_news_list,
+                                                                   "news" => array_keys($models),
                                                                    "policy"=> "random",
                                                                    ),
                                                  ));
