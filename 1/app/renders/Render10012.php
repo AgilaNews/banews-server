@@ -23,12 +23,12 @@ class Render10012 extends BaseListRender {
         if (!$gifs || 
             count($gifs) != 1 || 
             $gifs[0]->is_deadlink == 1 ||
-            !$gifs[0]->meta) {
+            !$gifs[0]->gif_meta) {
             return null;
         }
 
         $gif_model = $gifs[0];
-        $meta = $gif_model->meta;
+        $meta = $gif_model->gif_meta;
         $duration = $meta["duration"];
         $height = $meta["height"];
         $width = $meta["width"];
