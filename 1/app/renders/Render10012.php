@@ -22,7 +22,7 @@ class Render10012 extends BaseListRender {
         $gifs = NewsGif::getGifOfNews($news_model->url_sign);
         if (!$gifs || 
             count($gifs) != 1 || 
-            $gifs[0]->is_deadlink != 1 ||
+            $gifs[0]->is_deadlink == 1 ||
             !$gifs[0]->meta) {
             return null;
         }
