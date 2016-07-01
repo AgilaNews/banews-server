@@ -42,7 +42,11 @@ class NewsGif extends BaseModel {
             "bind" => array(1 => $news_sign),
             );
 
-        $rs = self::find($crit);
+        $rs = NewsGif::find($crit);
+        if (!$rs) {
+            var_dump($rs->getMessages()); 
+            exit(0);
+        }
         if ($cache) {
             $cache->multi();
             $cache->set(CACHE_GIFS_PREFIX . $news_sign, serialize($rs));

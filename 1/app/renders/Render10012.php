@@ -9,6 +9,9 @@ class Render10012 extends BaseListRender {
 
         foreach ($models as $sign => $news_model) {
             $cell = $this->serializeNewsCell($news_model);
+            if (!$cell) {
+                continue;   
+            }
             $ret []= $cell;
         }
 
