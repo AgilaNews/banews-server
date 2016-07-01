@@ -55,6 +55,7 @@ $settings = array (
                         "log" => "https://" . LOG_SERVER_NAME . "/v%d",
                         "mon" => "https://" .  MON_SERVER_NAME . "/v%d",
                         "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
+                        "referrer" => "https://" . SERVER_NAME . "/referrer",
                         ),
 
 );
