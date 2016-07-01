@@ -49,6 +49,7 @@ class NewsController extends BaseController {
                 "src" => sprintf(DETAIL_IMAGE_PATTERN, $img->url_sign, $aw),
                 "width" => $aw,
                 "height" => $ah,
+                "name" => "<!--IMG" . $img->news_pos_id . "--!>",
             );
         }
 
@@ -75,7 +76,7 @@ class NewsController extends BaseController {
         if (class_exists($cname)) {
             $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
         } else {
-            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h);
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
         }
 
         $ret["recommend_news"]= $render->render($models);
@@ -145,7 +146,7 @@ class NewsController extends BaseController {
         if (class_exists($cname)) {
             $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
         } else {
-            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h);
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);

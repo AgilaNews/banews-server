@@ -6,10 +6,11 @@ define('NEWS_LIST_TPL_RAW_TEXT', 5);
 define('NEWS_LIST_TPL_RAW_IMG', 6);
 define('NEWS_LIST_TPL_VIDEO', 7);
 class BaseListRender {
-    public function __construct($device_id, $screen_width, $screen_height) {
+    public function __construct($device_id, $screen_width, $screen_height, $net) {
         $this->_device_id = $device_id;
         $this->_screen_w = $screen_width;
         $this->_screen_h = $screen_height;
+        $this->_net = $net;
     }
 
     public function render($models) {

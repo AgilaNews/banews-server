@@ -55,9 +55,11 @@ define('IMAGE_PREFIX', "http://" .
                       '/image');
 
 
-define("IMAGE_CHANNEL_QUALITY", 50);
+define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
+define("IMAGE_CHANNEL_LOW_QUALITY", 10);
+define("IMAGE_CHANNEL_NORMAL_QUALITY", 30);
 define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX . 
-       "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=" . IMAGE_CHANNEL_QUALITY);
+       "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=%d");
 
 define("DETAIL_IMAGE_QUALITY", 50);
 define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%dX_w|q=" . DETAIL_IMAGE_QUALITY);

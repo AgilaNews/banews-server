@@ -1,7 +1,7 @@
 <?php
 class Render10012 extends BaseListRender {
-    public function __construct($did, $screen_width, $screen_height) {
-        parent::__construct($did, $screen_width, $screen_height);
+    public function __construct($did, $screen_width, $screen_height, $net) {
+        parent::__construct($did, $screen_width, $screen_height, $net);
     }
 
     public function render($models) {

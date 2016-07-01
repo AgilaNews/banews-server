@@ -1,8 +1,8 @@
 <?php
 
 class Render10011 extends BaseListRender {
-    public function __construct($did, $screen_width, $screen_height) {
-        parent::__construct($did, $screen_width, $screen_height);
+    public function __construct($did, $screen_width, $screen_height, $net) {
+        parent::__construct($did, $screen_width, $screen_height, $net);
     }
 
     public function render($models) {
@@ -49,9 +49,17 @@ class Render10011 extends BaseListRender {
                 $oh = $meta["height"];
                 $aw = (int) ($this->_screen_w * 11 / 12);
                 $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
+                if ($this->net == "WIFI") {
+                    $quality = IMG_CHANNEL_HIGH_QUALITY;
+                } else if ($this->net == "2G") {
+                    $quality = IMG_CHANNEL_LOW_QUALITY;
+                }else {
+                    $quality = IMG_CHANNEL_NORMAL_QUALITY;
+                }
+                
                 $url =  sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
                                 $img->url_sign, 
-                                $aw, $aw, $ah);
+                                $aw, $aw, $ah, $quality);
                 $ret["imgs"][] = array(
                     "src" => $url, 
                     "height" => $ah, 
