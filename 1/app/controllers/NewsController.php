@@ -131,12 +131,12 @@ class NewsController extends BaseController {
 
         $cname = "Selector$channel_id";
         if (class_exists($cname)) {
-            $selector = new $cname($channel_id, $this->getDI()); 
+            $selector = new $cname($channel_id, $this->deviceId, $this->userSign, $this->getDI()); 
         } else {
-            $selector = new BaseNewsSelector($channel_id, $this->getDI());
+            $selector = new BaseNewsSelector($channel_id, $this->deviceId, $this->userSign, $this->getDI());
         }
 
-        $models = $selector->select($this->deviceId, $this->userSign, $prefer);
+        $models = $selector->select($prefer);
         $dispatch_ids = array();
         foreach ($models as $sign => $model) {
             $dispatch_ids []= $sign;

@@ -12,13 +12,23 @@ define('MIN_NEWS_SEND_COUNT', 8);
 define('MAX_NEWS_SENT_COUNT', 12);
 define('MORE_NEWS_FACTOR', 1.5);
 class BaseNewsSelector {
-    public function __construct($channel_id, $di) {
+    public function __construct($channel_id, $device_id, $user_id, $di) {
         $this->_channel_id = $channel_id;
+        $this->_device_id = $device_id;
+        $this->_user_id = $user_id;
         $this->_di = $di;
     }
 
-    protected function getPolicy(){
-        return new ExpDecayListPolicy($this->_di);
+    protected function sampling($sample_count, $prefer){
+        $policy = new ExpDecayListPolicy($this->_di);
+        /*
+            get random number of news we want
+            because we may get duplicated news because of content similariy, 
+            so we query more news than we requried, then multiple the random number with a factor
+            'MORE_NEWS_FACTOR'
+        */
+        return $policy->sampling($this->_channel_id, $this->_device_id, $this->_user_id,
+                                 $sample_count, $prefer);
     }
 
     public function getPolicyTag(){
@@ -56,22 +66,12 @@ class BaseNewsSelector {
         return $ret;
     }
 
-    public function select($device_id, $user_id, $prefer) {
-        //we use exp decay method as default select method
-        $policy = $this->getPolicy();
-
-        /*
-            get random number of news we want
-            because we may get duplicated news because of content similariy, 
-            so we query more news than we requried, then multiple the random number with a factor
-            'MORE_NEWS_FACTOR'
-        */
+    public function select($prefer) {
         $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
         #I don't known if 1.5 is enough
         $base = round(MAX_NEWS_SENT_COUNT * MORE_NEWS_FACTOR);
 
-        $selected_news_list = $policy->sampling($this->_channel_id, $device_id, 
-                                                null, $base, $prefer);
+        $selected_news_list = $this->sampling($base, $prefer); 
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
