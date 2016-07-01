@@ -39,13 +39,13 @@ class Render10012 extends BaseListRender {
             "source" => $news_model->source_name,
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
-            "gif" => array(
-                "cover" => sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign),
+            "imgs" => array(sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign)),
+            "video" => array(array(
                 "src" => $gif_model->gif_save_url,
                 "width" => $width,
                 "height" => $height,
                 "duration" => $duration,
-            )
+            ))
         );
 
         $ret["tpl"] = NEWS_LIST_TPL_VIDEO;
