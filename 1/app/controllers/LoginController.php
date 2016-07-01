@@ -52,10 +52,29 @@ class LoginController extends BaseController {
 
         $this->logger->info(sprintf("[Login][source:%s][uid:%s][id:%s][gender:%d][email:%s]", 
                             $source_name, $uid, $user->id, $user->gender, $user->email));
+
         $this->setJsonResponse($this->serializeUser($user));
         return $this->response;
     }
 
+    public function ReferrerAction(){
+        if (!$this->request->isPost()) {
+            throw new HttpException(ERR_INVALID_METHOD, "referret must be POST");
+        }
+
+        $req = $this->request->getJsonRawBody(true);
+        if (null === $req) {
+            throw new HttpException(ERR_BODY, "body format error");
+        }
+
+        $referrer = $this->get_or_fail($req, "referrer", "string");
+        $this->logger->info(sprintf("[Referrer][param:%s]", $referrer));
+        $this->logEvent(EVENT_NEWS_REFERRER, array(
+            "referrer" => $referrer,
+        ));
+        $this->setJsonResponse(array("message" => "ok"));
+        return $this->response;
+    }
 
     public function sign_user($uid, $source) {
         // I think there will not be any confliction
