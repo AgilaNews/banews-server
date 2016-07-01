@@ -40,7 +40,7 @@ class Render10012 extends BaseListRender {
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
             "imgs" => array(sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign)),
-            "video" => array(array(
+            "videos" => array(array(
                 "src" => $gif_model->gif_save_url,
                 "width" => $width,
                 "height" => $height,
