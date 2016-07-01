@@ -28,6 +28,7 @@ class Render10012 extends BaseListRender {
         }
 
         $gif_model = $gifs[0];
+        $cover_meta = json_decode($gif_model->cover_meta, true);
         $meta = json_decode($gif_model->gif_meta, true);
         $duration = $meta["duration"];
         $height = $meta["height"];
@@ -39,7 +40,11 @@ class Render10012 extends BaseListRender {
             "source" => $news_model->source_name,
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
-            "imgs" => array(sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign)),
+            "imgs" => array(array(
+                "src" => sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign),
+                "width" => $cover_meta["width"],
+                "height" => $cover_meta["height"]
+                )),
             "videos" => array(array(
                 "src" => $gif_model->gif_save_url,
                 "width" => $width,
