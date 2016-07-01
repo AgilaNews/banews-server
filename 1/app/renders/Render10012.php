@@ -33,6 +33,8 @@ class Render10012 extends BaseListRender {
         $duration = $meta["duration"];
         $height = $meta["height"];
         $width = $meta["width"];
+        $aw = (int) ($this->_screen_w * 11 / 12);
+        $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
         
         $ret = array(
             "title" => $news_model->title,
@@ -42,13 +44,13 @@ class Render10012 extends BaseListRender {
             "public_time" => $news_model->publish_time,
             "imgs" => array(array(
                 "src" => sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign),
-                "width" => $cover_meta["width"],
-                "height" => $cover_meta["height"]
+                "width" => $aw,
+                "height" => $ah,
                 )),
             "videos" => array(array(
                 "src" => $gif_model->gif_save_url,
-                "width" => $width,
-                "height" => $height,
+                "width" => $aw,
+                "height" => $ah,
                 "duration" => $duration,
             ))
         );
