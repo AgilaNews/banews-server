@@ -125,8 +125,8 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
         
-        if (Collect::getCollectId($this->userSign, $news_model->url_sign)) {
-            throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this");
+        if(($saved_cid = Collect::getCollectId($this->userSign, $news_model->url_sign))) {
+            throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
         }
 
         $collect_model = new Collect();
