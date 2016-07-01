@@ -144,7 +144,7 @@ class NewsController extends BaseController {
 
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
-            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
+            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
         } else {
             $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
         }

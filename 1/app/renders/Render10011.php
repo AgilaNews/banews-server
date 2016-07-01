@@ -49,6 +49,7 @@ class Render10011 extends BaseListRender {
                 $oh = $meta["height"];
                 $aw = (int) ($this->_screen_w * 11 / 12);
                 $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
+
                 if ($this->net == "WIFI") {
                     $quality = IMG_CHANNEL_HIGH_QUALITY;
                 } else if ($this->net == "2G") {
