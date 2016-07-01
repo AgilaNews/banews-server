@@ -11,6 +11,7 @@
 define('MIN_NEWS_SEND_COUNT', 8);
 define('MAX_NEWS_SENT_COUNT', 12);
 define('MORE_NEWS_FACTOR', 1.5);
+define("DEFAULT_SAMPLING_DAY", 7);
 class BaseNewsSelector {
     public function __construct($channel_id, $device_id, $user_id, $di) {
         $this->_channel_id = $channel_id;
@@ -21,12 +22,12 @@ class BaseNewsSelector {
 
     protected function sampling($sample_count, $prefer){
         return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id, $this->_user_id,
-                                            $sample_count, $prefer);
+                                            $sample_count, DEFAULT_SAMPLING_DAY, $prefer);
     }
 
 
     public function getPolicy() {
-        if (!$this->_policy) {
+        if (!isset($this->_policy)) {
             $this->_policy = new ExpDecayListPolicy($this->_di); 
         }
         return $this->_policy;
@@ -88,7 +89,7 @@ class BaseNewsSelector {
             $models = array_slice($models, 0, $required);
         }
         
-        $this->getPolicy()->setDeviceSent($device_id, array_keys($models));
+        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
         return $models;
     }
 }

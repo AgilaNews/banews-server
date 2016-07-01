@@ -12,7 +12,8 @@ abstract class BaseListPolicy {
         $this->_cache = new NewsRedis($redis);
     }
 
-    abstract public function sampling($channel_id, $device_id, $user_id, $pn = 10, $prefer='later', array $options = null);
+    abstract public function sampling($channel_id, $device_id, $user_id, $pn, $day_till_now, $prefer, 
+                                      array $options = array());
 
     public function setDeviceSent($device_id, $news_ids) {
         $this->_cache->setDeviceSeen($device_id, $news_ids); 
@@ -24,9 +25,9 @@ abstract class BaseListPolicy {
         }
     }
 
-    protected function getAllUnsent($channel_id, $device_id) {
+    protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
         $sent = $this->_cache->getDeviceSeen($device_id);
-        $ready_news_list = $this->_cache->getNewsOfchannel($channel_id);
+        $ready_news_list = $this->_cache->getNewsOfchannel($channel_id, $day_till_now);
         $valid_news_list = array();
 
         foreach ($ready_news_list as $ready_news) {

@@ -4,9 +4,9 @@ class RandomListPolicy extends BaseListPolicy {
         parent::__construct($di);
     }
 
-    public function sampling($channel_id, $device_id, $user_id, $pn = 10, $prefer = 'later', array $options = null) {
-        //$valid_news_list = $this->getAllUnsent($channel_id, $device_id);
-        $valid_news_list = $this->_cache->getNewsOfchannel($channel_id);
+    public function sampling($channel_id, $device_id, $user_id, $pn, 
+                             $day_till_now, $prefer, array $options = array()) {
+        $valid_news_list = $this->_cache->getNewsOfchannel($channel_id, $day_till_now);
 
         if (!$valid_news_list) {
             return array();

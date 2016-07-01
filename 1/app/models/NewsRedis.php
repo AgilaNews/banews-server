@@ -3,9 +3,8 @@ class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
     }
-
     
-    public function getNewsOfChannel($channel_id, $day = 7) {
+    public function getNewsOfChannel($channel_id, $day) {
         $key = "banews:ph:$channel_id";
 
         if ($channel_id == 10011 || $channel_id == 10012) {

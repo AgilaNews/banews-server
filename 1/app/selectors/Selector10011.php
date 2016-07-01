@@ -15,7 +15,7 @@ class Selector10011 extends BaseNewsSelector {
 
     public function sampling($sampling_count, $prefer) {
         return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id,
-                                 $this->_user_id, $sampling_count, $prefer);
+                                 $this->_user_id, $sampling_count, 30, $prefer);
     }
 
     public function select($prefer) {
@@ -24,7 +24,7 @@ class Selector10011 extends BaseNewsSelector {
         $models = News::batchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         
-        $this->getPolicy()->setDeviceSent($device_id, array_keys($models));
+        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
         return $models;
     }
 }
