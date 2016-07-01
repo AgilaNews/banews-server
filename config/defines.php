@@ -55,7 +55,7 @@ define('IMAGE_PREFIX', "http://" .
                       '/image');
 
 
-define("IMAGE_CHANNEL_HIGH_QUALITY", 30);
+define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
 define("IMAGE_CHANNEL_LOW_QUALITY", 15);
 define("IMAGE_CHANNEL_NORMAL_QUALITY", 30);
 define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX . 
