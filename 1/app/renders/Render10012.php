@@ -28,7 +28,7 @@ class Render10012 extends BaseListRender {
         }
 
         $gif_model = $gifs[0];
-        $meta = $gif_model->gif_meta;
+        $meta = json_decode($gif_model->gif_meta, true);
         $duration = $meta["duration"];
         $height = $meta["height"];
         $width = $meta["width"];
