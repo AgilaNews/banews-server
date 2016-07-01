@@ -20,20 +20,23 @@ class BaseNewsSelector {
     }
 
     protected function sampling($sample_count, $prefer){
-        $policy = new ExpDecayListPolicy($this->_di);
-        /*
-            get random number of news we want
-            because we may get duplicated news because of content similariy, 
-            so we query more news than we requried, then multiple the random number with a factor
-            'MORE_NEWS_FACTOR'
-        */
-        return $policy->sampling($this->_channel_id, $this->_device_id, $this->_user_id,
-                                 $sample_count, $prefer);
+        return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id, $this->_user_id,
+                                            $sample_count, $prefer);
     }
 
+
+    public function getPolicy() {
+        if (!$this->_policy) {
+            $this->_policy = new ExpDecayListPolicy($this->_di); 
+        }
+        return $this->_policy;
+    }
+
+    
     public function getPolicyTag(){
         return "expdecay";
     }
+
 
     protected function removeInvisible($models) {
         $ret = array();
@@ -67,6 +70,12 @@ class BaseNewsSelector {
     }
 
     public function select($prefer) {
+        /*
+            get random number of news we want
+            because we may get duplicated news because of content similariy, 
+            so we query more news than we requried, then multiple the random number with a factor
+            'MORE_NEWS_FACTOR'
+        */
         $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
         #I don't known if 1.5 is enough
         $base = round(MAX_NEWS_SENT_COUNT * MORE_NEWS_FACTOR);
@@ -79,7 +88,7 @@ class BaseNewsSelector {
             $models = array_slice($models, 0, $required);
         }
         
-        $policy->setDeviceSent($device_id, array_keys($models));
+        $this->getPolicy()->setDeviceSent($device_id, array_keys($models));
         return $models;
     }
 }

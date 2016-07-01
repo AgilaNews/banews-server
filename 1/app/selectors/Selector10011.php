@@ -7,21 +7,24 @@ class Selector10011 extends BaseNewsSelector {
     }
 
     public function getPolicy() {
-        return new RandomListPolicy($this->_di); 
+        if (!$this->_policy) {
+            $this->_policy = new RandomListPolicy($this->_di); 
+        }
+        return $this->_policy;
     }
+
     public function sampling($sampling_count, $prefer) {
-        $policy = $this->getPolicy();
-        return $policy->sampling($this->_channel_id, $this->_device_id,
+        return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id,
                                  $this->_user_id, $sampling_count, $prefer);
     }
 
     public function select($prefer) {
         $required = mt_rand(MIN_IMG_SENT_COUNT, MAX_IMG_SEND_COUNT);
-        $selected_news_list = $this->sampling_count($required, $prefer);
+        $selected_news_list = $this->sampling($required, $prefer);
         $models = News::batchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         
-        $policy->setDeviceSent($device_id, array_keys($models));
+        $this->getPolicy()->setDeviceSent($device_id, array_keys($models));
         return $models;
     }
 }
