@@ -57,25 +57,6 @@ class LoginController extends BaseController {
         return $this->response;
     }
 
-    public function ReferrerAction(){
-        if (!$this->request->isPost()) {
-            throw new HttpException(ERR_INVALID_METHOD, "referret must be POST");
-        }
-
-        $req = $this->request->getJsonRawBody(true);
-        if (null === $req) {
-            throw new HttpException(ERR_BODY, "body format error");
-        }
-
-        $referrer = $this->get_or_fail($req, "referrer", "string");
-        $this->logger->info(sprintf("[Referrer][param:%s]", $referrer));
-        $this->logEvent(EVENT_NEWS_REFERRER, array(
-            "referrer" => $referrer,
-        ));
-        $this->setJsonResponse(array("message" => "ok"));
-        return $this->response;
-    }
-
     public function sign_user($uid, $source) {
         // I think there will not be any confliction
         $salt = "buierh013!@$!#%";
