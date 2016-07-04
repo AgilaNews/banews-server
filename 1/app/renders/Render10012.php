@@ -42,6 +42,7 @@ class Render10012 extends BaseListRender {
             "source" => $news_model->source_name,
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
+            "likedCount" => $news_model->liked,
             "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
             "imgs" => array(array(
                 "src" => sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign),
