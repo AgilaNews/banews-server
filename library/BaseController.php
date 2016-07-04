@@ -36,6 +36,7 @@ class BaseController extends Controller{
         $this->density = $this->request->getHeader('X-DENSITY');
         $this->session = $this->request->getHeader('X-SESSION');
         $this->ua = $this->request->getHeader('USER-AGENT');
+        $this->client_ip = $this->request->getHeader('X-FORWARDED-FOR');
         $this->deviceModel = DEVICE_MEDIUM;
         $this->resolution_w = 720;
         $this->resolution_h = 1280;
@@ -139,6 +140,7 @@ class BaseController extends Controller{
         $param["lang"] = $this->lang;
         $param["time"] = round(microtime(true) * 1000);
         $param["ua"] = $this->ua;
+        $params["client-ip"] = $this->client_ip; 
 
         $this->eventlogger->info(json_encode($param));
     }
