@@ -11,7 +11,7 @@ abstract class BaseRecommendPolicy {
         $this->logger = $this->_di->get('logger');
     }
 
-    abstract public function sampling($channel_id, $device_id, $user_id, $pn = 3, array $options = null);
+    abstract public function sampling($channel_id, $device_id, $user_id, $pn = 3, $day_till_now=7, array $options = null);
 
     protected function logPolicy($msg) {
         if ($this->logger) {
