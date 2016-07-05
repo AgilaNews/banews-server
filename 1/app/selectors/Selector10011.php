@@ -1,9 +1,7 @@
 <?php
-define("MIN_IMG_SENT_COUNT", 10);
-define("MAX_IMG_SEND_COUNT", 12);
 class Selector10011 extends BaseNewsSelector {
     public function getPolicyTag() {
-        return "random"; 
+        return "origin_web_weight"; 
     }
 
     public function getPolicy() {
