@@ -58,7 +58,7 @@ class ExpDecayListPolicy extends BaseListPolicy {
 	    $ret = array();
 
         foreach ($valid_news_list as $news) {
-            $time = $news["ptime"];
+            $time = $news["weight"];
             if ($time > $begin) {
                 $slot = $high_prio_hour - (int)(($time - $begin) / 3600);
                 $ret []= $decay_weights[$slot]; 

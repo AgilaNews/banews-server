@@ -7,7 +7,7 @@ class NewsRedis {
     public function getNewsOfChannel($channel_id, $day) {
         $key = "banews:ph:$channel_id";
 
-        if ($channel_id == 10011 || $channel_id == 10012) {
+        if ($day == null) {
             $start = 0;
             $end = 'inf';
         } else {
@@ -21,7 +21,7 @@ class NewsRedis {
         $tmp =  $this->_redis->zRevRangeByScore($key, $end, $start, 
                                                 array("withscores"=>true));
         foreach ($tmp as $id=>$weight) {
-            $ret []= array("id" => $id, "ptime"=>$weight);
+            $ret []= array("id" => $id, "weight"=>$weight);
         }
 
         return $ret;
