@@ -49,7 +49,7 @@ class NewsController extends BaseController {
                 "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
                 "width" => $aw,
                 "height" => $ah,
-                "name" => "<!--IMG" . $img->news_pos_id . "--!>",
+                "name" => "<!--IMG" . $img->news_pos_id . "-->",
             );
         }
 
