@@ -49,7 +49,8 @@ class BaseListRender {
                 $oh = $meta["height"];
                 $ow = $meta["width"];
                 $ret["imgs"][] = array(
-                    "src" => $img->origin_url, 
+                    //"src" => $img->origin_url, 
+                    "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "225", "180"), 
                     "width" => $ow, 
                     "height" => $oh, 
                     "pattern" => sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}"), 
