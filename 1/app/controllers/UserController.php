@@ -163,13 +163,8 @@ class UserController extends BaseController {
         $ret = array();
         $signs = array();
 
-        foreach ($collects as $collect) {
-            $signs []= $collect->news_sign;
-        }
-
-        $models = News::batchGet($signs);
-        $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h);
-        $ret = $render->render($models);
+        $render = new BaseCollectListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
+        $ret = $render->render($collects);
 
         $this->logger->info(sprintf("[GetCollect][last:%d][limit:%d][ret:%d]",
                                      $last_id, $pn, count($ret)));
