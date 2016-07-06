@@ -46,3 +46,24 @@ define('SERVER_NAME', "api." . SERVER_HOST);
 define('LOG_SERVER_NAME', 'log.' . SERVER_HOST);
 define('MON_SERVER_NAME', 'mon.' . SERVER_HOST);
 define('H5_SERVER_NAME', "m." . SERVER_HOST);
+
+define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
+define('IMAGE_PREFIX', "http://" .
+                       IMAGE_SERVER_NAME .
+                      '/image');
+
+
+define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
+define("IMAGE_CHANNEL_LOW_QUALITY", 15);
+define("IMAGE_CHANNEL_NORMAL_QUALITY", 30);
+define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX .
+       "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=%d");
+
+define("DETAIL_IMAGE_QUALITY", 50);
+define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%dX_w|q=" . DETAIL_IMAGE_QUALITY);
+
+
+define('BASE_CHANNEL_IMG_QUALITY', 45);
+define("BASE_CHANNEL_IMG_PATTERN",
+        IMAGE_PREFIX .
+        "/%s.jpg?p=t=%sx%s|q=" . BASE_CHANNEL_IMG_QUALITY);

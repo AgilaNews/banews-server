@@ -6,6 +6,7 @@ define('NEWS_LIST_TPL_RAW_TEXT', 5);
 
 class ImageHelper {
     protected static function selectImg($img, $model, $is_thumb) {
+        /*
         $img_obj = json_decode($img->saved_url, true);
         if (!$img_obj){
             return array(
@@ -18,8 +19,39 @@ class ImageHelper {
         if ($is_thumb) {
             $model = "thumb_" . $model;
         }
-        
-        return $img_obj[$model];
+        */
+        if ($img->origin_url) {
+            $meta = json_decode($img->meta, true);
+            if (!$meta || !$meta["width"] || !$meta["height"]) {
+                continue;
+            }
+            $oh = $meta["height"];
+            $ow = $meta["width"];
+
+            if ($is_thumb) {
+                return array (
+                    "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "225", "180"),
+                    "width" => 225,
+                    "height" => 180,
+                );
+            } else {
+
+                $aw = (int) ($this->resolution_w * 11 / 12);
+                $ah = (int) min($this->resolution_h * 0.9, $aw * $oh / $ow);
+
+                return array (
+                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
+                    "width" => $aw,
+                    "height" => $ah,
+                );
+            }
+        } else {
+            return array (
+                "src" => $img->source_url,
+                "height" => 128,
+                "width" => 128,
+            );
+        }
     }
     
     public static function formatImgs($imgs, $model, $is_thumb, $use_name = true) {
