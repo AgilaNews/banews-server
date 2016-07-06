@@ -16,7 +16,7 @@ class BaseRecommendNewsSelector {
         return "random";
     }
 
-    public function select($device_id, $user_id, $myself) {
+    public function select($myself) {
         $policy = $this->getPolicy();
         $base = DEFAULT_RECOMMEND_NEWS_COUNT + 1;
         $news_list = $policy->sampling($this->_channel_id, $this->_device_id, $this->_user_id, $base);
