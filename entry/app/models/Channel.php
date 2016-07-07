@@ -8,6 +8,8 @@ class Channel extends BaseModel {
 
     public $name;
 
+    public $publish_latest_version;
+
     public $priority;
 
     public $fixed;
@@ -18,7 +20,7 @@ class Channel extends BaseModel {
         return "tb_channel";
     }
 
-    public static function getAllVisible(){
+    public static function getAllVisible($client_version){
         $cache = DI::getDefault()->get('cache');
 
         if ($cache) {
@@ -41,6 +43,13 @@ class Channel extends BaseModel {
             $cache->exec();
         }
 
-        return $channels;
+        $ret = array();
+        foreach ($channels as $channel) {
+            if (version_compare($client_version, $channel->publish_latest_version, ">=")) {
+                $ret []= $channel;    
+            }
+        }
+
+        return $ret;
     } 
 }

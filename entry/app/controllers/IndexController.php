@@ -29,10 +29,11 @@ class IndexController extends BaseController {
         if (empty($kw["clientVersion"])) {
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND, 'client version not found');    
         }
+        $client_version = $kw["clientVersion"];
 
         $vm = Version::find(array(
                   "conditions" => "client_version = ?1",
-                  "bind" => array(1 => $kw["clientVersion"]),
+                  "bind" => array(1 => $client_version),
                   /*
                   "cache" => array(
                                    "lifetime" => 1,
@@ -63,7 +64,7 @@ class IndexController extends BaseController {
                 "categories" => array(),
                 );
 
-        $channels = Channel::getAllVisible();
+        $channels = Channel::getAllVisible(substr($kw, 1));
         $i = 0;
         foreach ($channels as $channel) {
             $ret["categories"][] = array(
