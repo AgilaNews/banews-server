@@ -36,7 +36,7 @@ define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
 
 define('ANDROID_VERSION_CODE', 8);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "v1.1.0");
+define('NEW_VERSION', "v1.0.3");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 400); 
