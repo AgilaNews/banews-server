@@ -6,9 +6,10 @@ $settings = array (
     "appdirs" => array (
         "libraryDir" => "/home/work/banews-server/library/",
         "controllerDir" => APP_PATH . "/app/controllers/",
-        "modelDir" => APP_PATH . "/app/models/",
-        "policyDir" => APP_PATH . "/app/policies/",
-        "renderDir" => APP_PATH . "/app/listrenders/",
+        "modelDir" => APP_PATH . "/app/models",
+        "policyDir" => APP_PATH . "/app/policies",
+        "renderDir" => APP_PATH . "/app/renders/",
+        "selectorDir" => APP_PATH . "/app/selectors/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
