@@ -6,7 +6,7 @@ class RandomListPolicy extends BaseListPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $pn, 
                              $day_till_now, $prefer, array $options = array()) {
-        $valid_news_list = $this->_cache->getNewsOfchannel($channel_id, $day_till_now);
+        $valid_news_list = $this->_cache->getAllUnsent($channel_id, $day_till_now);
 
         if (!$valid_news_list) {
             return array();

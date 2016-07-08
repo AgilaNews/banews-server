@@ -9,7 +9,7 @@ class Selector10011 extends BaseNewsSelector {
 
     public function getPolicy() {
         if (!isset($this->_policy)) {
-            $this->_policy = new WeightedRandomListPolicy($this->_di); 
+            $this->_policy = new RandomListPolicy($this->_di); 
         }
         return $this->_policy;
     }
@@ -25,8 +25,7 @@ class Selector10011 extends BaseNewsSelector {
         $models = News::batchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         
-        $this->getPolicy()->setDeviceSent($this->_device_id . "_10011", array_keys($models),
-                                          IMG_CHANNEL_CACHE_SENT_MASK_MAX, IMG_CHANNEL_CACHE_SENT_TTL);
+        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
         return $models;
     }
 }

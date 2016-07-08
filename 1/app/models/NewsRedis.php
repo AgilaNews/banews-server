@@ -27,14 +27,14 @@ class NewsRedis {
         return $ret;
     }
  
-    public function setDeviceSeen($device_id, $news_ids, $max = CACHE_SENT_MASK_MAX, $ttl = CACHE_SENT_TTL) {
+    public function setDeviceSeen($device_id, $news_ids) {
         $key = $this->getDeviceSentKey($device_id);
         
         call_user_func_array(array($this->_redis, "lPush"), 
                                    array_merge(array($key), $news_ids)
                             );
-        $this->_redis->ltrim($key, 0, $max);
-        $this->_redis->expire($key, $ttl);
+        $this->_redis->ltrim($key, 0, CACHE_SENT_MASK_MAX);
+        $this->_redis->expire($key, CACHE_SENT_TTL);
     }
  
     public function getDeviceSeen($device_id) {
