@@ -15,8 +15,8 @@ abstract class BaseListPolicy {
     abstract public function sampling($channel_id, $device_id, $user_id, $pn, $day_till_now, $prefer, 
                                       array $options = array());
 
-    public function setDeviceSent($device_id, $news_ids) {
-        $this->_cache->setDeviceSeen($device_id, $news_ids); 
+    public function setDeviceSent($device_id, $news_ids, $max = CACHE_SENT_MASK_MAX, $ttl = CACHE_SENT_TTL) {
+        $this->_cache->setDeviceSeen($device_id, $news_ids, $max, $ttl); 
     }
 
     protected function logPolicy($msg) {
