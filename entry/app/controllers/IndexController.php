@@ -31,29 +31,16 @@ class IndexController extends BaseController {
         }
         $client_version = $kw["clientVersion"];
 
-        $vm = Version::find(array(
-                  "conditions" => "client_version = ?1",
-                  "bind" => array(1 => $kw["clientVersion"]),
-                  /*
-                  "cache" => array(
-                                   "lifetime" => 1,
-                                   "key" => $this->config->cache->keys->version,
-                                   ),
-                  */
-                   ));
-
-        if (count($vm) == 0) {
+        $vm = Version::getByClientVersion($client_version);
+        if (!$vm) {
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND,
                                     "client version not supported");
         }
-
-        $vm = $vm[0];
         $ret = array(
                 "interfaces" => array(
                     "home" => sprintf($this->config->entries->home, $vm->server_version),
                     "mon" => sprintf($this->config->entries->mon, $vm->server_version),
                     "log" => sprintf($this->config->entries->log, $vm->server_version),
-                    "referrer" => $this->config->entries->referrer 
                      ),
                 "updates" => array(
                     "avc" => ANDROID_VERSION_CODE, 
