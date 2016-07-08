@@ -4,7 +4,7 @@ define("MAX_IMG_SEND_COUNT", 12);
 
 class Selector10011 extends BaseNewsSelector {
     public function getPolicyTag() {
-        return "origin_web_weight"; 
+        return "pure_random"; 
     }
 
     public function getPolicy() {
