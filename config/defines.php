@@ -56,6 +56,7 @@ define('IMAGE_PREFIX', "http://" .
                        IMAGE_SERVER_NAME . 
                       '/image');
 
+define('MAX_FB_SIZE', 1024);
 
 define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
 define("IMAGE_CHANNEL_LOW_QUALITY", 15);
