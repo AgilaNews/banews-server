@@ -41,6 +41,7 @@ define('NEW_VERSION', "v1.0.3");
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 400); 
 define('CACHE_SENT_TTL', 4 * 3600); 
+define('PHOTO_CHANNEL_CACHE_SENT_TTL', 7 * 86400);
 
 define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
