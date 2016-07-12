@@ -64,6 +64,8 @@ class BaseListRender {
 
         if (count($ret["imgs"]) == 0) {
             $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
+        } else if (count($ret["imgs"]) == 1) {
+            $ret["tpl"] = NEWS_LIST_TPL_LARGE_IMG;
         } else if (count($ret["imgs"]) <= 2) {
             $ret["imgs"] = array_slice($ret["imgs"], 0 ,1);
             $ret["tpl"] = NEWS_LIST_TPL_TEXT_IMG;
