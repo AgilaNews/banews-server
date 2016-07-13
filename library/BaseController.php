@@ -121,7 +121,7 @@ class BaseController extends Controller{
         $content = json_encode($arr);
         $this->response->setContent($content);
         $this->response->setHeader("Content-Length", strlen($content));
-        if (version_compare($this->client_version, "v1.1.2", ">=")) {
+        if (version_compare(substr($this->client_version, 1), "1.1.2", ">=")) {
             $this->response->setHeader("Content-Type", "text/html");
         } else {
             $this->response->setHeader("Content-Type", "application/json");
