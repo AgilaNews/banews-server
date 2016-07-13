@@ -37,7 +37,7 @@ class IndexController extends BaseController {
                                     "client version not supported");
         }
 
-        if (version_compare(substr($client_version, 1), "v1.1.2", ">=")) {
+        if (version_compare(substr($client_version, 1), "1.1.2", ">=")) {
             $interfaces = array(
                     "home" => sprintf($this->config->entries->homes, $vm->server_version),
                     "mon" => sprintf($this->config->entries->mons, $vm->server_version),
