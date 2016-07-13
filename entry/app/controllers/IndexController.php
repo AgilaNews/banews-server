@@ -39,17 +39,17 @@ class IndexController extends BaseController {
 
         if (version_compare(substr($client_version, 1), "v1.1.2", ">=")) {
             $interfaces = array(
-                    "home" => sprintf($this->config->entries->home, $vm->server_version),
-                    "mon" => sprintf($this->config->entries->mon, $vm->server_version),
-                    "log" => sprintf($this->config->entries->log, $vm->server_version),
-                    "referrer" => $this->config->entries->referrer
-                    );
-        } else {
-            $interfaces = array(
                     "home" => sprintf($this->config->entries->homes, $vm->server_version),
                     "mon" => sprintf($this->config->entries->mons, $vm->server_version),
                     "log" => sprintf($this->config->entries->logs, $vm->server_version),
-                    "referrer" => $this->config->entries->referrers);
+                    "referrer" => $this->config->entries->referrers
+                    );
+        } else {
+            $interfaces = array(
+                    "home" => sprintf($this->config->entries->home, $vm->server_version),
+                    "mon" => sprintf($this->config->entries->mon, $vm->server_version),
+                    "log" => sprintf($this->config->entries->log, $vm->server_version),
+                    "referrer" => $this->config->entries->referrer);
         }
 
         $ret = array(
