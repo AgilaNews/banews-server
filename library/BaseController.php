@@ -116,8 +116,13 @@ class BaseController extends Controller{
     }
 
     protected function setJsonResponse($arr) {
-        $this->response->setContent(json_encode($arr));
-        $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
+        $content = json_encode($arr);
+        $this->response->setContent($content);
+        $this->response->setHeader("Content-Length", strlen($content));
+        $this->response->setHeader("Content-Type", "application/json");
+        $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
+        $this->response->setHeader("Content-Enocding", "gzip");
+        $this->response->setHeader("Pragma", "no-cache");
     }
 
     protected function logEvent($event_id, $param) {
