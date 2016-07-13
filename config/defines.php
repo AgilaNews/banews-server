@@ -43,6 +43,7 @@ define('NEW_VERSION', "v1.1.1");
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 1000); 
 define('CACHE_SENT_TTL', 24 * 3600); 
+define('NET_SCHEMA', "http");
 
 define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
