@@ -49,7 +49,7 @@ class IndexController extends BaseController {
                     "home" => sprintf($this->config->entries->homes, $vm->server_version),
                     "mon" => sprintf($this->config->entries->mons, $vm->server_version),
                     "log" => sprintf($this->config->entries->logs, $vm->server_version),
-                    "referrer" => $this->config->entries->referrers
+                    "referrer" => $this->config->entries->referrers);
         }
 
         $ret = array(
