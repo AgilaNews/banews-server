@@ -50,7 +50,7 @@ class Render10012 extends BaseListRender {
                 "height" => $ah,
                 )),
             "videos" => array(array(
-                "src" => sprintf(GIF_CHANNEL_PATTERN, $gif_model->url_sign),
+                "src" => sprintf(GIF_CHANNEL_PATTERN, $gif_model->gif_url_sign),
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $duration,
