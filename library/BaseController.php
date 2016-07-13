@@ -121,7 +121,6 @@ class BaseController extends Controller{
         $this->response->setHeader("Content-Length", strlen($content));
         $this->response->setHeader("Content-Type", "application/json");
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
-        $this->response->setHeader("Content-Enocding", "gzip");
         $this->response->setHeader("Pragma", "no-cache");
     }
 
