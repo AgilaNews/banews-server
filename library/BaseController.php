@@ -118,7 +118,7 @@ class BaseController extends Controller{
     protected function setJsonResponse($arr) {
         $content = json_encode($arr);
         $this->response->setContent($content);
-        $this->response->setHeader("Transfer-Encoding": "");
+        $this->response->setHeader("Transfer-Encoding", "");
         $this->response->setHeader("Content-Length", strlen($content));
         $this->response->setHeader("Content-Type", "text/html");
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
