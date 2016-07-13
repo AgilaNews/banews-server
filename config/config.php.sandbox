@@ -53,11 +53,11 @@ $settings = array (
                                         ),
                       ),
     'entries' => array (
-                        "home" => "https://" . SERVER_NAME . "/v%d",
-                        "log" => "https://" . LOG_SERVER_NAME . "/v%d",
-                        "mon" => "https://" .  MON_SERVER_NAME . "/v%d",
+                        "home" => NET_SCHEMA . "://" . SERVER_NAME . "/v%d",
+                        "log" => NET_SCHEMA . "://" . LOG_SERVER_NAME . "/v%d",
+                        "mon" => NET_SCHEMA . "://" .  MON_SERVER_NAME . "/v%d",
                         "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
-                        "referrer" => "https://" . SERVER_NAME . "/referrer",
+                        "referrer" => NET_SCHEMA . "://" . SERVER_NAME . "/referrer",
                         ),
 
 );
