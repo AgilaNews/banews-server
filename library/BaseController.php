@@ -48,7 +48,7 @@ class BaseController extends Controller{
         $this->lat = $this->get_request_param("lat", "float");
         $this->lang = $this->get_request_param("lang", "string");
         //TODO minial version is client_version
-        $this->client_version = $this->get_request_param("client_version", "string", "v1.0.0");
+        $this->client_version = $this->get_request_param("client_version", "string", false, "v1.1.2");
 
         if ($this->density) {
             $ret = explode(";", $this->density);
