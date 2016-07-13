@@ -150,7 +150,8 @@ class BaseController extends Controller{
         $param["lang"] = $this->lang;
         $param["time"] = round(microtime(true) * 1000);
         $param["ua"] = $this->ua;
-        $params["client-ip"] = $this->client_ip; 
+        $param["client-ip"] = $this->client_ip; 
+        $param["client_version"] = $this->client_version;
 
         $this->eventlogger->info(json_encode($param));
     }
