@@ -122,7 +122,7 @@ class BaseController extends Controller{
         $this->response->setContent($content);
         $this->response->setHeader("Content-Length", strlen($content));
         if (version_compare(substr($this->client_version, 1), "1.1.2", ">=")) {
-            $this->response->setHeader("Content-Type", "text/html");
+            $this->response->setHeader("Content-Type", "application/ph");
         } else {
             $this->response->setHeader("Content-Type", "application/json");
         }
