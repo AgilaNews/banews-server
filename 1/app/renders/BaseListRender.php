@@ -5,12 +5,14 @@ define('NEWS_LIST_TPL_TEXT_IMG', 4);
 define('NEWS_LIST_TPL_RAW_TEXT', 5);
 define('NEWS_LIST_TPL_RAW_IMG', 6);
 define('NEWS_LIST_TPL_VIDEO', 7);
+define('LARGE_IMAGE_MAX_COUNT', 3);
 class BaseListRender {
     public function __construct($device_id, $screen_width, $screen_height, $net) {
         $this->_device_id = $device_id;
         $this->_screen_w = $screen_width;
         $this->_screen_h = $screen_height;
         $this->_net = $net;
+        $this->_large_img_count = 0;
     }
 
     public function render($models) {
@@ -18,18 +20,10 @@ class BaseListRender {
         $max_quality = 0.0;
         $news_sign = "";
         foreach ($models as $sign => $news_model) {
-            list($image_quality, $cell) = $this->serializeNewsCell($news_model);
-            if ($image_quality > $max_quality){
-                $max_quality = $image_quality;
-                $news_sign = $sign;
-            }
-            $ret[$sign] = $cell;
+            $cell = $this->serializeNewsCell($news_model);
+            $ret[] = $cell;
         }
-        if ($news_sign){
-           $ret[$news_sign] = $this->change2BigImage($ret[$news_sign]); 
-        }
-
-        return array_values($ret);
+        return $ret;
     }
 
     protected function change2BigImage($news_model){
@@ -55,9 +49,9 @@ class BaseListRender {
             "public_time" => $news_model->publish_time,
             "imgs" => array(),
         );
-        $image_quality = 0.0;
         
         $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT; 
+        $isLarge = False;
         foreach ($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
                 continue;
@@ -67,23 +61,34 @@ class BaseListRender {
                 $meta = json_decode($img->meta, true);
                 $oh = $meta["height"];
                 $ow = $meta["width"];
+                $isLarge = $this->isLargeImageNews($meta); 
+                if ($isLarge){
+                    $pattern =  sprintf(LARGE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}"); 
+                }
+                else{
+                    $pattern =  sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}"); 
+                }
                 $ret["imgs"][] = array(
                     //"src" => $img->origin_url, 
                     "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "225", "180"), 
                     "width" => $ow, 
                     "height" => $oh, 
-                    "pattern" => sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}"), 
+                    "pattern" => $pattern, 
                     "name" => "<!--IMG" . $img->news_pos_id . "-->"
-                );
+                    );
+                
             } else {
                 // TODO
                 // if picuture is not saved, we will not consider to use this image
             }
+            if ($isLarge) {
+                break;
+            }
         }
-        if (count($ret["imgs"]) > 0) {
-            $first_img = $ret["imgs"][0];
-            $image_quality = $this->getImageQuality($first_img); 
-        }
+        #if (count($ret["imgs"]) > 0) {
+        #    $first_img = $ret["imgs"][0];
+        #    $image_quality = $this->getImageQuality($first_img); 
+        #}
 
         if (count($ret["imgs"]) == 0) {
             $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
@@ -94,9 +99,24 @@ class BaseListRender {
             $ret["imgs"] = array_slice($ret["imgs"], 0 ,3);
             $ret["tpl"] = NEWS_LIST_TPL_THREE_IMG;
         }
+        if ($isLarge) {
+            $ret["tpl"] = NEWS_LIST_TPL_LARGE_IMG;
+        }
 
-        return array($image_quality, $ret);
+        return $ret;
     } 
+
+    protected function isLargeImageNews($img) {
+        if($this->_large_img_count > LARGE_IMAGE_MAX_COUNT){
+            return False;
+        }
+        $quality = $this->getImageQuality($img);
+        if ($quality > 0.0 and rand(1,10) > 2){
+            $this->_large_img_count += 1;
+            return True;
+        }
+        return False;
+    }
 
     protected function getImageQuality($img) {
         if (!$img){
@@ -108,7 +128,7 @@ class BaseListRender {
             return 0.0;
         }
         $rate = $ow/$oh;
-        if ($rate <1.5 or $rate>2.5){
+        if ($rate <1.6 or $rate>2.4){
             return 0.0;
         }
         return $rate;
