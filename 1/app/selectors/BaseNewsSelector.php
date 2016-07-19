@@ -88,7 +88,7 @@ class BaseNewsSelector {
             $models = array_slice($models, 0, $required);
         }
         
-        #$this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
+        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
         return $models;
     }
 }
