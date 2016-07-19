@@ -56,10 +56,9 @@ class BaseNewsSelector {
         $uniq = array();
 
         foreach ($models as $sign => $news_model) { 
-            if (array_key_exists($news_model->content_sign, $uniq) &&
-                $uniq[$news_model->content_sign]->source_name == $news_model->source_name
+            if (array_key_exists($news_model->content_sign, $uniq) 
             ) {
-                //content sign dup and same source, continue
+                //content sign dup continue
                 continue;
             }
 
@@ -89,7 +88,7 @@ class BaseNewsSelector {
             $models = array_slice($models, 0, $required);
         }
         
-        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
+        #$this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
         return $models;
     }
 }
