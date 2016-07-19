@@ -8,8 +8,8 @@
  * 
  * 
  */
-define('MIN_NEWS_SEND_COUNT', 8);
-define('MAX_NEWS_SENT_COUNT', 12);
+define('MIN_NEWS_SEND_COUNT', 6);
+define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
 class BaseNewsSelector {
