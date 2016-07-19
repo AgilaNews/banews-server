@@ -31,16 +31,6 @@ class BaseListRender {
         return $ret;
     }
 
-    protected function change2BigImage($news_model){
-        $news_model["tpl"] = NEWS_LIST_TPL_LARGE_IMG;
-        $news_model["imgs"] = array_slice($news_model["imgs"], 0, 1);
-        $pattern = "/q=\d*$/";
-        $quality = sprintf("q=%d", LARGE_CHANNEL_IMG_QUALITY);
-        $image_pattern = preg_replace($pattern, $quality, $news_model["imgs"][0]["pattern"]);
-        $news_model["imgs"][0]["pattern"] = $image_pattern;
-        return $news_model;
-    }
-
     protected function serializeNewsCell($news_model) {
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         $commentCount = Comment::getCount($news_model->id);
