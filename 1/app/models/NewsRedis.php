@@ -49,4 +49,40 @@ class NewsRedis {
     private function getDeviceSentKey($device_id){
         return CACHE_SENT_QUEUE_PREFIX . $device_id;
     }
+
+    public function getDeviceChannelCursor($device_id, $channel_id) {
+        $key = $this->getDeviceChannelCursorKey($device_id, $channel_id);
+        $value = $this->_redis->hGet(BACKUP_CHANNEL_CURSOR_KEY, $key);
+        if (!$value) {
+            return 0;
+        }
+        return intval($value);
+    }
+
+    public function setDeviceChannelCursor($device_id, $channel_id, $newValue) {
+        $key = $this->getDeviceChannelCursorKey($device_id, $channel_id);
+        if ($newValue > 0) {
+            $this->_redis->hSet(BACKUP_CHANNEL_CURSOR_KEY, $key, $newValue);
+        }  
+    }
+
+    private function getDeviceChannelCursorKey($device_id, $channel_id) {
+        return CHANNEL_USER_CURSOR_PREFIX . $channel_id . '_' . $device_id;
+    }
+
+    public function getDeviceBackupNews($device_id, $channel_id, $cnt) {
+        $backup_idx = $this->getDeviceChannelCursor($device_id, $channel_id);
+        $news_lst = $this->_redis->lrange(BACKUP_CHANNEL_LIST_PREFIX . $channel_id, 
+                                          $backup_idx, $backup_idx + $cnt);
+        if (!$news_lst) {
+            return array();
+        }
+        $new_backup_idx = $backup_idx + count($news_lst) + 1;
+        $lst_total_cnt = $this->_redis->lSize(BACKUP_CHANNEL_LIST_PREFIX . $channel_id);
+        if ($lst_total_cnt <= $new_backup_idx) {
+            $new_backup_idx = 0;
+        }
+        $this->setDeviceChannelCursor($device_id, $channel_id, $new_backup_idx);
+        return $news_lst;
+    }
 }

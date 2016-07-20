@@ -35,6 +35,9 @@ define('CACHE_COLLECT_PREFIX', "BS_COLLECT_");
 define('CACHE_COLLECT_TTL', 300);
 
 define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
+define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
+define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
+define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
 define('ANDROID_VERSION_CODE', 11);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
