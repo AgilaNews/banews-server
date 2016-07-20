@@ -54,8 +54,8 @@ define('MON_SERVER_NAME', 'mon.' . SERVER_HOST);
 define('H5_SERVER_NAME', "m." . SERVER_HOST);
 define('VIDEO_SERVER_NAME', "video." . SERVER_HOST);
 define('GIF_CHANNEL_PATTERN', "http://" . VIDEO_SERVER_NAME . "/video/%s.mp4");
-//define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
-define('IMAGE_SERVER_NAME', "s1." . SERVER_HOST);
+define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
+//define('IMAGE_SERVER_NAME', "s1." . SERVER_HOST);
 define('IMAGE_PREFIX', "http://" . 
                        IMAGE_SERVER_NAME . 
                       '/image');
