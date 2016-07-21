@@ -77,9 +77,9 @@ class NewsRedis {
         if (!$news_lst) {
             return array();
         }
-        $new_backup_idx = $backup_idx + count($news_lst) + 1;
+        $new_backup_idx = $backup_idx + count($news_lst);
         $lst_total_cnt = $this->_redis->lSize(BACKUP_CHANNEL_LIST_PREFIX . $channel_id);
-        if ($lst_total_cnt <= $new_backup_idx) {
+        if ($lst_total_cnt <= ($new_backup_idx + 1)) {
             $new_backup_idx = 0;
         }
         $this->setDeviceChannelCursor($device_id, $channel_id, $new_backup_idx);
