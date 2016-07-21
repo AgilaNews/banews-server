@@ -61,8 +61,8 @@ class NewsRedis {
 
     public function setDeviceChannelCursor($device_id, $channel_id, $newValue) {
         $key = $this->getDeviceChannelCursorKey($device_id, $channel_id);
-        if ($newValue > 0) {
-            $this->_redis->hSet(BACKUP_CHANNEL_CURSOR_KEY, $key, $newValue);
+        if ($newValue >= 0) {
+            $ret = $this->_redis->hSet(BACKUP_CHANNEL_CURSOR_KEY, $key, $newValue);
         }  
     }
 
@@ -73,7 +73,7 @@ class NewsRedis {
     public function getDeviceBackupNews($device_id, $channel_id, $cnt) {
         $backup_idx = $this->getDeviceChannelCursor($device_id, $channel_id);
         $news_lst = $this->_redis->lrange(BACKUP_CHANNEL_LIST_PREFIX . $channel_id, 
-                                          $backup_idx, $backup_idx + $cnt);
+                                          $backup_idx, $backup_idx + $cnt - 1);
         if (!$news_lst) {
             return array();
         }
