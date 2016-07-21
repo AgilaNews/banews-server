@@ -55,7 +55,10 @@ define('SERVER_NAME', "api." . SERVER_HOST);
 define('LOG_SERVER_NAME', 'log.' . SERVER_HOST);
 define('MON_SERVER_NAME', 'mon.' . SERVER_HOST);
 define('H5_SERVER_NAME', "m." . SERVER_HOST);
+define('VIDEO_SERVER_NAME', "video." . SERVER_HOST);
+define('GIF_CHANNEL_PATTERN', "http://" . VIDEO_SERVER_NAME . "/video/%s.mp4");
 define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
+//define('IMAGE_SERVER_NAME', "s1." . SERVER_HOST);
 define('IMAGE_PREFIX', "http://" . 
                        IMAGE_SERVER_NAME . 
                       '/image');
@@ -75,6 +78,12 @@ define('BASE_CHANNEL_IMG_QUALITY', 45);
 define("BASE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
         "/%s.jpg?p=t=%sx%s|q=" . BASE_CHANNEL_IMG_QUALITY);
+
+define('LARGE_CHANNEL_IMG_QUALITY', 60);
+define("LARGE_CHANNEL_IMG_PATTERN",
+        IMAGE_PREFIX . 
+        "/%s.jpg?p=t=%sx%s|q=" . LARGE_CHANNEL_IMG_QUALITY);
+
 
 define('GIF_COVER_PATTERN', 
         IMAGE_PREFIX . "/%s_cover.jpg");
