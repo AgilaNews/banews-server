@@ -60,13 +60,6 @@ class IndexController extends BaseController {
                     "new_version" => NEW_VERSION,
                     "update_url"=> UPDATE_URL,
                       ),
-                "configs" => array(
-                    "timeouts" => (
-                        "c" => CLIENT_CTIMEOUT,
-                        "r" => CLIENT_RTIMEOUT,
-                        "w" => CLIENT_WTIMEOUT,
-                    ),
-                ),
                 "categories" => array(),
                 );
 
