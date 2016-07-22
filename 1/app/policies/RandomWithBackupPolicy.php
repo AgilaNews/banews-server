@@ -1,7 +1,4 @@
 <?php
-define("CHANNEL_BACKUP_NEWS_PREFIX", "");
-define("USER_BACKUP_NEWS_CURSOR", "");
-
 class RandomWithBackupPolicy extends BaseListPolicy {
     public function __construct($di) {
         parent::__construct($di);
