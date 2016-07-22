@@ -7,8 +7,8 @@ class RandomWithBackupPolicy extends BaseListPolicy {
         parent::__construct($di);
     }
 
-    public function sampling($channel_id, $device_id, $user_id, $pn, $day_till_now, $prefer, 
-                                      array $options = array()) {
+    public function sampling($channel_id, $device_id, $user_id, $pn, 
+        $day_till_now, $prefer, array $options = array()) {
         $filter_news_lst = $this->getAllUnsent($channel_id, $device_id, null); 
         if (!$filter_news_lst) {
             $filter_news_lst = array();
