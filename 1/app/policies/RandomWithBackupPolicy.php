@@ -27,8 +27,12 @@ class RandomWithBackupPolicy extends BaseListPolicy {
                 array_push($filter_news_lst, $cur_news);
             }
         }
+
         if (count($filter_news_lst) > $pn) {
-            $filter_news_lst = array_rand($filter_news_lst, $pn);
+            $filter_key_lst = array_rand($filter_news_lst, $pn);
+            $filter_news_lst = array_map(function($key) use($filter_news_lst) {
+                    return $filter_news_lst[$key];
+                }, $filter_key_lst);
         }
         return $filter_news_lst;
     }

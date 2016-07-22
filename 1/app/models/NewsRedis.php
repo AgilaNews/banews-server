@@ -5,7 +5,12 @@ class NewsRedis {
     }
     
     public function getNewsOfChannel($channel_id, $day) {
-        $key = "banews:ph:$channel_id";
+        $image_gif_channel = array("10011", "10012");
+        if (in_array($channel_id, $image_gif_channel)) {
+            $key = "banews:ph:v2:$channel_id";
+        } else {
+            $key = "banews:ph:$channel_id";
+        }
 
         if ($day == null) {
             $start = 0;
