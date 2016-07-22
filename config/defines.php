@@ -39,9 +39,9 @@ define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
 define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
 define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
-define('ANDROID_VERSION_CODE', 11);
+define('ANDROID_VERSION_CODE', 14);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "v1.1.2");
+define('NEW_VERSION', "v1.1.4");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 1000); 
@@ -57,13 +57,17 @@ define('MON_SERVER_NAME', 'mon.' . SERVER_HOST);
 define('H5_SERVER_NAME', "m." . SERVER_HOST);
 define('VIDEO_SERVER_NAME', "video." . SERVER_HOST);
 define('GIF_CHANNEL_PATTERN', "http://" . VIDEO_SERVER_NAME . "/video/%s.mp4");
-define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
-//define('IMAGE_SERVER_NAME', "s1." . SERVER_HOST);
+//define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
+define('IMAGE_SERVER_NAME', "s1." . SERVER_HOST);
 define('IMAGE_PREFIX', "http://" . 
                        IMAGE_SERVER_NAME . 
                       '/image');
 
 define('MAX_FB_SIZE', 1024);
+
+define('CLIENT_CTIMEOUT', 5);
+define('CLIENT_RTIMEOUT', 5);
+define('CLIENT_WTIMEOUT', 5);
 
 define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
 define("IMAGE_CHANNEL_LOW_QUALITY", 15);
