@@ -38,7 +38,7 @@ define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
 
 define('ANDROID_VERSION_CODE', 12);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "v1.1.3");
+define('NEW_VERSION', "v1.1.4");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 1000); 
@@ -61,6 +61,10 @@ define('IMAGE_PREFIX', "http://" .
                       '/image');
 
 define('MAX_FB_SIZE', 1024);
+
+define('CLIENT_CTIMEOUT', 5);
+define('CLIENT_RTIMEOUT', 5);
+define('CLIENT_WTIMEOUT', 5);
 
 define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
 define("IMAGE_CHANNEL_LOW_QUALITY", 15);
