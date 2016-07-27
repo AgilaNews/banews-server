@@ -90,4 +90,22 @@ class NewsRedis {
         $this->setDeviceChannelCursor($device_id, $channel_id, $new_backup_idx);
         return $news_lst;
     }
+
+    public function registeNewDevice($device_id, $token, $client_version, $os = "", $os_version = "", $vendor = "", $imsi = ""){
+        $arr = array(
+                     "device_id" => $device_id,
+                     "token" => $token,
+                     "client_version" => $client_version,
+                     "vendor" => $vendor,
+                     "imsi" => $imsi,
+                     "os" => $os,
+                     "os_version"=> $os_version,
+                     );
+        
+        $saved = json_encode($arr, true);
+        $this->_redis->multi();
+        $this->_redis->hset("PUSH_TOKEN_", $token, $saved);
+        $this->_redis->hset("PUSH_DEVICE_ID_", $device_id, $saved);
+        $ret = $this->_redis->exec();
+    }
 }
