@@ -23,7 +23,7 @@ class FirebaseController extends BaseController {
         $redis = new NewsRedis($cache);
         $redis->registeNewDevice($this->deviceId, $token, $this->client_version);
 
-        $this->logger->info("[REG][token:%s]", $token);
+        $this->logger->info(sprintf("[REG][token:%s]", $token));
         $this->setJsonResponse(array(
                                      "message"  => "ok",
                                      ));
