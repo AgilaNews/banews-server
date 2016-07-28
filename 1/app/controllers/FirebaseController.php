@@ -15,13 +15,19 @@ class FirebaseController extends BaseController {
         }
 
         $token = $this->get_or_fail($req, "token", "string");
+        $os = $this->get_or_fail($req, "os", "string");
+        $os_version = $this->get_or_fail($req, "os_version", "string");
+        $vendor = $this->get_or_fail($req, "vendor", "string");
+        $imsi = $this->get_or_default($req, "imsi", "string", "");
+        
         $cache = $this->di->get('cache');
         if (!$cache) {
             throw new HttpException(ERR_INTERNAL_DB, "get redis error");
         }
 
         $redis = new NewsRedis($cache);
-        $redis->registeNewDevice($this->deviceId, $token, $this->client_version);
+        $redis->registeNewDevice($this->deviceId, $token, $this->client_version,
+                                 $os, $os_version, $vendor, $imsi);
 
         $this->logger->info(sprintf("[REG][token:%s]", $token));
         $this->setJsonResponse(array(
