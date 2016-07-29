@@ -101,7 +101,21 @@ class NewsRedis {
                      "os" => $os,
                      "os_version"=> $os_version,
                      );
-        
+
+        $ret = $this->_redis->hget(DEVICEMAP_DEVICE_KEY, $device_id);
+        if ($ret) {
+            $obj = json_decode($ret);
+            if ($obj) {
+                //remove older one
+                $this->_redis->multi();
+                $this->_redis->hdel(DEVICEMAP_DEVICE_KEY, $device_id);
+                $this->_redis->hdel(DEVICEMAP_TOKEN_KEY, $obj["token"]);
+                $this->_redis->exec();
+            } else {
+                $this->_redis->hdel(DEVICEMAP_DEVICE_KEY);
+            }
+        }
+            
         $saved = json_encode($arr, true);
         $this->_redis->multi();
         $this->_redis->hset("PUSH_TOKEN_", $token, $saved);

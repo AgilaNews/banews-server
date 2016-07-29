@@ -33,6 +33,8 @@ define('CACHE_VERSION_PREFIX', "BS_VERSION_");
 define('CACHE_VERSION_TTL', 14400);
 define('CACHE_COLLECT_PREFIX', "BS_COLLECT_");
 define('CACHE_COLLECT_TTL', 300);
+define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
+define('DEVICEMAP_DEVICE_KEY', "PUSH_DEVICE_ID_");
 
 define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
 define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
@@ -41,7 +43,7 @@ define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
 define('ANDROID_VERSION_CODE', 14);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "v1.1.4");
+define('NEW_VERSION', "v1.1.5");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 1000); 
