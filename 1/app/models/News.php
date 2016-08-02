@@ -102,6 +102,9 @@ class News extends BaseModel {
         $cache->multi();
 
         foreach ($models as $sign => $model) {
+            if (!$model) {
+                continue;
+            }
             $cache->set(CACHE_NEWS_PREFIX . $model->url_sign, $model->serialize());
             $cache->expire(CACHE_NEWS_PREFIX . $model->url_sign, CACHE_NEWS_TTL);
         }
