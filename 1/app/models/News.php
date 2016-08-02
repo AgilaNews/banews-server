@@ -152,6 +152,7 @@ class News extends BaseModel {
                       "bind" => array("signs" => $signs));
 
         $ret = News::find($crit);
+        $models = array();
         foreach ($ret as $model) {
             $models[$model->url_sign] = $model;
         }
