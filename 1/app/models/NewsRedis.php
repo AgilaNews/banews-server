@@ -125,7 +125,6 @@ class NewsRedis {
 
     public function channelTopPopularNews($channelId) {
         $retLst = $this->_redis->lRange('BA_POPULAR_NEWS_' . $channelId, 0, -1);
-        var_dump($retLst);
         if (!$ret) {
             return array();
         }
