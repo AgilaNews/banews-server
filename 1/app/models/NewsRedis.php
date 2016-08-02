@@ -122,4 +122,18 @@ class NewsRedis {
         $this->_redis->hset("PUSH_DEVICE_ID_", $device_id, $saved);
         $ret = $this->_redis->exec();
     }
+
+    public function channelTopPopularNews($channelId) {
+        $ret = $this->_redis->get("BA_POPULAR_NEWS_" . $channelId);
+        if (!$ret) {
+            return array();
+        }
+        $newsLst = explode(",", $ret);
+        $sortedNewsLst = array();
+        foreach ($newsLst as $curNews) {
+            $tmpLst = explode(":", $curNews);
+            array_push($sortedNewsLst, $tmpLst[0]);
+        }
+        return $sortedNewsLst;
+    }
 }
