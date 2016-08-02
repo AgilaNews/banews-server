@@ -8,30 +8,41 @@ class PopularListPolicy extends BaseListPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $pn, 
         $day_till_now, $prefer, array $options = array()) {
-        $channelPopularNewsLst = $this->_cache->channelTopPopularNews($channel_id); 
-        $filter_news_lst = $this->getAllUnsent($channel_id, $device_id, null); 
-        if (!$filter_news_lst) {
-            return array();
-        } else {
-            $filter_news_lst = array_map(
+        $sentLst = $this->_cache->getDeviceSeen($device_id);
+
+        // channel's top popular news list
+        $channelPopularNewsLst = $this->_cache->getChannelTopPopularNews($channel_id); 
+        $filterChannelPopularNewsLst = $this->sentFilter($sentLst, 
+            $channelPopularNewsLst);         
+        // channel's available news list
+        $channelNewsLst = $this->_cache->getNewsOfchannel($channel_id, $day_till_now);
+        $channelNewsLst = array_map(
                 function($curObj) {
                     return $curObj["id"]; 
-                }, $filter_news_lst
+                }, $filterChannelNewsLst
             );
-            $filter_popular_lst = array();
-            foreach($channelPopularNewsLst as $currentNews) {
-                if (in_array($currentNews, $filter_news_lst)) {
-                    continue;
-                } else {
-                    array_push($filter_popular_lst, $currentNews); 
-                }
-            }
-            if (count($filter_popular_lst) >= $pn) {
-                $retLst = array_slice($filter_popular_lst, 0, $pn);
+        $filterChannelNewsLst = $this->sentFilter($sentLst, $channelNewsLst);
+        
+        if (!$filterChannelNewsLst) {
+            return array();
+        } else {
+            if (count($filterChannelPopularNewsLst) >= $pn) {
+                $retLst = array_slice($filterChannelPopularNewsLst, 0, $pn);
             } else {
-                $retLst = array_slice($filter_news_lst, 0, $pn);
+                $retLst = array_slice($filterChannelNewsLst, 0, $pn);
             }
             return $retLst;
         }
     }
+
+    protected function sentFilter($sentNewsLst, $newsLst) {
+        $filterNewsLst = array();
+        foreach ($newsLst as $news) {
+            if (!in_array($news, $sentNewsLst)) {
+                array_push($filterNewsLst, $news); 
+            }
+        }
+        return $filterNewsLst;
+    }
+
 }
