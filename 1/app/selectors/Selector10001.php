@@ -12,8 +12,8 @@ class Selector10001 extends BaseNewsSelector{
 
     private function getDeviceGroup($deviceId) { 
         $hashCode = hash('md5', $deviceId);
-        $integerCode = base_convert($hashCode, 16, 10);
-        if ($integerCode % 2 == 0) {
+        $lastChar = substr($hashCode, -1);
+        if (in_array($lastChar, array('0', '1', '2', '3', '4', '5', '6', '7'))) {
             return 0;
         } else {
             return 1;
