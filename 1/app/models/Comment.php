@@ -14,8 +14,12 @@ class Comment extends BaseModel {
     public static function getAll($news_sign, $last_id, $pn, $prefer) {
         $crit = array (
             "limit" => 20,
-            "order" => "create_time DESC",
         );
+        if ($prefer == "later") {
+            $crit["order"] = "create_time DESC",
+        } else {
+            $crit["order"] = "create_time",
+        }
         
         if ($pn) {
             $crit["limit"] = $pn = $pn >= 20 ? 20 : $pn;
@@ -24,9 +28,12 @@ class Comment extends BaseModel {
         if ($last_id) {
             if ($prefer == "later") {
                 $crit["conditions"] = "news_sign = ?1 AND id > ?2";
+                $crit["order"] = "create_time DESC",
             } else {
                 $crit["conditions"] = "news_sign = ?1 AND id < ?2";
+                $crit["order"] = "create_time",
             }
+
             $crit["bind"] = array(1 => $news_sign, 2=>$last_id);
         } else {
             $crit["conditions"] = "news_sign = ?1";
