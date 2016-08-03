@@ -16,9 +16,9 @@ class Comment extends BaseModel {
             "limit" => 20,
         );
         if ($prefer == "later") {
-            $crit["order"] = "create_time DESC",
+            $crit["order"] = "create_time DESC";
         } else {
-            $crit["order"] = "create_time",
+            $crit["order"] = "create_time";
         }
         
         if ($pn) {
@@ -28,10 +28,10 @@ class Comment extends BaseModel {
         if ($last_id) {
             if ($prefer == "later") {
                 $crit["conditions"] = "news_sign = ?1 AND id > ?2";
-                $crit["order"] = "create_time DESC",
+                $crit["order"] = "create_time DESC";
             } else {
                 $crit["conditions"] = "news_sign = ?1 AND id < ?2";
-                $crit["order"] = "create_time",
+                $crit["order"] = "create_time";
             }
 
             $crit["bind"] = array(1 => $news_sign, 2=>$last_id);
