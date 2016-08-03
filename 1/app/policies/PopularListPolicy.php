@@ -19,7 +19,7 @@ class PopularListPolicy extends BaseListPolicy {
         $channelNewsLst = array_map(
                 function($curObj) {
                     return $curObj["id"]; 
-                }, $ChannelNewsLst
+                }, $channelNewsLst
             );
         $filterChannelNewsLst = $this->sentFilter($sentLst, $channelNewsLst);
         
