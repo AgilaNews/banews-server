@@ -53,9 +53,6 @@ class UserController extends BaseController {
         foreach ($comments as $comment) {
             array_push($ret, $this->serializeComment($comment));
         }
-        if ($prefer == "older") {
-            $ret = array_reverse($ret);
-        }
 
         $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][cmtcnt:%d]", $newsSign,
                                      $last_id, $pn, count($comments)));
