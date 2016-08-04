@@ -43,7 +43,7 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not exists");
         }
         
-        $pn = $this->get_request_param("pn", "int", false, 10);
+        $pn = $this->get_request_param("pn", "int", false, 1000);
         $last_id = $this->get_request_param("last_id", "string");
         $prefer = $this->get_request_param("prefer", "string", false, "older");
         
