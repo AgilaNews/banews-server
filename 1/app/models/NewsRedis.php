@@ -104,7 +104,7 @@ class NewsRedis {
 
         $ret = $this->_redis->hget(DEVICEMAP_DEVICE_KEY, $device_id);
         if ($ret) {
-            $obj = json_decode($ret);
+            $obj = json_decode($ret, true);
             if ($obj) {
                 //remove older one
                 $this->_redis->multi();
