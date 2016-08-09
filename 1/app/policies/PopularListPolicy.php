@@ -17,7 +17,6 @@ class PopularListPolicy extends BaseListPolicy {
             $channelPopularNewsLst);         
         // channel's available news list
         $channelNewsLst = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
-        arsort($channelNewsLst);
         $channelNewsLst = array_map(
                 function($curObj) {
                     return $curObj["id"]; 
