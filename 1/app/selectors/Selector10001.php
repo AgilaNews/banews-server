@@ -9,8 +9,8 @@
  * 
  */
 
-define('MIN_NEWS_SEND_COUNT', 8);
-define('MAX_NEWS_SENT_COUNT', 10);
+define('MIN_NEWS_COUNT', 8);
+define('MAX_NEWS_COUNT', 10);
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -45,7 +45,7 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function select($prefer) {
-        $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
+        $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
         $selected_news_list = $this->sampling($required, $prefer); 
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
