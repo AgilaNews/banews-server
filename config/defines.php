@@ -41,9 +41,9 @@ define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
 define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
 define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
-define('ANDROID_VERSION_CODE', 17);
+define('ANDROID_VERSION_CODE', 18);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "v1.1.6");
+define('NEW_VERSION', "v1.1.7");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 1000); 
