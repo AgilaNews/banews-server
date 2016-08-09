@@ -14,7 +14,7 @@ define('MAX_NEWS_COUNT', 10);
 
 class Selector10001 extends BaseNewsSelector{
 
-    private function getDeviceGroup($deviceId) { 
+    protected function getDeviceGroup($deviceId) { 
         $hashCode = hash('md5', $deviceId);
         $lastChar = substr($hashCode, -1);
         if (in_array($lastChar, array('0', '1', '2', '3', '4', '5', '6', '7'))) {
