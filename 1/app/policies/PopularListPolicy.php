@@ -30,7 +30,7 @@ class PopularListPolicy extends BaseListPolicy {
         } else {
             if (count($filterChannelPopularNewsLst) >= $pn) {
                 $latelyNewsLst = array_slice($filterChannelNewsLst, 0, 
-                    min($LATELY_NEWS_COUNT, count($filterChannelNewsLst))); 
+                    min(LATELY_NEWS_COUNT, count($filterChannelNewsLst))); 
                 foreach($filterChannelPopularNewsLst as $popularNews) {
                     if (count($latelyNewsLst) >= $pn) {
                         break;
