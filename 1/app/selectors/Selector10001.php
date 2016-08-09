@@ -8,6 +8,10 @@
  * 
  * 
  */
+
+define('MIN_NEWS_SEND_COUNT', 8);
+define('MAX_NEWS_SENT_COUNT', 10);
+
 class Selector10001 extends BaseNewsSelector{
 
     private function getDeviceGroup($deviceId) { 
@@ -30,12 +34,7 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function sampling($sample_count, $prefer) {
-        $groupId = $this->getDeviceGroup($this->_device_id);
-        if ($groupId == 0) {
-            $policy = new ExpDecayListPolicy($this->_di);
-        } else {
-            $policy = new PopularListPolicy($this->_di); 
-        }
+        $policy = new PopularListPolicy($this->_di); 
         $options = array();
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
@@ -43,5 +42,19 @@ class Selector10001 extends BaseNewsSelector{
 
         return $policy->sampling($this->_channel_id, $this->_device_id, 
             $this->_user_id, $sample_count, 3, $prefer, $options);
+    }
+
+    public function select($prefer) {
+        $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
+        $selected_news_list = $this->sampling($required, $prefer); 
+        $models = News::BatchGet($selected_news_list);
+        $models = $this->removeInvisible($models);
+        $models = $this->removeDup($models);
+        if (count($models) > $required) {
+            $models = array_slice($models, 0, $required);
+        }
+        
+        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
+        return $models;
     }
 }

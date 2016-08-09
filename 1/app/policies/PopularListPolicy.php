@@ -1,5 +1,6 @@
 <?php
 
+define("LATELY_NEWS_COUNT", 2);
 
 class PopularListPolicy extends BaseListPolicy {
     public function __construct($di) {
@@ -15,7 +16,8 @@ class PopularListPolicy extends BaseListPolicy {
         $filterChannelPopularNewsLst = $this->sentFilter($sentLst, 
             $channelPopularNewsLst);         
         // channel's available news list
-        $channelNewsLst = $this->_cache->getNewsOfchannel($channel_id, $day_till_now);
+        $channelNewsLst = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
+        arsort($channelNewsLst);
         $channelNewsLst = array_map(
                 function($curObj) {
                     return $curObj["id"]; 
@@ -27,11 +29,23 @@ class PopularListPolicy extends BaseListPolicy {
             return array();
         } else {
             if (count($filterChannelPopularNewsLst) >= $pn) {
-                $retLst = array_slice($filterChannelPopularNewsLst, 0, $pn);
+                $latelyNewsLst = array_slice($filterChannelNewsLst, 0, 
+                    min($LATELY_NEWS_COUNT, count($filterChannelNewsLst))); 
+                foreach($filterChannelPopularNewsLst as $popularNews) {
+                    if (count($latelyNewsLst) >= $pn) {
+                        break;
+                    }
+                    if (in_array($popularNews, $latelyNewsLst)) {
+                        continue;
+                    }
+                    $latelyNewsLst[] = $popularNews;
+                }
+                shuffle($latelyNewsLst);
+                return $latelyNewsLst;
             } else {
                 $retLst = array_slice($filterChannelNewsLst, 0, $pn);
+                return $retLst;
             }
-            return $retLst;
         }
     }
 
