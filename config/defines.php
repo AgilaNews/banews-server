@@ -41,16 +41,24 @@ define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
 define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
 define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
+define('BUILD_MAIN', 1);
+define('BUILD_ACCESSORY', 2);
+
 define('ANDROID_VERSION_CODE', 18);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
 define('NEW_VERSION', "v1.1.7");
+define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
+
+define('ANDROID_VERSION_CODE_2', 1);
+define('MIN_VERSION_2', 'v1.0.1');
+define('NEW_VERSION_2', 'v1.1.7');
+define('UPDATE_URL_2', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 1000); 
 define('CACHE_SENT_TTL', 24 * 3600); 
 define('NET_SCHEMA', "http");
 
-define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
 define('SHARE_TEMPLATE', "http://share." . SERVER_HOST . "/news?id=%s&from={from}");
 define('SERVER_NAME', "api." . SERVER_HOST);
