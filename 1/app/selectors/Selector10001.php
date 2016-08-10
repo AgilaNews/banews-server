@@ -25,12 +25,7 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function getPolicyTag(){
-        $groupId = $this->getDeviceGroup($this->_device_id);
-        if ($groupId == 0) {
-            return "expdecay";
-        } else {
-            return 'popularRanking';
-        }
+        return 'popularRanking';
     }
 
     public function sampling($sample_count, $prefer) {
