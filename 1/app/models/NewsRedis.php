@@ -3,20 +3,25 @@ class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
     }
-
     
-    public function getNewsOfChannel($channel_id, $day = 7) {
+    public function getNewsOfChannel($channel_id, $day) {
         $key = "banews:ph:$channel_id";
-        $now = time();
-        $start = ($now - ($day * 86400));
-        $start = $start - ($start % 86400);
-        $end = ($now + 86400) - (($now + 86400) % 86400);
+
+        if ($day == null) {
+            $start = 0;
+            $end = 'inf';
+        } else {
+            $now = time();
+            $start = ($now - ($day * 86400));
+            $start = $start - ($start % 86400);
+            $end = ($now + 86400) - (($now + 86400) % 86400);
+        }
 
         $ret = array();
         $tmp =  $this->_redis->zRevRangeByScore($key, $end, $start, 
                                                 array("withscores"=>true));
         foreach ($tmp as $id=>$weight) {
-            $ret []= array("id" => $id, "ptime"=>$weight);
+            $ret []= array("id" => $id, "weight"=>$weight);
         }
 
         return $ret;

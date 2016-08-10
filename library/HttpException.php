@@ -9,7 +9,7 @@
  * 
  */
 class HttpException extends Exception{
-    public function __construct($code, $message) {
+    public function __construct($code, $message, $extra = null) {
         if (is_array($message)) {
             $this->message = json_encode($message);
         } else {
@@ -17,6 +17,7 @@ class HttpException extends Exception{
         }
         $this->status_code = $this->get_http_code($code);
         $this->code = $code;
+        $this->extra = $extra;
     }
 
 
@@ -25,10 +26,20 @@ class HttpException extends Exception{
     }
 
     public function getBody($format = "json") {
-        return json_encode (array(
-                                  "code" => $this->code,
-                                  "message" => $this->message,
-                                  ));
+        $body = array(
+                    "code" => $this->code,
+                    "message" => $this->message,
+                );
+
+        if ($this->extra) {
+            $body = array_merge($body, $this->extra); 
+        }
+
+        return json_encode($body);
+    }
+
+    public function getExtra() {
+       return $this->extra; 
     }
     
     protected function get_http_code($code) {

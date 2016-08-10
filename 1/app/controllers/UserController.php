@@ -125,8 +125,8 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
         
-        if (Collect::getCollectId($this->userSign, $news_model->url_sign)) {
-            throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this");
+        if(($saved_cid = Collect::getCollectId($this->userSign, $news_model->url_sign))) {
+            throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
         }
 
         $collect_model = new Collect();
@@ -161,13 +161,10 @@ class UserController extends BaseController {
 
         $collects = Collect::getAll($this->userSign, $last_id, $pn);
         $ret = array();
-        
-        foreach ($collects as $collect) {
-            $ser = $this->serializeCollect($collect);
-            if ($ser) {
-                array_push($ret, $ser);
-            }
-        }
+        $signs = array();
+
+        $render = new CollectListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
+        $ret = $render->render($collects);
 
         $this->logger->info(sprintf("[GetCollect][last:%d][limit:%d][ret:%d]",
                                      $last_id, $pn, count($ret)));
@@ -220,13 +217,7 @@ class UserController extends BaseController {
     }
 
     private function serializeCollect($collect){
-        $news_model = News::getBySign($collect->news_sign);
-
-        if (!$news_model) {
-            $this->logger->warning(sprintf("collect id [%s]'s news [%s] non-exists", $collect->id, $collect->news_sign));
-            return null;
-        }
-        $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
+               $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         
         $ret = array (
                       "collect_id" => $collect->id,

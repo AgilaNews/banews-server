@@ -8,10 +8,6 @@
  * 
  * 
  */
-
-define('MIN_NEWS_SEND_COUNT', 8);
-define('MAX_NEWS_SENT_COUNT', 12);
-
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
@@ -31,12 +27,37 @@ class NewsController extends BaseController {
         $topComment = Comment::getAll($newsSign, null, 3);
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
+        $imgcell = array();
+        foreach ($imgs as $img) {
+            if (!$img || $img->is_deadlink == 1 || !$img->meta) {
+                continue;
+            }
+
+            if ($img->origin_url) {
+                $meta = json_decode($img->meta, true);
+                if (!$meta || !$meta["width"] || !$meta["height"]) {
+                    continue;
+                }
+            }
+    
+            $ow = $meta["width"];
+            $oh = $meta["height"];
+            $aw = (int) ($this->resolution_w * 11 / 12);
+            $ah = (int) min($this->resolution_h * 0.9, $aw * $oh / $ow);
+
+            $imgcell[] = array(
+                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
+                "width" => $aw,
+                "height" => $ah,
+                "name" => "<!--IMG" . $img->news_pos_id . "-->",
+            );
+        }
 
         $ret = array(
             "body" => $news_model->json_text,
             "commentCount" => $commentCount,
             "comments" => array(), 
-            "imgs" => ImageHelper::formatImgs($imgs, $this->deviceModel, false),
+            "imgs" => $imgcell, 
             "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
@@ -49,22 +70,16 @@ class NewsController extends BaseController {
             "collect_id" => 0, 
         );
 
-        $recommend_policy = new RandomRecommendPolicy($this->getDi());
-        $recommend_news_list =
-            $recommend_policy->sampling($news_model->channel_id,
-                                        $this->deviceId, null, 4);
-
-        $recommend_models = News::batchGet($recommend_news_list);
-        foreach ($recommend_models as $recommend_model) {
-            if ($recommend_model->url_sign == $newsSign) {
-                continue;
-            }
-            $ret["recommend_news"][]= $this->serializeNewsCell($recommend_model);
-            if (count($ret["recommend_news"]) == 3) {
-                break;
-            }
+        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->deviceId, $this->userSign, $this->getDI());
+        $models = $recommend_selector->select($news_model->url_sign);
+        $cname = "Recommend" . $news_model->channel_id;
+        if (class_exists($cname)) {
+            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
+        } else {
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
         }
 
+        $ret["recommend_news"]= $render->render($models);
         if ($this->userSign) {
             $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
         }
@@ -86,13 +101,13 @@ class NewsController extends BaseController {
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
                                                "recommend"=> array(
-                                                                   "news" => $recommend_news_list,
+                                                                   "news" => array_keys($models),
                                                                    "policy"=> "random",
                                                                    ),
                                                  ));
         
-        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d]", $newsSign, count($ret["imgs"]),
-                                     $news_model->channel_id));
+        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d]", $newsSign, count($ret["imgs"]),
+                                     $news_model->channel_id, count($ret["recommend_news"])));
         
         $this->setJsonResponse($ret);
         return $this->response;
@@ -108,49 +123,45 @@ class NewsController extends BaseController {
         }
 
         $channel_id = $this->get_request_param("channel_id", "int", true);
-        $policy = new ExpDecayListPolicy($this->getDi());
         $prefer = $this->get_request_param('dir', "string", false, "later");
-
         if (!($prefer == 'later' || $prefer == 'older')) {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
-        $base = round(MAX_NEWS_SENT_COUNT * 1.5);
-        $selected_news_list = $policy->sampling($channel_id, $this->deviceId, null, $base,
-                                                $prefer);
-        $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret = array($dispatch_id => array());
-    
-        $dispatched = array();
-        $uniq = array();
 
-        $models = News::batchGet($selected_news_list);
-        foreach ($models as $sign => $news_model) {
-            if ($news_model && $news_model->is_visible == 1) {
-                if (array_key_exists($news_model->content_sign, $uniq) && 
-                    $uniq[$news_model->content_sign]->source_name == $news_model->source_name) {
-                    //content sign dup and same source, continue
-                    continue;
-                }
-
-                $ret [$dispatch_id][] = $this->serializeNewsCell($news_model);
-                $dispatched []= $sign;
-                $uniq[$news_model->content_sign] = $news_model;
-            }
-
-            if (count($dispatched) >= $required) {
-                break;
-            }
+        $cname = "Selector$channel_id";
+        if (class_exists($cname)) {
+            $selector = new $cname($channel_id, $this->deviceId, $this->userSign, $this->getDI()); 
+        } else {
+            $selector = new BaseNewsSelector($channel_id, $this->deviceId, $this->userSign, $this->getDI());
         }
 
-        $this->logger->info(sprintf("[List][dispatch_id:%s][policy:expdecay][pfer:%s][cnl:%d][sent:%d]",
-                                    $dispatch_id, $prefer, $channel_id, count($dispatched)));
-        $policy->setDeviceSent($this->deviceId, $dispatched);
+        $models = $selector->select($prefer);
+        $dispatch_ids = array();
+        foreach ($models as $sign => $model) {
+            $dispatch_ids []= $sign;
+        }
+
+        $cname = "Render$channel_id";
+        if (class_exists($cname)) {
+            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
+        } else {
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
+        }
+
+        $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
+        $ret[$dispatch_id] = $render->render($models);
+
+        $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
+                                    $dispatch_id, $selector->getPolicyTag(), $prefer, 
+                                    $channel_id, count($ret[$dispatch_id])));
+
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
-                                              "news"=> $dispatched,
-                                              "policy"=> "expdecay", //we just have one policy
+                                              "news"=> $dispatch_ids,
+                                              "policy"=> $selector->getPolicyTag(),
+                                              "channel_id" => $channel_id,
+                                              "prefer" => $prefer,
                                               ));
         $this->setJsonResponse($ret);
         return $this->response;
@@ -206,25 +217,6 @@ class NewsController extends BaseController {
             $ret["user_name"] = $user_model->name;
             $ret["user_portrait_url"] = $user_model->portrait_url;
         }
-        return $ret;
-    }
-
-
-   protected function serializeNewsCell($news_model) {
-        $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
-        $commentCount = Comment::getCount($news_model->id);
-
-        $ret = array (
-            "title" => $news_model->title,
-            "commentCount" => $commentCount,
-            "news_id" => $news_model->url_sign,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-        );
-
-        $ret = array_merge($ret, ImageHelper::formatImageAndTpl($imgs, $this->deviceModel, true));
- 
         return $ret;
     }
 }

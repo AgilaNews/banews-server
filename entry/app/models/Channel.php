@@ -12,6 +12,8 @@ class Channel extends BaseModel {
 
     public $priority;
 
+    public $publish_lastest_version;
+
     public $fixed;
 
     public $is_visible;

@@ -8,8 +8,9 @@ $settings = array (
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models/",
         "policyDir" => APP_PATH . "/app/policies/",
+        "renderDir" => APP_PATH . "/app/renders/",
+        "selectorDir" => APP_PATH . "/app/selectors/",
     ),
-
     'db_w' => array (
         'adapter' => 'Mysql',
         'conf' => array(

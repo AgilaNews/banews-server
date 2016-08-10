@@ -49,6 +49,8 @@ class News extends BaseModel {
         $this->skipAttributes(
             array ("summary",
                     "ext_json_text",
+                    "json_text",
+                    "content_sign",
                     "tag",
                     "related_sign",)
         );

@@ -6,8 +6,10 @@ $settings = array (
     "appdirs" => array (
         "libraryDir" => "/home/work/banews-server/library/",
         "controllerDir" => APP_PATH . "/app/controllers/",
-        "modelDir" => APP_PATH . "/app/models/",
-        "policyDir" => APP_PATH . "/app/policies/",
+        "modelDir" => APP_PATH . "/app/models",
+        "policyDir" => APP_PATH . "/app/policies",
+        "renderDir" => APP_PATH . "/app/renders/",
+        "selectorDir" => APP_PATH . "/app/selectors/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
@@ -51,11 +53,16 @@ $settings = array (
                                         ),
                       ),
     'entries' => array (
-                        "home" => "https://" . SERVER_NAME . "/v%d",
-                        "log" => "https://" . LOG_SERVER_NAME . "/v%d",
-                        "mon" => "https://" .  MON_SERVER_NAME . "/v%d",
+                        "home" => NET_SCHEMA . "://" . SERVER_NAME . "/v%d",
+                        "log" => NET_SCHEMA . "://" . LOG_SERVER_NAME . "/v%d",
+                        "mon" => NET_SCHEMA . "://" .  MON_SERVER_NAME . "/v%d",
                         "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
-                        "referrer" => "https://" . SERVER_NAME . "/referrer",
+                        "referrer" => NET_SCHEMA . "://" . SERVER_NAME . "/referrer",
+
+                        "homes" => "https://" . SERVER_NAME . "/v%d",
+                        "logs" => "https://" . SERVER_NAME . "/v%d",
+                        "mons" => "https://" . SERVER_NAME . "/v%d",
+                        "referrers" => "https://" . SERVER_NAME . "/referrer",
                         ),
 
 );

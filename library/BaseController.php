@@ -36,6 +36,7 @@ class BaseController extends Controller{
         $this->density = $this->request->getHeader('X-DENSITY');
         $this->session = $this->request->getHeader('X-SESSION');
         $this->ua = $this->request->getHeader('USER-AGENT');
+        $this->client_ip = $this->request->getHeader('X-FORWARDED-FOR');
         $this->deviceModel = DEVICE_MEDIUM;
         $this->resolution_w = 720;
         $this->resolution_h = 1280;
@@ -46,11 +47,17 @@ class BaseController extends Controller{
         $this->lng = $this->get_request_param("lng", "float");
         $this->lat = $this->get_request_param("lat", "float");
         $this->lang = $this->get_request_param("lang", "string");
+        //TODO minial version is client_version
+        $this->client_version = $this->get_request_param("client_version", "string", false, "v1.0.0");
 
         if ($this->density) {
             $ret = explode(";", $this->density);
             if (count($ret) == 3) {
-                $res_ret = explode("x", $ret[0]) || explode("X", $ret[0]);
+                $res_ret = explode("x", $ret[0]);
+                if (count($res_ret) != 2) {
+                    $res_ret = explode('X', $ret[0]);
+                }
+
                 if (count($res_ret) == 2) {
                     $this->resolution_w = $res_ret[0];
                     $this->resolution_h = $res_ret[1];
@@ -111,8 +118,16 @@ class BaseController extends Controller{
     }
 
     protected function setJsonResponse($arr) {
-        $this->response->setContent(json_encode($arr));
-        $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
+        $content = json_encode($arr);
+        $this->response->setContent($content);
+        $this->response->setHeader("Content-Length", strlen($content));
+        if (version_compare(substr($this->client_version, 1), "1.1.2", ">=")) {
+            $this->response->setHeader("Content-Type", "application/ph");
+        } else {
+            $this->response->setHeader("Content-Type", "application/json");
+        }
+        $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
+        $this->response->setHeader("Pragma", "no-cache");
     }
 
     protected function logEvent($event_id, $param) {
@@ -135,6 +150,8 @@ class BaseController extends Controller{
         $param["lang"] = $this->lang;
         $param["time"] = round(microtime(true) * 1000);
         $param["ua"] = $this->ua;
+        $param["client-ip"] = $this->client_ip; 
+        $param["client_version"] = $this->client_version;
 
         $this->eventlogger->info(json_encode($param));
     }

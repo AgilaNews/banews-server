@@ -31,6 +31,7 @@ class IndexController extends BaseController {
         }
         $client_version = $kw["clientVersion"];
 
+<<<<<<< HEAD
         $vm = Version::find(array(
                   "conditions" => "client_version = ?1",
                   "bind" => array(1 => $client_version),
@@ -43,18 +44,31 @@ class IndexController extends BaseController {
                    ));
 
         if (count($vm) == 0) {
+=======
+        $vm = Version::getByClientVersion($client_version);
+        if (!$vm) {
+>>>>>>> master
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND,
                                     "client version not supported");
         }
 
-        $vm = $vm[0];
-        $ret = array(
-                "interfaces" => array(
+        if (version_compare(substr($client_version, 1), "1.1.2", ">=")) {
+            $interfaces = array(
                     "home" => sprintf($this->config->entries->home, $vm->server_version),
                     "mon" => sprintf($this->config->entries->mon, $vm->server_version),
                     "log" => sprintf($this->config->entries->log, $vm->server_version),
-                    "referrer" => $this->config->entries->referrer 
-                     ),
+                    "referrer" => $this->config->entries->referrer
+                    );
+        } else {
+            $interfaces = array(
+                    "home" => sprintf($this->config->entries->homes, $vm->server_version),
+                    "mon" => sprintf($this->config->entries->mons, $vm->server_version),
+                    "log" => sprintf($this->config->entries->logs, $vm->server_version),
+                    "referrer" => $this->config->entries->referrers);
+        }
+
+        $ret = array(
+                "interfaces" => $interfaces,
                 "updates" => array(
                     "avc" => ANDROID_VERSION_CODE, 
                     "min_version" => MIN_VERSION,
@@ -67,6 +81,10 @@ class IndexController extends BaseController {
         $channels = Channel::getAllVisible(substr($kw, 1));
         $i = 0;
         foreach ($channels as $channel) {
+            if (version_compare(substr($client_version, 1), $channel->publish_latest_version, "<")) {
+                continue;
+            }
+
             $ret["categories"][] = array(
                 "id" => $channel->channel_id,
                 "name" => $channel->name,
@@ -74,7 +92,6 @@ class IndexController extends BaseController {
                 "index" => $i++,
             );
         } 
-        
 
         $log = "[ColdSetting]";
         foreach ($kw as $k=>$v) {
