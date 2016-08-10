@@ -1,5 +1,14 @@
 <?php
 class Selector20001 extends Selector10001 {
+
+    public function getPolicyTag(){
+        $groupId = $this->getDeviceGroup($this->_device_id);
+        if ($groupId == 0) {
+            return "expdecay";
+        } else {
+            return 'popularRanking';
+        }
+    }
     
     public function sampling($sample_count, $prefer) {
         $groupId = $this->getDeviceGroup($this->_device_id);
