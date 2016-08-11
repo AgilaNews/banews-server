@@ -63,7 +63,7 @@ class IndexController extends BaseController {
                 "categories" => array(),
                 );
 
-        $channels = Channel::getAllVisible();
+        $channels = Channel::getAllVisible(substr($kw, 1));
         $i = 0;
         foreach ($channels as $channel) {
             if (version_compare(substr($client_version, 1), $channel->publish_latest_version, "<")) {
