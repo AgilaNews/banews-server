@@ -30,6 +30,7 @@ class PopularListPolicy extends BaseListPolicy {
             if (count($filterChannelPopularNewsLst) >= $pn) {
                 $latelyNewsLst = array_slice($filterChannelNewsLst, 0, 
                     min(LATELY_NEWS_COUNT, count($filterChannelNewsLst))); 
+                $popularNewsLst = array();
                 foreach($filterChannelPopularNewsLst as $popularNews) {
                     if (count($latelyNewsLst) >= $pn) {
                         break;
@@ -37,10 +38,9 @@ class PopularListPolicy extends BaseListPolicy {
                     if (in_array($popularNews, $latelyNewsLst)) {
                         continue;
                     }
-                    $latelyNewsLst[] = $popularNews;
+                    $popularNewsLst[] = $popularNews;
                 }
-                shuffle($latelyNewsLst);
-                return $latelyNewsLst;
+                return array_merge($popularNewsLst, $latelyNewsLst);
             } else {
                 $retLst = array_slice($filterChannelNewsLst, 0, $pn);
                 return $retLst;
