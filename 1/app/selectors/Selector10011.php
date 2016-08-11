@@ -9,7 +9,7 @@ class Selector10011 extends BaseNewsSelector {
 
     public function getPolicy() {
         if (!isset($this->_policy)) {
-            $this->_policy = new RandomListPolicy($this->_di); 
+            $this->_policy = new RandomWithBackupPolicy($this->_di); 
         }
         return $this->_policy;
     }

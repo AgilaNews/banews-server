@@ -1,7 +1,7 @@
 <?php
 class Render10012 extends BaseListRender {
-    public function __construct($did, $screen_width, $screen_height, $net) {
-        parent::__construct($did, $screen_width, $screen_height, $net);
+    public function __construct($did, $screen_width, $screen_height, $net, $client_version) {
+        parent::__construct($did, $screen_width, $screen_height, $net, $client_version);
     }
 
     public function render($models) {
@@ -50,7 +50,7 @@ class Render10012 extends BaseListRender {
                 "height" => $ah,
                 )),
             "videos" => array(array(
-                "src" => $gif_model->gif_save_url,
+                "src" => sprintf(GIF_CHANNEL_PATTERN, $gif_model->gif_url_sign),
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $duration,

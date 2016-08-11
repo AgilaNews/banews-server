@@ -47,8 +47,10 @@ class BaseController extends Controller{
         $this->lng = $this->get_request_param("lng", "float");
         $this->lat = $this->get_request_param("lat", "float");
         $this->lang = $this->get_request_param("lang", "string");
-        //TODO minial version is client_version
-        $this->client_version = $this->get_request_param("client_version", "string", false, "v1.0.0");
+        // we just need version code after 'v' character
+        $this->client_version = substr($this->get_request_param("client_version", "string", false, "v1.0.0"), 1);
+
+        $build = $this->get_request_param("build", "int");
 
         if ($this->density) {
             $ret = explode(";", $this->density);
@@ -121,7 +123,7 @@ class BaseController extends Controller{
         $content = json_encode($arr);
         $this->response->setContent($content);
         $this->response->setHeader("Content-Length", strlen($content));
-        if (version_compare(substr($this->client_version, 1), "1.1.2", ">=")) {
+        if (version_compare($this->client_version, "1.1.2", ">=")) {
             $this->response->setHeader("Content-Type", "application/ph");
         } else {
             $this->response->setHeader("Content-Type", "application/json");
