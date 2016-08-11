@@ -8,8 +8,8 @@
  * 
  * 
  */
-define('MIN_NEWS_SEND_COUNT', 8);
-define('MAX_NEWS_SENT_COUNT', 12);
+define('MIN_NEWS_SEND_COUNT', 6);
+define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
 class BaseNewsSelector {
@@ -56,10 +56,9 @@ class BaseNewsSelector {
         $uniq = array();
 
         foreach ($models as $sign => $news_model) { 
-            if (array_key_exists($news_model->content_sign, $uniq) &&
-                $uniq[$news_model->content_sign]->source_name == $news_model->source_name
+            if (array_key_exists($news_model->content_sign, $uniq) 
             ) {
-                //content sign dup and same source, continue
+                //content sign dup continue
                 continue;
             }
 

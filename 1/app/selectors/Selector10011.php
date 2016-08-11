@@ -9,7 +9,7 @@ class Selector10011 extends BaseNewsSelector {
 
     public function getPolicy() {
         if (!isset($this->_policy)) {
-            $this->_policy = new RandomListPolicy($this->_di); 
+            $this->_policy = new RandomWithBackupPolicy($this->_di); 
         }
         return $this->_policy;
     }
@@ -24,8 +24,6 @@ class Selector10011 extends BaseNewsSelector {
         $selected_news_list = $this->sampling($required, $prefer);
         $models = News::batchGet($selected_news_list);
         $models = $this->removeInvisible($models);
-        $models = $this->removeDup($models);
-        
         $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
         return $models;
     }

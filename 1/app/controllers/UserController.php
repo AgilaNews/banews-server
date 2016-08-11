@@ -31,6 +31,11 @@ class UserController extends BaseController {
         }
     }
 
+    /*
+     1=>2=>3=>4=>5
+     ---> prefer: later
+     <--- prefer: older
+    */
     private function getComments(){
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
@@ -38,13 +43,18 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not exists");
         }
         
-        $pn = $this->get_request_param("pn", "int");
+        $pn = $this->get_request_param("pn", "int", false, 1000);
         $last_id = $this->get_request_param("last_id", "string");
-        $comments = Comment::getAll($newsSign, $last_id, $pn);
+        $prefer = $this->get_request_param("prefer", "string", false, "older");
+        
+        $comments = Comment::getAll($newsSign, $last_id, $pn, $prefer);
         $ret = array();
         
         foreach ($comments as $comment) {
             array_push($ret, $this->serializeComment($comment));
+        }
+        if ($prefer == "older") {
+            $ret = array_reverse($ret);
         }
 
         $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][cmtcnt:%d]", $newsSign,

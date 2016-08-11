@@ -33,72 +33,72 @@ define('CACHE_VERSION_PREFIX', "BS_VERSION_");
 define('CACHE_VERSION_TTL', 14400);
 define('CACHE_COLLECT_PREFIX', "BS_COLLECT_");
 define('CACHE_COLLECT_TTL', 300);
+define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
+define('DEVICEMAP_DEVICE_KEY', "PUSH_DEVICE_ID_");
 
 define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
+define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
+define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
+define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
-<<<<<<< HEAD
-define('ANDROID_VERSION_CODE', 7);
+define('BUILD_MAIN', 1);
+define('BUILD_ACCESSORY', 2);
+
+define('ANDROID_VERSION_CODE', 18);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "v1.0.2");
-=======
-define('ANDROID_VERSION_CODE', 11);
-define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
-define('NEW_VERSION', "v1.1.2");
->>>>>>> master
+define('NEW_VERSION', "v1.1.7");
+define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
+
+define('ANDROID_VERSION_CODE_2', 1);
+define('MIN_VERSION_2', 'v1.0.1');
+define('NEW_VERSION_2', 'v1.1.7');
+define('UPDATE_URL_2', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory
 define('CACHE_SENT_MASK_MAX', 1000); 
 define('CACHE_SENT_TTL', 24 * 3600); 
 define('NET_SCHEMA', "http");
 
-define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
 define('SHARE_TEMPLATE', "http://share." . SERVER_HOST . "/news?id=%s&from={from}");
 define('SERVER_NAME', "api." . SERVER_HOST);
 define('LOG_SERVER_NAME', 'log.' . SERVER_HOST);
 define('MON_SERVER_NAME', 'mon.' . SERVER_HOST);
 define('H5_SERVER_NAME', "m." . SERVER_HOST);
-<<<<<<< HEAD
-
-define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
-define('IMAGE_PREFIX', "http://" .
-                       IMAGE_SERVER_NAME .
-                      '/image');
-
-=======
-define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
+//define('VIDEO_SERVER_NAME', "video." . SERVER_HOST);
+define('VIDEO_SERVER_NAME', "v1." . SERVER_HOST);
+define('GIF_CHANNEL_PATTERN', "http://" . VIDEO_SERVER_NAME . "/video/%s.mp4");
+//define('IMAGE_SERVER_NAME', "img." . SERVER_HOST);
+define('IMAGE_SERVER_NAME', "s1." . SERVER_HOST);
 define('IMAGE_PREFIX', "http://" . 
                        IMAGE_SERVER_NAME . 
                       '/image');
 
 define('MAX_FB_SIZE', 1024);
->>>>>>> master
+
+define('CLIENT_CTIMEOUT', 5);
+define('CLIENT_RTIMEOUT', 5);
+define('CLIENT_WTIMEOUT', 5);
 
 define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
 define("IMAGE_CHANNEL_LOW_QUALITY", 15);
 define("IMAGE_CHANNEL_NORMAL_QUALITY", 30);
-<<<<<<< HEAD
-define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX .
-=======
 define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX . 
->>>>>>> master
        "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=%d");
 
 define("DETAIL_IMAGE_QUALITY", 50);
 define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%dX_w|q=" . DETAIL_IMAGE_QUALITY);
 
-<<<<<<< HEAD
-
-define('BASE_CHANNEL_IMG_QUALITY', 45);
-define("BASE_CHANNEL_IMG_PATTERN",
-        IMAGE_PREFIX .
-        "/%s.jpg?p=t=%sx%s|q=" . BASE_CHANNEL_IMG_QUALITY);
-=======
 define('BASE_CHANNEL_IMG_QUALITY', 45);
 define("BASE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
         "/%s.jpg?p=t=%sx%s|q=" . BASE_CHANNEL_IMG_QUALITY);
 
+define('LARGE_CHANNEL_IMG_QUALITY', 60);
+define("LARGE_CHANNEL_IMG_PATTERN",
+        IMAGE_PREFIX . 
+        "/%s.jpg?p=t=%sx%s|q=" . LARGE_CHANNEL_IMG_QUALITY);
+
+
 define('GIF_COVER_PATTERN', 
         IMAGE_PREFIX . "/%s_cover.jpg");
->>>>>>> master

@@ -74,9 +74,9 @@ class NewsController extends BaseController {
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "Recommend" . $news_model->channel_id;
         if (class_exists($cname)) {
-            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h);
+            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
         } else {
-            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
         }
 
         $ret["recommend_news"]= $render->render($models);
@@ -144,9 +144,9 @@ class NewsController extends BaseController {
 
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
-            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
+            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
         } else {
-            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net);
+            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);

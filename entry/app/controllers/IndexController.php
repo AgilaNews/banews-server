@@ -31,23 +31,8 @@ class IndexController extends BaseController {
         }
         $client_version = $kw["clientVersion"];
 
-<<<<<<< HEAD
-        $vm = Version::find(array(
-                  "conditions" => "client_version = ?1",
-                  "bind" => array(1 => $client_version),
-                  /*
-                  "cache" => array(
-                                   "lifetime" => 1,
-                                   "key" => $this->config->cache->keys->version,
-                                   ),
-                  */
-                   ));
-
-        if (count($vm) == 0) {
-=======
         $vm = Version::getByClientVersion($client_version);
         if (!$vm) {
->>>>>>> master
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND,
                                     "client version not supported");
         }
