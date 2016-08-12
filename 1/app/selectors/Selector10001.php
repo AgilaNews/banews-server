@@ -11,6 +11,7 @@
 
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
+define("LATELY_NEWS_COUNT", 2);
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -29,14 +30,28 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function sampling($sample_count, $prefer) {
-        $policy = new PopularListPolicy($this->_di); 
+        $randomPolicy = new ExpDecayListPolicy($this->_di); 
+        $popularPolicy = new PopularListPolicy($this->_di); 
         $options = array();
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
+        $popularNewsCnt = max($sample_count - LATELY_NEWS_COUNT, 1);
+        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
+                $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
+        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
+                $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
 
-        return $policy->sampling($this->_channel_id, $this->_device_id, 
-            $this->_user_id, $sample_count, 3, $prefer, $options);
+        foreach($randomNewsLst as $randomNews) {
+            if (count($popularNewsCnt) >= $sample_count) {
+                break;
+            }
+            if (in_array($randomNews, $popularNewsLst)) {
+                continue;
+            }
+            $popularNewsLst[] = $randomNews;
+        }
+        return $popularNewsLst;
     }
 
     public function select($prefer) {
