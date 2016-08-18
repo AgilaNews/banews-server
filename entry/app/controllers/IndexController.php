@@ -37,21 +37,14 @@ class IndexController extends BaseController {
                                     "client version not supported");
         }
 
-        //if (version_compare(substr($client_version, 1), "1.1.2", ">=")) {
+        
         $interfaces = array(
                "home" => sprintf($this->config->entries->home, $vm->server_version),
                "mon" => sprintf($this->config->entries->mon, $vm->server_version),
                "log" => sprintf($this->config->entries->log, $vm->server_version),
                "referrer" => $this->config->entries->referrer
                );
-       // } else {
-       //     $interfaces = array(
-       //             "home" => sprintf($this->config->entries->homes, $vm->server_version),
-       //             "mon" => sprintf($this->config->entries->mons, $vm->server_version),
-       //             "log" => sprintf($this->config->entries->logs, $vm->server_version),
-       //             "referrer" => $this->config->entries->referrers);
-       // }
-
+        
         $ret = array(
                 "interfaces" => $interfaces,
                 "updates" => array(

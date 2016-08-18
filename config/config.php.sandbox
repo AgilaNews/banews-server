@@ -58,11 +58,6 @@ $settings = array (
                         "mon" => NET_SCHEMA . "://" .  MON_SERVER_NAME . "/v%d",
                         "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
                         "referrer" => NET_SCHEMA . "://" . SERVER_NAME . "/referrer",
-
-                        "homes" => "https://" . SERVER_NAME . "/v%d",
-                        "logs" => "https://" . SERVER_NAME . "/v%d",
-                        "mons" => "https://" . SERVER_NAME . "/v%d",
-                        "referrers" => "https://" . SERVER_NAME . "/referrer",
                         ),
 
 );
