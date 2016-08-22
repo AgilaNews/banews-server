@@ -2,15 +2,15 @@
 
 use Phalcon\Logger;
 
-define("LIBRARY_DIR", "/home/work/banews-server/library");
+define("LIBRARY_PATH", "/home/work/banews-server/library");
 $settings = array (
     "appdirs" => array (
-        "libraryDir" => LIBRARY_DIR,
+        "libraryDir" => LIBRARY_PATH,
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models",
-        "policyDir" => LIBRARY_DIR . "/policies",
-        "renderDir" => LIBRARY_DIR . "/renders/",
-        "selectorDir" => LIBRARY_DIR . "/selectors/",
+        "policyDir" => LIBRARY_PATH . "/policies",
+        "renderDir" => LIBRARY_PATH . "/renders/",
+        "selectorDir" => LIBRARY_PATH . "/selectors/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
