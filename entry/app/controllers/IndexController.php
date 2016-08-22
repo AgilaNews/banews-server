@@ -36,7 +36,6 @@ class IndexController extends BaseController {
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND,
                                     "client version not supported");
         }
-
         
         $interfaces = array(
                "home" => sprintf($this->config->entries->home, $vm->server_version),
@@ -53,23 +52,27 @@ class IndexController extends BaseController {
                     "new_version" => NEW_VERSION,
                     "update_url"=> UPDATE_URL,
                       ),
-                "categories" => array(),
                 );
 
-        $channels = Channel::getAllVisible(substr($kw, 1));
-        $i = 0;
-        foreach ($channels as $channel) {
-            if (version_compare(substr($client_version, 1), $channel->publish_latest_version, "<")) {
-                continue;
+        if (version_compare(substr($this->client_version, V2_BASE_VERSION, "<"))) {
+            $ret["categories"] = array();
+            $channels = Channel::getAllVisible(substr($kw, 1));
+            $i = 0;
+            foreach ($channels as $channel) {
+                if (version_compare($this->client_version, $channel->publish_latest_version, "<")) {
+                    continue;
+                }
+                
+                $ret["categories"][] = array(
+                                         "id" => $channel->channel_id,
+                                         "name" => $channel->name,
+                                         "fixed" => $channel->fixed,
+                                         "index" => $i++,
+                                             );
             }
-
-            $ret["categories"][] = array(
-                "id" => $channel->channel_id,
-                "name" => $channel->name,
-                "fixed" => $channel->fixed,
-                "index" => $i++,
-            );
-        } 
+        } else {
+            
+        }
 
         $log = "[ColdSetting]";
         foreach ($kw as $k=>$v) {
