@@ -9,9 +9,9 @@ $settings = array (
         "libraryDir" => LIBRARY_PATH,
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models",
-        "policyDir" => LIBRARY_DIR . "/policies",
-        "renderDir" => LIBRARY_DIR . "/renders/",
-        "selectorDir" => LIBRARY_DIR . "/selectors/",
+        "policyDir" => LIBRARY_PATH . "/policies/",
+        "renderDir" => LIBRARY_PATH . "/renders/",
+        "selectorDir" => LIBRARY_PATH . "/selectors/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
