@@ -1,3 +1,4 @@
+<?php
 /**
  * @file   ChannelController.php
  * @author Gethin Zhang <zgxcassar@gmail.com>
@@ -9,7 +10,7 @@
  */
 class ChannelController extends BaseController {
     public function IndexAction(){
-        $version = $this->get_request_param("version", "int", false);
+        $version = $this->get_request_param("version", "int", true);
 
         $channels = ChannelV2::getChannelsOfVersion($version, $this->client_version);
 

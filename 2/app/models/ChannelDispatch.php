@@ -1,3 +1,4 @@
+<?php
 /**
  * @file   ChannelDispatch.php
  * @author Gethin Zhang <zgxcassar@gmail.com>

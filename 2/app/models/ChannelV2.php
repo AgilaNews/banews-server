@@ -1,3 +1,4 @@
+<?php
 /**
  * @file   ChannelV2.php
  * @author Gethin Zhang <zgxcassar@gmail.com>
@@ -7,6 +8,8 @@
  * 
  * 
  */
+use Phalcon\DI;
+
 class ChannelV2 extends BaseModel {
     public $channel_id;
 
@@ -20,17 +23,20 @@ class ChannelV2 extends BaseModel {
         return "tb_channel_v2";
     }
 
-    public static function getChannelsOfVersion(int $channel_version, $client_version) {
+    public static function getChannelsOfVersion($channel_version, $client_version) {
         $cache = DI::getDefault()->get('cache');
 
         if ($cache) {
             $value = $cache->get(sprintf(CACHE_CHANNELS_V2_KEY, $channel_version));
-            return json_decode($value, true);
+            if ($value) {
+                return json_decode($value, true);
+            }
         }
 
-        $ret = ChannelDispatch::findFirst(array(
-                                          "version" => "version=?1",
-                                          "bind" => array($channel_version),
+
+        $cdm = ChannelDispatch::findFirst(array(
+                                          "conditions" => "version=?1",
+                                          "bind" => array(1=>$channel_version),
                                           ));
 
         /*content formatting
@@ -43,23 +49,29 @@ class ChannelV2 extends BaseModel {
           ]
         */
         $channel_list = ChannelV2::getAll($client_version);
+
         $channel_map = array();
         foreach ($channel_list as $channel) {
-            $channel_map[$channel->id] = $channel;
+            $channel_map[$channel->channel_id] = $channel;
         }
-        
-        $dispatch_list = json_decode($ret["content"]);
-        $ret = array();
 
+        $dispatch_list = json_decode($cdm->content, true);
+
+        $ret = array();
+        
         foreach ($dispatch_list as $cell) {
-            if (!in_array($cell["channel_id"], $channel_map)) {
+            if (!array_key_exists($cell["channel_id"], $channel_map)) {
                 continue;
             }
             $channel_detail = $channel_map[$cell["channel_id"]];
             
-            $ret = array_merge($cell, array(
+            $ret []= array_merge($cell, array(
                                             "name" => $channel_detail->name,
                                             ));
+        }
+
+        if ($cache) {
+            //TODO save to cache
         }
 
         return $ret;
