@@ -71,7 +71,7 @@ class IndexController extends BaseController {
                                              );
             }
         } else {
-            $vm = ChannelV2::getNewestVersion();
+            $vm = ChannelDispatch::getNewestVersion();
             if (!$vm) {
                 throw new HttpException(ERR_INTERNAL_DB, "internal error");
             }
