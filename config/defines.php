@@ -44,6 +44,7 @@ define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
 define('BUILD_MAIN', 1);
 define('BUILD_ACCESSORY', 2);
+define('V2_BASE_VERSION', "1.1.5");
 
 define('ANDROID_VERSION_CODE', 18);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
