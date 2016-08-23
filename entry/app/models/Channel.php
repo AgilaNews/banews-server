@@ -28,7 +28,9 @@ class Channel extends BaseModel {
             if ($value) {
                 $channels = unserialize($value);
             }
-        } else {
+        } 
+
+        if (!$channels) {
             $channels = 
                 Channel::find(array(
                                     "conditions" => "is_visible = 1",

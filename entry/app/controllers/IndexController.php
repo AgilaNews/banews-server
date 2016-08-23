@@ -54,9 +54,11 @@ class IndexController extends BaseController {
                       ),
                 );
 
+
         if (version_compare($this->client_version, V2_BASE_VERSION, "<")) {
             $ret["categories"] = array();
-            $channels = Channel::getAllVisible(substr($kw, 1));
+
+            $channels = Channel::getAllVisible($this->client_version);
             $i = 0;
             foreach ($channels as $channel) {
                 if (version_compare($this->client_version, $channel->publish_latest_version, "<")) {

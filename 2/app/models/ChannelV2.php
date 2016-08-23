@@ -42,7 +42,7 @@ class ChannelV2 extends BaseModel {
         /*content formatting
           [
           {
-          "channel_id": 10001,
+          "id": 10001,
           "tag": "1", // 1 is `hot` 0 is `default`
           "fixed": "1|0",
           }
@@ -60,13 +60,14 @@ class ChannelV2 extends BaseModel {
         $ret = array();
         
         foreach ($dispatch_list as $cell) {
-            if (!array_key_exists($cell["channel_id"], $channel_map)) {
+            if (!array_key_exists($cell["id"], $channel_map)) {
                 continue;
             }
-            $channel_detail = $channel_map[$cell["channel_id"]];
+            $channel_detail = $channel_map[$cell["id"]];
             
             $ret []= array_merge($cell, array(
                                             "name" => $channel_detail->name,
+                                            "index" => count($ret),
                                             ));
         }
 
