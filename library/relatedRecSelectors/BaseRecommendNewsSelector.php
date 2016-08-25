@@ -9,7 +9,8 @@ class BaseRecommendNewsSelector {
     }
 
     protected function getPolicy() {
-        return new RandomRecommendPolicy($this->_di);
+        #return new RandomRecommendPolicy($this->_di);
+        return new EsRelatedRecPolicy($this->_di);
     }
 
     public function getPolicyTag(){

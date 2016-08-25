@@ -31,7 +31,8 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             ),
         );
         $response = $this->esClient->search($searchParams);
-        print_r($response);
+        var_dump($response);
+        exit(0);
     }
 
     public function sampling($channel_id, $device_id, $user_id, $myself, 
