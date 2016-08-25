@@ -27,30 +27,27 @@ class NewsGif extends BaseModel {
     public $gif_meta;
 
     public static function getGifOfNews($news_sign){
+        $key = CACHE_GIFS_PREFIX . $news_sign;
+
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
-            $value = $cache->get(CACHE_GIFS_PREFIX . $news_sign);
+            $value = $cache->get($key);
             if ($value) {
                 $rs = unserialize($value);
                 return $rs;
             }
         }
 
-        $key = CACHE_GIFS_PREFIX . $news_sign;
         $crit = array (
             "conditions" => "news_url_sign=?1",
             "bind" => array(1 => $news_sign),
             );
 
         $rs = NewsGif::find($crit);
-        if (!$rs) {
-            var_dump($rs->getMessages()); 
-            exit(0);
-        }
         if ($cache) {
             $cache->multi();
-            $cache->set(CACHE_GIFS_PREFIX . $news_sign, serialize($rs));
-            $cache->expire(CACHE_GIFS_PREFIX . $news_sign, CACHE_GIFS_TTL);
+            $cache->set($key, serialize($rs));
+            $cache->expire($key, CACHE_GIFS_TTL);
             $cache->exec();
         }
 

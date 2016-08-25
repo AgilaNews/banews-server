@@ -51,6 +51,7 @@ class News extends BaseModel {
                     "ext_json_text",
                     "json_text",
                     "content_sign",
+                    "shared_url",
                     "tag",
                     "related_sign",)
         );

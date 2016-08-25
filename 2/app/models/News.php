@@ -50,6 +50,7 @@ class News extends BaseModel {
             array ("summary",
                     "ext_json_text",
                     "json_text",
+                    "shared_url",
                     "content_sign",
                     "tag",
                     "related_sign",)
