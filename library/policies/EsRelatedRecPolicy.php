@@ -37,6 +37,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $myself, 
         $pn=3, $day_till_now=7, array $options=null) {
+        $this->moreLikeThis($myself);
     }
 }
 
