@@ -60,6 +60,27 @@ class Comment extends BaseModel {
         return $ret;
     }
 
+    public function save($dataset = null, $whitelist = null) {
+        $cache = $this->di->get('cache');
+        $key = CACHE_COMMENT_FREQ_PREFIX . $this->user_sign;
+        if ($cache) {
+            $value = $cache->get($key);
+            if ($value) {
+                return false;
+            }
+        }
+
+        $ret = parent::save($dataset, $whitelist);
+        if ($ret) {
+            $cache->multi();
+            $cache->set($key, "1");
+            $cache->expire($key, CACHE_COMMENT_FREQ_TTL);
+            $cache->exec();
+        }
+
+        return $ret;
+    }
+    
     public function getSource(){
         return "tb_comment";
     }

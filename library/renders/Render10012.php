@@ -30,6 +30,7 @@ class Render10012 extends BaseListRender {
         $gif_model = $gifs[0];
         $cover_meta = json_decode($gif_model->cover_meta, true);
         $meta = json_decode($gif_model->gif_meta, true);
+        $size= $meta["size"];
         $duration = $meta["duration"];
         $oh = $meta["height"];
         $ow = $meta["width"];
@@ -54,6 +55,7 @@ class Render10012 extends BaseListRender {
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $duration,
+                "size" => $size,
             ))
         );
 
