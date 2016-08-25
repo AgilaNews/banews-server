@@ -11,7 +11,7 @@ class Comment extends BaseModel {
     public $create_time;
 
     
-    public static function getAll($news_sign, $last_id, $pn, $prefer) {
+    public static function getAll($news_sign, $last_id, $pn, $prefer = "later") {
         $crit = array (
             "limit" => 20,
         );

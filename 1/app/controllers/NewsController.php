@@ -24,7 +24,7 @@ class NewsController extends BaseController {
         }
 
         $commentCount = Comment::getCount($newsSign);
-        $topComment = Comment::getAll($newsSign, null, 3);
+        $topComment = Comment::getAll($newsSign, null, 3, "later");
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
         $imgcell = array();
