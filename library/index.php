@@ -3,6 +3,7 @@
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..') . '/');
 define('ROOT_PATH', "/home/work/banews-server/");
+define("VENDOR_PATH", "/home/limeng/php-env/vendor");
 
 use Phalcon\Config;
 use Phalcon\Mvc\Application;
@@ -28,6 +29,7 @@ try {
     }
     $config = new Config($settings);
 
+    require VENDOR_PATH . "autoload.php"; 
     require ROOT_PATH . "config/loader.php";
     require ROOT_PATH . "config/services.php";
     $app = new Application($di);

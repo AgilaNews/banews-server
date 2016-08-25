@@ -11,6 +11,7 @@ $settings = array (
         "policyDir" => LIBRARY_PATH . "/policies",
         "renderDir" => LIBRARY_PATH . "/renders/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
+        "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
