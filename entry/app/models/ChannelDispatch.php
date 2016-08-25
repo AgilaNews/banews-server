@@ -23,7 +23,7 @@ class ChannelDispatch extends BaseModel {
         return "tb_channel_dispatch";
     }
 
-    public function getNewestVersion(){
+    public static function getNewestVersion(){
         return ChannelDispatch::maximum(
             array(
                 "column" => "version",
