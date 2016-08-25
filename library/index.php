@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..') . '/');
 define('ROOT_PATH', "/home/work/banews-server/");
-define("VENDOR_PATH", "/home/limeng/php-env/vendor");
+define("VENDOR_PATH", "/home/work/php-thirdParty/vendor");
 
 use Phalcon\Config;
 use Phalcon\Mvc\Application;
