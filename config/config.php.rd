@@ -11,6 +11,7 @@ $settings = array (
         "policyDir" => LIBRARY_PATH . "/policies/",
         "renderDir" => LIBRARY_PATH . "/renders/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
+        "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
@@ -60,5 +61,6 @@ $settings = array (
                         "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
                         "referrer" => "http://" . SERVER_NAME . "/referrer",
                         ),
+    'elasticsearch' => 'http://localhost:9200', 
 
 );
