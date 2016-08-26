@@ -65,6 +65,8 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             ),
         );
         try {
+            //TODO @limeng
+            //     remove this method by refractor code
             $myselfObj = News::getBySign($myself);
             $contentSignSet = array();
             if ($myselfObj->content_sign) {
