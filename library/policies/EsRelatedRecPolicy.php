@@ -65,7 +65,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             ),
         );
         try {
-            $myselfObj = News::get($myself);
+            $myselfObj = News::getBySign($myself);
             $contentSignSet = array();
             if ($myselfObj->content_sign) {
                 $contentSignSet[] = $myselfObj->content_sign;
@@ -92,8 +92,8 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             }
             return $resLst;
         } catch(\Exception $e) {
-            $this->logger->error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
-                $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
+            #$this->logger->error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
+            #    $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
             return array();
         }
     }
