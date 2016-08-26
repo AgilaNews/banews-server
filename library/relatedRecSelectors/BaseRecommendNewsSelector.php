@@ -21,8 +21,6 @@ class BaseRecommendNewsSelector {
         $esRelatedPolicy = new EsRelatedRecPolicy($this->_di); 
         $esRelatedNewsLst = $esRelatedPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, $myself, $base);
-        var_dump($esRelatedNewsLst);
-        exit(0);
 
         if (count($esRelatedNewsLst) < $base) {
             $randomPolicy = new RandomRecommendPolicy($this->_di);
@@ -35,10 +33,10 @@ class BaseRecommendNewsSelector {
                 if (in_array($curNews, $esRelatedNewsLst)) {
                     continue;
                 }
-                $esRelatedPolicy[] = $curNews; 
+                $esRelatedNewsLst[] = $curNews; 
             }
         }
-        $models = News::batchGet($esRelatedPolicy);
+        $models = News::batchGet($esRelatedNewsLst);
         if (array_key_exists($myself, $models)) {
             //do not recommend myself
             unset($models[$myself]);

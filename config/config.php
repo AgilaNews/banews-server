@@ -66,5 +66,6 @@ $settings = array (
                         "mons" => "https://" . SERVER_NAME . "/v%d",
                         "referrers" => "https://" . SERVER_NAME . "/referrer",
                         ),
+    'elasticsearch' => 'http://10.8.18.130:9200',
 
 );

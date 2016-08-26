@@ -61,5 +61,6 @@ $settings = array (
                         "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
                         "referrer" => "http://" . SERVER_NAME . "/referrer",
                         ),
+    'elasticsearch' => 'http://localhost:9200', 
 
 );

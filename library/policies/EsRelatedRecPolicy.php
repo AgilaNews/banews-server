@@ -1,19 +1,50 @@
 <?php
 
-use Elasticsearch\ClientBuilder;
 use Phalcon\DI;
 
 class EsRelatedRecPolicy extends BaseRecommendPolicy {
     public function __construct($di) {
         parent::__construct($di);
-        $clientBuilder = ClientBuilder::create();
-        $hosts = ['http://10.8.18.130:9200'];
-        $clientBuilder->setHosts($hosts);
-        $this->esClient = $clientBuilder->build();
-        $this->logger = DI::getDefault()->get('logger');
+        $this->esClient = $di->get('elasticsearch');
+        $this->logger = $di->get('logger');
     }
 
-    protected function moreLikeThis($myself, $minThre=0.) {
+    protected static function _getRecFromCache($sign) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = CACHE_NEWS_RECOMMEND_PREFIX . $sign;
+            $value = $cache->get($key);
+            if ($value) {
+                $recNewsIdLst = explode(",", $value); 
+                if ($recNewsIdLst) {
+                    $recNewsObjLst = News::batchGet($recNewsIdLst);
+                    return $recNewsObjLst;
+                }
+            }
+        }
+        return array();
+    }
+
+    protected static function _saveRecToCache($newsId, $recNewsObjLst){
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = CACHE_NEWS_RECOMMEND_PREFIX . $model->url_sign;
+            $cache->multi();
+            $newsIdLst = array();
+            foreach ($recNewsObjLst as $curNewsObj) {
+                $newsIdLst[] = $curNewsObj->url_sign;
+            }
+            $cache->set($key, implode(",", $newsIdLst));
+            $cache->expire($key, CACHE_NEWS_RECOMMEND_TTL);
+            $cache->exec();
+        }
+    }
+
+    protected function getRecommendNews($myself, $pn, $minThre=0.) {
+        $recNewsLst = self::_getRecFromCache($myself);
+        if ($recNewsLst) {
+            return $recNewsLst;
+        }
         $searchParams = array(
             'index' => 'banews-article',
             'type' => 'article',
@@ -36,12 +67,23 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
         try {
             $resLst = array();
             $relatedNews = $this->esClient->search($searchParams);
-            foreach($relatedNews as $curNews) {
-                $resLst[] = $curNews["_id"];
+            if (array_key_exists('hits', $relatedNews)) {
+                if (array_key_exists('hits', $relatedNews['hits'])) {
+                    foreach($relatedNews['hits']['hits'] as $curNews) {
+                        if ($curNews['_score'] < $minThre)
+                            continue;
+                        $resLst[] = $curNews["_id"];
+                        if (count($resLst) > $pn)
+                            break;
+                    }
+                }
+            }
+            if ($resLst) {
+                self::_saveRecToCache($myself, $resLst);
             }
             return $resLst;
         } catch(\Exception $e) {
-            $this->logger.error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
+            $this->logger->error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
                 $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
             return array();
         }
@@ -49,7 +91,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $myself, 
         $pn=3, $day_till_now=7, array $options=null) {
-        $resLst = $this->moreLikeThis($myself, 0);
+        $resLst = $this->getRecommendNews($myself, $pn, 0);
         return $resLst;
     }
 }
