@@ -65,6 +65,11 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             ),
         );
         try {
+            $myselfObj = News::get($myself);
+            $contentSignSet = array();
+            if ($myselfObj->content_sign) {
+                $contentSignSet[] = $myselfObj->content_sign;
+            }
             $resLst = array();
             $relatedNews = $this->esClient->search($searchParams);
             if (array_key_exists('hits', $relatedNews)) {
@@ -72,6 +77,10 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
                     foreach($relatedNews['hits']['hits'] as $curNews) {
                         if ($curNews['_score'] < $minThre)
                             continue;
+                        if (in_array($curNews->content_sign, $contentSignSet)) {
+                            continue;
+                        }
+                        $contentSignSet[] = $curNews->content_sign;
                         $resLst[] = $curNews["_id"];
                         if (count($resLst) > $pn)
                             break;
