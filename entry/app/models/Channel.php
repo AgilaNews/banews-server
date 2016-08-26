@@ -12,8 +12,6 @@ class Channel extends BaseModel {
 
     public $priority;
 
-    public $publish_lastest_version;
-
     public $fixed;
 
     public $is_visible;
@@ -28,23 +26,25 @@ class Channel extends BaseModel {
         if ($cache) {
             $value = $cache->get(CHANNELS_CACHE_KEY);
             if ($value) {
-                return unserialize($value);
+                $channels = unserialize($value);
+            }
+        } 
+
+        if (!$channels) {
+            $channels = 
+                Channel::find(array(
+                                    "conditions" => "is_visible = 1",
+                                    "order" => "priority"
+                                    ));
+            
+            if ($cache && $channels) {
+                $cache->multi();
+                $cache->set(CHANNELS_CACHE_KEY, serialize($channels));
+                $cache->expire(CHANNELS_CACHE_KEY, CHANNELS_CACHE_TTL);
+                $cache->exec();
             }
         }
-
-        $channels = 
-            Channel::find(array(
-                "conditions" => "is_visible = 1",
-                "order" => "priority"
-            ));
-
-        if ($cache && $channels) {
-            $cache->multi();
-            $cache->set(CHANNELS_CACHE_KEY, serialize($channels));
-            $cache->expire(CHANNELS_CACHE_KEY, CHANNELS_CACHE_TTL);
-            $cache->exec();
-        }
-
+            
         $ret = array();
         foreach ($channels as $channel) {
             if (version_compare($client_version, $channel->publish_latest_version, ">=")) {

@@ -35,6 +35,9 @@ define('CACHE_COLLECT_PREFIX', "BS_COLLECT_");
 define('CACHE_COLLECT_TTL', 300);
 define('CACHE_NEWS_RECOMMEND_PREFIX', "BS_NEWS_RECOMMEND_");
 define('CACHE_NEWS_RECOMMEND_TTL', 3600);
+define("CACHE_CHANNELS_V2_KEY", "BS_CHANNELS_V2_%s");
+define('CACHE_COMMENT_FREQ_PREFIX', "BS_COMMENT_FREQ_");
+define('CACHE_COMMENT_FREQ_TTL', 5);
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
 define('DEVICEMAP_DEVICE_KEY', "PUSH_DEVICE_ID_");
 
@@ -45,6 +48,7 @@ define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
 define('BUILD_MAIN', 1);
 define('BUILD_ACCESSORY', 2);
+define('V2_BASE_VERSION', "1.1.8");
 
 define('ANDROID_VERSION_CODE', 18);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center

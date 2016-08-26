@@ -51,7 +51,7 @@ $settings = array (
                        ),
     'cache' => array (
                       "redis" => array (
-                                        "host" => "127.0.0.1",
+                                        "host" => "10.8.14.136",
                                         "port" => 6379,
                                         ),
                       ),
