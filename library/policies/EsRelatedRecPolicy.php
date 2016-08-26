@@ -13,7 +13,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
         $this->logger = DI::getDefault()->get('logger');
     }
 
-    protected function moreLikeThis($myself) {
+    protected function moreLikeThis($myself, $minThre=0.) {
         $searchParams = array(
             'index' => 'banews-article',
             'type' => 'article',
@@ -34,20 +34,23 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             ),
         );
         try {
+            $resLst = array();
             $relatedNews = $this->esClient->search($searchParams);
             foreach($relatedNews as $curNews) {
-                var_dump($relatedNews);
+                $resLst[] = $curNews["_id"];
             }
-            exit(0);
+            return $resLst;
         } catch(\Exception $e) {
             $this->logger.error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
                 $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
+            return array();
         }
     }
 
     public function sampling($channel_id, $device_id, $user_id, $myself, 
         $pn=3, $day_till_now=7, array $options=null) {
-        $this->moreLikeThis($myself);
+        $resLst = $this->moreLikeThis($myself, 0);
+        return $resLst;
     }
 }
 

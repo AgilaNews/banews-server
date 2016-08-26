@@ -9,21 +9,36 @@ class BaseRecommendNewsSelector {
     }
 
     protected function getPolicy() {
-        #return new RandomRecommendPolicy($this->_di);
         return new EsRelatedRecPolicy($this->_di);
     }
 
     public function getPolicyTag(){
-        return "random";
+        return "esRelatedRec";
     }
 
     public function select($myself) {
-        $policy = $this->getPolicy();
         $base = DEFAULT_RECOMMEND_NEWS_COUNT + 1;
-        $news_list = $policy->sampling($this->_channel_id, $this->_device_id, 
-            $this->_user_id, $myself, $base);
-        $models = News::batchGet($news_list);
+        $esRelatedPolicy = new EsRelatedRecPolicy($this->_di); 
+        $esRelatedNewsLst = $esRelatedPolicy->sampling($this->_channel_id, 
+            $this->_device_id, $this->_user_id, $myself, $base);
+        var_dump($esRelatedNewsLst);
+        exit(0);
 
+        if (count($esRelatedNewsLst) < $base) {
+            $randomPolicy = new RandomRecommendPolicy($this->_di);
+            $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
+                $this->_device_id, $this->_user_id, $myself, $base);
+            foreach ($randomNewsLst as $curNews) {
+                if (count($esRelatedNewsLst) >= $base) {
+                    break;
+                }
+                if (in_array($curNews, $esRelatedNewsLst)) {
+                    continue;
+                }
+                $esRelatedPolicy[] = $curNews; 
+            }
+        }
+        $models = News::batchGet($esRelatedPolicy);
         if (array_key_exists($myself, $models)) {
             //do not recommend myself
             unset($models[$myself]);
