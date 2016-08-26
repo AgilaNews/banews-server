@@ -69,11 +69,12 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             //     remove this method by refractor code
             $myselfObj = News::getBySign($myself);
             $contentSignSet = array();
-            var_dump($myselfObj->content_sign);
-            exit(0);
             if ($myselfObj->content_sign) {
                 $contentSignSet[$myselfObj->content_sign] = true;
             }
+            var_dump("hahahahahah");
+            var_dump($myselfObj->content_sign);
+            exit(0);
             $resLst = array();
             $relatedNews = $this->esClient->search($searchParams);
             if (array_key_exists('hits', $relatedNews)) {
