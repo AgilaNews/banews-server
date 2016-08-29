@@ -11,6 +11,7 @@ $settings = array (
         "policyDir" => LIBRARY_PATH . "/policies",
         "renderDir" => LIBRARY_PATH . "/renders/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
+        "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
@@ -65,5 +66,6 @@ $settings = array (
                         "mons" => "https://" . SERVER_NAME . "/v%d",
                         "referrers" => "https://" . SERVER_NAME . "/referrer",
                         ),
+    'elasticsearch' => 'http://10.8.18.130:9200',
 
 );
