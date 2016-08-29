@@ -36,24 +36,36 @@ class IndexController extends BaseController {
             throw new HttpException(ERR_CLIENT_VERSION_NOT_FOUND,
                                     "client version not supported");
         }
-        
+
         $interfaces = array(
                "home" => sprintf($this->config->entries->home, $vm->server_version),
                "mon" => sprintf($this->config->entries->mon, $vm->server_version),
                "log" => sprintf($this->config->entries->log, $vm->server_version),
                "referrer" => $this->config->entries->referrer
                );
-        
-        $ret = array(
-                "interfaces" => $interfaces,
-                "updates" => array(
-                    "avc" => ANDROID_VERSION_CODE, 
-                    "min_version" => MIN_VERSION,
-                    "new_version" => NEW_VERSION,
-                    "update_url"=> UPDATE_URL,
+
+        if ($this->build == BUILD_MAIN) { 
+            $ret = array(
+                         "interfaces" => $interfaces,
+                         "updates" => array(
+                                            "avc" => ANDROID_VERSION_CODE, 
+                                            "min_version" => MIN_VERSION,
+                                            "new_version" => NEW_VERSION,
+                                            "update_url"=> UPDATE_URL,
                       ),
                 );
-
+        } else if ($this->build == BUILD_ACCESSORY) {
+            $ret = array(
+                         "interfaces" => $interfaces,
+                         "updates" => array(
+                                            "avc" => ANDROID_VERSION_CODE_2, 
+                                            "min_version" => MIN_VERSION_2,
+                                            "new_version" => NEW_VERSION_2,
+                                            "update_url"=> UPDATE_URL_2,
+                                            ),
+                         );
+        }
+        
 
         if (version_compare($this->client_version, V2_BASE_VERSION, "<")) {
             $ret["categories"] = array();

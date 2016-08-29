@@ -45,14 +45,13 @@ define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
 define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 
 define('BUILD_MAIN', 1);
-define('BUILD_ACCESSORY', 2);
-define('V2_BASE_VERSION', "1.1.8");
-
-define('ANDROID_VERSION_CODE', 18);
 define('MIN_VERSION', "v1.0.1"); //TODO change this to a configuration center
 define('NEW_VERSION', "v1.1.7");
+define('ANDROID_VERSION_CODE', 18);
 define('UPDATE_URL', "https://play.google.com/store/apps/details?id=com.upeninsula.banews");
 
+define('BUILD_ACCESSORY', 2);
+define('V2_BASE_VERSION', "1.1.8");
 define('ANDROID_VERSION_CODE_2', 1);
 define('MIN_VERSION_2', 'v1.0.1');
 define('NEW_VERSION_2', 'v1.1.7');

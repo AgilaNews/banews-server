@@ -50,7 +50,7 @@ class BaseController extends Controller{
         // we just need version code after 'v' character
         $this->client_version = substr($this->get_request_param("client_version", "string", false, "v1.0.0"), 1);
 
-        $build = $this->get_request_param("build", "int");
+        $this->build = $this->get_request_param("build", "int", false, BUILD_MAIN);
 
         if ($this->density) {
             $ret = explode(";", $this->density);
