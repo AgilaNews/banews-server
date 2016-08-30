@@ -62,6 +62,8 @@ class IndexController extends BaseController {
            1 only published for android
            2 only published for ios
            1 | 2 published for all platforms
+           
+           note: android has two main build package, main app is 1 called `Agila`, accessory is 2 called `Agila News`, fuck
 
            so we make sure that versions is sorted above, then just iterate from oldest version to newest version
            we can get three version numbers:
@@ -85,7 +87,7 @@ class IndexController extends BaseController {
             }
 
             if ($this->os == "android") {
-                if ($model->status & ANDROID_PUBLISHED) {
+                if ($model->status & ANDROID_PUBLISHED && $model->build_type == $this->build) {
                     $new_model = $model;
 
                     if (!$min_model) {
