@@ -43,7 +43,8 @@ class NewsController extends BaseController {
             $ow = $meta["width"];
             $oh = $meta["height"];
             $aw = (int) ($this->resolution_w * 11 / 12);
-            $ah = (int) min($this->resolution_h * 0.9, $aw * $oh / $ow);
+            //$ah = (int) min($this->resolution_h * 0.9, $aw * $oh / $ow);
+            $ah = (int) ($aw * $oh / $ow);
 
             $imgcell[] = array(
                 "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),

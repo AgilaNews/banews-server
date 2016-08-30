@@ -9,42 +9,48 @@
  * 
  */
 use Phalcon\DI;
+
 class Version extends BaseModel {
     public $id;
 
     public $client_version;
 
     public $server_version;
-    
+
+    public $android_version_code;
+
+    public $update_url;
+
+    public $build_type;
+
+    public $status;
+
     public function getSource(){
         return "tb_version";
     }
-        
-    public static function getByClientVersion($client_version) {
+
+    public static function getAllUseable() {
         $cache = DI::getDefault()->get('cache');
 
         if ($cache) {
-            $value = $cache->get(CACHE_VERSION_PREFIX . $client_version);
+            $value = $cache->get(CACHE_VERSION_PREFIX);
             if ($value) {
-                $model = new Version();
-                $model->unserialize($value);
-                return $model;
+                return unserialize($value);
             }
-        }
+       }
 
-        $version = Version::findFirst(array(
-            "conditions" => "client_version = ?1",
-            "bind" => array(1 => $client_version),
-        ));
+       $versions = Version::Find(array(
+                       "conditions" => "status <> ?1",
+                       "bind" => array(1 => NOT_PUBLISHED),
+                       ));
 
-        if ($version) {
-            $key = CACHE_VERSION_PREFIX . $client_version;
-            $cache->multi();
-            $cache->set($key, $version->serialize());
-            $cache->expire($key, CACHE_VERSION_TTL);
-            $cache->exec();
-        }
+       if ($versions && $cache)  {
+           $cache->multi();
+           $cache->set(CACHE_VERSION_PREFIX, serialize($versions));
+           $cache->expire(CACHE_VERSION_PREFIX, CACHE_VERSION_TTL);
+           $cache->exec();
+       }
 
-        return $version;
+       return $versions;
     }
 }

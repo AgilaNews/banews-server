@@ -24,7 +24,7 @@ class Channel extends BaseModel {
         $cache = DI::getDefault()->get('cache');
 
         if ($cache) {
-            $value = $cache->get(CHANNELS_CACHE_KEY);
+            $value = $cache->get(CACHE_CHANNELS_KEY);
             if ($value) {
                 return unserialize($value);
             }
@@ -38,8 +38,8 @@ class Channel extends BaseModel {
 
         if ($cache && $channels) {
             $cache->multi();
-            $cache->set(CHANNELS_CACHE_KEY, serialize($channels));
-            $cache->expire(CHANNELS_CACHE_KEY, CHANNELS_CACHE_TTL);
+            $cache->set(CACHE_CHANNELS_KEY, serialize($channels));
+            $cache->expire(CACHE_CHANNELS_KEY, CACHE_CHANNELS_TTL);
             $cache->exec();
         }
 

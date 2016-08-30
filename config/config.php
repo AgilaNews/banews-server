@@ -67,5 +67,4 @@ $settings = array (
                         "referrers" => "https://" . SERVER_NAME . "/referrer",
                         ),
     'elasticsearch' => 'http://10.8.18.130:9200',
-
 );
