@@ -38,7 +38,7 @@ class Channel extends BaseModel {
 
         if ($cache && $channels) {
             $cache->multi();
-            $cache->set(CACHE_CHANNEL_KEY, serialize($channels));
+            $cache->set(CACHE_CHANNELS_KEY, serialize($channels));
             $cache->expire(CACHE_CHANNELS_KEY, CACHE_CHANNELS_TTL);
             $cache->exec();
         }
