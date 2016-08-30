@@ -62,6 +62,7 @@ class IndexController extends BaseController {
            1 only published for android
            2 only published for ios
            1 | 2 published for all platforms
+
            
            note: android has two main build package, main app is 1 called `Agila`, accessory is 2 called `Agila News`, fuck
 
