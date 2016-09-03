@@ -31,8 +31,8 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             $key = CACHE_NEWS_RECOMMEND_PREFIX . $newsSign;
             $cache->multi();
             $newsSignLst = array();
-            foreach ($recNewsObjLst as $curNewsObj) {
-                $newsSignLst[] = $curNewsObj->url_sign;
+            foreach ($recNewsObjLst as $curSign) {
+                $newsSignLst[] = $curSign;
             }
 
             $cache->set($key, json_encode($newsSignLst, true));
@@ -96,6 +96,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
                     }
                 }
             }
+
             if ($resLst) {
                 self::_saveRecToCache($myself, $resLst);
             }
