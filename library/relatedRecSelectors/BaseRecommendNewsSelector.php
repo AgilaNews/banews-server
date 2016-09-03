@@ -43,7 +43,7 @@ class BaseRecommendNewsSelector {
             //do not recommend myself
             unset($models[$myself]);
         }
-        foreach ($modesl as $model) {
+        foreach ($models as $model) {
             if ($model) {
                 $ret []= $model;
             }
