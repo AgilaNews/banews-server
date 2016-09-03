@@ -30,7 +30,7 @@ class BaseRecommendNewsSelector {
             }
             $ret [$sign]= $model;
 
-            if (count($ret) >= $left) {
+            if (count($ret) >= DEFAULT_RECOMMEND_NEWS_COUNT) {
                 return $ret;
             }
         }
