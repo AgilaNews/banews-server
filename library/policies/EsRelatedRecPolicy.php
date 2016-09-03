@@ -17,8 +17,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             if ($value) {
                 $recNewsIdLst = json_decode($value, true); 
                 if ($recNewsIdLst) {
-                    $recNewsObjLst = News::batchGet($recNewsIdLst);
-                    return $recNewsObjLst;
+                    return $recNewsIdLst;
                 }
             }
         }
@@ -46,6 +45,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
         if ($recNewsLst) {
             return $recNewsLst;
         }
+
         $searchParams = array(
             'index' => 'banews-article',
             'type' => 'article',

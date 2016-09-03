@@ -36,12 +36,22 @@ class BaseRecommendNewsSelector {
                 $esRelatedNewsLst[] = $curNews; 
             }
         }
+
         $models = News::batchGet($esRelatedNewsLst);
+        $ret = array();
         if (array_key_exists($myself, $models)) {
             //do not recommend myself
             unset($models[$myself]);
         }
+        foreach ($modesl as $model) {
+            if ($model) {
+                $ret []= $model;
+            }
+            if (count($ret) >= DEFAULT_RECOMMEND_NEWS_COUNT) {
+                break;
+            }
+        }
 
-        return array_slice($models, 0, DEFAULT_RECOMMEND_NEWS_COUNT);
+        return $ret;
     } 
 }
