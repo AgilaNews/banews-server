@@ -1,5 +1,6 @@
 <?php
 define ("DEFAULT_RECOMMEND_NEWS_COUNT", 3);
+
 class BaseRecommendNewsSelector {
     public function __construct($channel_id, $device_id, $user_id, $di) {
         $this->_channel_id = $channel_id;
@@ -17,38 +18,36 @@ class BaseRecommendNewsSelector {
     }
 
     public function select($myself) {
-        $base = DEFAULT_RECOMMEND_NEWS_COUNT + 1;
+        $ret = array();
         $esRelatedPolicy = new EsRelatedRecPolicy($this->_di); 
         $esRelatedNewsLst = $esRelatedPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $myself, $base);
-
-        if (count($esRelatedNewsLst) < $base) {
-            $randomPolicy = new RandomRecommendPolicy($this->_di);
-            $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-                $this->_device_id, $this->_user_id, $myself, $base);
-            foreach ($randomNewsLst as $curNews) {
-                if (count($esRelatedNewsLst) >= $base) {
-                    break;
-                }
-                if (in_array($curNews, $esRelatedNewsLst)) {
-                    continue;
-                }
-                $esRelatedNewsLst[] = $curNews; 
-            }
-        }
+            $this->_device_id, $this->_user_id, $myself, DEFAULT_RECOMMEND_NEWS_COUNT + 1);
 
         $models = News::batchGet($esRelatedNewsLst);
-        $ret = array();
-        if (array_key_exists($myself, $models)) {
-            //do not recommend myself
-            unset($models[$myself]);
-        }
-        foreach ($models as $model) {
-            if ($model) {
-                $ret []= $model;
+        foreach ($models as $sign => $model) {
+            if (!$model || $sign == $myself) {
+                continue;
             }
-            if (count($ret) >= DEFAULT_RECOMMEND_NEWS_COUNT) {
-                break;
+            $ret [$sign]= $model;
+
+            if (count($ret) >= $left) {
+                return $ret;
+            }
+        }
+
+        $randomPolicy = new RandomRecommendPolicy($this->_di);
+        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
+                                                 $this->_device_id, $this->_user_id, 
+                                                 $myself, DEFAULT_RECOMMEND_NEWS_COUNT - count($ret) + 1);
+
+        $randomModels = News::batchGet($randomNewsLst);
+        foreach ($randomModels as $sign => $models) {
+            if (!$model || $sign == $myself) {
+                continue;
+            }
+            $ret [$sign] = $model;
+            if (count($ret) >= $left) {
+                return $ret;
             }
         }
 
