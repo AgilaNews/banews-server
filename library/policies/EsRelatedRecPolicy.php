@@ -15,7 +15,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             $key = CACHE_NEWS_RECOMMEND_PREFIX . $sign;
             $value = $cache->get($key);
             if ($value) {
-                $recNewsIdLst = explode(",", $value); 
+                $recNewsIdLst = json_decode($value, true); 
                 if ($recNewsIdLst) {
                     $recNewsObjLst = News::batchGet($recNewsIdLst);
                     return $recNewsObjLst;
@@ -25,16 +25,17 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
         return array();
     }
 
-    protected static function _saveRecToCache($newsId, $recNewsObjLst){
+    protected static function _saveRecToCache($newsSign, $recNewsObjLst){
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
-            $key = CACHE_NEWS_RECOMMEND_PREFIX . $model->url_sign;
+            $key = CACHE_NEWS_RECOMMEND_PREFIX . $newsSign;
             $cache->multi();
-            $newsIdLst = array();
+            $newsSignLst = array();
             foreach ($recNewsObjLst as $curNewsObj) {
-                $newsIdLst[] = $curNewsObj->url_sign;
+                $newsSignLst[] = $curNewsObj->url_sign;
             }
-            $cache->set($key, implode(",", $newsIdLst));
+
+            $cache->set($key, json_encode($newsSignLst, true));
             $cache->expire($key, CACHE_NEWS_RECOMMEND_TTL);
             $cache->exec();
         }
