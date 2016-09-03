@@ -22,7 +22,7 @@ class BaseRecommendNewsSelector {
         $cs = array(); //content sign
         $esRelatedPolicy = new EsRelatedRecPolicy($this->_di); 
         $esRelatedNewsLst = $esRelatedPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $myself, DEFAULT_RECOMMEND_NEWS_COUNT + 1);
+            $this->_device_id, $this->_user_id, $myself, DEFAULT_RECOMMEND_NEWS_COUNT * 2);
 
         $models = News::batchGet($esRelatedNewsLst);
         foreach ($models as $sign => $model) {
@@ -40,7 +40,7 @@ class BaseRecommendNewsSelector {
         $randomPolicy = new RandomRecommendPolicy($this->_di);
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
                                                  $this->_device_id, $this->_user_id, 
-                                                 $myself, DEFAULT_RECOMMEND_NEWS_COUNT - count($ret) + 1);
+                                                 $myself, DEFAULT_RECOMMEND_NEWS_COUNT - count($ret) + 2);
 
         $randomModels = News::batchGet($randomNewsLst);
         foreach ($randomModels as $sign => $models) {
