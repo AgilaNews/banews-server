@@ -47,6 +47,7 @@ class NewsController extends BaseController {
 
             $imgcell[] = array(
                 "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
+                "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), "{w}"),
                 "width" => $aw,
                 "height" => $ah,
                 "name" => "<!--IMG" . $img->news_pos_id . "-->",
