@@ -182,6 +182,10 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
         }
 
+        if (!isset($now->content_sign) || $now->content_sign == null || count($now->content_sign) == 0) {
+            $now->content_sign = "";
+        } 
+
         $now->liked++;
         $ret = $now->save();
         if (!$ret) {
