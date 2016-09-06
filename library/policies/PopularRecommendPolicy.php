@@ -9,7 +9,6 @@ class PopularRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
         parent::__construct($di);
         $this->esClient = $di->get('elasticsearch');
-        $this->logger = $di->get('logger');
     }
 
     protected static function _getRecFromCache($sign) {
@@ -77,8 +76,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
                         if ($curNews['_score'] < $minThre) {
                             continue;
                         }
-
-                        $resLst[] = $curNews["_id"];
+                        array_push($resLst, $curNews); 
+                        #$resLst[] = $curNews["_id"];
                         if (count($resLst) > $pn)
                             break;
                     }
@@ -127,7 +126,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
     protected function sentFilter($sentNewsLst, $newsLst) {
         $filterNewsLst = array();
         foreach ($newsLst as $news) {
-            if (!in_array($news, $sentNewsLst)) {
+            if (!in_array($news->_id, $sentNewsLst)) {
                 array_push($filterNewsLst, $news); 
             }
         }
@@ -142,7 +141,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
         foreach ($newsLst as $news) {
-            if($news->fetch_time>=$start and $news->fetch_time<=$end){
+            if($news->fetch_timestamp>=$start and $news->fetch_timestamp<=$end){
                 array_push($filterNewsLst, $news); 
             }
         }
