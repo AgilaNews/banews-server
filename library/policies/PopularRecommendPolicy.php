@@ -2,8 +2,8 @@
 
 use Phalcon\DI;
 
-define ('RECOMMEND_DAY_SPAN', 3);
-define ('CLICK_DAY_SPAN', 1);
+define ('RECOMMEND_DAY_SPAN', 5);
+define ('CLICK_DAY_SPAN', 5);
 
 class PopularRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
