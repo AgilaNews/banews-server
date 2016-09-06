@@ -123,6 +123,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 $id = $news['_id'];
                 $retIdLst[] = $id;
             }
+            var_dump($filterSentNewsLst, $retIdLst);
+            exit(0);
             return array_slice($retIdLst, 0, $pn);        
         }
 
@@ -136,8 +138,6 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 array_push($filterNewsLst, $news); 
             }
         }
-        var_dump("aaaaa",$sentNewsLst,"bbbbb",$filterNewsLst);
-        exit(0);
         return $filterNewsLst;
     }
 
