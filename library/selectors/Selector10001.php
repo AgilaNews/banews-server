@@ -38,19 +38,19 @@ class Selector10001 extends BaseNewsSelector{
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
-        $popularNewsCnt = max($sample_count - LATELY_NEWS_COUNT - RECOMMEND_NEWS_COUNT, 1);
-        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
-                $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
+#        $popularNewsCnt = max($sample_count - LATELY_NEWS_COUNT - RECOMMEND_NEWS_COUNT, 1);
+#        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
+#                $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
         $recommendNewsLst = $popularRecommendPolicy->sampling($this->_channel_id, $this->_device_id,
                 $this->_user_id, RECOMMEND_NEWS_COUNT, 3, $prefer, $options);
 
-        foreach($recommendNewsLst as $recNews) {
-            if(in_array($recNews, $popularNewsLst)) {
-                continue;
-            }
-            $popularNewsLst[] = $recNews;
-        }
-
+#        foreach($recommendNewsLst as $recNews) {
+#            if(in_array($recNews, $popularNewsLst)) {
+#                continue;
+#            }
+#            $popularNewsLst[] = $recNews;
+#        }
+#
 #        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
 #                $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
 #
@@ -63,7 +63,7 @@ class Selector10001 extends BaseNewsSelector{
 #            }
 #            $popularNewsLst[] = $randomNews;
 #        }
-        return $popularNewsLst;
+        return $recommendNewsLst;
     }
 
     public function select($prefer) {
