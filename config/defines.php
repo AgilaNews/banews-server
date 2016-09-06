@@ -56,6 +56,7 @@ define('DEVICEMAP_DEVICE_KEY', "PUSH_DEVICE_ID_");
 
 //used for news dispatch
 define('CACHE_SENT_QUEUE_PREFIX', "BA_UN_FIFO_");
+define('CACHE_CLICK_QUEUE_PREFIX', "BA_UC_FIFO_");
 define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
 define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
 define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
@@ -63,6 +64,8 @@ define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 //TODO if user grows, set this value lesser, this will absolutely consume more memory, we will consider bloomfilter to solve this problem
 define('CACHE_SENT_MASK_MAX', 1000); 
 define('CACHE_SENT_TTL', 24 * 3600); 
+define('CACHE_CLICK_MASK_MAX', 100);
+define('CACHE_CLICK_TTL', 48 * 3600);
 define('NET_SCHEMA', "http");
 
 define('SHARE_TEMPLATE', "http://share." . SERVER_HOST . "/news?id=%s&from={from}");
