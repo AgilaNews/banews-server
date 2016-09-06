@@ -115,7 +115,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $filterTimeNewsLst = $recommendLst;
         $out1 = array();
         foreach($recommendLst as $out){
-            $out1[] = $out;
+            $out1[] = $out["_id"];
         }
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
         if (!$filterSentNewsLst) {
