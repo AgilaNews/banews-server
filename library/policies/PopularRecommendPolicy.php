@@ -77,7 +77,6 @@ class PopularRecommendPolicy extends BaseListPolicy {
                             continue;
                         }
                         array_push($resLst, $curNews); 
-                        #$resLst[] = $curNews["_id"];
                         if (count($resLst) > $pn)
                             break;
                     }
@@ -90,8 +89,17 @@ class PopularRecommendPolicy extends BaseListPolicy {
             return $resLst;
         } catch(\Exception $e) {
             #$this->logger->error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
-            #    $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
             return array();
+        }
+    }
+
+    public function genRecNewsLst($seedLst, $numRecEach) {
+        $recommendLst = array();
+        foreach($seedLst as $news_id) {
+            $resLst = $this->getRecommendNews($news_id, $numRecEach, 0);
+            foreach($resLst as $res) {
+                array_push($recommendLst, $res); 
+            }
         }
     }
 
@@ -100,20 +108,12 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $sentLst = $this->_cache->getDeviceSeen($device_id);
         //TODO: get all user manipulations
         #$clickedLst = $this->_cache->getDeviceClicked($device_id);
+        #$filterClickedLst = actionTimeFilter($clickedLst, 1);
+        
         $clickedLst = array('VoBIWUjVazk=','CnMwq9tuC+g=','MbLhVVsBjcY=', '2a2WP1bP9ag=');
-        //TODO: filter fetch_time of clickedLst(do not know the field name)
-        #$filteredClickedLst = $this->timeFilter($clickedLst, 2);
+        $recommendLst = $this->genRecNewsLst($clickedLst, 5);
 
-        // recommended news for user <- clickedLst
-        $recommendLst = array();
-        foreach($clickedLst as $news_id) {
-            $resLst = $this->getRecommendNews($news_id, 5, 0);
-            foreach($resLst as $res) {
-                array_push($recommendLst, $res); 
-            }
-        }
-
-        $filterTimeNewsLst = $this->timeFilter($recommendLst, RECOMMEND_DAY_SPAN);
+        $filterTimeNewsLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
         if (!$filterSentNewsLst) {
             return array();
@@ -141,7 +141,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         return $filterNewsLst;
     }
 
-    protected function timeFilter($newsLst, $timeSpan) {
+    protected function newsTimeFilter($newsLst, $timeSpan) {
         $filterNewsLst = array();
         $now = time();
         $start = ($now - ($timeSpan * 86400));
@@ -155,6 +155,22 @@ class PopularRecommendPolicy extends BaseListPolicy {
             }
         }
         return $filterNewsLst;
+    }
+
+    protected function actionTimeFilter($actionLst, $timeSpan) {
+        $filterActionLst = array();
+        $now = time();
+        $start = ($now - ($timeSpan * 86400));
+        $start = $start - ($start % 86400);
+        $end = ($now + 86400) - (($now + 86400) % 86400);
+
+        foreach ($actionLst as $action) {
+            $timestamp = $action['time'];
+            if($timestamp>=$start and $timestamp<=$end){
+                array_push($filterActionLst, $action); 
+            }
+        }
+        return $filterActionLst;
     }
 
 }

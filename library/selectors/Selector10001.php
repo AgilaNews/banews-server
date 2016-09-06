@@ -42,7 +42,7 @@ class Selector10001 extends BaseNewsSelector{
 #        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
 #                $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
         $recommendNewsLst = $popularRecommendPolicy->sampling($this->_channel_id, $this->_device_id,
-                $this->_user_id, RECOMMEND_NEWS_COUNT, 3, $prefer, $options);
+                $this->_user_id, RECOMMEND_NEWS_COUNT, 4, $prefer, $options);
 
 #        foreach($recommendNewsLst as $recNews) {
 #            if(in_array($recNews, $popularNewsLst)) {
