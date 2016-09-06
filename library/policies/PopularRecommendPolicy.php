@@ -144,11 +144,11 @@ class PopularRecommendPolicy extends BaseListPolicy {
 
         foreach ($newsLst as $news) {
             var_dump('nnnnn',$news);
+            exit('===============');
             if($news->fetch_timestamp>=$start and $news->fetch_timestamp<=$end){
                 array_push($filterNewsLst, $news); 
             }
         }
-        exit('===============');
         return filterNewsLst;
     }
 
