@@ -2,7 +2,7 @@
 
 use Phalcon\DI;
 
-define ('RECOMMEND_DAY_SPAN', 3);
+define ('RECOMMEND_DAY_SPAN', 14);
 define ('CLICK_DAY_SPAN', 4);
 
 class PopularRecommendPolicy extends BaseListPolicy {
