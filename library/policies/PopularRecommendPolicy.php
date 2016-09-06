@@ -111,7 +111,11 @@ class PopularRecommendPolicy extends BaseListPolicy {
             }
         }
 
-        $filterTimeNewsLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
+        #$filterTimeNewsLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
+        $out1 = array();
+        foreach($recommendLst as $out){
+            $out1[] = $out;
+        }
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
         if (!$filterSentNewsLst) {
             return array();
@@ -123,6 +127,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 $id = $news['_id'];
                 $retIdLst[] = $id;
             }
+            var_dump('1111111',$out1,'222222',$retIdLst);
+            exit(0);
             return array_slice($retIdLst, 0, $pn);        
         }
 
