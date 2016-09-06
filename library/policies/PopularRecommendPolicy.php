@@ -99,6 +99,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $sentLst = $this->_cache->getDeviceSeen($device_id);
         $clickedLst = $this->_cache->getDeviceClick($device_id);
         if (count($clickedLst)==0){
+            var_dump('++++++');
+            exit(0);
             return array();
         }
 
@@ -110,6 +112,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 array_push($recommendLst, $res); 
             }
         }
+        var_dump('++++++','resLst');
+        exit(0);
 
 
         $filterTimeNewsLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
