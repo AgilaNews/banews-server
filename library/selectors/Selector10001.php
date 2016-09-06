@@ -51,18 +51,18 @@ class Selector10001 extends BaseNewsSelector{
             $popularNewsLst[] = $recNews;
         }
 
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
-                $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
-
-        foreach($randomNewsLst as $randomNews) {
-            if (count($popularNewsCnt) >= $sample_count) {
-                break;
-            }
-            if (in_array($randomNews, $popularNewsLst)) {
-                continue;
-            }
-            $popularNewsLst[] = $randomNews;
-        }
+#        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
+#                $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
+#
+#        foreach($randomNewsLst as $randomNews) {
+#            if (count($popularNewsCnt) >= $sample_count) {
+#                break;
+#            }
+#            if (in_array($randomNews, $popularNewsLst)) {
+#                continue;
+#            }
+#            $popularNewsLst[] = $randomNews;
+#        }
         return $popularNewsLst;
     }
 

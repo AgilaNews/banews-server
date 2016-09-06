@@ -142,7 +142,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
         foreach ($newsLst as $news) {
-            if($news->fetch_time>=start and $news->fetch_time<=end){
+            if($news->fetch_time>=$start and $news->fetch_time<=$end){
                 array_push($filterNewsLst, $news); 
             }
         }
