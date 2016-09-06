@@ -2,7 +2,7 @@
 
 use Phalcon\DI;
 
-define ('RECOMMENT_DAY_SPAN', 3);
+define ('RECOMMEND_DAY_SPAN', 3);
 define ('CLICK_DAY_SPAN', 3);
 
 class PopularRecommendPolicy extends BaseListPolicy {
@@ -101,11 +101,10 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $sentLst = $this->_cache->getDeviceSeen($device_id);
         //TODO: get all user manipulations
         #$clickedLst = $this->_cache->getDeviceClicked($device_id);
-        $temp = array_slice($sentLst, 0, 5);
         $clickedLst = array('VoBIWUjVazk=','CnMwq9tuC+g=','MbLhVVsBjcY=', '2a2WP1bP9ag=');
         //TODO: filter fetch_time of clickedLst(do not know the field name)
         #$filteredClickedLst = $this->timeFilter($clickedLst, 2);
-        
+
         // recommended news for user <- clickedLst
         $recommendLst = array();
         foreach($clickedLst as $news_id) {
@@ -113,6 +112,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
             array_push($recommendLst, $resLst); 
         }
 
+        var_dump($recommendLst);
+        exit(0);
         $filterTimeNewsLst = $this->timeFilter($recommendLst, RECOMMEND_DAY_SPAN);
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
         if (!$filterSentNewsLst or (count($filterSentNewsLst) < $pn)) {
