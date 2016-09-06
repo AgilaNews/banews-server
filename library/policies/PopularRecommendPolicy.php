@@ -128,12 +128,10 @@ class PopularRecommendPolicy extends BaseListPolicy {
     protected function sentFilter($sentNewsLst, $newsLst) {
         $filterNewsLst = array();
         foreach ($newsLst as $news) {
-            var_dump($news);
             if (!in_array($news->_id, $sentNewsLst)) {
                 array_push($filterNewsLst, $news); 
             }
         }
-        exit('===============');
         return $filterNewsLst;
     }
 
@@ -145,10 +143,12 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
         foreach ($newsLst as $news) {
+            var_dump('nnnnn',$news);
             if($news->fetch_timestamp>=$start and $news->fetch_timestamp<=$end){
                 array_push($filterNewsLst, $news); 
             }
         }
+        exit('===============');
         return filterNewsLst;
     }
 
