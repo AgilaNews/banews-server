@@ -27,7 +27,12 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function getPolicyTag(){
-        return 'popularRanking';
+        $groupId = $this->getDeviceGroup($this->_device_id);
+        if ($groupId == 0) {
+            return "expdecay";
+        } else {
+            return 'popularRanking';
+        }
     }
 
     public function sampling($sample_count, $prefer) {
@@ -38,32 +43,44 @@ class Selector10001 extends BaseNewsSelector{
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
-#        $popularNewsCnt = max($sample_count - LATELY_NEWS_COUNT - RECOMMEND_NEWS_COUNT, 1);
-#        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
-#                $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
-        $recommendNewsLst = $popularRecommendPolicy->sampling($this->_channel_id, $this->_device_id,
-                $this->_user_id, RECOMMEND_NEWS_COUNT, 4, $prefer, $options);
-
-#        foreach($recommendNewsLst as $recNews) {
-#            if(in_array($recNews, $popularNewsLst)) {
-#                continue;
-#            }
-#            $popularNewsLst[] = $recNews;
-#        }
-#
-#        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
-#                $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
-#
-#        foreach($randomNewsLst as $randomNews) {
-#            if (count($popularNewsCnt) >= $sample_count) {
-#                break;
-#            }
-#            if (in_array($randomNews, $popularNewsLst)) {
-#                continue;
-#            }
-#            $popularNewsLst[] = $randomNews;
-#        }
-        return $recommendNewsLst;
+        $groupId = $this->getDeviceGroup($this->_device_id);
+        $randomPolicy = new ExpDecayListPolicy($this->_di);
+        if ($groupId == 0) {
+            return $randomPolicy->sampling($this->_channel_id, $this->_device_id, 
+                $this->_user_id, $sample_count, 3, $prefer, $options);
+        } else {
+            $retNewsLst = array();
+            $popularNewsCnt = max($sample_count-LATELY_NEWS_COUNT, 1);
+            $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
+                    $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
+            $recommendNewsLst = $popularRecommendPolicy->sampling($this->_channel_id, $this->_device_id,
+                    $this->_user_id, RECOMMEND_NEWS_COUNT, 4, $prefer, $options);
+    
+            $retNewsLst[] = $popularNewsLst[0];
+            foreach($recommendNewsLst as $recNews) {
+                if(in_array($recNews, $retNewsLst)) {
+                    continue;
+                }
+                $retNewsLst[] = $recNews;
+            }
+            for($x=1;($x<count($popularNewsLst)) and (count($retNewsLst)<($sample_count-LATELY_NEWS_COUNT));$x++) {
+                $retNewsLst[] = $popularNewsLst[x];
+            }
+    
+            $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
+                    $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
+    
+            foreach($randomNewsLst as $randomNews) {
+                if (count($popularNewsCnt) >= $sample_count) {
+                    break;
+                }
+                if (in_array($randomNews, $popularNewsLst)) {
+                    continue;
+                }
+                $popularNewsLst[] = $randomNews;
+            }
+            return $recommendNewsLst;
+        }
     }
 
     public function select($prefer) {
