@@ -118,12 +118,11 @@ class PopularRecommendPolicy extends BaseListPolicy {
         } else {
             //random select news 
             shuffle($filterSentNewsLst);
-            $retIdLst = array();
+           $retIdLst = array();
             foreach($filterSentNewsLst as $news){
                 $id = $news['_id'];
                 $retIdLst[] = $id;
             }
-            var_dump($filterSentNewsLst, $retIdLst);
             return array_slice($retIdLst, 0, $pn);        
         }
 
@@ -147,12 +146,17 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $start = $start - ($start % 86400);
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
+        $tmpLst = array();
         foreach ($newsLst as $news) {
             $timestamp = $news['_source']["fetch_timestamp"];
+            $tmpLst[] = $timestamp;
             if($timestamp>=$start and $timestamp<=$end){
                 array_push($filterNewsLst, $news); 
+                $tmpLst[] = $filterNewsLst['_id'];
             }
         }
+        var_dump('++++++',$tmpLst);
+        exit(0);
         return $filterNewsLst;
     }
 
