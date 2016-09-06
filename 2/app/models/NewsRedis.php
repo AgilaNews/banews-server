@@ -57,7 +57,7 @@ class NewsRedis {
 
     public function setDeviceClick($device_id, $news_id, $timestamp) {
         $key = $this->getDeviceClickKey($device_id);
-        $val = strval($news_id) . strval($timestamp);
+        $val = strval($news_id) . ',' . strval($timestamp);
         $this->_redis->lPush($key, $val);
         $this->_redis->ltrim($key, 0, CACHE_CLICK_MASK_MAX);
         $this->_redis->expire($key, CACHE_CLICK_TTL);
