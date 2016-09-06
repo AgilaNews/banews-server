@@ -114,14 +114,18 @@ class PopularRecommendPolicy extends BaseListPolicy {
         }
 
         $filterTimeNewsLst = $this->timeFilter($recommendLst, RECOMMEND_DAY_SPAN);
-        var_dump('++++++++++',count($filterTimeNewsLst));
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
         if (!$filterSentNewsLst) {
             return array();
         } else {
             //random select news 
             shuffle($filterSentNewsLst);
-            return array_slice($filterSentNewsLst, 0, $pn);        
+            $retIdLst = array();
+            foreach($filterSentNewsLst as $news){
+                $id = $news['_id'];
+                $retIdLst[] = $id;
+            }
+            return array_slice($retIdLst, 0, $pn);        
         }
 
     }
