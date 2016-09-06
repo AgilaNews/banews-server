@@ -99,13 +99,10 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $sentLst = $this->_cache->getDeviceSeen($device_id);
         $clickedLst = $this->_cache->getDeviceClick($device_id);
         if (count($clickedLst)==0){
-            var_dump('++++++++');
-            exit(0);
             return array();
         }
-        var_dump('=========',$clickedLst);
-        exit(-1);
 
+        #TODO:filter time of user action
         $recommendLst = array();
         foreach($clickedLst as $click) {
             $news_id = $click["id"];
