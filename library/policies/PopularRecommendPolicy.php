@@ -150,7 +150,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 array_push($filterNewsLst, $news); 
             }
         }
-        return filterNewsLst;
+        return $filterNewsLst;
     }
 
 }
