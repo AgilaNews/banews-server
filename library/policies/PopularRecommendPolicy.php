@@ -3,7 +3,7 @@
 use Phalcon\DI;
 
 define ('RECOMMEND_DAY_SPAN', 3);
-define ('CLICK_DAY_SPAN', 3);
+define ('CLICK_DAY_SPAN', 1);
 
 class PopularRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
@@ -106,7 +106,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $recommendLst = array();
         foreach($clickedLst as $click) {
             $news_id = $click["id"];
-            $resLst = $this->getRecommendNews($news_id, 5, 0);
+            $resLst = $this->getRecommendNews($news_id, 10, 0);
             foreach($resLst as $res) {
                 array_push($recommendLst, $res); 
             }
