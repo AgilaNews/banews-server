@@ -112,8 +112,6 @@ class PopularRecommendPolicy extends BaseListPolicy {
             array_push($recommendLst, $resLst); 
         }
 
-        var_dump($recommendLst);
-        exit(0);
         $filterTimeNewsLst = $this->timeFilter($recommendLst, RECOMMEND_DAY_SPAN);
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
         if (!$filterSentNewsLst or (count($filterSentNewsLst) < $pn)) {
