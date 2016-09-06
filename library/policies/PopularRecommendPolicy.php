@@ -2,7 +2,7 @@
 
 use Phalcon\DI;
 
-define ('RECOMMEND_DAY_SPAN', 14);
+define ('RECOMMEND_DAY_SPAN', 21);
 define ('CLICK_DAY_SPAN', 4);
 
 class PopularRecommendPolicy extends BaseListPolicy {
@@ -152,6 +152,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 array_push($filterNewsLst, $news); 
             }
         }
+        var_dump("aaaaa",$newsLst,"bbbbb",$filterNewsLst);
+        exit(0);
         return $filterNewsLst;
     }
 
