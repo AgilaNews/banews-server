@@ -101,6 +101,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         if (count($clickedLst)==0){
             return array();
         }
+        $clickedLst = $this->randomClick($clickedLst, 5);
 
         $recommendLst = array();
         foreach($clickedLst as $click) {
@@ -111,16 +112,19 @@ class PopularRecommendPolicy extends BaseListPolicy {
             }
         }
 
-        #$filterTimeNewsLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
-        $filterTimeNewsLst = $recommendLst;
-        $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
-        if (!$filterSentNewsLst) {
+        #$recommendLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
+        $recommendLst = $this->sentFilter($sentLst, $recommendLst);
+
+        $recWeightLst = $this->genRecWeight($recommendLst, 8*3600);
+        array_multisort($recWeightLst,SORT_DESC, SORT_NUMERIC, $recommendLst);
+
+        if (!$recommendLst) {
             return array();
         } else {
             //random select news 
-            shuffle($filterSentNewsLst);
-           $retIdLst = array();
-            foreach($filterSentNewsLst as $news){
+            //shuffle($recommendLst);
+            $retIdLst = array();
+            foreach($recommendLst as $news){
                 $id = $news['_id'];
                 $retIdLst[] = $id;
             }
@@ -172,4 +176,40 @@ class PopularRecommendPolicy extends BaseListPolicy {
         return $filterActionLst;
     }
 
+    protected function randomClick($clickLst, $numRandom) {
+        $total = count($clickLst);
+        if($numRandom>$total) return $clickLst;
+        else{
+            shuffle($clickLst);
+            return array_slice($clickLst,0,$numRandom);
+        }
+        
+    }
+    
+    protected function genRecWeight($recLst, $singleSpan){
+        $recWeightLst = array();
+        foreach($recLst as $recNews){
+            $score = $recNews['_score'];
+            $timestamp = $recNews['_source']["fetch_timestamp"];
+            if(!$score or !$timestamp){
+                $recWeightLst[] = 0.0;
+            }
+            $period = floor((time()-$timestamp)/$singleSpan);
+            $weight = $score * pow(0.5, $period);
+            $recWeightLst[] = $weight;
+        }
+        return $recWeightLst;
+    } 
+
+    public function sort2d($array, $key, $sord_order=SORT_ASC, $sort_type=SORT_NUMERIC){
+        if(is_array($array)){
+            foreach($array as $arr){
+                if(is_array($arr)){
+                    $key_arr[] = $arr[$key];
+                }else return false;
+            }
+        }else return false;
+        array_multisort($key_arr, $sort_order, $sort_type, $array);
+        return $array;
+    }
 }
