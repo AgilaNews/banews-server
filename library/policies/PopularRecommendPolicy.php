@@ -108,12 +108,14 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $recommendLst = array();
         foreach($clickedLst as $news_id) {
             $resLst = $this->getRecommendNews($news_id, 5, 0);
-            array_push($recommendLst, $resLst); 
+            foreach($resLst as $res) {
+                array_push($recommendLst, $res); 
+            }
         }
 
         $filterTimeNewsLst = $this->timeFilter($recommendLst, RECOMMEND_DAY_SPAN);
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
-        if (!$filterSentNewsLst or (count($filterSentNewsLst) < $pn)) {
+        if (!$filterSentNewsLst) {
             return array();
         } else {
             //random select news 
@@ -126,10 +128,12 @@ class PopularRecommendPolicy extends BaseListPolicy {
     protected function sentFilter($sentNewsLst, $newsLst) {
         $filterNewsLst = array();
         foreach ($newsLst as $news) {
+            var_dump($news);
             if (!in_array($news->_id, $sentNewsLst)) {
                 array_push($filterNewsLst, $news); 
             }
         }
+        exit('===============');
         return $filterNewsLst;
     }
 
