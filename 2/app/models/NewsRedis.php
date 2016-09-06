@@ -68,7 +68,7 @@ class NewsRedis {
         $clickNewsLst = $this->_redis->lrange($key, 0, -1);
         $resLst = array();
         foreach($clickNewsLst as $curNewsStr) {
-            $curNewsPair = implode(",", $curNewsStr); 
+            $curNewsPair = explode(",", $curNewsStr); 
             $resLst[] = array("id"=>$curNewsPair[0], 
                               "timestamp"=>$curNewsPair[1]);
         }
