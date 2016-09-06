@@ -1,5 +1,7 @@
 <?php
 
+use Phalcon\DI;
+
 define ('RECOMMENT_DAY_SPAN', 3);
 define ('CLICK_DAY_SPAN', 3);
 
@@ -100,7 +102,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         //TODO: get all user manipulations
         #$clickedLst = $this->_cache->getDeviceClicked($device_id);
         $temp = array_slice($sentLst, 0, 5);
-        $clickedLst = array('lD6ti4AUGEI%3D','TKfrXMyJF2c%3D', 'v6lj%2BiwJvgk%3D');
+        $clickedLst = array('VoBIWUjVazk=','CnMwq9tuC+g=','MbLhVVsBjcY=', '2a2WP1bP9ag=');
         //TODO: filter fetch_time of clickedLst(do not know the field name)
         #$filteredClickedLst = $this->timeFilter($clickedLst, 2);
         
