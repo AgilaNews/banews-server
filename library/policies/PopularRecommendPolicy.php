@@ -146,17 +146,12 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $start = $start - ($start % 86400);
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
-        $tmpLst = array();
         foreach ($newsLst as $news) {
             $timestamp = $news['_source']["fetch_timestamp"];
-            $tmpLst[] = $timestamp;
             if($timestamp>=$start and $timestamp<=$end){
                 array_push($filterNewsLst, $news); 
-                $tmpLst[] = $filterNewsLst['_id'];
             }
         }
-        var_dump('++++++',$tmpLst);
-        exit(0);
         return $filterNewsLst;
     }
 
