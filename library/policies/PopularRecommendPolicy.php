@@ -97,13 +97,18 @@ class PopularRecommendPolicy extends BaseListPolicy {
     public function sampling($channel_id, $device_id, $user_id, $pn, 
         $day_till_now, $prefer, array $options = array()) {
         $sentLst = $this->_cache->getDeviceSeen($device_id);
-        //TODO: get all user manipulations
         $clickedLst = $this->_cache->getDeviceClick($device_id);
-        var_dump($clickedLst);
-        exit(0);
+        if (count($clickedLst)==0){
+            var_dump('++++++++');
+            exit(0);
+            return array();
+        }
+        var_dump('=========',$clickedLst);
+        exit(-1);
 
         $recommendLst = array();
-        foreach($clickedLst as $news_id) {
+        foreach($clickedLst as $click) {
+            $news_id = $click["id"];
             $resLst = $this->getRecommendNews($news_id, 5, 0);
             foreach($resLst as $res) {
                 array_push($recommendLst, $res); 
