@@ -136,6 +136,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 array_push($filterNewsLst, $news); 
             }
         }
+        var_dump("aaaaa",$sentNewsLst,"bbbbb",$filterNewsLst);
+        exit(0);
         return $filterNewsLst;
     }
 
@@ -152,8 +154,6 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 array_push($filterNewsLst, $news); 
             }
         }
-        var_dump("aaaaa",$newsLst,"bbbbb",$filterNewsLst);
-        exit(0);
         return $filterNewsLst;
     }
 
