@@ -129,7 +129,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
     protected function sentFilter($sentNewsLst, $newsLst) {
         $filterNewsLst = array();
         foreach ($newsLst as $news) {
-            if (!in_array($news->_id, $sentNewsLst)) {
+            $id = $news["_id"];
+            if (!in_array($id, $sentNewsLst)) {
                 array_push($filterNewsLst, $news); 
             }
         }
