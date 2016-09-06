@@ -98,9 +98,9 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $day_till_now, $prefer, array $options = array()) {
         $sentLst = $this->_cache->getDeviceSeen($device_id);
         //TODO: get all user manipulations
-        #$clickedLst = $this->_cache->getDeviceClicked($device_id);
-        #$filterClickedLst = actionTimeFilter($clickedLst, 1);
-        $clickedLst = array('VoBIWUjVazk=','CnMwq9tuC+g=','MbLhVVsBjcY=', '2a2WP1bP9ag=');
+        $clickedLst = $this->_cache->getDeviceClick($device_id);
+        var_dump($clickedLst);
+        exit(0);
 
         $recommendLst = array();
         foreach($clickedLst as $news_id) {
@@ -109,6 +109,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 array_push($recommendLst, $res); 
             }
         }
+
 
         $filterTimeNewsLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
