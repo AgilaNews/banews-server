@@ -112,6 +112,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         }
 
         #$filterTimeNewsLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
+        $filterTimeNewsLst = $recommendLst;
         $out1 = array();
         foreach($recommendLst as $out){
             $out1[] = $out;
