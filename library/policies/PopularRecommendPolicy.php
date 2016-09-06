@@ -114,6 +114,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
         }
 
         $filterTimeNewsLst = $this->timeFilter($recommendLst, RECOMMEND_DAY_SPAN);
+        var_dump('++++++++++',count($filterTimeNewsLst));
         $filterSentNewsLst = $this->sentFilter($sentLst, $filterTimeNewsLst);
         if (!$filterSentNewsLst) {
             return array();
@@ -143,9 +144,9 @@ class PopularRecommendPolicy extends BaseListPolicy {
         $end = ($now + 86400) - (($now + 86400) % 86400);
 
         foreach ($newsLst as $news) {
-            var_dump('nnnnn',$news);
-            exit('===============');
-            if($news->fetch_timestamp>=$start and $news->fetch_timestamp<=$end){
+            $timestamp = $news['_source']["fetch_timestamp"];
+            var_dump('=========',$timestamp);
+            if($timestamp>=$start and $timestamp<=$end){
                 array_push($filterNewsLst, $news); 
             }
         }
