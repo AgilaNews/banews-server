@@ -91,7 +91,7 @@ define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX .
        "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=%d");
 
 define("DETAIL_IMAGE_QUALITY", 50);
-define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%dX_w|q=" . DETAIL_IMAGE_QUALITY);
+define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%sX_w|q=" . DETAIL_IMAGE_QUALITY);
 
 define('BASE_CHANNEL_IMG_QUALITY', 45);
 define("BASE_CHANNEL_IMG_PATTERN",

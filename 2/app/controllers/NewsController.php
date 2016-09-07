@@ -47,6 +47,7 @@ class NewsController extends BaseController {
 
             $imgcell[] = array(
                 "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
+                "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), "{w}"),
                 "width" => $aw,
                 "height" => $ah,
                 "name" => "<!--IMG" . $img->news_pos_id . "-->",
@@ -181,6 +182,10 @@ class NewsController extends BaseController {
         if (!$now) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
         }
+
+        if (!isset($now->content_sign) || $now->content_sign == null || count($now->content_sign) == 0) {
+            $now->content_sign = "";
+        } 
 
         $now->liked++;
         $ret = $now->save();
