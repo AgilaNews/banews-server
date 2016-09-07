@@ -99,7 +99,7 @@ define("BASE_CHANNEL_IMG_PATTERN",
 
 define("LARGE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
-        "/%s.jpg?p=t=%sx%s|q=%d")
+        "/%s.jpg?p=t=%sx%s|q=%d");
 
 
 define('GIF_COVER_PATTERN', 
