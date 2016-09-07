@@ -110,7 +110,15 @@ class PopularRecommendPolicy extends BaseListPolicy {
             $news_id = $click["id"];
             $resLst = $this->getRecommendNews($news_id, REC_NEWS_SINGLE, 0);
             foreach($resLst as $res) {
-                array_push($recommendLst, $res); 
+                $key = array_search($res, $recommendLst);
+                if($key){
+                    if($res['_score'] > $recommendLst[$key]['_score']){
+                        unset($recommendLst[$key]);
+                        array_push($recommendLst, $res); 
+                    }
+                }else{
+                    array_push($recommendLst, $res);
+                }
             }
         }
 
