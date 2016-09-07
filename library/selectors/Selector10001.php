@@ -12,7 +12,7 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define("LATELY_NEWS_COUNT", 2);
-define('RECOMMEND_NEWS_COUNT',2);
+define('RECOMMEND_NEWS_COUNT',3);
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -31,7 +31,7 @@ class Selector10001 extends BaseNewsSelector{
         if ($groupId == 0) {
             return "expdecay";
         } else {
-            return 'popularRanking';
+            return 'popularRecommend';
         }
     }
 
@@ -50,7 +50,7 @@ class Selector10001 extends BaseNewsSelector{
                 $this->_user_id, $sample_count, 3, $prefer, $options);
         } else {
             $retNewsLst = array();
-            $popularNewsCnt = max($sample_count-LATELY_NEWS_COUNT, 1);
+            $popularNewsCnt = max($sample_count, 1);
             $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
                     $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
             $recommendNewsLst = $popularRecommendPolicy->sampling($this->_channel_id, $this->_device_id,
@@ -58,12 +58,16 @@ class Selector10001 extends BaseNewsSelector{
     
             $retNewsLst[] = $popularNewsLst[0];
             foreach($recommendNewsLst as $recNews) {
-                if(in_array($recNews, $retNewsLst)) {
-                    continue;
-                }
+                if(in_array($recNews, $retNewsLst)) continue;
                 $retNewsLst[] = $recNews;
             }
-            for($x=1;($x<count($popularNewsLst)) and (count($retNewsLst)<($sample_count-LATELY_NEWS_COUNT));$x++) {
+            for($x=1;$x<count($popularNewsLst);$x++) {
+                if (count($retNewsLst) >= $sample_count){
+                    break;
+                }
+                if (in_array($popularNewsLst[x], $retNewsLst)){
+                    continue;
+                }
                 $retNewsLst[] = $popularNewsLst[x];
             }
     
@@ -71,15 +75,15 @@ class Selector10001 extends BaseNewsSelector{
                     $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
     
             foreach($randomNewsLst as $randomNews) {
-                if (count($popularNewsCnt) >= $sample_count) {
+                if (count($retNewsLst) >= $sample_count) {
                     break;
                 }
-                if (in_array($randomNews, $popularNewsLst)) {
+                if (in_array($randomNews, $retNewsLst)) {
                     continue;
                 }
-                $popularNewsLst[] = $randomNews;
+                $retNewsLst[] = $randomNews;
             }
-            return $recommendNewsLst;
+            return $retNewsLst;
         }
     }
 

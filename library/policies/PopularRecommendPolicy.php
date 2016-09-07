@@ -4,6 +4,8 @@ use Phalcon\DI;
 
 define ('RECOMMEND_DAY_SPAN', 21);
 define ('CLICK_DAY_SPAN', 4);
+define ('MAX_CLICK_COUNT', 5);
+define ('REC_NEWS_SINGLE', 5);
 
 class PopularRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
@@ -101,28 +103,25 @@ class PopularRecommendPolicy extends BaseListPolicy {
         if (count($clickedLst)==0){
             return array();
         }
-        $clickedLst = $this->randomClick($clickedLst, 5);
+        $clickedLst = $this->randomClick($clickedLst, MAX_CLICK_COUNT);
 
         $recommendLst = array();
         foreach($clickedLst as $click) {
             $news_id = $click["id"];
-            $resLst = $this->getRecommendNews($news_id, 5, 0);
+            $resLst = $this->getRecommendNews($news_id, REC_NEWS_SINGLE, 0);
             foreach($resLst as $res) {
                 array_push($recommendLst, $res); 
             }
         }
 
-        #$recommendLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
+        //$recommendLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
         $recommendLst = $this->sentFilter($sentLst, $recommendLst);
-
-        $recWeightLst = $this->genRecWeight($recommendLst, 8*3600);
-        array_multisort($recWeightLst,SORT_DESC, SORT_NUMERIC, $recommendLst);
 
         if (!$recommendLst) {
             return array();
         } else {
-            //random select news 
-            //shuffle($recommendLst);
+            $recWeightLst = $this->genRecWeight($recommendLst, 8*3600);//Half-Life Period = 8hour
+            array_multisort($recWeightLst,SORT_DESC, SORT_NUMERIC, $recommendLst);
             $retIdLst = array();
             foreach($recommendLst as $news){
                 $id = $news['_id'];
@@ -194,7 +193,11 @@ class PopularRecommendPolicy extends BaseListPolicy {
             if(!$score or !$timestamp){
                 $recWeightLst[] = 0.0;
             }
-            $period = floor((time()-$timestamp)/$singleSpan);
+            if($timestamp>=time()) {
+                $period = 0;
+            }else{
+                $period = floor((time()-$timestamp)/$singleSpan);
+            }
             $weight = $score * pow(0.5, $period);
             $recWeightLst[] = $weight;
         }
