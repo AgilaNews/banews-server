@@ -93,7 +93,9 @@ class NewsController extends BaseController {
         $pseduoLike = mt_rand(1, 5);
         if ($pseduoLike == 1 && ($news_model->channel_id == 10004 || $news_model->channel_id == 10006)) {
             $news_model->liked++;
-            $news_model->save();
+            if (!$news_model->save()){
+                $this->logger->warning(sprintf("save error: %s", join(",",$news_model->getMessages())));
+            }
             $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
         }
         // ----------------- end -------TODO remove later---------------------------------------
