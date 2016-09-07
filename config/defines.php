@@ -84,24 +84,22 @@ define('CLIENT_CTIMEOUT', 5);
 define('CLIENT_RTIMEOUT', 5);
 define('CLIENT_WTIMEOUT', 5);
 
-define("IMAGE_CHANNEL_HIGH_QUALITY", 50);
-define("IMAGE_CHANNEL_LOW_QUALITY", 15);
-define("IMAGE_CHANNEL_NORMAL_QUALITY", 30);
+define("IMAGE_HIGH_QUALITY", 50);
+define("IMAGE_LOW_QUALITY", 15);
+define("IMAGE_NORMAL_QUALITY", 30);
+
 define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX . 
        "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=%d");
 
-define("DETAIL_IMAGE_QUALITY", 50);
-define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%sX_w|q=" . DETAIL_IMAGE_QUALITY);
+define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%sX_w|q=%d");
 
-define('BASE_CHANNEL_IMG_QUALITY', 45);
 define("BASE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
-        "/%s.jpg?p=t=%sx%s|q=" . BASE_CHANNEL_IMG_QUALITY);
+        "/%s.jpg?p=t=%sx%s|q=%d");
 
-define('LARGE_CHANNEL_IMG_QUALITY', 60);
 define("LARGE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
-        "/%s.jpg?p=t=%sx%s|q=" . LARGE_CHANNEL_IMG_QUALITY);
+        "/%s.jpg?p=t=%sx%s|q=%d")
 
 
 define('GIF_COVER_PATTERN', 

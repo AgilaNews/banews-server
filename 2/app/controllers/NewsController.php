@@ -28,6 +28,14 @@ class NewsController extends BaseController {
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
         $imgcell = array();
+
+        if ($this->_net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->_net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
+        }
         foreach ($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
                 continue;
@@ -46,8 +54,8 @@ class NewsController extends BaseController {
             $ah = (int) ($aw * $oh / $ow);
 
             $imgcell[] = array(
-                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
-                "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), "{w}"),
+                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw, $quality),
+                "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), "{w}", $quality),
                 "width" => $aw,
                 "height" => $ah,
                 "name" => "<!--IMG" . $img->news_pos_id . "-->",
