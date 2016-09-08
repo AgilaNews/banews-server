@@ -197,7 +197,9 @@ class UserController extends BaseController {
         $ret = array();
         $signs = array();
 
-        $render = new CollectListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
+        $render = new CollectListRender($this->deviceId, $this->resolution_w,
+                                        $this->resolution_h, $this->net,
+                                        $this->client_version, $this->os);
         $ret = $render->render($collects);
 
         $this->logger->info(sprintf("[GetCollect][last:%d][limit:%d][ret:%d]",
