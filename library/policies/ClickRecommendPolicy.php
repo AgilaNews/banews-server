@@ -134,7 +134,7 @@ class ClickRecommendPolicy extends BaseListPolicy {
                 $recommendLst);
             $retIdLst = array();
             foreach($recommendLst as $news){
-                $id = $news['_id'];
+                $id = $news['id'];
                 $retIdLst[] = $id;
             }
             return array_slice($retIdLst, 0, min($pn, count($retIdLst)));        
@@ -144,9 +144,10 @@ class ClickRecommendPolicy extends BaseListPolicy {
     protected function sentFilter($sentNewsLst, $clickedLst, $newsLst) {
         $filterNewsLst = array();
         foreach ($newsLst as $news) {
-            $id = $news["_id"];
+            $id = $news["id"];
             if (in_array($id, $sendNewsLst) || 
-                array_key_exists($id, $clickedLst)) {
+                array_key_exists($id, $clickedLst) ||
+                in_array($news, $filterNewsLst)) {
                 continue;
             }
             $filterNewsLst[] = $news;
@@ -157,7 +158,7 @@ class ClickRecommendPolicy extends BaseListPolicy {
     protected function randomClick($clickLst, $numRandom) {
         shuffle($clickLst);
         return array_slice($clickLst, 0, 
-            min(count($clickLst, $numRandom)));
+            min(count($clickLst), $numRandom));
     }
     
     protected function genRecWeight($recLst, $singleSpan){
