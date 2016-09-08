@@ -5,7 +5,7 @@ use Phalcon\DI;
 define ('MAX_CLICK_COUNT', 5);
 define ('REC_NEWS_SINGLE', 5);
 
-class PopularRecommendPolicy extends BaseListPolicy {
+class ClickRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
         parent::__construct($di);
         $this->esClient = $di->get('elasticsearch');
@@ -76,7 +76,10 @@ class PopularRecommendPolicy extends BaseListPolicy {
                         if ($curNews['_score'] < $minThre) {
                             continue;
                         }
-                        array_push($resLst, $curNews); 
+                        $curArr = array("id" => $curNews["_id"], 
+                            "score" => $curNews["_score"], 
+                            "fetch_timestamp" => $curNews["_source"]["fetch_timestamp"]);
+                        $resLst[] = $curArr;
                         if (count($resLst) > $pn)
                             break;
                     }
@@ -111,8 +114,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
                 // get largest score of same news
                 $key = array_search($res, $recommendLst);
                 if($key){
-                    if($res['_score'] > $recommendLst[$key]['_score']){
-                        $recommendLst[$key]['_score'] = $res['_score'];
+                    if($res['score'] > $recommendLst[$key]['score']){
+                        $recommendLst[$key]['score'] = $res['score'];
                     }
                 }else{
                     array_push($recommendLst, $res);
@@ -160,8 +163,8 @@ class PopularRecommendPolicy extends BaseListPolicy {
     protected function genRecWeight($recLst, $singleSpan){
         $recWeightLst = array();
         foreach($recLst as $recNews){
-            $score = $recNews['_score'];
-            $timestamp = $recNews['_source']["fetch_timestamp"];
+            $score = $recNews['score'];
+            $timestamp = $recNews["fetch_timestamp"];
             if(!$score or !$timestamp){
                 $recWeightLst[] = 0.0;
             }
