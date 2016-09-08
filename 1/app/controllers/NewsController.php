@@ -28,6 +28,15 @@ class NewsController extends BaseController {
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
         $imgcell = array();
+
+        if ($this->_net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->_net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
+        }
+
         foreach ($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
                 continue;
@@ -46,7 +55,7 @@ class NewsController extends BaseController {
             $ah = (int) ($aw * $oh / $ow);
 
             $imgcell[] = array(
-                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
+                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw, $quality),
                 "width" => $aw,
                 "height" => $ah,
                 "name" => "<!--IMG" . $img->news_pos_id . "-->",
@@ -90,12 +99,16 @@ class NewsController extends BaseController {
 
         // ----------------- pseduo like, this feature should be removed later -----------------
         $pseduoLike = mt_rand(1, 10);
-        if ($pseduoLike == 1 && ($news_model->channel_id == 10004 || $news_model->channel_id == 10006)) {
+        if ($pseduoLike == 1) {
             $news_model->liked++;
-            $news_model->save();
-            $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
+            if (!$news_model->save()){
+                $this->logger->warning(sprintf("save error: %s", join(",",$news_model->getMessages())));
+            } else {
+                $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
+            }
         }
         // ----------------- end -------TODO remove later---------------------------------------
+
 
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(

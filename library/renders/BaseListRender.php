@@ -44,7 +44,15 @@ class BaseListRender {
             "public_time" => $news_model->publish_time,
             "imgs" => array(),
         );
-        
+       
+        if ($this->_net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->_net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
+        }
+
         $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT; 
         $isLarge = False;
         foreach ($imgs as $img) {
@@ -58,25 +66,21 @@ class BaseListRender {
                 $ow = $meta["width"];
                 $isLarge = $this->isLargeImageNews($meta); 
                 if ($isLarge){
-                    $pattern =  sprintf(LARGE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}"); 
+                    $pattern =  sprintf(LARGE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}", $quality); 
                 }
                 else{
-                    $pattern =  sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}"); 
+                    $pattern =  sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "{w}", "{h}", $quality); 
                 }
 
                 $ret["imgs"][] = array(
-                    //"src" => $img->origin_url, 
-                    "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "225", "180"), 
+                    "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, $img->url_sign, "225", "180", $quality), 
                     "width" => $ow, 
                     "height" => $oh, 
                     "pattern" => $pattern, 
                     "name" => "<!--IMG" . $img->news_pos_id . "-->"
                     );
-                
-            } else {
-                // TODO
-                // if picuture is not saved, we will not consider to use this image
             }
+
             if ($isLarge) {
                 break;
             }

@@ -33,6 +33,14 @@ class NewsController extends BaseController {
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
         $imgcell = array();
+
+        if ($this->net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
+        }
         foreach ($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
                 continue;
@@ -51,7 +59,8 @@ class NewsController extends BaseController {
             $ah = (int) ($aw * $oh / $ow);
 
             $imgcell[] = array(
-                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
+                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw, $quality),
+                "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), "{w}", $quality),
                 "width" => $aw,
                 "height" => $ah,
                 "name" => "<!--IMG" . $img->news_pos_id . "-->",
@@ -97,7 +106,9 @@ class NewsController extends BaseController {
         $pseduoLike = mt_rand(1, 5);
         if ($pseduoLike == 1 && ($news_model->channel_id == 10004 || $news_model->channel_id == 10006)) {
             $news_model->liked++;
-            $news_model->save();
+            if (!$news_model->save()){
+                $this->logger->warning(sprintf("save error: %s", join(",",$news_model->getMessages())));
+            }
             $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
         }
         // ----------------- end -------TODO remove later---------------------------------------
@@ -186,6 +197,10 @@ class NewsController extends BaseController {
         if (!$now) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
         }
+
+        if (!isset($now->content_sign) || $now->content_sign == null || count($now->content_sign) == 0) {
+            $now->content_sign = "";
+        } 
 
         $now->liked++;
         $ret = $now->save();

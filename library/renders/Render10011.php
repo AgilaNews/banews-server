@@ -53,11 +53,11 @@ class Render10011 extends BaseListRender {
                 $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
 
                 if ($this->_net == "WIFI") {
-                    $quality = IMAGE_CHANNEL_HIGH_QUALITY;
+                    $quality = IMAGE_HIGH_QUALITY;
                 } else if ($this->_net == "2G") {
-                    $quality = IMAGE_CHANNEL_LOW_QUALITY;
+                    $quality = IMAGE_LOW_QUALITY;
                 }else {
-                    $quality = IMAGE_CHANNEL_NORMAL_QUALITY;
+                    $quality = IMAGE_NORMAL_QUALITY;
                 }
                 
                 $url =  sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
