@@ -13,6 +13,7 @@ define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define("LATELY_NEWS_COUNT", 2);
 define('RECOMMEND_NEWS_COUNT',3);
+define('RECOMMEND_START_IDX', 2);
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -29,61 +30,57 @@ class Selector10001 extends BaseNewsSelector{
     public function getPolicyTag(){
         $groupId = $this->getDeviceGroup($this->_device_id);
         if ($groupId == 0) {
-            return "expdecay";
+            return "popularRanking";
         } else {
-            return 'popularRecommend';
+            return 'clickRecRanking';
         }
     }
 
     public function sampling($sample_count, $prefer) {
         $randomPolicy = new ExpDecayListPolicy($this->_di); 
         $popularPolicy = new PopularListPolicy($this->_di); 
-        $popularRecommendPolicy = new PopularRecommendPolicy($this->_di);
         $options = array();
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
+        $popularNewsCnt = max($sample_count - LATELY_NEWS_COUNT, 1);
+        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
+            $this->_device_id, $this->_user_id, $popularNewsCnt, 
+            3, $prefer, $options);
+        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
+            $this->_device_id, $this->_user_id, MAX_NEWS_COUNT, 
+            3, $prefer, $options);
+        foreach($randomNewsLst as $randomNews) {
+            if (count($popularNewsCnt) >= $sample_count) {
+                break;
+            }
+            if (in_array($randomNews, $popularNewsLst)) {
+                continue;
+            }
+            $popularNewsLst[] = $randomNews;
+        }
+        // divide whole user into two group, one combine popular & recommend, 
+        // the other one only contain popular list 
         $groupId = $this->getDeviceGroup($this->_device_id);
-        $randomPolicy = new ExpDecayListPolicy($this->_di);
         if ($groupId == 0) {
-            return $randomPolicy->sampling($this->_channel_id, $this->_device_id, 
-                $this->_user_id, $sample_count, 3, $prefer, $options);
+            return $popularNewsLst;
         } else {
-            $retNewsLst = array();
-            $popularNewsCnt = max($sample_count, 1);
-            $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
-                    $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
-            $recommendNewsLst = $popularRecommendPolicy->sampling($this->_channel_id, $this->_device_id,
-                    $this->_user_id, RECOMMEND_NEWS_COUNT, 4, $prefer, $options);
-    
-            $retNewsLst[] = $popularNewsLst[0];
+            $clickRecommendPolicy = new ClickRecommendPolicy($this->_di);
+            $recommendNewsLst = $clickRecommendPolicy->sampling(
+                $this->_channel_id, $this->_device_id, $this->_user_id,
+                $sample_count, 4, $prefer, $options);
+            $curIdx = 0;
             foreach($recommendNewsLst as $recNews) {
-                if(in_array($recNews, $retNewsLst)) continue;
-                $retNewsLst[] = $recNews;
-            }
-            for($x=1;$x<count($popularNewsLst);$x++) {
-                if (count($retNewsLst) >= $sample_count){
+                if (in_array($recNews, $popularNewsLst)) {
+                    continue;
+                } 
+                $popularNewsLst[RECOMMEND_START_IDX + $curIdx] = $recNews;
+                $curIdx += 1;
+                if ($curIdx >= RECOMMEND_NEWS_COUNT) {
                     break;
                 }
-                if (in_array($popularNewsLst[x], $retNewsLst)){
-                    continue;
-                }
-                $retNewsLst[] = $popularNewsLst[x];
             }
-    
-            $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
-                    $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
-    
-            foreach($randomNewsLst as $randomNews) {
-                if (count($retNewsLst) >= $sample_count) {
-                    break;
-                }
-                if (in_array($randomNews, $retNewsLst)) {
-                    continue;
-                }
-                $retNewsLst[] = $randomNews;
-            }
-            return $retNewsLst;
+            return $popularNewsLst;
         }
     }
 

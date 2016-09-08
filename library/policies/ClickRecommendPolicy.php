@@ -2,8 +2,6 @@
 
 use Phalcon\DI;
 
-define ('RECOMMEND_DAY_SPAN', 21);
-define ('CLICK_DAY_SPAN', 4);
 define ('MAX_CLICK_COUNT', 5);
 define ('REC_NEWS_SINGLE', 5);
 
@@ -103,18 +101,18 @@ class PopularRecommendPolicy extends BaseListPolicy {
         if (count($clickedLst)==0){
             return array();
         }
-        $clickedLst = $this->randomClick($clickedLst, MAX_CLICK_COUNT);
+        $seedClickedLst = $this->randomClick($clickedLst, MAX_CLICK_COUNT);
 
         $recommendLst = array();
-        foreach($clickedLst as $click) {
+        foreach($seedClickedLst as $click) {
             $news_id = $click["id"];
             $resLst = $this->getRecommendNews($news_id, REC_NEWS_SINGLE, 0);
             foreach($resLst as $res) {
+                // get largest score of same news
                 $key = array_search($res, $recommendLst);
                 if($key){
                     if($res['_score'] > $recommendLst[$key]['_score']){
-                        unset($recommendLst[$key]);
-                        array_push($recommendLst, $res); 
+                        $recommendLst[$key]['_score'] = $res['_score'];
                     }
                 }else{
                     array_push($recommendLst, $res);
@@ -122,75 +120,41 @@ class PopularRecommendPolicy extends BaseListPolicy {
             }
         }
 
-        //$recommendLst = $this->newsTimeFilter($recommendLst, RECOMMEND_DAY_SPAN);
-        $recommendLst = $this->sentFilter($sentLst, $recommendLst);
-
+        $recommendLst = $this->sentFilter($sentLst, $clickedLst, 
+            $recommendLst);
         if (!$recommendLst) {
             return array();
         } else {
-            $recWeightLst = $this->genRecWeight($recommendLst, 8*3600);//Half-Life Period = 8hour
-            array_multisort($recWeightLst,SORT_DESC, SORT_NUMERIC, $recommendLst);
+            // Half-Life Period = 8hour
+            $recWeightLst = $this->genRecWeight($recommendLst, 8*3600);
+            array_multisort($recWeightLst, SORT_DESC, SORT_NUMERIC, 
+                $recommendLst);
             $retIdLst = array();
             foreach($recommendLst as $news){
                 $id = $news['_id'];
                 $retIdLst[] = $id;
             }
-            return array_slice($retIdLst, 0, $pn);        
+            return array_slice($retIdLst, 0, min($pn, count($retIdLst)));        
         }
-
     }
 
-    protected function sentFilter($sentNewsLst, $newsLst) {
+    protected function sentFilter($sentNewsLst, $clickedLst, $newsLst) {
         $filterNewsLst = array();
         foreach ($newsLst as $news) {
             $id = $news["_id"];
-            if (!in_array($id, $sentNewsLst)) {
-                array_push($filterNewsLst, $news); 
+            if (in_array($id, $sendNewsLst) || 
+                array_key_exists($id, $clickedLst)) {
+                continue;
             }
+            $filterNewsLst[] = $news;
         }
         return $filterNewsLst;
-    }
-
-    protected function newsTimeFilter($newsLst, $timeSpan) {
-        $filterNewsLst = array();
-        $now = time();
-        $start = ($now - ($timeSpan * 86400));
-        $start = $start - ($start % 86400);
-        $end = ($now + 86400) - (($now + 86400) % 86400);
-
-        foreach ($newsLst as $news) {
-            $timestamp = $news['_source']["fetch_timestamp"];
-            if($timestamp>=$start and $timestamp<=$end){
-                array_push($filterNewsLst, $news); 
-            }
-        }
-        return $filterNewsLst;
-    }
-
-    protected function actionTimeFilter($actionLst, $timeSpan) {
-        $filterActionLst = array();
-        $now = time();
-        $start = ($now - ($timeSpan * 86400));
-        $start = $start - ($start % 86400);
-        $end = ($now + 86400) - (($now + 86400) % 86400);
-
-        foreach ($actionLst as $action) {
-            $timestamp = $action['time'];
-            if($timestamp>=$start and $timestamp<=$end){
-                array_push($filterActionLst, $action); 
-            }
-        }
-        return $filterActionLst;
     }
 
     protected function randomClick($clickLst, $numRandom) {
-        $total = count($clickLst);
-        if($numRandom>$total) return $clickLst;
-        else{
-            shuffle($clickLst);
-            return array_slice($clickLst,0,$numRandom);
-        }
-        
+        shuffle($clickLst);
+        return array_slice($clickLst, 0, 
+            min(count($clickLst, $numRandom)));
     }
     
     protected function genRecWeight($recLst, $singleSpan){
@@ -201,7 +165,7 @@ class PopularRecommendPolicy extends BaseListPolicy {
             if(!$score or !$timestamp){
                 $recWeightLst[] = 0.0;
             }
-            if($timestamp>=time()) {
+            if($timestamp >= time()) {
                 $period = 0;
             }else{
                 $period = floor((time()-$timestamp)/$singleSpan);
@@ -211,16 +175,4 @@ class PopularRecommendPolicy extends BaseListPolicy {
         }
         return $recWeightLst;
     } 
-
-    public function sort2d($array, $key, $sord_order=SORT_ASC, $sort_type=SORT_NUMERIC){
-        if(is_array($array)){
-            foreach($array as $arr){
-                if(is_array($arr)){
-                    $key_arr[] = $arr[$key];
-                }else return false;
-            }
-        }else return false;
-        array_multisort($key_arr, $sort_order, $sort_type, $array);
-        return $array;
-    }
 }
