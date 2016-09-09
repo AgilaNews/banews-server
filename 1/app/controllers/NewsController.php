@@ -29,9 +29,9 @@ class NewsController extends BaseController {
         $imgs = NewsImage::getImagesOfNews($newsSign);
         $imgcell = array();
 
-        if ($this->_net == "WIFI") {
+        if ($this->net == "WIFI") {
             $quality = IMAGE_HIGH_QUALITY;
-        } else if ($this->_net == "2G") {
+        } else if ($this->net == "2G") {
             $quality = IMAGE_LOW_QUALITY;
         } else {
             $quality = IMAGE_NORMAL_QUALITY;
