@@ -76,6 +76,11 @@ class ClickRecommendPolicy extends BaseListPolicy {
                         if ($curNews['_score'] < $minThre) {
                             continue;
                         }
+                        $curChannelId = $curNews['_source']['channel'];
+                        if (($curChannelId == '10011') || 
+                            ($curChannelId == '10012')) {
+                            continue;
+                        }
                         $curArr = array("id" => $curNews["_id"], 
                             "score" => $curNews["_score"], 
                             "fetch_timestamp" => $curNews["_source"]["fetch_timestamp"]);
