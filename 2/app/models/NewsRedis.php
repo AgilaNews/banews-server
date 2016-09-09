@@ -57,8 +57,9 @@ class NewsRedis {
 
     public function setDeviceClick($device_id, $news_id, $timestamp) {
         $key = $this->getDeviceClickKey($device_id);
-        $val = strval($news_id) . ',' . strval($timestamp);
-        $this->_redis->lPush($key, $val);
+        $curArr = array("id" => $news_id, 
+                        "timestamp" => $timestamp);
+        $this->_redis->lPush($key, json_encode($curArr, true));
         $this->_redis->ltrim($key, 0, CACHE_CLICK_MASK_MAX);
         $this->_redis->expire($key, CACHE_CLICK_TTL);
     }
@@ -67,10 +68,8 @@ class NewsRedis {
         $key = $this->getDeviceClickKey($device_id);
         $clickNewsLst = $this->_redis->lrange($key, 0, -1);
         $resLst = array();
-        foreach($clickNewsLst as $curNewsStr) {
-            $curNewsPair = explode(",", $curNewsStr); 
-            $resLst[] = array("id"=>$curNewsPair[0], 
-                              "timestamp"=>$curNewsPair[1]);
+        foreach($clickNewsLst as $curNewsArr) {
+            $resLst[] = json_decode($curNewsArr, true); 
         }
         return $resLst;
     }
