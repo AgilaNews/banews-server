@@ -1,8 +1,8 @@
 <?php
 
 class Render10011 extends BaseListRender {
-    public function __construct($did, $screen_width, $screen_height, $net, $client_version) {
-        parent::__construct($did, $screen_width, $screen_height, $net, $client_version);
+    public function __construct($did, $screen_width, $screen_height, $net, $client_version, $os) {
+        parent::__construct($did, $screen_width, $screen_height, $net, $client_version, $os);
     }
 
     public function render($models) {
@@ -49,7 +49,12 @@ class Render10011 extends BaseListRender {
 
                 $ow = $meta["width"];
                 $oh = $meta["height"];
-                $aw = (int) ($this->_screen_w * 11 / 12);
+                if ($this->_os == "ios") {
+                    $this->_screen_w * 0.93;
+                } else {
+                    $aw = (int) ($this->_screen_w * 11 / 12);
+                }
+                
                 $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
 
                 if ($this->_net == "WIFI") {
