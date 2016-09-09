@@ -112,7 +112,7 @@ class ClickRecommendPolicy extends BaseListPolicy {
             $resLst = $this->getRecommendNews($news_id, REC_NEWS_SINGLE, 0);
             foreach($resLst as $res) {
                 // get largest score of same news
-                $key = array_search($res, $recommendLst);
+                $key = array_search($res['id'], array_column($recommendLst, 'id'));
                 if($key){
                     if($res['score'] > $recommendLst[$key]['score']){
                         $recommendLst[$key]['score'] = $res['score'];
@@ -143,10 +143,14 @@ class ClickRecommendPolicy extends BaseListPolicy {
 
     protected function sentFilter($sentNewsLst, $clickedLst, $newsLst) {
         $filterNewsLst = array();
+        $clickedIdLst = array();
+        foreach($clickedLst as $clickNews) {
+            $clickedIdLst[] = $clickNews['id'];
+        }
         foreach ($newsLst as $news) {
             $id = $news["id"];
-            if (in_array($id, $sendNewsLst) || 
-                array_key_exists($id, $clickedLst) ||
+            if (in_array($id, $sentNewsLst) || 
+                in_array($id, $clickedIdLst) ||
                 in_array($news, $filterNewsLst)) {
                 continue;
             }
