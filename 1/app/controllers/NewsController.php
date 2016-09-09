@@ -26,6 +26,11 @@ class NewsController extends BaseController {
         $commentCount = Comment::getCount($newsSign);
         $topComment = Comment::getAll($newsSign, null, 3, "later");
 
+        $cache = $this->di->get("cache");
+        $redis = new NewsRedis($cache);
+        $newsRedis = $redis->setDeviceClick(
+                $this->deviceId, $newsSign, time()); 
+
         $imgs = NewsImage::getImagesOfNews($newsSign);
         $imgcell = array();
 
