@@ -55,6 +55,29 @@ class NewsRedis {
         return CACHE_SENT_QUEUE_PREFIX . $device_id;
     }
 
+    public function setDeviceClick($device_id, $news_id, $timestamp) {
+        $key = $this->getDeviceClickKey($device_id);
+        $curArr = array("id" => $news_id, 
+                        "timestamp" => $timestamp);
+        $this->_redis->lPush($key, json_encode($curArr, true));
+        $this->_redis->ltrim($key, 0, CACHE_CLICK_MASK_MAX);
+        $this->_redis->expire($key, CACHE_CLICK_TTL);
+    }
+
+    public function getDeviceClick($device_id) {
+        $key = $this->getDeviceClickKey($device_id);
+        $clickNewsLst = $this->_redis->lrange($key, 0, -1);
+        $resLst = array();
+        foreach($clickNewsLst as $curNewsArr) {
+            $resLst[] = json_decode($curNewsArr, true); 
+        }
+        return $resLst;
+    }
+
+    private function getDeviceClickKey($device_id){
+        return CACHE_CLICK_QUEUE_PREFIX . $device_id;
+    }
+
     public function getDeviceChannelCursor($device_id, $channel_id) {
         $key = $this->getDeviceChannelCursorKey($device_id, $channel_id);
         $value = $this->_redis->hGet(BACKUP_CHANNEL_CURSOR_KEY, $key);

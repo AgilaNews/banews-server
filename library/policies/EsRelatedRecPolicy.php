@@ -74,8 +74,10 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
                         if ($curNews['_score'] < $minThre) {
                             continue;
                         }
-
-                        $resLst[] = $curNews["_id"];
+                        $curArr = array("id" => $curNews["_id"], 
+                            "score" => $curNews["_score"], 
+                            "fetch_timestamp" => $curNews["_source"]["fetch_timestamp"]);
+                        $resLst[] = $curArr;
                         if (count($resLst) > $pn)
                             break;
                     }
@@ -96,7 +98,11 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
     public function sampling($channel_id, $device_id, $user_id, $myself, 
         $pn=3, $day_till_now=7, array $options=null) {
         $resLst = $this->getRecommendNews($myself, $pn, 0);
-        return $resLst;
+        $resIdLst = array();
+        foreach($resLst as $curRes) {
+            $resIdLst[] = $curRes['id'];
+        }
+        return $resIdLst;
     }
 }
 

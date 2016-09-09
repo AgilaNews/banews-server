@@ -10,13 +10,13 @@ define('LARGE_IMAGE_MIN_WH_RATIO', 1.6);
 define('LARGE_IMAGE_MAX_WH_RATIO', 2.4);
 
 class BaseListRender {
-    public function __construct($device_id, $screen_width, $screen_height, $net, $client_version, $os) {
-        $this->_device_id = $device_id;
-        $this->_screen_w = $screen_width;
-        $this->_screen_h = $screen_height;
-        $this->_net = $net;
-        $this->_os = $os;
-        $this->_client_version = $client_version;
+    public function __construct($controller) {
+        $this->_device_id = $controller->deviceId;
+        $this->_screen_w = $controller->resolution_w;
+        $this->_screen_h = $controller->resolution_h;
+        $this->_net = $controller->net;
+        $this->_os = $controller->os;
+        $this->_client_version = $controller->client_version;
         $this->_large_img_count = 0;
     }
 

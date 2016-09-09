@@ -12,6 +12,8 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define("LATELY_NEWS_COUNT", 2);
+define('RECOMMEND_NEWS_COUNT',3);
+define('RECOMMEND_START_IDX', 2);
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -26,7 +28,12 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function getPolicyTag(){
-        return 'popularRanking';
+        $groupId = $this->getDeviceGroup($this->_device_id);
+        if ($groupId == 0) {
+            return "popularRanking";
+        } else {
+            return 'clickRecRanking';
+        }
     }
 
     public function sampling($sample_count, $prefer) {
@@ -37,11 +44,12 @@ class Selector10001 extends BaseNewsSelector{
             $options["long_tail_weight"] = 0;
         }
         $popularNewsCnt = max($sample_count - LATELY_NEWS_COUNT, 1);
-        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, $this->_device_id,
-                $this->_user_id, $popularNewsCnt, 3, $prefer, $options);
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, $this->_device_id,
-                $this->_user_id, MAX_NEWS_COUNT, 3, $prefer, $options);
-
+        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
+            $this->_device_id, $this->_user_id, $popularNewsCnt, 
+            3, $prefer, $options);
+        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
+            $this->_device_id, $this->_user_id, MAX_NEWS_COUNT, 
+            3, $prefer, $options);
         foreach($randomNewsLst as $randomNews) {
             if (count($popularNewsCnt) >= $sample_count) {
                 break;
@@ -51,7 +59,29 @@ class Selector10001 extends BaseNewsSelector{
             }
             $popularNewsLst[] = $randomNews;
         }
-        return $popularNewsLst;
+        // divide whole user into two group, one combine popular & recommend, 
+        // the other one only contain popular list 
+        $groupId = $this->getDeviceGroup($this->_device_id);
+        if ($groupId == -1) {
+            return $popularNewsLst;
+        } else {
+            $clickRecommendPolicy = new ClickRecommendPolicy($this->_di);
+            $recommendNewsLst = $clickRecommendPolicy->sampling(
+                $this->_channel_id, $this->_device_id, $this->_user_id,
+                $sample_count, 4, $prefer, $options);
+            $curIdx = 0;
+            foreach($recommendNewsLst as $recNews) {
+                if (in_array($recNews, $popularNewsLst)) {
+                    continue;
+                } 
+                $popularNewsLst[RECOMMEND_START_IDX + $curIdx] = $recNews;
+                $curIdx += 1;
+                if ($curIdx >= RECOMMEND_NEWS_COUNT) {
+                    break;
+                }
+            }
+            return $popularNewsLst;
+        }
     }
 
     public function select($prefer) {

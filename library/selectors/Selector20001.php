@@ -1,5 +1,5 @@
 <?php
-class Selector20001 extends Selector10001 {
+class Selector20001 extends Selector10004 {
 
     public function getPolicyTag(){
         $groupId = $this->getDeviceGroup($this->_device_id);
