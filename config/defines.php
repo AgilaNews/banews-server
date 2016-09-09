@@ -64,11 +64,7 @@ define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
 //TODO if user grows, set this value lesser, this will absolutely consume more memory, we will consider bloomfilter to solve this problem
 define('CACHE_SENT_MASK_MAX', 1000); 
 define('CACHE_SENT_TTL', 24 * 3600); 
-<<<<<<< HEAD
 define('CACHE_CLICK_MASK_MAX', 10);
-=======
-define('CACHE_CLICK_MASK_MAX', 100);
->>>>>>> 28607abe24ccd1cd7bab4c35c318a501e3c29b8f
 define('CACHE_CLICK_TTL', 48 * 3600);
 define('NET_SCHEMA', "http");
 

@@ -62,11 +62,7 @@ class Selector10001 extends BaseNewsSelector{
         // divide whole user into two group, one combine popular & recommend, 
         // the other one only contain popular list 
         $groupId = $this->getDeviceGroup($this->_device_id);
-<<<<<<< HEAD
-        if ($groupId == -1) {
-=======
         if ($groupId == 0) {
->>>>>>> 28607abe24ccd1cd7bab4c35c318a501e3c29b8f
             return $popularNewsLst;
         } else {
             $clickRecommendPolicy = new ClickRecommendPolicy($this->_di);
