@@ -13,7 +13,7 @@ define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define("LATELY_NEWS_COUNT", 2);
 define('RECOMMEND_NEWS_COUNT',3);
-define('RECOMMEND_START_IDX', 2);
+define('RECOMMEND_START_IDX', 1);
 
 class Selector10001 extends BaseNewsSelector{
 
