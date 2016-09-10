@@ -3,7 +3,7 @@
 use Phalcon\DI;
 
 define ('MAX_CLICK_COUNT', 1);
-define ('REC_NEWS_SINGLE', 8);
+define ('REC_NEWS_SINGLE', 5);
 
 class ClickRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
