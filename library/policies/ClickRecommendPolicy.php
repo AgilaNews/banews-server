@@ -2,7 +2,7 @@
 
 use Phalcon\DI;
 
-define ('MAX_CLICK_COUNT', 5);
+define ('MAX_CLICK_COUNT', 3);
 define ('REC_NEWS_SINGLE', 5);
 
 class ClickRecommendPolicy extends BaseListPolicy {
@@ -109,7 +109,10 @@ class ClickRecommendPolicy extends BaseListPolicy {
         if (count($clickedLst)==0){
             return array();
         }
-        $seedClickedLst = $this->randomClick($clickedLst, MAX_CLICK_COUNT);
+        // since random selected seed news isn't significant, try sorted one
+        //$seedClickedLst = $this->randomClick($clickedLst, MAX_CLICK_COUNT);
+        $seedClickedLst = array_slice($clickedLst, 0, MAX_CLICK_COUNT);
+
 
         $recommendLst = array();
         foreach($seedClickedLst as $click) {
