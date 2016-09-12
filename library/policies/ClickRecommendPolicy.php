@@ -4,7 +4,7 @@ use Phalcon\DI;
 
 define ('MAX_CLICK_COUNT', 1);
 define ('REC_NEWS_SINGLE', 2);
-define ('REC_NEWS_SPAN', 3);
+define ('REC_NEWS_SPAN', 2);
 
 class ClickRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
@@ -83,7 +83,7 @@ class ClickRecommendPolicy extends BaseListPolicy {
                             continue;
                         }
                         $curTimestamp = $curNews["_source"]["fetch_timestamp"];
-                        if (((time() - $curTimestamp) / 3600) > REC_NEWS_SPAN) {
+                        if (((time() - $curTimestamp) / 3600) >= REC_NEWS_SPAN) {
                             continue;
                         }
                         $curArr = array("id" => $curNews["_id"], 
