@@ -3,7 +3,8 @@
 use Phalcon\DI;
 
 define ('MAX_CLICK_COUNT', 1);
-define ('REC_NEWS_SINGLE', 5);
+define ('REC_NEWS_SINGLE', 2);
+define ('REC_NEWS_SPAN', 3);
 
 class ClickRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
@@ -79,6 +80,10 @@ class ClickRecommendPolicy extends BaseListPolicy {
                         $curChannelId = $curNews['_source']['channel'];
                         if (($curChannelId == '10011') || 
                             ($curChannelId == '10012')) {
+                            continue;
+                        }
+                        $curTimestamp = $curNews["_source"]["fetch_timestamp"];
+                        if (((time() - $curTimestamp) / 3600) > REC_NEWS_SPAN) {
                             continue;
                         }
                         $curArr = array("id" => $curNews["_id"], 
