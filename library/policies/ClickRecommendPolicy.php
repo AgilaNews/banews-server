@@ -3,7 +3,7 @@
 use Phalcon\DI;
 
 define ('MAX_CLICK_COUNT', 1);
-define ('REC_NEWS_SINGLE', 2);
+define ('REC_NEWS_SINGLE', 8);
 define ('REC_NEWS_SPAN', 2);
 
 class ClickRecommendPolicy extends BaseListPolicy {
@@ -82,10 +82,6 @@ class ClickRecommendPolicy extends BaseListPolicy {
                             ($curChannelId == '10012')) {
                             continue;
                         }
-                        $curTimestamp = $curNews["_source"]["fetch_timestamp"];
-                        if (((time() - $curTimestamp) / 3600) >= REC_NEWS_SPAN) {
-                            continue;
-                        }
                         $curArr = array("id" => $curNews["_id"], 
                             "score" => $curNews["_score"], 
                             "fetch_timestamp" => $curNews["_source"]["fetch_timestamp"]);
@@ -124,6 +120,10 @@ class ClickRecommendPolicy extends BaseListPolicy {
             $news_id = $click["id"];
             $resLst = $this->getRecommendNews($news_id, REC_NEWS_SINGLE, 0);
             foreach($resLst as $res) {
+                $curTimestamp = intval($res['fetch_timestamp']);
+                if (((time() - $curTimestamp) / 3600) >= REC_NEWS_SPAN) {
+                            continue;
+                }
                 // get largest score of same news
                 $key = array_search($res['id'], array_column($recommendLst, 'id'));
                 if($key){
