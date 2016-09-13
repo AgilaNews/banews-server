@@ -2,6 +2,9 @@
 define('BUILD_MAIN', 1);
 define('BUILD_ACCESSORY', 2);
 
+define('VIDEO_NEWS_FEATURE', "1.2.0");
+define('LARGE_IMG_FEATURE', "1.1.3");
+
 //used for publish
 define('NOT_PUBLISHED', 0);
 define('ANDROID_PUBLISHED', 1);
@@ -38,6 +41,8 @@ define('CACHE_COMMENTS_TTL', 600);
 define('CACHE_COMMENTS_PREFIX', "BS_COMMENTS_");
 define('CACHE_IMAGES_PREFIX', "BS_IMAGES_");
 define('CACHE_IMAGES_TTL', 14400);
+define('CACHE_YOUTUBE_VIDEO_PREFIX', "BS_YOUTUBE_");
+define('CACHE_YOUTUBE_VIDEO_TTL', 14400);
 define('CACHE_GIFS_PREFIX', "BS_GIFS_");
 define('CACHE_GIFS_TTL', 14400);
 define('CACHE_VERSION_PREFIX', "BS_VERSIONS");

@@ -20,18 +20,19 @@ class NewsImage extends BaseModel {
 
     public $update_time;
 
-    
     public static function getImagesOfNews($news_sign){
+        $key = CACHE_IMAGES_PREFIX . $news_sign;
+        
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
-            $value = $cache->get(CACHE_IMAGES_PREFIX . $news_sign);
+            $value = $cache->get($key);
             if ($value) {
                 $rs = unserialize($value);
                 return $rs;
             }
         }
 
-        $key = CACHE_IMAGES_PREFIX . $news_sign;
+
         $crit = array (
             "conditions" => "news_url_sign=?1",
             "bind" => array(1 => $news_sign),
@@ -40,8 +41,8 @@ class NewsImage extends BaseModel {
         $rs = NewsImage::find($crit);
         if ($cache) {
             $cache->multi();
-            $cache->set(CACHE_IMAGES_PREFIX . $news_sign, serialize($rs));
-            $cache->expire(CACHE_IMAGES_PREFIX . $news_sign, CACHE_IMAGES_TTL);
+            $cache->set($key, serialize($rs));
+            $cache->expire($key, CACHE_IMAGES_TTL);
             $cache->exec();
         }
 

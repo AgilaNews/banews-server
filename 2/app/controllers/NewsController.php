@@ -31,16 +31,12 @@ class NewsController extends BaseController {
         $newsRedis = $redis->setDeviceClick(
                 $this->deviceId, $newsSign, time()); 
 
+        $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
         $imgs = NewsImage::getImagesOfNews($newsSign);
+        
+        $videocell = array();
         $imgcell = array();
 
-        if ($this->net == "WIFI") {
-            $quality = IMAGE_HIGH_QUALITY;
-        } else if ($this->net == "2G") {
-            $quality = IMAGE_LOW_QUALITY;
-        } else {
-            $quality = IMAGE_NORMAL_QUALITY;
-        }
         foreach ($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
                 continue;
@@ -53,25 +49,35 @@ class NewsController extends BaseController {
                 }
             }
     
-            $ow = $meta["width"];
-            $oh = $meta["height"];
-            $aw = (int) ($this->resolution_w * 11 / 12);
-            $ah = (int) ($aw * $oh / $ow);
+            $c = $this->getImgCell($img->url_sign, $meta);
+            $c["name"] = "<!--IMG" . $img->news_pos_id . "-->";
+            $imgcell[] = $c;
+        }
 
-            $imgcell[] = array(
-                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw, $quality),
-                "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), "{w}", $quality),
-                "width" => $aw,
-                "height" => $ah,
-                "name" => "<!--IMG" . $img->news_pos_id . "-->",
-            );
+        foreach($videos as $video) {
+            if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
+                continue;
+            }
+            
+            if ($video->cover_origin_url) {
+                $cover_meta = json_decode($video->cover_meta, true);
+                if (!$cover_meta || !$cover_meta["width"] || !$cover_meta["height"]) {
+                    continue;
+                }
+            }
+
+            $c = $this->getImgCell($video->video_url_sign, $cover_meta);
+            $c["youtube_id"] = $video->youtube_video_id;
+            $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
+            $videocell []= $c;
         }
 
         $ret = array(
             "body" => $news_model->json_text,
             "commentCount" => $commentCount,
             "comments" => array(), 
-            "imgs" => $imgcell, 
+            "imgs" => $imgcell,
+            "youtube_videos" => $videocell,
             "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
@@ -152,7 +158,8 @@ class NewsController extends BaseController {
         }
 
         $models = $selector->select($prefer);
-        $dispatch_ids = array();
+        
+        $dispatch_ids = array("DweXFXGxDTw=");
         foreach ($models as $sign => $model) {
             $dispatch_ids []= $sign;
         }
@@ -238,4 +245,27 @@ class NewsController extends BaseController {
         }
         return $ret;
     }
+
+   protected function getImgCell($url_sign, $meta) {
+       if ($this->net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
+        }
+        
+               
+       $ow = $meta["width"];
+       $oh = $meta["height"];
+       $aw = (int) ($this->resolution_w * 11 / 12);
+       $ah = (int) ($aw * $oh / $ow);
+
+       return array(
+                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, $quality),
+                    "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
+                    "width" => $aw,
+                    "height" => $ah,
+                    );
+   }
 }
