@@ -159,7 +159,6 @@ class NewsController extends BaseController {
 
         $models = $selector->select($prefer);
         
-        $dispatch_ids = array("DweXFXGxDTw=");
         foreach ($models as $sign => $model) {
             $dispatch_ids []= $sign;
         }

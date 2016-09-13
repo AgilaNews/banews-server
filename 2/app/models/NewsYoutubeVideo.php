@@ -33,7 +33,6 @@ class NewsYoutubeVideo extends BaseModel {
 
     public static function getVideosOfNews($news_sign) {
         $cache = DI::getDefault()->get('cache');
-        $cache = null;
         if ($cache) {
             $value = $cache->get(CACHE_YOUTUBE_VIDEO_PREFIX . $news_sign);
             if ($value) {

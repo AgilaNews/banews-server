@@ -75,7 +75,7 @@ class BaseListRender {
                     $ret["tpl"] = NEWS_LIST_TPL_SMALL_YOUTUBE;
                     $cell = $this->getImgCell($video->video_url_sign, $cover_meta, false);
                 }
-                $ret["imgs"] = $cell;
+                $ret["imgs"] = array($cell);
             }
         } else {
             $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
