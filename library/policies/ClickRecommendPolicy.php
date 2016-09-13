@@ -2,8 +2,9 @@
 
 use Phalcon\DI;
 
-define ('MAX_CLICK_COUNT', 5);
-define ('REC_NEWS_SINGLE', 5);
+define ('MAX_CLICK_COUNT', 1);
+define ('REC_NEWS_SINGLE', 8);
+define ('REC_NEWS_SPAN', 2);
 
 class ClickRecommendPolicy extends BaseListPolicy {
     public function __construct($di) {
@@ -76,6 +77,11 @@ class ClickRecommendPolicy extends BaseListPolicy {
                         if ($curNews['_score'] < $minThre) {
                             continue;
                         }
+                        $curChannelId = $curNews['_source']['channel'];
+                        if (($curChannelId == '10011') || 
+                            ($curChannelId == '10012')) {
+                            continue;
+                        }
                         $curArr = array("id" => $curNews["_id"], 
                             "score" => $curNews["_score"], 
                             "fetch_timestamp" => $curNews["_source"]["fetch_timestamp"]);
@@ -104,15 +110,22 @@ class ClickRecommendPolicy extends BaseListPolicy {
         if (count($clickedLst)==0){
             return array();
         }
-        $seedClickedLst = $this->randomClick($clickedLst, MAX_CLICK_COUNT);
+        // since random selected seed news isn't significant, try sorted one
+        //$seedClickedLst = $this->randomClick($clickedLst, MAX_CLICK_COUNT);
+        $seedClickedLst = array_slice($clickedLst, 0, MAX_CLICK_COUNT);
+
 
         $recommendLst = array();
         foreach($seedClickedLst as $click) {
             $news_id = $click["id"];
             $resLst = $this->getRecommendNews($news_id, REC_NEWS_SINGLE, 0);
             foreach($resLst as $res) {
+                $curTimestamp = intval($res['fetch_timestamp']);
+                if (((time() - $curTimestamp) / 3600) >= REC_NEWS_SPAN) {
+                            continue;
+                }
                 // get largest score of same news
-                $key = array_search($res, $recommendLst);
+                $key = array_search($res['id'], array_column($recommendLst, 'id'));
                 if($key){
                     if($res['score'] > $recommendLst[$key]['score']){
                         $recommendLst[$key]['score'] = $res['score'];
@@ -143,10 +156,14 @@ class ClickRecommendPolicy extends BaseListPolicy {
 
     protected function sentFilter($sentNewsLst, $clickedLst, $newsLst) {
         $filterNewsLst = array();
+        $clickedIdLst = array();
+        foreach($clickedLst as $clickNews) {
+            $clickedIdLst[] = $clickNews['id'];
+        }
         foreach ($newsLst as $news) {
             $id = $news["id"];
-            if (in_array($id, $sendNewsLst) || 
-                array_key_exists($id, $clickedLst) ||
+            if (in_array($id, $sentNewsLst) || 
+                in_array($id, $clickedIdLst) ||
                 in_array($news, $filterNewsLst)) {
                 continue;
             }
