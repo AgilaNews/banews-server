@@ -85,6 +85,7 @@ class NewsController extends BaseController {
                 }
 
                 $c = $this->getImgCell($video->video_url_sign, $cover_meta);
+                $c["pattern"] = $c["pattern"] . "|v=1";
                 $c["youtube_id"] = $video->youtube_video_id;
                 $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
                 $videocell []= $c;
