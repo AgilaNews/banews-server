@@ -50,7 +50,7 @@ class BaseListRender {
             "public_time" => $news_model->publish_time,
         );
         
-        if ($videos->count() != 0) {
+        if ($videos->count() != 0 && version_compare($this->_client_version, VIDEO_NEWS_FEATURE, ">=")) {
             foreach ($videos as $v) {
                 if (!$v || $v->is_deadlink == 1 ||
                     !$v->cover_meta ||
