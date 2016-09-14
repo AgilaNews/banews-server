@@ -71,7 +71,7 @@ class NewsController extends BaseController {
         }
         $ret["imgs"] = $imgcell;
 
-        if (version_compare($this->client_version, VIDEO_SERVER_NAME, ">=")) {
+        if (version_compare($this->client_version, VIDEO_NEWS_FEATURE, ">=")) {
             foreach($videos as $video) {
                 if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
                     continue;
