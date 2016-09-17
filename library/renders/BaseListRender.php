@@ -53,6 +53,7 @@ class BaseListRender {
         } else {
             $videos == null;
         }
+
         $commentCount = Comment::getCount($news_model->id);
 
         $ret = array (
@@ -64,7 +65,7 @@ class BaseListRender {
             "public_time" => $news_model->publish_time,
         );
         
-        if ($videos && $videos->count() != 0)
+        if ($videos && $videos->count() != 0) {
             foreach ($videos as $v) {
                 if (!$v || $v->is_deadlink == 1 ||
                     !$v->cover_meta ||
