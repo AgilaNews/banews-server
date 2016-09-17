@@ -14,6 +14,8 @@ define('LARGE_IMAGE_MAX_COUNT', 3);
 define('LARGE_IMAGE_MIN_WH_RATIO', 1.6);
 define('LARGE_IMAGE_MAX_WH_RATIO', 2.4);
 
+define('MAX_HOT_TAG', 1);
+
 class BaseListRender {
     public function __construct($controller) {
         $this->_device_id = $controller->deviceId;
@@ -29,18 +31,16 @@ class BaseListRender {
         $ret = array();
         $max_quality = 0.0;
         $news_sign = "";
-        $hot = false;
+        $hot_tags = 0;
 
         foreach ($models as $sign => $news_model) {
-            if (!$hot && 1 == mt_rand(0, 2)){
-                $hot = true;
-            } else {
-                $hot = false;
-            }
-            
             $cell = $this->serializeNewsCell($news_model);
-            if ($hot) {
+            
+            if ($hot_tags < MAX_HOT_TAG && mt_rand(0, 2) == 1) {
                 $cell["tag"] = "hot";
+                $hot_tags++;
+            } else {
+                $cell["tag"] = "";
             }
             $ret[] = $cell;
         }
