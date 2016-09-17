@@ -47,7 +47,7 @@ class BaseRecommendNewsSelector {
         
 
         $randomModels = News::batchGet($randomNewsLst);
-        foreach ($randomModels as $sign => $models) {
+        foreach ($randomModels as $sign => $model) {
             if (!$model || ($sign == $myself) || 
                 array_key_exists($model->content_sign, $cs)) {
                 continue;
