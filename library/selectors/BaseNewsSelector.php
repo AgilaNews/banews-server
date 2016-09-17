@@ -77,7 +77,7 @@ class BaseNewsSelector {
             'MORE_NEWS_FACTOR'
         */
         $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
-        #I don't known if 1.5 is enough
+        //I don't known if 1.5 is enough
         $base = round(MAX_NEWS_SENT_COUNT * MORE_NEWS_FACTOR);
 
         $selected_news_list = $this->sampling($base, $prefer); 

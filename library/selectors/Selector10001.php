@@ -16,7 +16,6 @@ define('RECOMMEND_NEWS_COUNT',3);
 define('RECOMMEND_START_IDX', 1);
 
 class Selector10001 extends BaseNewsSelector{
-
     protected function getDeviceGroup($deviceId) { 
         $hashCode = hash('md5', $deviceId);
         $lastChar = substr($hashCode, -1);

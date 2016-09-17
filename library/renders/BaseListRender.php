@@ -29,16 +29,30 @@ class BaseListRender {
         $ret = array();
         $max_quality = 0.0;
         $news_sign = "";
+        $hot = false;
 
         foreach ($models as $sign => $news_model) {
+            if (!$hot && 1 == mt_rand(0, 2)){
+                $hot = true;
+            } else {
+                $hot = false;
+            }
+            
             $cell = $this->serializeNewsCell($news_model);
+            if ($hot) {
+                $cell["tag"] = "hot";
+            }
             $ret[] = $cell;
         }
         return $ret;
     }
 
     protected function serializeNewsCell($news_model) {
-        $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
+        if (version_compare($this->_client_version, VIDEO_NEWS_FEATURE, ">=")) {
+            $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
+        } else {
+            $videos == null;
+        }
         $commentCount = Comment::getCount($news_model->id);
 
         $ret = array (
@@ -50,7 +64,7 @@ class BaseListRender {
             "public_time" => $news_model->publish_time,
         );
         
-        if ($videos->count() != 0 && version_compare($this->_client_version, VIDEO_NEWS_FEATURE, ">=")) {
+        if ($videos && $videos->count() != 0)
             foreach ($videos as $v) {
                 if (!$v || $v->is_deadlink == 1 ||
                     !$v->cover_meta ||
