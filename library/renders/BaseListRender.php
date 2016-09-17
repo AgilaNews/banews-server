@@ -37,7 +37,7 @@ class BaseListRender {
             $cell = $this->serializeNewsCell($news_model);
             
             if ($hot_tags < MAX_HOT_TAG && mt_rand(0, 2) == 1) {
-                $cell["tag"] = "hot";
+                $cell["tag"] = "Hot";
                 $hot_tags++;
             } else {
                 $cell["tag"] = "";
