@@ -75,6 +75,9 @@ class IndexController extends BaseController {
             }
 
             $ret["channel_version"] = $vm;
+
+            $newest_package = Package::getNewestVersion();
+            $ret["package_version"] = $newest_package->version;
         }
 
         $log = "[ColdSetting]";

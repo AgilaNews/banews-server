@@ -28,8 +28,8 @@ class NewsController extends BaseController {
 
         $cache = $this->di->get("cache");
         $redis = new NewsRedis($cache);
-        $newsRedis = $redis->setDeviceClick(
-                $this->deviceId, $newsSign, time()); 
+        $redis->setDeviceClick(
+                               $this->deviceId, $newsSign, time()); 
 
         $ret = array(
             "body" => $news_model->json_text,
