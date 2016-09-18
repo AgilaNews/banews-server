@@ -34,7 +34,7 @@ class Package extends BaseModel {
         $cache = DI::getDefault()->get('cache');
 
         if ($cache) {
-            $value = $cache->get(CACHE_CHANNELS_KEY);
+            $value = $cache->get(CACHE_PACKAGE_PREFIX);
             if ($value) {
                 $packages = unserialize($value);
             }
