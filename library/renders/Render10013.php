@@ -8,7 +8,7 @@ class Render10013 extends BaseListRender {
         //TODO change this to mysql
         $ret = parent::render($models);
 
-        if ((version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
+        if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
                 $top = array("data" =>
                              array(
                                    array(
