@@ -4,6 +4,7 @@ define('BUILD_ACCESSORY', 2);
 
 define('VIDEO_NEWS_FEATURE', "1.2.0");
 define('LARGE_IMG_FEATURE', "1.1.3");
+define('FIXTOP_NBA_FEATURE', "1.2.0");
 
 //used for publish
 define('NOT_PUBLISHED', 0);
