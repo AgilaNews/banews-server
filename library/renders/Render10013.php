@@ -9,7 +9,7 @@ class Render10013 extends BaseListRender {
         
         if ($models[0] == INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA) {
             if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
-                $top = array("data" =>
+                $top = array(array("data" =>
                              array(
                                    array(
                                          "title" => "Schedule",
@@ -24,7 +24,7 @@ class Render10013 extends BaseListRender {
                                    ),
                              "tpl" => NEWS_LIST_TPL_NBA,
                              "fix_top" => 1,
-                             );
+                                   ));
 
             }
             $models = array_slice($models, 1);
