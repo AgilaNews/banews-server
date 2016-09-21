@@ -6,6 +6,7 @@ class Render10013 extends BaseListRender {
 
     public function render($models) {
         $top = array();
+        
         if ($models[0] == INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA) {
             if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
                 $top = array("data" =>
