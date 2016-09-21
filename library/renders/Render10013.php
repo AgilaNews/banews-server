@@ -5,10 +5,9 @@ class Render10013 extends BaseListRender {
     }
 
     public function render($models) {
-        //TODO change this to mysql
-        $ret = parent::render($models);
-
-        if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
+        $top = array();
+        if ($models[0] == INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA) {
+            if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
                 $top = array("data" =>
                              array(
                                    array(
@@ -25,8 +24,12 @@ class Render10013 extends BaseListRender {
                              "tpl" => NEWS_LIST_TPL_NBA,
                              "fix_top" => 1,
                              );
-                $ret = array_merge(array($top), $ret);
+
             }
-        return $ret;
+            $models = array_slice($models, 1);
+        }
+        
+        $ret = parent::render($models);
+        return array_merge($top, $ret);
     }
 }

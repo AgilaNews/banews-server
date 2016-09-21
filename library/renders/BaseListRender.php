@@ -1,14 +1,5 @@
 <?php
-define('NEWS_LIST_TPL_LARGE_IMG', 2);
-define('NEWS_LIST_TPL_THREE_IMG', 3);
-define('NEWS_LIST_TPL_TEXT_IMG', 4);
-define('NEWS_LIST_TPL_RAW_TEXT', 5);
-define('NEWS_LIST_TPL_RAW_IMG', 6);
-define('NEWS_LIST_TPL_VIDEO', 7);
-define('NEWS_LIST_TPL_BIG_YOUTUBE', 10);
-define('NEWS_LIST_TPL_SMALL_YOUTUBE', 11);
 
-define('NEWS_LIST_TPL_NBA', 1000);
 
 define('LARGE_IMAGE_MAX_COUNT', 3);
 define('LARGE_IMAGE_MIN_WH_RATIO', 1.6);
