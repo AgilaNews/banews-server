@@ -18,7 +18,7 @@ class Render10013 extends BaseListRender {
                                          "page" => "/nba/nba_schedule.html",
                                          ),
                                    array(
-                                         "title" => "Standing",
+                                         "title" => "Standings",
                                          "logo" => IMAGE_PREFIX . "/nba_standing.png",
                                          "digest" => "",
                                          "page" => "/nba/nba_standings.html",
