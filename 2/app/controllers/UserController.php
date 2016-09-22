@@ -73,7 +73,7 @@ class UserController extends BaseController {
             throw new HttpException(ERR_BODY, "body format error");
         }
         $newsSign = $this->get_or_fail($req, "news_id", "string");
-        $comment_detail = $this->get_or_fail($req, "comment_detail", "string");
+        $comment_detail = $this->get_or_fail($req, "comment_detail", null);
         if (strlen($comment_detail) > MAX_COMMENT_SIZE) {
             throw new HttpException(ERR_COMMENT_TOO_LONG, "comment too long");   
         }

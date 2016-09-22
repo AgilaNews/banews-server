@@ -99,7 +99,11 @@ class BaseController extends Controller{
     
     protected function get_request_param($name, $type, $is_required=false, $default="") {
         if (isset($_REQUEST[$name])) {
-            return $this->filter->sanitize($_REQUEST[$name], $type);
+            if ($type) {
+                return $this->filter->sanitize($_REQUEST[$name], $type);
+            } else {
+                return $_REQUEST[$name];
+            }
         }
         
         if ($is_required) {
@@ -110,7 +114,11 @@ class BaseController extends Controller{
 
     protected function get_or_default($table, $k, $type, $default = null) {
         if (array_key_exists($k, $table)) {
-            return $this->filter->sanitize($table[$k], $type);
+            if ($type) {
+                return $this->filter->sanitize($table[$k], $type);
+            } else {
+                return $table[$k];
+            }
         } else {
             return $default;
         }
@@ -118,7 +126,11 @@ class BaseController extends Controller{
 
     protected function get_or_fail($table, $k, $type) {
         if (array_key_exists($k, $table)) {
-            return $this->filter->sanitize($table[$k], $type);
+            if ($type) {
+                return $this->filter->sanitize($table[$k], $type);
+            } else {
+                return $table[$k];
+            }
         } else {
             throw new HttpException(ERR_KEY, "'$k' is not set");
         }
