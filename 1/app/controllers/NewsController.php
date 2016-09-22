@@ -24,10 +24,24 @@ class NewsController extends BaseController {
         }
 
         $commentCount = Comment::getCount($newsSign);
-        $topComment = Comment::getAll($newsSign, null, 3);
+        $topComment = Comment::getAll($newsSign, null, 3, "later");
+
+        $cache = $this->di->get("cache");
+        $redis = new NewsRedis($cache);
+        $newsRedis = $redis->setDeviceClick(
+                $this->deviceId, $newsSign, time()); 
 
         $imgs = NewsImage::getImagesOfNews($newsSign);
         $imgcell = array();
+
+        if ($this->net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
+        }
+
         foreach ($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
                 continue;
@@ -43,10 +57,10 @@ class NewsController extends BaseController {
             $ow = $meta["width"];
             $oh = $meta["height"];
             $aw = (int) ($this->resolution_w * 11 / 12);
-            $ah = (int) min($this->resolution_h * 0.9, $aw * $oh / $ow);
+            $ah = (int) ($aw * $oh / $ow);
 
             $imgcell[] = array(
-                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw),
+                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw, $quality),
                 "width" => $aw,
                 "height" => $ah,
                 "name" => "<!--IMG" . $img->news_pos_id . "-->",
@@ -74,9 +88,9 @@ class NewsController extends BaseController {
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "Recommend" . $news_model->channel_id;
         if (class_exists($cname)) {
-            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
+            $render = new $cname($this);
         } else {
-            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
+            $render = new BaseListRender($this);
         }
 
         $ret["recommend_news"]= $render->render($models);
@@ -90,12 +104,16 @@ class NewsController extends BaseController {
 
         // ----------------- pseduo like, this feature should be removed later -----------------
         $pseduoLike = mt_rand(1, 10);
-        if ($pseduoLike == 1 && ($news_model->channel_id == 10004 || $news_model->channel_id == 10006)) {
+        if ($pseduoLike == 1) {
             $news_model->liked++;
-            $news_model->save();
-            $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
+            if (!$news_model->save()){
+                $this->logger->warning(sprintf("save error: %s", join(",",$news_model->getMessages())));
+            } else {
+                $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
+            }
         }
         // ----------------- end -------TODO remove later---------------------------------------
+
 
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
@@ -144,9 +162,9 @@ class NewsController extends BaseController {
 
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
-            $render = new $cname($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
+            $render = new $cname($this);
         } else {
-            $render = new BaseListRender($this->deviceId, $this->resolution_w, $this->resolution_h, $this->net, $this->client_version);
+            $render = new BaseListRender($this);
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);

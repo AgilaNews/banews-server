@@ -47,10 +47,15 @@ class BaseController extends Controller{
         $this->lng = $this->get_request_param("lng", "float");
         $this->lat = $this->get_request_param("lat", "float");
         $this->lang = $this->get_request_param("lang", "string");
+        $this->client_version = $this->get_request_param("client_version", "string", false, "1.0.0");
         // we just need version code after 'v' character
-        $this->client_version = substr($this->get_request_param("client_version", "string", false, "v1.0.0"), 1);
-
-        $build = $this->get_request_param("build", "int");
+        if ($this->client_version && strcasecmp(substr($this->client_version, 0, 1), "v") == 0) {
+            $this->client_version = substr($this->client_version, 1);
+        }
+        
+        $this->build = $this->get_request_param("build", "int", false, BUILD_MAIN);
+        $this->os = $this->get_request_param("os", "string", false, "android");
+        $this->os_version  = $this->get_request_param("os_version", "string", false, "");
 
         if ($this->density) {
             $ret = explode(";", $this->density);

@@ -9,6 +9,7 @@ use Phalcon\Logger\Formatter\Line as LineFormatter;
 use Phalcon\Logger\Formatter\Json as JsonFormatter;
 use Phalcon\Cache\Frontend\Json as JsonFront;
 use Phalcon\Cache\Frontend\Data as DataFront;
+use Elasticsearch\ClientBuilder;
 
 $di = new FactoryDefault();
 
@@ -79,6 +80,17 @@ $di->set('cache', function() use ($config) {
     }
 
     return $cache;
+});
+
+$di->set('elasticsearch', function() use ($config) {
+    $hosts = array($config->elasticsearch);
+    $clientBuilder = ClientBuilder::create();
+    $clientBuilder->setHosts($hosts);
+    $esClient = $clientBuilder->build();
+    if (!$esClient) {
+        return null;
+    }
+    return $esClient;
 });
 
 $di->set("config", $config);
