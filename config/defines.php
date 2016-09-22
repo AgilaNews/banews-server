@@ -11,7 +11,8 @@ define('NOT_PUBLISHED', 0);
 define('ANDROID_PUBLISHED', 1);
 define('IOS_PUBLISHED', 2);
 define('BOTH_PUBLISHED', ANDROID_PUBLISHED | IOS_PUBLISHED);
-define('GRAY_RELEASE', 64);
+define('ANDROID_GRAY_RELEASE', 64);
+define('IOS_GRAY_RELEASE', 128);
 
 define('ERR_KEY', 40001);
 define('ERR_BODY', 40002);

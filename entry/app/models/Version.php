@@ -102,7 +102,7 @@ class Version extends BaseModel {
             $model = $models[$i];
             if ($os == "ios") {
                 if ($model->status & IOS_PUBLISHED) {
-                    if (!($model->status & GRAY_RELEASE)) {
+                    if (!($model->status & IOS_GRAY_RELEASE)) {
                         $new_model = $model;
                     }
 
@@ -117,7 +117,7 @@ class Version extends BaseModel {
 
             if ($os == "android") {
                 if ($model->status & ANDROID_PUBLISHED && $model->build_type == $build) {
-                    if (!($model->status & GRAY_RELEASE)) {
+                    if (!($model->status & ANDROID_GRAY_RELEASE)) {
                         $new_model = $model;
                     }
 
