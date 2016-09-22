@@ -31,6 +31,7 @@ class Package extends BaseModel {
     
     public static function getAllUseable() {
         $cache = DI::getDefault()->get('cache');
+        $packages = null;
 
         if ($cache) {
             $value = $cache->get(CACHE_PACKAGE_PREFIX);
