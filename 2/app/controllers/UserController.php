@@ -175,7 +175,7 @@ class UserController extends BaseController {
             
         $this->logEvent(EVENT_NEWS_COLLECT, array("news_id" => $news_ids));
         $this->logger->info(sprintf("[PostCollect][news:%s]",
-                                     $news_ids));
+                                     json_encode($news_ids)));
         $this->setJsonResponse($ret);
         return $this->response;
     }
