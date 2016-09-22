@@ -68,8 +68,8 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NOT_AUTH, "userid not seted");
         }
 
-        $req = $this->request->getJsonRawBody(true);
-        if (null === $req) {
+        $req = json_decode($this->request->getRawBody(), true);
+        if (!$req) {
             throw new HttpException(ERR_BODY, "body format error");
         }
         $newsSign = $this->get_or_fail($req, "news_id", "string");
