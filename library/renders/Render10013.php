@@ -13,15 +13,15 @@ class Render10013 extends BaseListRender {
                              array(
                                    array(
                                          "title" => "Schedule",
-                                         "logo" => IMAGE_PREFIX . "/nba/nba_schedule.png",
+                                         "logo" => IMAGE_PREFIX . "/nba_schedule.png",
                                          "digest" => "",
-                                         "page" => "/nba_schedule.html",
+                                         "page" => "/nba/nba_schedule.html",
                                          ),
                                    array(
                                          "title" => "Standing",
-                                         "logo" => IMAGE_PREFIX . "/nba/nba_standing.png",
+                                         "logo" => IMAGE_PREFIX . "/nba_standing.png",
                                          "digest" => "",
-                                         "page" => "/nba_standings.html",
+                                         "page" => "/nba/nba_standings.html",
                                          ),
                                    ),
                              "tpl" => NEWS_LIST_TPL_NBA,
