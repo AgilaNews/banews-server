@@ -42,7 +42,7 @@ class BaseListRender {
         if (version_compare($this->_client_version, VIDEO_NEWS_FEATURE, ">=")) {
             $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
         } else {
-            $videos == null;
+            $videos = null;
         }
 
         $commentCount = Comment::getCount($news_model->id);
