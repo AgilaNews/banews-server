@@ -13,10 +13,11 @@ class PackageController extends BaseController {
         $version = $this->get_request_param("version", "int", true);
 
         $package = Package::getPackage($version);
-        if (!$package) {
+        if (!$package || !$package->download_url) {
             throw new HttpException(ERR_PACKAGE_NON_EXISTS, "package not exists");
         }
-        $ret = array("url" => $package->download_url,
+        
+        $ret = array("url" => sprintf(PKG_PREFIX . "/%s.zip", $package->md5),
                      "md5" => $package->md5,
                      );
         $this->logger->info(sprintf("[PACKAGE_CHECK][version:%s]", $version));

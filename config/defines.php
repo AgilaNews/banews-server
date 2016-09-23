@@ -86,6 +86,8 @@ define('H5_SERVER_NAME', "m." . SERVER_HOST);
 define('VIDEO_SERVER_NAME', "v1." . SERVER_HOST);
 define('GIF_CHANNEL_PATTERN', "http://" . VIDEO_SERVER_NAME . "/video/%s.mp4");
 define('IMAGE_SERVER_NAME', "s1." . SERVER_HOST);
+define('PKG_SERVER_NAME', "p1." . SERVER_HOST);
+define('PKG_PREFIX', "http://" . PKG_SERVER_NAME . "/packages");
 define('IMAGE_PREFIX', "http://" . 
                        IMAGE_SERVER_NAME . 
                       '/image');
