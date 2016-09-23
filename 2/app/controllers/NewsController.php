@@ -150,6 +150,7 @@ class NewsController extends BaseController {
 
         $channel_id = $this->get_request_param("channel_id", "int", true);
         $prefer = $this->get_request_param('dir', "string", false, "later");
+        $dispatch_ids = array();
         if (!($prefer == 'later' || $prefer == 'older')) {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
