@@ -34,9 +34,14 @@ class Render10012 extends BaseListRender {
         $duration = $meta["duration"];
         $oh = $meta["height"];
         $ow = $meta["width"];
-        $aw = (int) ($this->_screen_w * 11 / 12);
+        if ($this->_os == "ios") {
+            $aw = (int) ($this->_screen_w * 0.93);
+        } else {
+            $aw = (int) ($this->_screen_w * 11 / 12);
+        }
         $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
-        
+
+
         $ret = array(
             "title" => $news_model->title,
             "news_id" => $news_model->url_sign,
