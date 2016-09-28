@@ -50,7 +50,7 @@ class Render10011 extends BaseListRender {
                 $ow = $meta["width"];
                 $oh = $meta["height"];
                 if ($this->_os == "ios") {
-                    $aw = (int) ($this->_screen_w * 0.93);
+                    $aw = (int) ($this->_screen_w  - 44);
                 } else {
                     $aw = (int) ($this->_screen_w * 11 / 12);
                 }
