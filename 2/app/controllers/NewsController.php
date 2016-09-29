@@ -214,7 +214,15 @@ class NewsController extends BaseController {
             $now->content_sign = "";
         } 
 
-        $now->liked++;
+        
+        $pseudoLike = mt_rand(1, 10);
+        if ($pseudoLike == 1) {
+            $now->liked += 2;
+            $this->logger->info(sprintf("[pseudo:%d]", $now->liked));
+        } else {
+            $now->liked += 1;
+        }
+
         $ret = $now->save();
         if (!$ret) {
             $this->logger->warning(sprintf("save error: %s", join(",",$now->getMessages())));
