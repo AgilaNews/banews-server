@@ -215,6 +215,7 @@ class NewsController extends BaseController {
         } 
 
         
+        $originLike = $now->liked;
         $pseudoLike = mt_rand(1, 10);
         if ($pseudoLike == 1) {
             $now->liked += 2;
@@ -231,7 +232,7 @@ class NewsController extends BaseController {
 
         $ret = array (
             "message" => "ok",
-            "liked" => $now->liked,
+            "liked" => $originLike + 1,
         );
 
         $this->logger->info(sprintf("[Like][liked:%s]", $ret["liked"]));
