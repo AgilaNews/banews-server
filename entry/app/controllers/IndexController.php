@@ -14,15 +14,16 @@ class IndexController extends BaseController {
         $kw = array();
         $kw["vendor"] = $this->get_request_param("vendor", "string");
         $kw["mmc"] = $this->get_request_param("mmc", "int");
-        $kw["os"] = $this->get_request_param("os", "string");
-        $kw["osVersion"] = $this->get_request_param("os_version", "string");
-        $kw["net"] = $this->get_request_param("net", "string");
-        $kw["isp"] = $this->get_request_param("isp", "string");
-        $kw["tz"] = $this->get_request_param("tz", "int");
-        $kw["lng"] = $this->get_request_param("lng", "float");
-        $kw["lat"] = $this->get_request_param("lat", "float");
-        $kw["lang"] = $this->get_request_param("lang", "string");
         $kw["clientTime"] = $this->get_request_param("client_time", "int");
+
+        $kw["os"] = $this->os;
+        $kw["osVersion"] = this->os_version;
+        $kw["net"] = $this->net;
+        $kw["isp"] = $this->isp;
+        $kw["tz"] = $this->tz;
+        $kw["lng"] = $this->lng;
+        $kw["lat"] = $this->lat;
+        $kw["lang"] = $this->lang;
         $kw["device_id"] = $this->deviceId;
 
         if (!$this->client_version) {
