@@ -17,7 +17,7 @@ class IndexController extends BaseController {
         $kw["clientTime"] = $this->get_request_param("client_time", "int");
 
         $kw["os"] = $this->os;
-        $kw["osVersion"] = this->os_version;
+        $kw["osVersion"] = $this->os_version;
         $kw["net"] = $this->net;
         $kw["isp"] = $this->isp;
         $kw["tz"] = $this->tz;
