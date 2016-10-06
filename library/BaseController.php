@@ -156,6 +156,7 @@ class BaseController extends Controller{
 
         $param["event-id"] = $event_id;
         $param["session"] = $this->session;
+        $param["ua"] = $this->ua;
         $param["density"] = $this->density;
         if ($this->userSign) {
             $param["uid"] = $this->userSign;
@@ -168,9 +169,11 @@ class BaseController extends Controller{
         $param["lat"] = $this->lat;
         $param["lang"] = $this->lang;
         $param["time"] = round(microtime(true) * 1000);
-        $param["ua"] = $this->ua;
         $param["client-ip"] = $this->client_ip; 
-        $param["client_version"] = $this->client_version;
+        $param["client-version"] = $this->client_version;
+        $param["os"] = $this->os;
+        $param["os-version"] = $this->os_version;
+        $param["build"] = $this->build;
 
         $this->eventlogger->info(json_encode($param));
     }
