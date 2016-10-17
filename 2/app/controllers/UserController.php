@@ -181,12 +181,19 @@ class UserController extends BaseController {
                                       "user_id" => $ref_comment->getUserId(),
                                       "user_name" => "anonymous",
                                       "user_portrait_url" => "",
+                                      "liked" => $ref_comment->getLiked(),
+                                      "device_liked" => $ref_comment->getDeviceLiked() || false,
                                       "comment" => $ref_comment->getCommentDetail(),
                                       );
+                if ($cell["reply"]["liked"] == null) {
+                    $cell["reply"]["liked"] = 0;
+                }
+                
                 $ref_user = User::getBySign($ref_comment->getUserId());
+                
                 if ($ref_user) {
-                    $cell["user_name"] = $ref_user->name;
-                    $cell["user_portrait_url"] = $ref_user->portrait_url;
+                    $cell["reply"]["user_name"] = $ref_user->name;
+                    $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
                 }
             }
 
