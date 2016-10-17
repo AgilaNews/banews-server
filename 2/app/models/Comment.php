@@ -66,13 +66,14 @@ class Comment{
             if (count($ref_comments) > 0) {
                 $ref_comment = $ref_comments[0];
                 $cell["reply"] = array(
-                                      "user_id" => $ref_comment->getUserId(),
-                                      "user_name" => "anonymous",
-                                      "user_portrait_url" => "",
-                                      "liked" => $ref_comment->getLiked(),
-                                      "device_liked" => $ref_comment->getDeviceLiked() || false,
-                                      "comment" => $ref_comment->getCommentDetail(),
-                                      );
+                                       "id" => $ref_comment->getCommentId(),
+                                       "user_id" => $ref_comment->getUserId(),
+                                       "user_name" => "anonymous",
+                                       "user_portrait_url" => "",
+                                       "liked" => $ref_comment->getLiked(),
+                                       "device_liked" => $ref_comment->getDeviceLiked() || false,
+                                       "comment" => $ref_comment->getCommentDetail(),
+                                       );
                 if ($cell["reply"]["liked"] == null) {
                     $cell["reply"]["liked"] = 0;
                 }
