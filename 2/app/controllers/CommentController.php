@@ -8,9 +8,6 @@
  * 
  * 
  */
-define('DEFAULT_HOT_COUNT', 3);
-define('DEFAULT_HOT_LIKED_COUNT', 3);
-define('DEFAULT_NEW_COUNT', 5);
 
 class CommentController extends BaseController {
     public function IndexAction(){

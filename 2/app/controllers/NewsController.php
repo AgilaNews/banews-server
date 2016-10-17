@@ -16,6 +16,9 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_INVALID_METHOD,
                 "read news must be get");
         }
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device-id not found");
+        }
 
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
@@ -24,7 +27,8 @@ class NewsController extends BaseController {
         }
 
         $commentCount = Comment::getCount($newsSign);
-        $topComment = Comment::getAll($newsSign, null, 3);
+        $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
+        $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
 
         $cache = $this->di->get("cache");
         $redis = new NewsRedis($cache);
@@ -34,7 +38,10 @@ class NewsController extends BaseController {
         $ret = array(
             "body" => $news_model->json_text,
             "commentCount" => $commentCount,
-            "comments" => array(), 
+            "comments" => array(
+                                "new" => $topNewComment,
+                                "hot" => $topHotComment,
+                                ), 
             "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
@@ -107,10 +114,6 @@ class NewsController extends BaseController {
         $ret["recommend_news"]= $render->render($models);
         if ($this->userSign) {
             $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
-        }
-
-        foreach ($topComment as $comment) {
-            array_push($ret["comments"], $this->serializeComment($comment));
         }
 
         // ----------------- pseduo like, this feature should be removed later -----------------
@@ -241,24 +244,6 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
-
-   protected function serializeComment($comment){
-        $ret = array (
-                      "id" => $comment->id,
-                      "time" => $comment->create_time,
-                      "comment" => $comment->user_comment,
-                      "user_id" => $comment->user_sign,
-                      "user_name" => "anonymous",
-                      "user_portrait_url" => "",
-                      );
-        
-        $user_model = User::getBySign($comment->user_sign);
-        if ($user_model) {
-            $ret["user_name"] = $user_model->name;
-            $ret["user_portrait_url"] = $user_model->portrait_url;
-        }
-        return $ret;
-    }
 
    protected function getImgCell($url_sign, $meta) {
        if ($this->net == "WIFI") {

@@ -1,113 +1,99 @@
 <?php
-class Comment extends BaseModel {
-    public $id;
+use Phalcon\DI;
 
-    public $user_sign;
+define('DEFAULT_HOT_LIKED_COUNT', 3);
 
-    public $news_sign;
+class Comment{
+    public static function getCommentByFilter($deviceId, $newsSign, $last_id, $length, $filter) {
+        $di = DI::getDefault();
+        $config = $di->get("config");
+        $comment_service = $di->get('comment');
 
-    public $user_comment;
-
-    public $create_time;
-
-    
-    public static function getAll($news_sign, $last_id, $pn, $prefer = "later") {
-        $crit = array (
-            "limit" => 20,
-        );
+        $req = new iface\GetCommentsOfDocRequest();
+        $req->setProduct($config->comment->product_key);
+        $req->setDocId($newsSign);
+        $req->setLastId($last_id);
+        $req->setDeviceId($deviceId);
+        $req->setLength($length);
         
-        if ($pn) {
-            $crit["limit"] = $pn = $pn >= 20 ? 20 : $pn;
-        }
-        if ($prefer == "later") {
-            $crit["order"] = "id DESC";
-            if ($last_id) {
-                $crit["conditions"] = "news_sign = ?1 AND id < ?2";
-                $crit["bind"] = array(1 => $news_sign, 2=>$last_id);
-            } else {
-                $crit["conditions"] = "news_sign = ?1";
-                $crit["bind"] = array(1 => $news_sign);
+        if ($filter == "new") {
+            $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::TIME);
+        } else if ($filter == "hot") {
+            if ($last_id == 0) {
+                $req->setThreshold(DEFAULT_HOT_LIKED_COUNT);
+                $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::LIKED);
             }
         } else {
-            $crit["order"] = "id";
-            if ($last_id) {
-                $crit["conditions"] = "news_sign = ?1 AND id > ?2";
-                $crit["bind"] = array(1 => $news_sign, 2=>$last_id);
-            } else {
-                $crit["conditions"] = "news_sign = ?1";
-                $crit["bind"] = array(1 => $news_sign);
-            }
+            assert(false, "filter is invalid : " . $filter);
         }
         
-        $comments = Comment::Find($crit);
-        return $comments;
-    }
+        list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "get comment error:" . $status->details);
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "add comment error: " . $s->getErrorMsg()
+                                    );
+        }
 
-    public static function getById($comment_id) {
-        $cache = $this->di->get('cache');
-        $key = CACHE_COMMENT_PREFIX . $comment_id;
+        $comments = $resp->getCommentsList();
+        $ret = array();
+        
+        foreach ($comments as $comment) {
+            $cell = array("comment" => $comment->getCommentDetail(),
+                          "id" => $comment->getCommentId(),
+                          "user_id" => $comment->getUserId(),
+                          "user_name" => "anonymous",
+                          "user_portrait_url" => "",
+                          "device_liked" => $comment->getDeviceLiked() || false,
+                          "liked" => $comment->getLiked(),
+                          "reply" => new stdClass(),
+                          );
 
-        if ($cache) {
-            $value = $cache->get($key);
-            if ($value) {
-                $comment = new $Comment();
-                $comment->unserialize($value);
-                return $comment;
+            if ($cell["liked"] == null) {
+                $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
             }
-        }
-        $comment_model = Comment::findFirst(array(
-                                                  "condtions" => "id=?1",
-                                                  "bind" => array(
-                                                                  1 => $comment_id,
-                                                                  )));
-        if ($cache && $comment_model) {
-            $cache->multi();
-            $cache->set($key, $comment_model->serialize());
-            $cache->expire($key, CACHE_COMMENT_TTL);
-            $cache->exec();
-        }
 
-        return $comment_model;
-    }
-    
-    public static function getCount($news_sign, $user_sign = null) {
-        $crit = array ();
+            $user_model = User::getBySign($comment->getUserId());
+            if ($user_model) {
+                $cell["user_name"] = $user_model->name;
+                $cell["user_portrait_url"] = $user_model->portrait_url;
+            }
 
-        if ($user_sign) {
-            $crit["conditions"] = "news_sign = ?1 AND user_sign = ?2";
-            $crit["bind"] = array(1 => $news_sign, 2 => $user_sign);
-        } else {
-            $crit["conditions"] = "news_sign = ?1";
-            $crit["bind"] = array(1 => $news_sign);
+            $ref_comments = $comment->getRefComments();
+            if (count($ref_comments) > 0) {
+                $ref_comment = $ref_comments[0];
+                $cell["reply"] = array(
+                                      "user_id" => $ref_comment->getUserId(),
+                                      "user_name" => "anonymous",
+                                      "user_portrait_url" => "",
+                                      "liked" => $ref_comment->getLiked(),
+                                      "device_liked" => $ref_comment->getDeviceLiked() || false,
+                                      "comment" => $ref_comment->getCommentDetail(),
+                                      );
+                if ($cell["reply"]["liked"] == null) {
+                    $cell["reply"]["liked"] = 0;
+                }
+                
+                $ref_user = User::getBySign($ref_comment->getUserId());
+                
+                if ($ref_user) {
+                    $cell["reply"]["user_name"] = $ref_user->name;
+                    $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
+                }
+            }
+
+            $ret []= $cell;
         }
-
-        $ret = Comment::count($crit);
 
         return $ret;
     }
 
-    public function save($dataset = null, $whitelist = null) {
-        $cache = $this->di->get('cache');
-        $key = CACHE_COMMENT_FREQ_PREFIX . $this->user_sign;
-        if ($cache) {
-            $value = $cache->get($key);
-            if ($value) {
-                return false;
-            }
-        }
+    public static function getCount($newsSign) {
 
-        $ret = parent::save($dataset, $whitelist);
-        if ($ret) {
-            $cache->multi();
-            $cache->set($key, "1");
-            $cache->expire($key, CACHE_COMMENT_FREQ_TTL);
-            $cache->exec();
-        }
-
-        return $ret;
-    }
-    
-    public function getSource(){
-        return "tb_comment";
     }
 }

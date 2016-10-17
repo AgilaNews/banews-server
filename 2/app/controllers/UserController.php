@@ -38,11 +38,21 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS,
                                     "news not exists");
         }
+        $last_id = $this->get_request_param("last_id", "int", false, 0);
+        $hot_length = $this->get_request_param("hot_pn", "int", false, 10);
+        $length = $this->get_request_param("pn", "int", false, 20);
 
-        $ret = array(
-                     "new" => $this->getCommentByFilter($newsSign, "new"),
-                     "hot" =>$this->getCommentByFilter($newsSign, "hot"),
-                     );
+        if ($length > 0) {
+            $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, "new", $last_id, $length);
+        } else {
+            $ret["new"] = 0;
+        }
+        
+        if ($hot_length > 0) {
+            $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, "hot", $last_id, $hot_length);
+        } else {
+            $ret["hot"] = array();
+        }
 
         $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][hot:%d][new:%d]", $newsSign,
                                     $last_id, $pn, count($ret["hot"]), count($ret["new"])));
@@ -108,100 +118,6 @@ class UserController extends BaseController {
         return $this->response;
     }
 
-    private function getCommentByFilter($newsSign, $filter) {
-        $comment_service = $this->di->get('comment');
-
-        $last_id = $this->get_request_param("last_id", "int", false, 0);
-        $length = $this->get_request_param("pn", "int", false, 20);
-        
-        $req = new iface\GetCommentsOfDocRequest();
-        $req->setProduct($this->config->comment->product_key);
-        $req->setDocId($newsSign);
-        $req->setLastId($last_id);
-        $req->setDeviceId($this->deviceId);
-        
-        if ($filter == "new") {
-            if ($last_id == 0) {
-                $req->setLength(DEFAULT_NEW_COUNT);
-            } else {
-                $req->setLength($length);
-            }
-            $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::TIME);
-        } else if ($filter == "hot") {
-            if ($last_id == 0) {
-                $req->setLength(DEFAULT_HOT_COUNT);
-                $req->setThreshold(DEFAULT_HOT_LIKED_COUNT);
-                $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::LIKED);
-            }
-        } else {
-            assert(false, "filter is invalid : " . $filter);
-        }
-        
-        list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
-        if ($status->code != 0) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "get comment error:" . $status->details);
-        }
-        
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "add comment error: " . $s->getErrorMsg()
-                                    );
-        }
-
-        $comments = $resp->getCommentsList();
-        $ret = array();
-        
-        foreach ($comments as $comment) {
-            $cell = array("comment" => $comment->getCommentDetail(),
-                          "id" => $comment->getCommentId(),
-                          "user_id" => $comment->getUserId(),
-                          "user_name" => "anonymous",
-                          "user_portrait_url" => "",
-                          "device_liked" => $comment->getDeviceLiked() || false,
-                          "liked" => $comment->getLiked(),
-                          "reply" => new stdClass(),
-                          );
-
-            if ($cell["liked"] == null) {
-                $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
-            }
-
-            $user_model = User::getBySign($comment->getUserId());
-            if ($user_model) {
-                $cell["user_name"] = $user_model->name;
-                $cell["user_portrait_url"] = $user_model->portrait_url;
-            }
-
-            $ref_comments = $comment->getRefComments();
-            if (count($ref_comments) > 0) {
-                $ref_comment = $ref_comments[0];
-                $cell["reply"] = array(
-                                      "user_id" => $ref_comment->getUserId(),
-                                      "user_name" => "anonymous",
-                                      "user_portrait_url" => "",
-                                      "liked" => $ref_comment->getLiked(),
-                                      "device_liked" => $ref_comment->getDeviceLiked() || false,
-                                      "comment" => $ref_comment->getCommentDetail(),
-                                      );
-                if ($cell["reply"]["liked"] == null) {
-                    $cell["reply"]["liked"] = 0;
-                }
-                
-                $ref_user = User::getBySign($ref_comment->getUserId());
-                
-                if ($ref_user) {
-                    $cell["reply"]["user_name"] = $ref_user->name;
-                    $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
-                }
-            }
-
-            $ret []= $cell;
-        }
-
-        return $ret;
-    }
 
     private function batchCollect(){
         if (!$this->userSign) {
