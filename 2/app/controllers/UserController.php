@@ -11,7 +11,7 @@
 class UserController extends BaseController {
     public function CommentAction(){
         if ($this->request->isPost()) {
-            return $this->postComments();
+            return $this->addComment();
         } else if ($this->request->isGet()) {
             return $this->getComments();
         } else {
@@ -31,94 +31,222 @@ class UserController extends BaseController {
         }
     }
 
-    /*
-     1=>2=>3=>4=>5
-     ---> prefer: later
-     <--- prefer: older
-    */
     private function getComments(){
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
         if (!$news_model) {
-            throw new HttpException(ERR_NEWS_NON_EXISTS, "news not exists");
-        }
-        
-        $pn = $this->get_request_param("pn", "int", false, 1000);
-        $last_id = $this->get_request_param("last_id", "string");
-        $prefer = $this->get_request_param("prefer", "string", false, "older");
-        
-        $comments = Comment::getAll($newsSign, $last_id, $pn, $prefer);
-        $ret = array();
-        
-        foreach ($comments as $comment) {
-            array_push($ret, $this->serializeComment($comment));
-        }
-        if ($prefer == "older") {
-            $ret = array_reverse($ret);
+            throw new HttpException(ERR_NEWS_NON_EXISTS,
+                                    "news not exists");
         }
 
-        $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][cmtcnt:%d]", $newsSign,
-                                     $last_id, $pn, count($comments)));
+        $ret = array(
+                     "new" => $this->getCommentByFilter($newsSign, "new"),
+                     "hot" =>$this->getCommentByFilter($newsSign, "hot"),
+                     );
+
+        $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][hot:%d][new:%d]", $newsSign,
+                                    $last_id, $pn, count($ret["hot"]), count($ret["new"])));
         $this->setJsonResponse($ret);
         return $this->response;
     }
 
-    private function postComments() {
+    private function addComment(){
+        $comment_service = $this->di->get('comment');
+        $param = $this->request->getJsonRawBody(true);
+
         if (!$this->userSign) {
-            throw new HttpException(ERR_NOT_AUTH, "userid not seted");
+            throw new HttpException(ERR_NOT_AUTH, "usersign not set");
         }
-
-        $req = json_decode($this->request->getRawBody(), true);
-        if (!$req) {
-            throw new HttpException(ERR_BODY, "body format error");
-        }
-        $newsSign = $this->get_or_fail($req, "news_id", "string");
-        $comment_detail = $this->get_or_fail($req, "comment_detail", null);
-        if (strlen($comment_detail) > MAX_COMMENT_SIZE) {
-            throw new HttpException(ERR_COMMENT_TOO_LONG, "comment too long");   
-        }
-        $ref = $this->get_or_default($req, "ref", "string", null);
-
-        $news_model = News::getBySign($newsSign);
-        $comment = new Comment();
-        $user_model = User::getBySign($this->userSign);
-        $ref_model = Comment::getById($ref);
         
+        $newsSign = $this->get_or_fail($param, "news_id", "string");
+        $detail = $this->get_or_fail($param, "comment_detail", "string");
+        
+        $ref_id = $this->get_or_default($param, "ref_id", "int", 0);
+        $anonymous = $this->get_or_default($param, "anonymous", "bool", false);
+           
+        $req = new iface\NewCommentRequest();
+        $req->setProduct($this->config->comment->product_key);
+
+        $user_model = User::getBySign($this->userSign);
         if (!$user_model) {
             throw new HttpException(ERR_USER_NON_EXISTS,
-                                    "user not exists");
+                                    "user non exists");
         }
+        $news_model = News::getBySign($newsSign);
         if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS,
                                     "news not exists");
         }
-        if ($ref && $ref_model) {
-            throw new HttpException(ERR_REF_COMMENT_NON_EXISTS,
-                                    "reference comment not exists");
-        }
-        $count = Comment::getCount($newsSign, $this->userSign);
-        if ($count > MAX_COMMENT_COUNT) {
-            throw new HttpException(ERR_COMMENT_TOO_MUCH, "user commented too much");
-        }
-
         
-        $comment->user_sign = $this->userSign;
-        $comment->news_sign = $news_model->url_sign;
-        $comment->user_comment = $comment_detail;
-        $comment->create_time = time();
+        $req->setUserId($this->userSign);
+        $req->setDocId($newsSign);
+        $req->setCommentDetail($detail);
+        $req->setDeviceId($this->deviceId);
+        $req->setRefCommentId($ref_id);
+        $req->setIsAnonymous($anonymous);
         
-        $ret = $comment->save();
-        if (!$ret) {
-            $this->logger->warning("save comment error : " . $comment->getMessages()[0]);
-            throw new HttpException(ERR_INTERNAL_DB,
-                                    "save comment info error");
-        }
+        list($resp, $status) = $comment_service->AddComment($req)->wait();
 
-        $this->logger->info(sprintf("[PostComment][news:%s][ci:%s]",
-                                     $newsSign, $comment->id));
-        $this->setJsonResponse(array("message" => "ok", 
-                                    "comment" => $this->serializeComment($comment))
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "get comment error:" . $status->details);
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "add comment error: " . $s->getErrorMsg()
                                     );
+        }
+
+        $this->setJsonResponse(array(
+                                 "message" => "ok",
+                                 "comment_id" => $resp->getCommentId(),
+                                 ));
+            
+        
+        return $this->response;
+    }
+
+    private function getCommentByFilter($newsSign, $filter) {
+        $comment_service = $this->di->get('comment');
+
+        $last_id = $this->get_request_param("last_id", "int", false, 0);
+        $length = $this->get_request_param("pn", "int", false, 20);
+        
+        $req = new iface\GetCommentsOfDocRequest();
+        $req->setProduct($this->config->comment->product_key);
+        $req->setDocId($newsSign);
+        $req->setLastId($last_id);
+        $req->setDeviceId($this->deviceId);
+        
+        if ($filter == "new") {
+            if ($last_id == 0) {
+                $req->setLength(DEFAULT_NEW_COUNT);
+            } else {
+                $req->setLength($length);
+            }
+            $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::TIME);
+        } else if ($filter == "hot") {
+            if ($last_id == 0) {
+                $req->setLength(DEFAULT_HOT_COUNT);
+                $req->setThreshold(DEFAULT_HOT_LIKED_COUNT);
+                $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::LIKED);
+            }
+        } else {
+            assert(false, "filter is invalid : " . $filter);
+        }
+        
+        list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "get comment error:" . $status->details);
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "add comment error: " . $s->getErrorMsg()
+                                    );
+        }
+
+        $comments = $resp->getCommentsList();
+        $ret = array();
+        
+        foreach ($comments as $comment) {
+            $cell = array("comment" => $comment->getCommentDetail(),
+                          "id" => $comment->getCommentId(),
+                          "user_id" => $comment->getUserId(),
+                          "user_name" => "anonymous",
+                          "user_portrait_url" => "",
+                          "device_liked" => $comment->getDeviceLiked() || false,
+                          "liked" => $comment->getLiked(),
+                          "reply" => new stdClass(),
+                          );
+
+            if ($cell["liked"] == null) {
+                $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
+            }
+
+            $user_model = User::getBySign($comment->getUserId());
+            if ($user_model) {
+                $cell["user_name"] = $user_model->name;
+                $cell["user_portrait_url"] = $user_model->portrait_url;
+            }
+
+            $ref_comments = $comment->getRefComments();
+            if (count($ref_comments) > 0) {
+                $ref_comment = $ref_comments[0];
+                $cell["reply"] = array(
+                                      "user_id" => $ref_comment->getUserId(),
+                                      "user_name" => "anonymous",
+                                      "user_portrait_url" => "",
+                                      "comment" => $ref_comment->getCommentDetail(),
+                                      );
+                $ref_user = User::getBySign($ref_comment->getUserId());
+                if ($ref_user) {
+                    $cell["user_name"] = $ref_user->name;
+                    $cell["user_portrait_url"] = $ref_user->portrait_url;
+                }
+            }
+
+            $ret []= $cell;
+        }
+
+        return $ret;
+    }
+
+
+    public function LikeAction(){
+        if (!$this->request->isPost()){
+            throw new HttpException(ERR_INVALID_METHOD,
+                                    "add new comment error");
+        }
+
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device id not found");
+        }
+        
+        $param = $this->request->getJsonRawBody(true);
+        $comment_id = $this->get_or_fail($param, "comment_id", "int");
+        if ($this->userSign) {
+            // if set user sign, he must exists
+            // but client could ignoring this field
+            $user_model = User::getBySign($this->userSign);
+            if (!$user_model) {
+                throw new HttpException(ERR_USER_NON_EXISTS,
+                                        "user non exists");
+            }
+        }
+
+        $comment_service = $this->di->get('comment');
+
+        $req = new iface\LikeCommentRequest();
+        $req->setProduct($this->config->comment->product_key);        
+        $req->setCommentId($comment_id);
+        $req->setDeviceId($this->deviceId);
+        $req->setUserId($this->userSign);
+
+        list($resp, $status) = $comment_service->LikeComment($req)->wait();
+
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    $status->details);
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    $s->getErrorMsg()
+                                    );
+        }
+
+        $currnetLiked = $resp->getCurrentLiked();
+        $this->setJsonResponse(array(
+                                    "message" => "ok",
+                                    "liked" => $currnetLiked,
+                                    ));
+
         return $this->response;
     }
 
@@ -240,24 +368,6 @@ class UserController extends BaseController {
         return $this->response;
     }
     
-    private function serializeComment($comment){
-        $ret = array (
-                      "id" => $comment->id,
-                      "time" => $comment->create_time,
-                      "comment" => $comment->user_comment,
-                      "user_id" => $comment->user_sign,
-                      "user_name" => "anonymous",
-                      "user_portrait_url" => "",
-                      );
-        
-        $user_model = User::getBySign($comment->user_sign);
-        if ($user_model) {
-            $ret["user_name"] = $user_model->name;
-            $ret["user_portrait_url"] = $user_model->portrait_url;
-        }
-        return $ret;
-    }
-
     private function serializeCollect($collect){
                $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         
