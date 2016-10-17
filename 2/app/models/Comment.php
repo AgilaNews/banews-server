@@ -43,6 +43,32 @@ class Comment extends BaseModel {
         return $comments;
     }
 
+    public static function getById($comment_id) {
+        $cache = $this->di->get('cache');
+        $key = CACHE_COMMENT_PREFIX . $comment_id;
+
+        if ($cache) {
+            $value = $cache->get($key);
+            if ($value) {
+                $comment = new $Comment();
+                $comment->unserialize($value);
+                return $comment;
+            }
+        }
+        $comment_model = Comment::findFirst(array(
+                                                  "condtions" => "id=?1",
+                                                  "bind" => array(
+                                                                  1 => $comment_id,
+                                                                  )));
+        if ($cache && $comment_model) {
+            $cache->multi();
+            $cache->set($key, $comment_model->serialize());
+            $cache->expire($key, CACHE_COMMENT_TTL);
+            $cache->exec();
+        }
+
+        return $comment_model;
+    }
     
     public static function getCount($news_sign, $user_sign = null) {
         $crit = array ();

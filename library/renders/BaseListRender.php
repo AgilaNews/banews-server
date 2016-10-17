@@ -1,6 +1,7 @@
 <?php
 
 
+use Phalcon\DI;
 define('LARGE_IMAGE_MAX_COUNT', 3);
 define('LARGE_IMAGE_MIN_WH_RATIO', 1.6);
 define('LARGE_IMAGE_MAX_WH_RATIO', 2.4);
@@ -19,13 +20,32 @@ class BaseListRender {
     }
 
     public function render($models) {
+        $di = DI::getDefault();
+        $comment_service = $di->get('comment');
+        $config = $di->get('config');
+        
         $ret = array();
         $max_quality = 0.0;
         $news_sign = "";
         $hot_tags = 0;
 
+        $req = new iface\GetCommentsCountRequest();
+        $req->setProduct($config->comment->product_key);
+        $req->setDocIds(array_keys($models));
+        list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
+        $comment_counts = array();
+        if ($status->code == 0 && $resp->getResponse()->getCode() == iface\GeneralResponse\ErrorCode::NO_ERROR) {
+            foreach ($resp->getCommentsCount() as $c) {
+                $comment_counts[$c->getKey()] = $c->getValue();
+            }
+        }
+
         foreach ($models as $sign => $news_model) {
             $cell = $this->serializeNewsCell($news_model);
+            if(array_key_exists($sign, $comment_counts)) {
+                $cell["commentCount"] = $comment_counts[$sign];
+            }
+
             
             if ($hot_tags < MAX_HOT_TAG && mt_rand(0, 2) == 1) {
                 $cell["tag"] = "Hot";
@@ -44,12 +64,9 @@ class BaseListRender {
         } else {
             $videos = null;
         }
-
-        $commentCount = Comment::getCount($news_model->id);
-
         $ret = array (
             "title" => $news_model->title,
-            "commentCount" => $commentCount,
+            "commentCount" => 0,
             "news_id" => $news_model->url_sign,
             "source" => $news_model->source_name,
             "source_url" => $news_model->source_url,

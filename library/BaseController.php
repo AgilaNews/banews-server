@@ -136,8 +136,8 @@ class BaseController extends Controller{
         }
     }
 
-    protected function setJsonResponse($arr) {
-        $content = json_encode($arr);
+    protected function setJsonResponse($arr, $options = 0) {
+        $content = json_encode($arr, $options);
         $this->response->setContent($content);
         $this->response->setHeader("Content-Length", strlen($content));
         if (version_compare($this->client_version, "1.1.2", ">=")) {

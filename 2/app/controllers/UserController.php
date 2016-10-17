@@ -77,10 +77,13 @@ class UserController extends BaseController {
         if (strlen($comment_detail) > MAX_COMMENT_SIZE) {
             throw new HttpException(ERR_COMMENT_TOO_LONG, "comment too long");   
         }
+        $ref = $this->get_or_default($req, "ref", "string", null);
 
         $news_model = News::getBySign($newsSign);
         $comment = new Comment();
         $user_model = User::getBySign($this->userSign);
+        $ref_model = Comment::getById($ref);
+        
         if (!$user_model) {
             throw new HttpException(ERR_USER_NON_EXISTS,
                                     "user not exists");
@@ -89,10 +92,15 @@ class UserController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS,
                                     "news not exists");
         }
+        if ($ref && $ref_model) {
+            throw new HttpException(ERR_REF_COMMENT_NON_EXISTS,
+                                    "reference comment not exists");
+        }
         $count = Comment::getCount($newsSign, $this->userSign);
         if ($count > MAX_COMMENT_COUNT) {
             throw new HttpException(ERR_COMMENT_TOO_MUCH, "user commented too much");
         }
+
         
         $comment->user_sign = $this->userSign;
         $comment->news_sign = $news_model->url_sign;

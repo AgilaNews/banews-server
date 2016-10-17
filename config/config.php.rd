@@ -37,6 +37,11 @@ $settings = array (
                 ),
             ),
             ),
+    'comment' => array(
+        'host' => '127.0.0.1',
+        'port' => '6087',
+        'product_key' => 'agilanews',
+    ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/home/work/logs/banews.log",

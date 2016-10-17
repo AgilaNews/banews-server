@@ -13,6 +13,7 @@ use Elasticsearch\ClientBuilder;
 
 $di = new FactoryDefault();
 
+require(ROOT_PATH . "/library/pb/comment.php");
 
 $di->set('dispatcher', function () {
     $em = new EventsManager();
@@ -68,6 +69,14 @@ $di->set('eventlogger', function() use ($config) {
     } catch (\Exception $e) {
         return null;
     }
+});
+
+$di->set('comment', function() use ($config) {
+    $client = new iface\CommentServiceClient(sprintf("%s:%s", $config->comment->host, $config->comment->port), 
+    [
+            'credentials' => Grpc\ChannelCredentials::createInsecure(),
+    ]);
+    return $client;
 });
 
 
