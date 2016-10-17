@@ -49,6 +49,7 @@ class Comment{
                           "user_portrait_url" => "",
                           "device_liked" => $comment->getDeviceLiked() || false,
                           "liked" => $comment->getLiked(),
+                          "time" => $comment->getTimeStamp(),
                           "reply" => new stdClass(),
                           );
 
@@ -73,6 +74,7 @@ class Comment{
                                        "liked" => $ref_comment->getLiked(),
                                        "device_liked" => $ref_comment->getDeviceLiked() || false,
                                        "comment" => $ref_comment->getCommentDetail(),
+                                       "time" => $ref_comment->getTimeStamp(),
                                        );
                 if ($cell["reply"]["liked"] == null) {
                     $cell["reply"]["liked"] = 0;
