@@ -112,6 +112,13 @@ class UserController extends BaseController {
         $this->setJsonResponse(array(
                                  "message" => "ok",
                                  "comment_id" => $resp->getCommentId(),
+                                 "comment" => $detail,
+                                 "user_id" => $user_model->userSign,
+                                 "user_name" => $user_model->name,
+                                 "user_portrait_url" => $user_model->portrait_url,
+                                 "time" => time(),
+                                 "liked" => 0,
+                                 "reply" => array(),
                                  ));
             
         
