@@ -29,7 +29,7 @@ class BaseListRender {
         $news_sign = "";
         $hot_tags = 0;
 
-        $comment_counts = Comment::getCount($keys);
+        $comment_counts = Comment::getCount(array_keys($models));
         
         foreach ($models as $sign => $news_model) {
             $cell = $this->serializeNewsCell($news_model);
