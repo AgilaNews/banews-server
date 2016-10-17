@@ -26,7 +26,7 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
-        $commentCount = Comment::getCount($newsSign);
+        $commentCount = Comment::getCount(array($newsSign));
         $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
         $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
 
@@ -37,7 +37,7 @@ class NewsController extends BaseController {
 
         $ret = array(
             "body" => $news_model->json_text,
-            "commentCount" => $commentCount,
+            "commentCount" => $commentCount[$newsSign],
             "comments" => array(
                                 "new" => $topNewComment,
                                 "hot" => $topHotComment,

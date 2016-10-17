@@ -19,10 +19,8 @@ class Comment{
         if ($filter == "new") {
             $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::TIME);
         } else if ($filter == "hot") {
-            if ($last_id == 0) {
-                $req->setThreshold(DEFAULT_HOT_LIKED_COUNT);
-                $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::LIKED);
-            }
+            $req->setThreshold(DEFAULT_HOT_LIKED_COUNT);
+            $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::LIKED);
         } else {
             assert(false, "filter is invalid : " . $filter);
         }
@@ -93,7 +91,36 @@ class Comment{
         return $ret;
     }
 
-    public static function getCount($newsSign) {
+    public static function getCount($newsSignList) {
+        $di = DI::getDefault();
+        $config = $di->get("config");
+        $comment_service = $di->get('comment');
 
+
+        $req = new iface\GetCommentsCountRequest();
+        $req->setProduct($config->comment->product_key);
+        $req->setDocIds($newsSignList);
+        
+        list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "get comment error:" . $status->details);
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    "add comment error: " . $s->getErrorMsg()
+                                    );
+        }
+
+        $ret = array();
+        
+        $count = $resp->getCommentsCountList();
+        foreach ($newsSignList as $idx => $sign) {
+            $ret[$sign] = $count[$idx];
+        }
+
+        return $ret;
     }
 }
