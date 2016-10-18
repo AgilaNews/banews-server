@@ -43,19 +43,19 @@ class UserController extends BaseController {
         $length = $this->get_request_param("pn", "int", false, 20);
 
         if ($length > 0) {
-            $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, "new", $last_id, $length);
+            $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
         } else {
             $ret["new"] = 0;
         }
         
         if ($hot_length > 0) {
-            $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, "hot", $last_id, $hot_length);
+            $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $hot_length, "hot");
         } else {
             $ret["hot"] = array();
         }
 
         $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][hot:%d][new:%d]", $newsSign,
-                                    $last_id, $pn, count($ret["hot"]), count($ret["new"])));
+                                    $last_id, $length, count($ret["hot"]), count($ret["new"])));
         $this->setJsonResponse($ret);
         return $this->response;
     }
