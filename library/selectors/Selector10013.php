@@ -4,7 +4,7 @@ class Selector10013 extends Selector10004 {
         $ret = parent::select($prefer);
 
         if ($prefer == "later") {
-            $ret[0] = INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA;
+            $ret[INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA] = 0;
         }
 
         return $ret;

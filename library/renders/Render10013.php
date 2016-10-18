@@ -1,13 +1,13 @@
 <?php
 class Render10013 extends BaseListRender {
-    public function __construct($controller){ 
+    public function __construct($controller){
         parent::__construct($controller);
     }
 
     public function render($models) {
         $top = array();
-        
-        if ($models[0] == INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA) {
+
+        if (array_key_exists(INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA, $models)) {
             if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
                 $top = array(array("data" =>
                              array(
@@ -29,9 +29,9 @@ class Render10013 extends BaseListRender {
                                    ));
 
             }
-            $models = array_slice($models, 1);
+            unset($models[INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA]);
         }
-        
+
         $ret = parent::render($models);
         return array_merge($top, $ret);
     }
