@@ -4,10 +4,7 @@ class Selector10013 extends BaseNewsSelector {
         $ret = parent::select($prefer);
 
         if ($prefer == "later") {
-            $ret = array_merge(
-                               array(INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA),
-                               $ret
-                               );
+            $ret[INTERVENE_TPL_CELL_PREFIX . NEWS_LIST_TPL_NBA] = 0;
         }
 
         return $ret;
