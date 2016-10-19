@@ -40,57 +40,10 @@ class Comment{
 
         $comments = $resp->getCommentsList();
         $ret = array();
-        
+
         foreach ($comments as $comment) {
-            $cell = array("comment" => $comment->getCommentDetail(),
-                          "id" => $comment->getCommentId(),
-                          "user_id" => $comment->getUserId(),
-                          "user_name" => "anonymous",
-                          "user_portrait_url" => "",
-                          "device_liked" => $comment->getDeviceLiked() || false,
-                          "liked" => $comment->getLiked(),
-                          "time" => $comment->getTimeStamp(),
-                          "reply" => new stdClass(),
-                          );
-
-            if ($cell["liked"] == null) {
-                $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
-            }
-
-            $user_model = User::getBySign($comment->getUserId());
-            if ($user_model) {
-                $cell["user_name"] = $user_model->name;
-                $cell["user_portrait_url"] = $user_model->portrait_url;
-            }
-
-            $ref_comments = $comment->getRefComments();
-            if (count($ref_comments) > 0) {
-                $ref_comment = $ref_comments[0];
-                $cell["reply"] = array(
-                                       "id" => $ref_comment->getCommentId(),
-                                       "user_id" => $ref_comment->getUserId(),
-                                       "user_name" => "anonymous",
-                                       "user_portrait_url" => "",
-                                       "liked" => $ref_comment->getLiked(),
-                                       "device_liked" => $ref_comment->getDeviceLiked() || false,
-                                       "comment" => $ref_comment->getCommentDetail(),
-                                       "time" => $ref_comment->getTimeStamp(),
-                                       );
-                if ($cell["reply"]["liked"] == null) {
-                    $cell["reply"]["liked"] = 0;
-                }
-                
-                $ref_user = User::getBySign($ref_comment->getUserId());
-                
-                if ($ref_user) {
-                    $cell["reply"]["user_name"] = $ref_user->name;
-                    $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
-                }
-            }
-
-            $ret []= $cell;
+            $ret []= self::renderComment($comment);
         }
-
         return $ret;
     }
 
@@ -125,5 +78,55 @@ class Comment{
         }
 
         return $ret;
+    }
+
+    public static function renderComment($comment){
+        $cell = array("comment" => $comment->getCommentDetail(),
+                      "id" => $comment->getCommentId(),
+                      "user_id" => $comment->getUserId(),
+                      "user_name" => "anonymous",
+                      "user_portrait_url" => "",
+                      "device_liked" => $comment->getDeviceLiked() || false,
+                      "liked" => $comment->getLiked(),
+                      "time" => $comment->getTimeStamp(),
+                      "reply" => new stdClass(),
+                      );
+            
+        if ($cell["liked"] == null) {
+            $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
+        }
+            
+        $user_model = User::getBySign($comment->getUserId());
+        if ($user_model) {
+            $cell["user_name"] = $user_model->name;
+            $cell["user_portrait_url"] = $user_model->portrait_url;
+        }
+        
+        $ref_comments = $comment->getRefComments();
+        if (count($ref_comments) > 0) {
+            $ref_comment = $ref_comments[0];
+            $cell["reply"] = array(
+                                   "id" => $ref_comment->getCommentId(),
+                                   "user_id" => $ref_comment->getUserId(),
+                                   "user_name" => "anonymous",
+                                   "user_portrait_url" => "",
+                                   "liked" => $ref_comment->getLiked(),
+                                   "device_liked" => $ref_comment->getDeviceLiked() || false,
+                                   "comment" => $ref_comment->getCommentDetail(),
+                                   "time" => $ref_comment->getTimeStamp(),
+                                   );
+            if ($cell["reply"]["liked"] == null) {
+                $cell["reply"]["liked"] = 0;
+                }
+            
+            $ref_user = User::getBySign($ref_comment->getUserId());
+            
+            if ($ref_user) {
+                $cell["reply"]["user_name"] = $ref_user->name;
+                $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
+            }
+        }
+        
+        return $cell;
     }
 }
