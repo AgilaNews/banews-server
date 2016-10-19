@@ -13,25 +13,14 @@ class NotificationController extends BaseController {
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
         }
-
-        return $this->getNotifications();
-    }
-
-    private function getNotifications(){
-        if (!$this->userSign) {
-            throw new HttpException(ERR_NOT_AUTH, "usersign not set");
-        }
-        $user_model = User::getBySign($this->userSign);
-        if (!$user_model) {
-            throw new HttpException(ERR_USER_NON_EXISTS,
-                                    "user non exists");
-        }
+        $this->check_user_and_device();
+        
         $last_id = $this->get_request_param("last_id", "int", false, 0);
         $length = $this->get_request_param("pn", "int", false, 20);
         
         $req = new iface\GetNotificationRequest();
 
-        $req->setProduct($this->config->comment->product_key);
+        $req->setProductId($this->config->comment->product_key);
         $req->setUserId($this->userSign);
         $req->setLastId($last_id);
         $req->setLength($length);
@@ -54,6 +43,7 @@ class NotificationController extends BaseController {
 
         foreach ($resp->getNotifications() as $notify) {
             $cell = Comment::renderComment($notify->getComment());
+            $cell["notify_id"] = $notify->getNotificationId();
             $cell["status"] = $notify->getStatus();
             if ($cell["status"] == null) {
                 $cell["status"] = 0;
@@ -61,6 +51,56 @@ class NotificationController extends BaseController {
             $ret []= $cell;
         }
         
+
+        $this->setJsonResponse($ret);
+        return $this->response;
+    }
+
+    public function RelatedAction(){
+        if (!$this->request->isGet()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+        $this->check_user_and_device();
+
+        $notify_id = $this->get_request_param("id", "int", true);
+        $last_id = $this->get_request_param("last_id", "int", false, 0);
+        $pn = $this->get_request_param("pn", "int", false, 0);
+
+        $comment_service = $this->di->get('comment');
+        $req = new iface\GetRelatedCommentOfNotificationRequest();
+        
+        $req->setProductId($this->config->comment->product_key);
+        $req->setDeviceId($this->deviceId);
+        $req->setLastId($last_id);
+        $req->setUserId($this->userSign);
+        $req->setNotificationId($notify_id);
+        
+        list($resp, $status) = $comment_service->GetRelatedCommentOfNotification($req)->wait();
+                if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    $status->details);
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    $s->getErrorMsg()
+                                    );
+        }
+
+        $sign = $resp->getDocId();
+        $news_model = News::getBySign($sign);
+
+        $render = new BaseListRender($this);
+        $news_cell = $render->render(array($sign => $news_model))[0];
+        $ret = array(
+                     "related_news" => $news_cell,
+                     "comments" => array(),
+                     );
+
+        foreach ($resp->getComments() as $comment) {
+            $ret["comments"] []= Comment::renderComment($comment);
+        }
 
         $this->setJsonResponse($ret);
         return $this->response;

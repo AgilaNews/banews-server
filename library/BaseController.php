@@ -88,6 +88,21 @@ class BaseController extends Controller{
         }
     }
 
+    public function check_user_and_device(){
+        if (!$this->userSign) {
+            throw new HttpException(ERR_NOT_AUTH, "usersign not set");
+        }
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device-id not found");
+        }
+       
+        $user_model = User::getBySign($this->userSign);
+        if (!$user_model) {
+            throw new HttpException(ERR_USER_NON_EXISTS,
+                                    "user non exists");
+        }
+    }
+
     public function __destruct() {
         $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s]",
                                       $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
