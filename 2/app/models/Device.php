@@ -22,7 +22,7 @@ class Device extends BaseModel {
     }
 
     public static function getByUserId($uid){
-        $device = $Device::findFirst(array(
+        $device = Device::findFirst(array(
                                            "conditions" => "user_id = ?1",
                                            "bind" => array("1" => $uid ),
                                            ));
@@ -30,7 +30,7 @@ class Device extends BaseModel {
     }
 
     public static function getByDeviceId($device_id){
-        $device = $Device::findFirst(array(
+        $device = Device::findFirst(array(
                                            "conditions" => "device_id = ?1",
                                            "bind" => array("1" => $device_id ),
                                            ));
