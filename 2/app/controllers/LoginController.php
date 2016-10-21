@@ -52,14 +52,23 @@ class LoginController extends BaseController {
 
         $device = Device::getByDeviceId($this->deviceId);
         if ($device) {
-            $device->userId = $user->uid;
-            $ret = $device->save();
-            if ($ret === false) {
-                $this->logger->warning("[DEVICE_SAVE_ERR][NEED_CARE:yes][err: " . $device->getMessages()[0]);
-                throw new HttpException(ERR_INTERNAL_DB,
-                                        "save device info error");
-            }
+            $device->userId = $user->sign;
+        } else {
+            //create new deivce
+            $device = new Device();
+            $device->os = $this->os;
+            $device->os_version = $this->os_version;
+            $device->user_id = $user->sign;
+            $device->client_version = $this->client_version;
+            $device->device_id = $this->device_id;
         }
+        $ret = $device->save();
+        if ($ret === false) {
+            $this->logger->warning("[DEVICE_SAVE_ERR][NEED_CARE:yes][err: " . $device->getMessages()[0]);
+            throw new HttpException(ERR_INTERNAL_DB,
+                                    "save device info error");
+        }
+
 
         $this->logger->info(sprintf("[Login][source:%s][uid:%s][id:%s][gender:%d][email:%s]", 
                             $source_name, $uid, $user->id, $user->gender, $user->email));
