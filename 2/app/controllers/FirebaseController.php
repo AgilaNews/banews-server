@@ -15,10 +15,11 @@ class FirebaseController extends BaseController {
         }
 
         $device = Device::getByDeviceId($this->deviceId);
+
         if (!$device) {
             $device = new Device();
         }
-                
+        
         $device->token = $this->get_or_fail($req, "token", "string");
         $device->os = $this->get_or_fail($req, "os", "string");
         $device->os_version = $this->get_or_fail($req, "os_version", "string");

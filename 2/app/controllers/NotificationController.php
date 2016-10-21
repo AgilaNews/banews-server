@@ -64,7 +64,7 @@ class NotificationController extends BaseController {
 
         $notify_id = $this->get_request_param("id", "int", true);
         $last_id = $this->get_request_param("last_id", "int", false, 0);
-        $pn = $this->get_request_param("pn", "int", false, 0);
+        $pn = $this->get_request_param("pn", "int", false, 20);
 
         $comment_service = $this->di->get('comment');
         $req = new iface\GetRelatedCommentOfNotificationRequest();
@@ -73,6 +73,7 @@ class NotificationController extends BaseController {
         $req->setDeviceId($this->deviceId);
         $req->setLastId($last_id);
         $req->setUserId($this->userSign);
+        $req->setLength($pn);
         $req->setNotificationId($notify_id);
         
         list($resp, $status) = $comment_service->GetRelatedCommentOfNotification($req)->wait();
