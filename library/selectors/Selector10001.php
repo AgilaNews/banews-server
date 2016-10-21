@@ -86,7 +86,6 @@ class Selector10001 extends BaseNewsSelector{
     public function select($prefer) {
         $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
         $selected_news_list = $this->sampling($required, $prefer); 
-        $selected_news_list []= "MBfj0txvyfw=";
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
