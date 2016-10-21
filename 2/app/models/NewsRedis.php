@@ -114,38 +114,6 @@ class NewsRedis {
         return $news_lst;
     }
 
-    public function registeNewDevice($device_id, $token, $client_version, $os = "", $os_version = "", $vendor = "", $imsi = ""){
-        $arr = array(
-                     "device_id" => $device_id,
-                     "token" => $token,
-                     "client_version" => $client_version,
-                     "vendor" => $vendor,
-                     "imsi" => $imsi,
-                     "os" => $os,
-                     "os_version"=> $os_version,
-                     );
-
-        $ret = $this->_redis->hget(DEVICEMAP_DEVICE_KEY, $device_id);
-        if ($ret) {
-            $obj = json_decode($ret, true);
-            if ($obj) {
-                //remove older one
-                $this->_redis->multi();
-                $this->_redis->hdel(DEVICEMAP_DEVICE_KEY, $device_id);
-                $this->_redis->hdel(DEVICEMAP_TOKEN_KEY, $obj["token"]);
-                $this->_redis->exec();
-            } else {
-                $this->_redis->hdel(DEVICEMAP_DEVICE_KEY);
-            }
-        }
-            
-        $saved = json_encode($arr, true);
-        $this->_redis->multi();
-        $this->_redis->hset("PUSH_TOKEN_", $token, $saved);
-        $this->_redis->hset("PUSH_DEVICE_ID_", $device_id, $saved);
-        $ret = $this->_redis->exec();
-    }
-
     public function getChannelTopPopularNews($channelId) {
         $retLst = $this->_redis->lRange('BA_POPULAR_NEWS_' . $channelId, 0, -1);
         if (!$retLst) {
