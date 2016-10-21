@@ -5,7 +5,9 @@ class FirebaseController extends BaseController {
         if (!$this->request->isPost()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
         }
-        $this->check_user_and_device();
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device-id not found");
+        }
         
         $req = $this->request->getJsonRawBody(true);
         if (null === $req) {
