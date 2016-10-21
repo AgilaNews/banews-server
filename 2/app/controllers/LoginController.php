@@ -52,7 +52,7 @@ class LoginController extends BaseController {
 
         $device = Device::getByDeviceId($this->deviceId);
         if ($device) {
-            $device->userId = $user->sign;
+            $device->user_id = $user->sign;
         } else {
             //create new deivce
             $device = new Device();
