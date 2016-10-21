@@ -22,15 +22,15 @@ class FirebaseController extends BaseController {
         $device->token = $this->get_or_fail($req, "token", "string");
         $device->os = $this->get_or_fail($req, "os", "string");
         $device->os_version = $this->get_or_fail($req, "os_version", "string");
-        $device->vendor = $this->get_or_fail($req, "vendor", "string");
+        $device->vendor = $this->get_or_default($req, "vendor", "string", "");
         $device->imsi = $this->get_or_default($req, "imsi", "string", "");
-        $device->user_id = $this->userSign;
+        $device->user_id = $this->userSign || "";
         $device->device_id = $this->deviceId;
         $device->client_version = $this->client_version;
 
         $ret = $device->save();
         if ($ret === false) {
-            $this->logger->warning("[DEVICE_SAVE_ERR][NEED_CARE:yes][err: " . $user->getMessages()[0]);
+            $this->logger->warning("[DEVICE_SAVE_ERR][NEED_CARE:yes][err: " . $device->getMessages()[0]);
             throw new HttpException(ERR_INTERNAL_DB,
                                     "save device info error");
         }
