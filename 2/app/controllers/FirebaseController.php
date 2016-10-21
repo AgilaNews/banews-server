@@ -26,6 +26,7 @@ class FirebaseController extends BaseController {
         $device->imsi = $this->get_or_default($req, "imsi", "string", "");
         $device->user_id = $this->userSign;
         $device->device_id = $this->deviceId;
+        $device->client_version = $this->client_version;
 
         $ret = $device->save();
         if ($ret === false) {
