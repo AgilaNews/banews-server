@@ -14,7 +14,10 @@ class FirebaseController extends BaseController {
             throw new HttpException(ERR_BODY, "body format error");
         }
 
-        $device = new Device();
+        $device = Device::getByDeviceId($this->deviceId);
+        if (!$device) {
+            $device = new Device();
+        }
                 
         $device->token = $this->get_or_fail($req, "token", "string");
         $device->os = $this->get_or_fail($req, "os", "string");

@@ -50,6 +50,12 @@ class LoginController extends BaseController {
             }
         }
 
+        $device = Device::getByDeviceId($this->deviceId);
+        if ($device) {
+            $device->userId = $user->uid;
+            $device->save();
+        }
+
         $this->logger->info(sprintf("[Login][source:%s][uid:%s][id:%s][gender:%d][email:%s]", 
                             $source_name, $uid, $user->id, $user->gender, $user->email));
 
