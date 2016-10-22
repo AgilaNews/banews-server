@@ -41,6 +41,7 @@ class LoginController extends BaseController {
             $uploader = $this->di->get("ufileuploader");
             $user->portrait_url = $uploader->put("userpotraits/" . $user->sign, $user->portrait_srcurl);
             if (!$user->portrait_url) {
+                $this->logger->info("upload portrait url error");
                 $user->portrait_url = $user->portrait_srcurl;
             } else {
                 $user->portrait_url = IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign;
