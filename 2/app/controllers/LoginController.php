@@ -44,7 +44,7 @@ class LoginController extends BaseController {
                 $this->logger->info("upload portrait url error");
                 $user->portrait_url = $user->portrait_srcurl;
             } else {
-                $user->portrait_url = IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign;
+                $user->portrait_url = "http://" . IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign;
             }
 
             $user->email = $this->get_or_default($req, "email", "string", "");
