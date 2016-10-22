@@ -27,6 +27,7 @@ class LoginController extends BaseController {
         $source_name = $this->get_or_fail($req, "source", "string");
         $source = $this->get_or_fail(User::SOURCE_MAP, $source_name, "int");
         $user = User::getBySourceAndId($source, $uid);
+        $portrait = $this->get_or_default($req, "portrait", "string", "");
 
         if (!$user) {
             $user = new User();
@@ -35,8 +36,8 @@ class LoginController extends BaseController {
             $user->sign = $this->sign_user($uid, $source);
             $user->name = $this->get_or_fail($req, "name", "string");
             $user->gender = $this->get_or_default($req, "gender", "int", 0);
-            $user->portrait_srcurl = $this->get_or_default($req, "portrait", "string", "");
-            $user->portrait_url = $user->portrait_srcurl;
+            $user->portrait_srcurl = $portrait;
+            $user->portrait_url =$portrait;
             $user->email = $this->get_or_default($req, "email", "string", "");
 
             $user->create_time = $user->update_time = time();
@@ -48,7 +49,8 @@ class LoginController extends BaseController {
                     "save user info error");
             }
         }
-        if ($user->portrait_url == $user->portrait_srcurl) {
+        
+        if ($portrait != $user->portrait_srcurl || $user->portrait_url == $user->portrait_srcurl) {
             $uploader = $this->di->get("ufileuploader");
             $user->portrait_url = $uploader->put("userpotraits/" . $user->sign, $user->portrait_srcurl);
             if (!$user->portrait_url) {
