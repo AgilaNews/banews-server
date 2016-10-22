@@ -66,5 +66,12 @@ $settings = array (
                         "mons" => "https://" . SERVER_NAME . "/v%d",
                         "referrers" => "https://" . SERVER_NAME . "/referrer",
                         ),
+   "ufile" => array(
+                        "public_key" => "UUztwD49TCzQ39diGb2T4a/0uYMwE6/PWII6fWwtuCiDQRQBfslLNg==",
+                        "private_key" => "ef1716513ea5eb553737d08ce056e30ed9510d72",
+                        "bucket" => "agilanews",
+                        "proxy" => ".internal-hk-01.ufileos.com",
+                        "suffix" => ".hk.ufileos.com",
+                   ),
     'elasticsearch' => 'http://10.8.18.130:9200',
 );

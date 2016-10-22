@@ -36,8 +36,11 @@ class LoginController extends BaseController {
             $user->name = $this->get_or_fail($req, "name", "string");
             $user->gender = $this->get_or_default($req, "gender", "int", 0);
             $user->portrait_srcurl = $this->get_or_default($req, "portrait", "string", "");
-            //TODO change this
-            $user->portrait_url = $user->portrait_srcurl;
+            $uploader = $this->di->get("ufileuploader");
+            $user->portrait_url = $uploader->put("userpotraits/" . $user->sign, file_get_contents($user->portrait_srcurl));
+            if (!$user->portrait_url) {
+                $user->portrait_url = $user->portrait_srcurl;
+            }
             $user->email = $this->get_or_default($req, "email", "string", "");
 
             $user->create_time = $user->update_time = time();
