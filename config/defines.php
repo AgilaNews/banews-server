@@ -2,6 +2,7 @@
 define('BUILD_MAIN', 1);
 define('BUILD_ACCESSORY', 2);
 
+define('RICH_COMMENT_FEATURE', "1.2.2");
 define('VIDEO_NEWS_FEATURE', "1.2.0");
 define('LARGE_IMG_FEATURE', "1.1.3");
 define('FIXTOP_NBA_FEATURE', "1.2.0");

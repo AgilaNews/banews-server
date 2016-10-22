@@ -42,27 +42,31 @@ class UserController extends BaseController {
         $hot_length = $this->get_request_param("hot_pn", "int", false, 10);
         $length = $this->get_request_param("pn", "int", false, 20);
 
-        if ($length > 0) {
-            $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
-        } else {
-            $ret["new"] = 0;
-        }
+        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+            if ($length > 0) {
+                $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
+            } else {
+                $ret["new"] = 0;
+            }
     
-        $d = array();
-        foreach ($ret["new"] as $idx => $cell) {
-           $d[$cell["comment_id"]] = true; 
-        }
+            $d = array();
+            foreach ($ret["new"] as $idx => $cell) {
+                $d[$cell["comment_id"]] = true; 
+            }
         
-        if ($hot_length > 0) {
-            $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $hot_length, "hot", $d);
+            if ($hot_length > 0) {
+                $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $hot_length, "hot", $d);
+            } else {
+                $ret["hot"] = array();
+            }
+            $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][hot:%d][new:%d]", $newsSign,
+                                        $last_id, $length, count($ret["hot"]), count($ret["new"])));
         } else {
-            $ret["hot"] = array();
+            $ret = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
+            $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][new:%d]", $newsSign,
+                                        $last_id, $length, count($ret)));
         }
 
-        $this->removeSameCommentFromHot($new, $hot);
-
-        $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][hot:%d][new:%d]", $newsSign,
-                                    $last_id, $length, count($ret["hot"]), count($ret["new"])));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -115,6 +119,11 @@ class UserController extends BaseController {
                                     "add comment error: " . $s->getErrorMsg()
                                     );
         }
+        $this->logEvent(EVENT_NEWS_COMMENT, array(
+                                                  "news_id" => $newsSign,
+                                                  "ref_id" => $ref_id,
+                                                  "anonymous" => $anonymous,
+                                                  ));
 
         $this->setJsonResponse(array(
                                  "message" => "ok",

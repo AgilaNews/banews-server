@@ -65,10 +65,14 @@ class CommentController extends BaseController {
                                     );
         }
 
-        $currnetLiked = $resp->getCurrentLiked();
+        $currentLiked = $resp->getCurrentLiked();
+
+        $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
+                                                       "comment_id" => $comment_id,
+                                                       ));
         $this->setJsonResponse(array(
                                     "message" => "ok",
-                                    "liked" => $currnetLiked,
+                                    "liked" => $currentLiked,
                                     ));
 
         return $this->response;
