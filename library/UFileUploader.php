@@ -23,7 +23,6 @@ class UFileUploader {
         
         list($data, $err) = UCloud_PutFile($this->bucket, $name, $file);
         if ($err) {
-            DI::getDefault()->get('logger')->warn("upload file error:" . $err);
             return null;
         }
 
