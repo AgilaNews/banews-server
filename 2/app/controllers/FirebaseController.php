@@ -36,7 +36,7 @@ class FirebaseController extends BaseController {
                                     "save device info error");
         }
 
-        $this->logger->info(sprintf("[REG][token:%s]", $token));
+        $this->logger->info(sprintf("[REG][token:%s]", $device->token));
         $this->setJsonResponse(array(
                                      "message"  => "ok",
                                      ));

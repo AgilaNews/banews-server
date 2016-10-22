@@ -66,6 +66,11 @@ class NotificationController extends BaseController {
         $last_id = $this->get_request_param("last_id", "int", false, 0);
         $pn = $this->get_request_param("pn", "int", false, 20);
 
+        if ($last_id != 0) {
+            $this->setJsonResponse(array());
+            return $this->response;
+        }
+        
         $comment_service = $this->di->get('comment');
         $req = new iface\GetRelatedCommentOfNotificationRequest();
         
@@ -75,7 +80,7 @@ class NotificationController extends BaseController {
         $req->setUserId($this->userSign);
         $req->setLength($pn);
         $req->setNotificationId($notify_id);
-        
+
         list($resp, $status) = $comment_service->GetRelatedCommentOfNotification($req)->wait();
                 if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
