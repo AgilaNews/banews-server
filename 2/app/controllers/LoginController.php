@@ -39,12 +39,12 @@ class LoginController extends BaseController {
             $user->portrait_srcurl = $portrait;
             
             $uploader = $this->di->get("ufileuploader");
-            $user->portrait_url = $uploader->put("userpotraits/" . $user->sign, $user->portrait_srcurl);
+            $user->portrait_url = $uploader->put("userpotraits/" . $user->sign . ".png", $user->portrait_srcurl);
             if (!$user->portrait_url) {
                 $this->logger->info("upload portrait url error");
                 $user->portrait_url = $user->portrait_srcurl;
             } else {
-                $user->portrait_url = "http://" . IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign;
+                $user->portrait_url = "http://" . IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign . ".png";
             }
 
             $user->email = $this->get_or_default($req, "email", "string", "");
