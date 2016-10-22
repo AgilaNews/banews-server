@@ -1,4 +1,6 @@
 <?php
+use Phalcon\DI;
+
 class UFileUploader {
     public function __construct($ak, $sk, $bucket, $proxy, $suffix) {
         require_once("ucloud/conf.php");
@@ -21,7 +23,8 @@ class UFileUploader {
         
         list($data, $err) = UCloud_MultipartForm($this->bucket, $name, $file);
         if ($err) {
-            throw new HttpException(ERR_INTERNAL_DB, "upload file error: %s" . $err->ErrMsg);
+            DI::getDefault()->get('logger')->warn("upload file error:" . $err);
+            return null;
         }
 
         return sprintf("http://%s%s/%s", $this->bucket, $this->suffix, $name);
