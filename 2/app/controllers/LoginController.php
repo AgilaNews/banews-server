@@ -38,6 +38,7 @@ class LoginController extends BaseController {
             $user->portrait_srcurl = $this->get_or_default($req, "portrait", "string", "");
             $uploader = $this->di->get("ufileuploader");
             $user->portrait_url = $uploader->put("userpotraits/" . $user->sign, file_get_contents($user->portrait_srcurl));
+            throw new Exception(ERR_INTERNAL_DB, "hehe");
             if (!$user->portrait_url) {
                 $user->portrait_url = $user->portrait_srcurl;
             }
