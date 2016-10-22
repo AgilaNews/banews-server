@@ -15,16 +15,15 @@ function UCloud_PutFile($bucket, $key, $file)
         return array(null, $err);
     }
 
-    $f = @fopen($file, "r");
-    if (!$f) return array(null, new UCloud_Error(-1, -1, "open $file error"));
+    $content = file_get_contents($file);
+    if (!$content) return array(null, new UCloud_Error(-1, -1, "open $file error"));
 
     global $UCLOUD_PROXY_SUFFIX;
     $host = $bucket . $UCLOUD_PROXY_SUFFIX;
     $path = $key;
-    $content  = @fread($f, filesize($file));
+    
     list($mimetype, $err) = GetFileMimeType($file);
     if ($err) {
-        fclose($f);
         return array("", $err);
     }
     $req = new HTTP_Request('PUT', array('host'=>$host, 'path'=>$path), $content, $bucket, $key, $action_type);
