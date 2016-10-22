@@ -102,9 +102,8 @@ class Comment{
             $cell["user_portrait_url"] = $user_model->portrait_url;
         }
         
-        $ref_comments = $comment->getRefComments();
-        if (count($ref_comments) > 0) {
-            $ref_comment = $ref_comments[0];
+        $ref_comment = $comment->getRefComment();
+        if ($ref_comment) {
             $cell["reply"] = array(
                                    "id" => $ref_comment->getCommentId(),
                                    "user_id" => $ref_comment->getUserId(),
