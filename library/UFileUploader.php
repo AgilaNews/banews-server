@@ -21,7 +21,7 @@ class UFileUploader {
         
         list($data, $err) = UCloud_MultipartForm($this->bucket, $name, $file);
         if ($err) {
-            throw new HttpException(ERR_INTERNAL, "upload file error: %s" . $err->ErrMsg);
+            throw new HttpException(ERR_INTERNAL_DB, "upload file error: %s" . $err->ErrMsg);
         }
 
         return sprintf("http://%s%s/%s", $this->bucket, $this->suffix, $name);
