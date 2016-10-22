@@ -21,7 +21,7 @@ class UFileUploader {
         require_once("ucloud/http.php");
         require_once("ucloud/proxy.php");
         
-        list($data, $err) = UCloud_MultipartForm($this->bucket, $name, $file);
+        list($data, $err) = UCloud_PutFile($this->bucket, $name, $file);
         if ($err) {
             DI::getDefault()->get('logger')->warn("upload file error:" . $err);
             return null;
