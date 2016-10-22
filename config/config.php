@@ -55,16 +55,11 @@ $settings = array (
                                         ),
                       ),
     'entries' => array (
-                        "home" => NET_SCHEMA . "://" . SERVER_NAME . "/v%d",
-                        "log" => NET_SCHEMA . "://" . LOG_SERVER_NAME . "/v%d",
-                        "mon" => NET_SCHEMA . "://" .  MON_SERVER_NAME . "/v%d",
-                        "h5" => "http://" . H5_SERVER_NAME . "/news?news_id=",
-                        "referrer" => NET_SCHEMA . "://" . SERVER_NAME . "/referrer",
-
-                        "homes" => "https://" . SERVER_NAME . "/v%d",
-                        "logs" => "https://" . SERVER_NAME . "/v%d",
-                        "mons" => "https://" . SERVER_NAME . "/v%d",
-                        "referrers" => "https://" . SERVER_NAME . "/referrer",
+                        "home" => "http://" . SERVER_NAME . "/v%d",
+                        "log" =>  "http://" . LOG_SERVER_NAME . "/v%d",
+                        "mon" =>  "http://" .  MON_SERVER_NAME . "/v%d",
+                        "h5" =>   "http://" . H5_SERVER_NAME . "/news?news_id=",
+                        "referrer" => "http://" . SERVER_NAME . "/referrer",
                         ),
    "ufile" => array(
                         "public_key" => "UUztwD49TCzQ39diGb2T4a/0uYMwE6/PWII6fWwtuCiDQRQBfslLNg==",

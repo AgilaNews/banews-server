@@ -36,12 +36,7 @@ class LoginController extends BaseController {
             $user->name = $this->get_or_fail($req, "name", "string");
             $user->gender = $this->get_or_default($req, "gender", "int", 0);
             $user->portrait_srcurl = $this->get_or_default($req, "portrait", "string", "");
-            $uploader = $this->di->get("ufileuploader");
-            $user->portrait_url = $uploader->put("userpotraits/" . $user->sign, file_get_contents($user->portrait_srcurl));
-            throw new Exception(ERR_INTERNAL_DB, "hehe");
-            if (!$user->portrait_url) {
-                $user->portrait_url = $user->portrait_srcurl;
-            }
+            $user->portrait_url = $user->portrait_srcurl;
             $user->email = $this->get_or_default($req, "email", "string", "");
 
             $user->create_time = $user->update_time = time();
@@ -53,7 +48,16 @@ class LoginController extends BaseController {
                     "save user info error");
             }
         }
-
+        if ($user->portrait_url == $user->portrait_srcurl) {
+            $uploader = $this->di->get("ufileuploader");
+            $user->portrait_url = $uploader->put("userpotraits/" . $user->sign, $user->portrait_srcurl);
+            if (!$user->portrait_url) {
+                $user->portrait_url = $user->portrait_srcurl;
+            } else {
+                $user->portrait_url = IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign;
+            }
+        }
+            
         $device = Device::getByDeviceId($this->deviceId);
         if ($device) {
             $device->user_id = $user->sign;
