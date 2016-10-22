@@ -52,7 +52,7 @@ class NewsController extends BaseController {
 
         if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
             $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
-            $ret["comments"] => array(
+            $ret["comments"] = array(
                                       "new" => $topNewComment,
                                       "hot" => $topHotComment,
                                       );
