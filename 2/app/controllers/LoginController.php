@@ -44,8 +44,8 @@ class LoginController extends BaseController {
                 $user->portrait_url = $user->portrait_srcurl;
             } else {
                 $user->portrait_url = IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign;
-
             }
+
             $user->email = $this->get_or_default($req, "email", "string", "");
 
             $user->create_time = $user->update_time = time();
