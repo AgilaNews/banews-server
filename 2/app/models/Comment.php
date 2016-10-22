@@ -4,7 +4,7 @@ use Phalcon\DI;
 define('DEFAULT_HOT_LIKED_COUNT', 3);
 
 class Comment{
-    public static function getCommentByFilter($deviceId, $newsSign, $last_id, $length, $filter) {
+    public static function getCommentByFilter($deviceId, $newsSign, $last_id, $length, $filter, $dup_filter = array()) {
         $di = DI::getDefault();
         $config = $di->get("config");
         $comment_service = $di->get('comment');
@@ -42,7 +42,9 @@ class Comment{
         $ret = array();
 
         foreach ($comments as $comment) {
-            $ret []= self::renderComment($comment);
+            if (!in_array($comment->getCommentId(), $dup_filter)) { 
+                $ret []= self::renderComment($comment);
+            }
         }
         return $ret;
     }

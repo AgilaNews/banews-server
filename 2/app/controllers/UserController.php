@@ -47,12 +47,19 @@ class UserController extends BaseController {
         } else {
             $ret["new"] = 0;
         }
+    
+        $d = array();
+        foreach ($ret["new"] as $idx => $cell) {
+           $d[$cell["comment_id"]] = true; 
+        }
         
         if ($hot_length > 0) {
-            $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $hot_length, "hot");
+            $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $hot_length, "hot", $d);
         } else {
             $ret["hot"] = array();
         }
+
+        $this->removeSameCommentFromHot($new, $hot);
 
         $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][hot:%d][new:%d]", $newsSign,
                                     $last_id, $length, count($ret["hot"]), count($ret["new"])));
