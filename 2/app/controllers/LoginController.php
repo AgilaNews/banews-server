@@ -69,7 +69,7 @@ class LoginController extends BaseController {
             $device->os_version = $this->os_version;
             $device->user_id = $user->sign;
             $device->client_version = $this->client_version;
-            $device->device_id = $this->device_id;
+            $device->device_id = $this->deviceId;
         }
         $ret = $device->save();
         if ($ret === false) {
