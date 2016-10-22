@@ -8,6 +8,7 @@ class Comment{
         $di = DI::getDefault();
         $config = $di->get("config");
         $comment_service = $di->get('comment');
+        $logger = $di->get('logger');
 
         $req = new iface\GetCommentsOfDocRequest();
         $req->setProduct($config->comment->product_key);
@@ -27,15 +28,14 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
         if ($status->code != 0) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "get comment error:" . $status->details);
+            $logger->warn("get comment error:" . $status->details);
+            return array();
         }
         
         $s = $resp->getResponse();
         if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "add comment error: " . $s->getErrorMsg()
-                                    );
+            $logger->warn("get comment error:" . $s->getErrorMsg());
+            return array();
         }
 
         $comments = $resp->getCommentsList();
@@ -53,6 +53,7 @@ class Comment{
         $di = DI::getDefault();
         $config = $di->get("config");
         $comment_service = $di->get('comment');
+        $logger = $di->get("logger");
 
 
         $req = new iface\GetCommentsCountRequest();
@@ -61,15 +62,14 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
         if ($status->code != 0) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "get comment error:" . $status->details);
+            $logger->warn("get comment count error:" . $status->details);
+            return 0;
         }
         
         $s = $resp->getResponse();
         if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "add comment error: " . $s->getErrorMsg()
-                                    );
+            $logger->warn("get comment count error:" . $s->getErrorMsg());
+            return 0;
         }
 
         $ret = array();

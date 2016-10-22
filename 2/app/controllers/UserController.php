@@ -59,6 +59,7 @@ class UserController extends BaseController {
             } else {
                 $ret["hot"] = array();
             }
+            
             $this->logger->info(sprintf("[GetComment][news:%s][last:%d][limit:%d][hot:%d][new:%d]", $newsSign,
                                         $last_id, $length, count($ret["hot"]), count($ret["new"])));
         } else {
