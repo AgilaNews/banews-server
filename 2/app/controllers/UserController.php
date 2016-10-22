@@ -49,13 +49,8 @@ class UserController extends BaseController {
                 $ret["new"] = 0;
             }
     
-            $d = array();
-            foreach ($ret["new"] as $idx => $cell) {
-                $d[$cell["comment_id"]] = true; 
-            }
-        
             if ($hot_length > 0) {
-                $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $hot_length, "hot", $d);
+                $ret["hot"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $hot_length, "hot");
             } else {
                 $ret["hot"] = array();
             }
