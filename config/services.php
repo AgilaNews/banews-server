@@ -62,6 +62,16 @@ $di->set('logger', function() use($config) {
     return $logger;
 });
 
+$di->set('ufileuploader', function() use ($config) {
+        $uploader = new UFileUploader($config->ufile->public_key,
+                                      $config->ufile->private_key,
+                                      $config->ufile->bucket,
+                                      $config->ufile->proxy,
+                                      $config->ufile->suffix);
+        return $uploader;
+});
+
+
 $di->set('eventlogger', function() use ($config) {
     try {
         $el = new EventLogger($config->logger->event->addr, $config->logger->event->category);
