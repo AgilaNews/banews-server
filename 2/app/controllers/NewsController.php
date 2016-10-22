@@ -27,8 +27,6 @@ class NewsController extends BaseController {
         }
 
         $commentCount = Comment::getCount(array($newsSign));
-        $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
-        $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
 
         $cache = $this->di->get("cache");
         $redis = new NewsRedis($cache);
@@ -38,10 +36,6 @@ class NewsController extends BaseController {
         $ret = array(
             "body" => $news_model->json_text,
             "commentCount" => $commentCount[$newsSign],
-            "comments" => array(
-                                "new" => $topNewComment,
-                                "hot" => $topHotComment,
-                                ), 
             "recommend_news" => array(),
             "news_id" => $news_model->url_sign,
             "title" => $news_model->title,
@@ -53,6 +47,18 @@ class NewsController extends BaseController {
             "likedCount" => $news_model->liked,
             "collect_id" => 0, 
         );
+
+        $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
+
+        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+            $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
+            $ret["comments"] => array(
+                                      "new" => $topNewComment,
+                                      "hot" => $topHotComment,
+                                      );
+        } else {
+            $ret["comments"] = $topNewComment;
+        }
 
         $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
         $imgs = NewsImage::getImagesOfNews($newsSign);
