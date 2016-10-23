@@ -27,6 +27,7 @@ class LoginController extends BaseController {
         $source_name = $this->get_or_fail($req, "source", "string");
         $source = $this->get_or_fail(User::SOURCE_MAP, $source_name, "int");
         $user = User::getBySourceAndId($source, $uid);
+        $portrait = $this->get_or_default($req, "portrait", "string", "");
 
         if (!$user) {
             $user = new User();
@@ -35,9 +36,17 @@ class LoginController extends BaseController {
             $user->sign = $this->sign_user($uid, $source);
             $user->name = $this->get_or_fail($req, "name", "string");
             $user->gender = $this->get_or_default($req, "gender", "int", 0);
-            $user->portrait_srcurl = $this->get_or_default($req, "portrait", "string", "");
-            //TODO change this
-            $user->portrait_url = $user->portrait_srcurl;
+            $user->portrait_srcurl = $portrait;
+            
+            $uploader = $this->di->get("ufileuploader");
+            $user->portrait_url = $uploader->put("userpotraits/" . $user->sign . ".png", $user->portrait_srcurl);
+            if (!$user->portrait_url) {
+                $this->logger->info("upload portrait url error");
+                $user->portrait_url = $user->portrait_srcurl;
+            } else {
+                $user->portrait_url = "http://" . IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign . ".png";
+            }
+
             $user->email = $this->get_or_default($req, "email", "string", "");
 
             $user->create_time = $user->update_time = time();
@@ -49,6 +58,26 @@ class LoginController extends BaseController {
                     "save user info error");
             }
         }
+        
+        $device = Device::getByDeviceId($this->deviceId);
+        if ($device) {
+            $device->user_id = $user->sign;
+        } else {
+            //create new deivce
+            $device = new Device();
+            $device->os = $this->os;
+            $device->os_version = $this->os_version;
+            $device->user_id = $user->sign;
+            $device->client_version = $this->client_version;
+            $device->device_id = $this->deviceId;
+        }
+        $ret = $device->save();
+        if ($ret === false) {
+            $this->logger->warning("[DEVICE_SAVE_ERR][NEED_CARE:yes][err: " . $device->getMessages()[0]);
+            throw new HttpException(ERR_INTERNAL_DB,
+                                    "save device info error");
+        }
+
 
         $this->logger->info(sprintf("[Login][source:%s][uid:%s][id:%s][gender:%d][email:%s]", 
                             $source_name, $uid, $user->id, $user->gender, $user->email));

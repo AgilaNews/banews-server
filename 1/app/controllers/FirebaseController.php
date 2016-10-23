@@ -14,22 +14,29 @@ class FirebaseController extends BaseController {
             throw new HttpException(ERR_BODY, "body format error");
         }
 
-        $token = $this->get_or_fail($req, "token", "string");
-        $os = $this->get_or_fail($req, "os", "string");
-        $os_version = $this->get_or_fail($req, "os_version", "string");
-        $vendor = $this->get_or_fail($req, "vendor", "string");
-        $imsi = $this->get_or_default($req, "imsi", "string", "");
+        $device = Device::getByDeviceId($this->deviceId);
+
+        if (!$device) {
+            $device = new Device();
+        }
         
-        $cache = $this->di->get('cache');
-        if (!$cache) {
-            throw new HttpException(ERR_INTERNAL_DB, "get redis error");
+        $device->token = $this->get_or_fail($req, "token", "string");
+        $device->os = $this->get_or_fail($req, "os", "string");
+        $device->os_version = $this->get_or_fail($req, "os_version", "string");
+        $device->vendor = $this->get_or_default($req, "vendor", "string", "");
+        $device->imsi = $this->get_or_default($req, "imsi", "string", "");
+        $device->user_id = $this->userSign || "";
+        $device->device_id = $this->deviceId;
+        $device->client_version = $this->client_version;
+
+        $ret = $device->save();
+        if ($ret === false) {
+            $this->logger->warning("[DEVICE_SAVE_ERR][NEED_CARE:yes][err: " . $device->getMessages()[0]);
+            throw new HttpException(ERR_INTERNAL_DB,
+                                    "save device info error");
         }
 
-        $redis = new NewsRedis($cache);
-        $redis->registeNewDevice($this->deviceId, $token, $this->client_version,
-                                 $os, $os_version, $vendor, $imsi);
-
-        $this->logger->info(sprintf("[REG][token:%s]", $token));
+        $this->logger->info(sprintf("[REG][token:%s]", $device->token));
         $this->setJsonResponse(array(
                                      "message"  => "ok",
                                      ));

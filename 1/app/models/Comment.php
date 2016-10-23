@@ -1,66 +1,131 @@
 <?php
-class Comment extends BaseModel {
-    public $id;
+use Phalcon\DI;
 
-    public $user_sign;
+define('DEFAULT_HOT_LIKED_COUNT', 3);
 
-    public $news_sign;
+class Comment{
+    public static function getCommentByFilter($deviceId, $newsSign, $last_id, $length, $filter) {
+        $di = DI::getDefault();
+        $config = $di->get("config");
+        $comment_service = $di->get('comment');
+        $logger = $di->get('logger');
 
-    public $user_comment;
-
-    public $create_time;
-
-    
-    public static function getAll($news_sign, $last_id, $pn, $prefer) {
-        $crit = array (
-            "limit" => 20,
-        );
+        $req = new iface\GetCommentsOfDocRequest();
+        $req->setProduct($config->comment->product_key);
+        $req->setDocId($newsSign);
+        $req->setLastId($last_id);
+        $req->setDeviceId($deviceId);
+        $req->setLength($length);
         
-        if ($pn) {
-            $crit["limit"] = $pn = $pn >= 20 ? 20 : $pn;
-        }
-        if ($prefer == "later") {
-            $crit["order"] = "id DESC";
-            if ($last_id) {
-                $crit["conditions"] = "news_sign = ?1 AND id < ?2";
-                $crit["bind"] = array(1 => $news_sign, 2=>$last_id);
-            } else {
-                $crit["conditions"] = "news_sign = ?1";
-                $crit["bind"] = array(1 => $news_sign);
-            }
+        if ($filter == "new") {
+            $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::TIME);
+        } else if ($filter == "hot") {
+            $req->setThreshold(DEFAULT_HOT_LIKED_COUNT);
+            $req->setOrder(iface\GetCommentsOfDocRequest\OrderField::LIKED);
         } else {
-            $crit["order"] = "id";
-            if ($last_id) {
-                $crit["conditions"] = "news_sign = ?1 AND id > ?2";
-                $crit["bind"] = array(1 => $news_sign, 2=>$last_id);
-            } else {
-                $crit["conditions"] = "news_sign = ?1";
-                $crit["bind"] = array(1 => $news_sign);
-            }
+            assert(false, "filter is invalid : " . $filter);
         }
         
-        $comments = Comment::Find($crit);
-        return $comments;
+        list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
+        if ($status->code != 0) {
+          //  $logger->warning("get comment error:" . json_encode($status->details, true));
+            return array();
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+        //    $logger->warning("get comment error:" . $s->getErrorMsg());
+            return array();
+        }
+
+        $comments = $resp->getCommentsList();
+        $ret = array();
+
+        foreach ($comments as $comment) {
+            $ret []= self::renderComment($comment);
+        }
+        return $ret;
     }
 
-    
-    public static function getCount($news_sign, $user_sign = null) {
-        $crit = array ();
+    public static function getCount($newsSignList) {
+        $di = DI::getDefault();
+        $config = $di->get("config");
+        $comment_service = $di->get('comment');
+        $logger = $di->get("logger");
 
-        if ($user_sign) {
-            $crit["conditions"] = "news_sign = ?1 AND user_sign = ?2";
-            $crit["bind"] = array(1 => $news_sign, 2 => $user_sign);
-        } else {
-            $crit["conditions"] = "news_sign = ?1";
-            $crit["bind"] = array(1 => $news_sign);
+
+        $req = new iface\GetCommentsCountRequest();
+        $req->setProduct($config->comment->product_key);
+        $req->setDocIds($newsSignList);
+        
+        list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
+        if ($status->code != 0) {
+    //        $logger->warning("get comment count error:" . json_encode($status->details, true));
+            return 0;
+        }
+        
+        $s = $resp->getResponse();
+        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+      //      $logger->warning("get comment count error:" . $s->getErrorMsg());
+            return 0;
         }
 
-        $ret = Comment::count($crit);
+        $ret = array();
+        
+        $count = $resp->getCommentsCountList();
+        foreach ($newsSignList as $idx => $sign) {
+            $ret[$sign] = $count[$idx];
+        }
 
         return $ret;
     }
 
-    public function getSource(){
-        return "tb_comment";
+    public static function renderComment($comment){
+        $cell = array("comment" => $comment->getCommentDetail(),
+                      "id" => $comment->getCommentId(),
+                      "user_id" => $comment->getUserId(),
+                      "user_name" => "anonymous",
+                      "user_portrait_url" => "",
+                      "device_liked" => $comment->getDeviceLiked() || false,
+                      "liked" => $comment->getLiked(),
+                      "time" => $comment->getTimeStamp(),
+                      "reply" => new stdClass(),
+                      );
+            
+        if ($cell["liked"] == null) {
+            $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
+        }
+            
+        $user_model = User::getBySign($comment->getUserId());
+        if ($user_model) {
+            $cell["user_name"] = $user_model->name;
+            $cell["user_portrait_url"] = $user_model->portrait_url;
+        }
+        
+        $ref_comment = $comment->getRefComment();
+        if ($ref_comment) {
+            $cell["reply"] = array(
+                                   "id" => $ref_comment->getCommentId(),
+                                   "user_id" => $ref_comment->getUserId(),
+                                   "user_name" => "anonymous",
+                                   "user_portrait_url" => "",
+                                   "liked" => $ref_comment->getLiked(),
+                                   "device_liked" => $ref_comment->getDeviceLiked() || false,
+                                   "comment" => $ref_comment->getCommentDetail(),
+                                   "time" => $ref_comment->getTimeStamp(),
+                                   );
+            if ($cell["reply"]["liked"] == null) {
+                $cell["reply"]["liked"] = 0;
+                }
+            
+            $ref_user = User::getBySign($ref_comment->getUserId());
+            
+            if ($ref_user) {
+                $cell["reply"]["user_name"] = $ref_user->name;
+                $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
+            }
+        }
+        
+        return $cell;
     }
 }
