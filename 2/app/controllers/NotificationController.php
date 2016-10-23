@@ -29,7 +29,7 @@ class NotificationController extends BaseController {
         list($resp, $status) = $comment_service->GetNotifications($req)->wait();
                 if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
-                                    "get comment error:" . $status->details);
+                                    "get comment error:" . json_encode($status->details, true));
         }
         
         $s = $resp->getResponse();
@@ -84,7 +84,7 @@ class NotificationController extends BaseController {
         list($resp, $status) = $comment_service->GetRelatedCommentOfNotification($req)->wait();
                 if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
-                                    $status->details);
+                                    json_encode($status->details, true));
         }
         
         $s = $resp->getResponse();

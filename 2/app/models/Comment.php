@@ -28,7 +28,7 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
         if ($status->code != 0) {
-            $logger->warning("get comment error:" . $status->details);
+            $logger->warning("get comment error:" . json_encode($status->details, true));
             return array();
         }
         
@@ -60,7 +60,7 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
         if ($status->code != 0) {
-            $logger->warning("get comment count error:" . $status);
+            $logger->warning("get comment count error:" . json_encode($status->details, true));
             return 0;
         }
         

@@ -1,4 +1,3 @@
-
 <?php
 /**
  * @file   User.php
@@ -107,7 +106,7 @@ class UserController extends BaseController {
 
         if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
-                                    "get comment error:" . $status->details);
+                                    "get comment error:" . json_encode($status->details, true));
         }
         
         $s = $resp->getResponse();
