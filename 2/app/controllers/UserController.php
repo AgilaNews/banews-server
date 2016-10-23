@@ -120,12 +120,26 @@ class UserController extends BaseController {
                                                   "ref_id" => $ref_id,
                                                   "anonymous" => $anonymous,
                                                   ));
-
-        $this->setJsonResponse(array(
-                                 "message" => "ok",
-                                 "id" => $resp->getCommentId(),
-                                 "time" => time(),
-                                 ));
+        
+        if (version_compare(RICH_COMMENT_FEATURE, "1.2.2", ">=")) {
+            $this->setJsonResponse(array(
+                                         "message" => "ok",
+                                         "id" => $resp->getCommentId(),
+                                         "time" => time(),
+                                         ));
+        } else {
+            $this->setJsonResponse(array(
+                                         "message" => "ok",
+                                         "comment" => array(
+                                                            "id" => $resp->getCommentId(),
+                                                            "time" => time(),
+                                                            "comment" => $detail,
+                                                            "user_id" => $user_model->sign,
+                                                            "user_name" => $user_model->name,
+                                                            "user_portrait_url" => $user_model->portrait_url,
+                                                            ),
+                                         ));
+        }
             
         
         return $this->response;
