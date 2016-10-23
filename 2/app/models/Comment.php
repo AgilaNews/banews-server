@@ -60,7 +60,7 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
         if ($status->code != 0) {
-            $logger->warning("get comment count error:" . $status->details);
+            $logger->warning("get comment count error:" . $status);
             return 0;
         }
         
