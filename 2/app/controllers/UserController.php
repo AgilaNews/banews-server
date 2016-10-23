@@ -121,7 +121,7 @@ class UserController extends BaseController {
                                                   "anonymous" => $anonymous,
                                                   ));
         
-        if (version_compare(RICH_COMMENT_FEATURE, "1.2.2", ">=")) {
+        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
             $this->setJsonResponse(array(
                                          "message" => "ok",
                                          "id" => $resp->getCommentId(),
