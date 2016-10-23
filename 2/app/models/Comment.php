@@ -28,13 +28,13 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
         if ($status->code != 0) {
-            $logger->warn("get comment error:" . $status->details);
+            $logger->warning("get comment error:" . $status->details);
             return array();
         }
         
         $s = $resp->getResponse();
         if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            $logger->warn("get comment error:" . $s->getErrorMsg());
+            $logger->warning("get comment error:" . $s->getErrorMsg());
             return array();
         }
 
@@ -60,13 +60,13 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
         if ($status->code != 0) {
-            $logger->warn("get comment count error:" . $status->details);
+            $logger->warning("get comment count error:" . $status->details);
             return 0;
         }
         
         $s = $resp->getResponse();
         if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            $logger->warn("get comment count error:" . $s->getErrorMsg());
+            $logger->warning("get comment count error:" . $s->getErrorMsg());
             return 0;
         }
 

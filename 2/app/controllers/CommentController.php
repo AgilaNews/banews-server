@@ -53,23 +53,22 @@ class CommentController extends BaseController {
 
         list($resp, $status) = $comment_service->LikeComment($req)->wait();
 
+        $currentLiked = 0;
         if ($status->code != 0) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    $status->details);
-        }
-        
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    $s->getErrorMsg()
-                                    );
+            $this->logger->warning("communicate to comment server error");
+        } else {
+            $s = $resp->getResponse();
+            if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
+                $this->logger->warning("communicate to comment server error: " . $s->getErrorMsg());
+            } else {
+                $currentLiked = $resp->getCurrentLiked();
+                
+                $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
+                                                               "comment_id" => $comment_id,
+                                                               ));
+            }
         }
 
-        $currentLiked = $resp->getCurrentLiked();
-
-        $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
-                                                       "comment_id" => $comment_id,
-                                                       ));
         $this->setJsonResponse(array(
                                     "message" => "ok",
                                     "liked" => $currentLiked,
