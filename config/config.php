@@ -37,6 +37,11 @@ $settings = array (
                 ),
             ),
         ),
+    'comment' => array(
+        "host" => "10.8.23.37",
+        "port" => "6087",
+        "product_key" => "agilanews",
+    ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/data/logs/banews-server/banews-server.log",
@@ -61,7 +66,7 @@ $settings = array (
                         "h5" =>   "http://" . H5_SERVER_NAME . "/news?news_id=",
                         "referrer" => "http://" . SERVER_NAME . "/referrer",
                         ),
-   "ufile" => array(
+    "ufile" => array(
                         "public_key" => "UUztwD49TCzQ39diGb2T4a/0uYMwE6/PWII6fWwtuCiDQRQBfslLNg==",
                         "private_key" => "ef1716513ea5eb553737d08ce056e30ed9510d72",
                         "bucket" => "agilanews",
