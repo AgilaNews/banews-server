@@ -16,6 +16,9 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_INVALID_METHOD,
                 "read news must be get");
         }
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device-id not found");
+        }
 
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
@@ -23,24 +26,45 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
-        $commentCount = Comment::getCount($newsSign);
-        $topComment = Comment::getAll($newsSign, null, 3, "later");
+        $commentCount = Comment::getCount(array($newsSign));
 
         $cache = $this->di->get("cache");
         $redis = new NewsRedis($cache);
-        $newsRedis = $redis->setDeviceClick(
-                $this->deviceId, $newsSign, time()); 
+        $redis->setDeviceClick(
+                               $this->deviceId, $newsSign, time()); 
 
-        $imgs = NewsImage::getImagesOfNews($newsSign);
-        $imgcell = array();
+        $ret = array(
+            "body" => $news_model->json_text,
+            "commentCount" => $commentCount[$newsSign],
+            "recommend_news" => array(),
+            "news_id" => $news_model->url_sign,
+            "title" => $news_model->title,
+            "source" => $news_model->source_name,
+            "source_url" => $news_model->source_url,
+            "public_time" => $news_model->publish_time,
+            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
+            "channel_id" => $news_model->channel_id,
+            "likedCount" => $news_model->liked,
+            "collect_id" => 0, 
+        );
 
-        if ($this->net == "WIFI") {
-            $quality = IMAGE_HIGH_QUALITY;
-        } else if ($this->net == "2G") {
-            $quality = IMAGE_LOW_QUALITY;
+        $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
+
+        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+            $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
+            $ret["comments"] = array(
+                                      "new" => $topNewComment,
+                                      "hot" => $topHotComment,
+                                      );
         } else {
-            $quality = IMAGE_NORMAL_QUALITY;
+            $ret["comments"] = $topNewComment;
         }
+
+        $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
+        $imgs = NewsImage::getImagesOfNews($newsSign);
+        
+        $videocell = array();
+        $imgcell = array();
 
         foreach ($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
@@ -54,36 +78,36 @@ class NewsController extends BaseController {
                 }
             }
     
-            $ow = $meta["width"];
-            $oh = $meta["height"];
-            $aw = (int) ($this->resolution_w * 11 / 12);
-            $ah = (int) ($aw * $oh / $ow);
+            $c = $this->getImgCell($img->url_sign, $meta);
+            $c["name"] = "<!--IMG" . $img->news_pos_id . "-->";
+            $imgcell[] = $c;
+        }
+        $ret["imgs"] = $imgcell;
 
-            $imgcell[] = array(
-                "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($img->url_sign), $aw, $quality),
-                "width" => $aw,
-                "height" => $ah,
-                "name" => "<!--IMG" . $img->news_pos_id . "-->",
-            );
+        if (version_compare($this->client_version, VIDEO_NEWS_FEATURE, ">=")) {
+            foreach($videos as $video) {
+                if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
+                    continue;
+                }
+                
+                if ($video->cover_origin_url) {
+                    $cover_meta = json_decode($video->cover_meta, true);
+                    if (!$cover_meta || !$cover_meta["width"] || !$cover_meta["height"]) {
+                        continue;
+                    }
+                }
+
+                $c = $this->getImgCell($video->video_url_sign, $cover_meta);
+                $c["video_pattern"] = $c["pattern"] . "|v=1";
+                $c["youtube_id"] = $video->youtube_video_id;
+                $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
+                $videocell []= $c;
+            }
+
+            $ret["youtube_videos"] = $videocell;
         }
 
-        $ret = array(
-            "body" => $news_model->json_text,
-            "commentCount" => $commentCount,
-            "comments" => array(), 
-            "imgs" => $imgcell, 
-            "recommend_news" => array(),
-            "news_id" => $news_model->url_sign,
-            "title" => $news_model->title,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
-            "channel_id" => $news_model->channel_id,
-            "likedCount" => $news_model->liked,
-            "collect_id" => 0, 
-        );
-
+        
         $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->deviceId, $this->userSign, $this->getDI());
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "Recommend" . $news_model->channel_id;
@@ -98,23 +122,16 @@ class NewsController extends BaseController {
             $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
         }
 
-        foreach ($topComment as $comment) {
-            array_push($ret["comments"], $this->serializeComment($comment));
-        }
-
         // ----------------- pseduo like, this feature should be removed later -----------------
-        $pseduoLike = mt_rand(1, 10);
-        if ($pseduoLike == 1) {
+        $pseduoLike = mt_rand(1, 5);
+        if ($pseduoLike == 1 && ($news_model->channel_id == 10004 || $news_model->channel_id == 10006)) {
             $news_model->liked++;
             if (!$news_model->save()){
                 $this->logger->warning(sprintf("save error: %s", join(",",$news_model->getMessages())));
-            } else {
-                $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
             }
+            $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
         }
         // ----------------- end -------TODO remove later---------------------------------------
-
-
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
@@ -142,6 +159,7 @@ class NewsController extends BaseController {
 
         $channel_id = $this->get_request_param("channel_id", "int", true);
         $prefer = $this->get_request_param('dir', "string", false, "later");
+        $dispatch_ids = array();
         if (!($prefer == 'later' || $prefer == 'older')) {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
@@ -155,7 +173,7 @@ class NewsController extends BaseController {
         }
 
         $models = $selector->select($prefer);
-        $dispatch_ids = array();
+        
         foreach ($models as $sign => $model) {
             $dispatch_ids []= $sign;
         }
@@ -201,7 +219,20 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
         }
 
-        $now->liked++;
+        if (!isset($now->content_sign) || $now->content_sign == null || count($now->content_sign) == 0) {
+            $now->content_sign = "";
+        } 
+
+        
+        $originLike = $now->liked;
+        $pseudoLike = mt_rand(1, 10);
+        if ($pseudoLike == 1) {
+            $now->liked += 2;
+            $this->logger->info(sprintf("[pseudo:%d]", $now->liked));
+        } else {
+            $now->liked += 1;
+        }
+
         $ret = $now->save();
         if (!$ret) {
             $this->logger->warning(sprintf("save error: %s", join(",",$now->getMessages())));
@@ -210,7 +241,7 @@ class NewsController extends BaseController {
 
         $ret = array (
             "message" => "ok",
-            "liked" => $now->liked,
+            "liked" => $originLike + 1,
         );
 
         $this->logger->info(sprintf("[Like][liked:%s]", $ret["liked"]));
@@ -220,21 +251,26 @@ class NewsController extends BaseController {
     }
 
 
-   protected function serializeComment($comment){
-        $ret = array (
-                      "id" => $comment->id,
-                      "time" => $comment->create_time,
-                      "comment" => $comment->user_comment,
-                      "user_id" => $comment->user_sign,
-                      "user_name" => "anonymous",
-                      "user_portrait_url" => "",
-                      );
-        
-        $user_model = User::getBySign($comment->user_sign);
-        if ($user_model) {
-            $ret["user_name"] = $user_model->name;
-            $ret["user_portrait_url"] = $user_model->portrait_url;
+   protected function getImgCell($url_sign, $meta) {
+       if ($this->net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
         }
-        return $ret;
-    }
+        
+               
+       $ow = $meta["width"];
+       $oh = $meta["height"];
+       $aw = (int) ($this->resolution_w * 11 / 12);
+       $ah = (int) ($aw * $oh / $ow);
+
+       return array(
+                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, $quality),
+                    "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
+                    "width" => $aw,
+                    "height" => $ah,
+                    );
+   }
 }
