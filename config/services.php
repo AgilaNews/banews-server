@@ -62,6 +62,7 @@ $di->set('logger', function() use($config) {
     return $logger;
 });
 
+/*
 $di->set('ufileuploader', function() use ($config) {
         $uploader = new UFileUploader($config->ufile->public_key,
                                       $config->ufile->private_key,
@@ -70,6 +71,7 @@ $di->set('ufileuploader', function() use ($config) {
                                       $config->ufile->suffix);
         return $uploader;
 });
+*/
 
 
 $di->set('eventlogger', function() use ($config) {

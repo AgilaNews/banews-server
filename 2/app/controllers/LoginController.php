@@ -37,7 +37,7 @@ class LoginController extends BaseController {
             $user->name = $this->get_or_fail($req, "name", "string");
             $user->gender = $this->get_or_default($req, "gender", "int", 0);
             $user->portrait_srcurl = $portrait;
-            
+            /*
             $uploader = $this->di->get("ufileuploader");
             $user->portrait_url = $uploader->put("userpotraits/" . $user->sign . ".png", $user->portrait_srcurl);
             if (!$user->portrait_url) {
@@ -46,7 +46,8 @@ class LoginController extends BaseController {
             } else {
                 $user->portrait_url = "http://" . IMAGE_SERVER_NAME . "/userpotraits/" . $user->sign . ".png";
             }
-
+            */
+            $user->portrait_url = $user->portrait_srcurl;
             $user->email = $this->get_or_default($req, "email", "string", "");
 
             $user->create_time = $user->update_time = time();
