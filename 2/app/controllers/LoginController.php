@@ -29,6 +29,18 @@ class LoginController extends BaseController {
         $user = User::getBySourceAndId($source, $uid);
         $portrait = $this->get_or_default($req, "portrait", "string", "");
 
+        if ($user->portrait_srcurl != $portrait) {
+            $user->portrait_url = $portrait;
+            $user->portrait_srcurl = $portrait;
+
+            $ret = $user->save();
+            if ($ret === false) {
+                $this->logger->warning("[FB_SAVE_ERR][NEED_CARE:yes][err: " . $user->getMessages()[0]);
+                throw new HttpException(ERR_INTERNAL_DB,
+                    "save user info error");
+            }
+        }
+
         if (!$user) {
             $user = new User();
             $user->uid = $uid;
