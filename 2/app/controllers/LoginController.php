@@ -29,7 +29,7 @@ class LoginController extends BaseController {
         $user = User::getBySourceAndId($source, $uid);
         $portrait = $this->get_or_default($req, "portrait", "string", "");
 
-        if ($user->portrait_srcurl != $portrait) {
+        if ($user && $user->portrait_srcurl != $portrait) {
             $user->portrait_url = $portrait;
             $user->portrait_srcurl = $portrait;
 
