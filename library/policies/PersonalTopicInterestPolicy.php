@@ -18,7 +18,11 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
         if ($cache) {
             $wholeTopicLst = $cache->hGetAll(ALG_TOPIC_RATIO_KEY);
             if ($wholeTopicLst) {
-                return $wholeTopicLst;
+                $newWholeTopicLst = array();
+                foreach ($wholeTopicLst as $topicIdx => $ratio) {
+                    $newWholeTopicLst[$topicIdx] = floatval($ratio);
+                }
+                return $newWholeTopicLst;
             }
         }
         return array();
@@ -32,8 +36,12 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
                                                    $device_id));
                 if (count($valLst) == 2) {
                     $userTopicLst = $valLst[0];
+                    $userTopicArr = array();
+                    foreach ($userTopicLst as $curVals) {
+                        $userTopicArr[$curVals[0]] = $curVals[1];
+                    }
                     $clickCnt = $valLst[1];
-                    return $userTopicLst;
+                    return $userTopicArr;
                 }
             } 
         }
@@ -63,6 +71,7 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
 
     protected function getNewsFromTopics($topicIdLst,
             $sentNewsLst) { 
+        $cache = DI::getDefault()->get('cache');
         $now = time();
         $start = ($now - (TOPIC_NEWS_SPAN * ONE_DAY));
         $start = $start - ($start % ONE_DAY);
@@ -70,12 +79,12 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
         $selectedNewsLst = array();
         foreach ($topicIdLst as $topicId) {
             $key = NEWS_TOPIC_QUEUE_PREFIX . $topicId;
-            $curTopicNewsLst =  $this->_redis->zRevRangeByScore(
-                    $key, $end, $start, array("withscores"=>false));
+            $curTopicNewsLst =  $cache->zRevRangeByScore($key, 
+                    $end, $start, array("withscores"=>false));
             shuffle($curTopicNewsLst);
             $curTopicNewsLst = array_slice($curTopicNewsLst, 
                     0, TOPIC_NEWS_CANDIDATE_CNT);
-            $newsWeightLst = $this->_redis->hMGet(
+            $newsWeightLst = $cache->hMGet(
                     ALG_TOPIC_NEWS_SCO_KEY, $curTopicNewsLst);
             arsort($newsWeightLst);
             foreach ($newsWeightLst as $newsId => $weight) {
