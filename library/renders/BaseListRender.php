@@ -38,7 +38,7 @@ class BaseListRender {
                 $cell["commentCount"] = $comment_counts[$sign];
             }
             
-            if ($hot_tags < MAX_HOT_TAG && $models->liked >= HOT_LIKE_THRESHOLD) {
+            if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
                 $cell["tag"] = "Hot";
                 $hot_tags++;
             } else {
