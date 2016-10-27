@@ -263,7 +263,13 @@ class NewsController extends BaseController {
                
        $ow = $meta["width"];
        $oh = $meta["height"];
-       $aw = (int) ($this->resolution_w * 11 / 12);
+
+       if ($this->os == "ios") {
+           $aw = (int) ($this->resolution_w  - 44);
+       } else {
+           $aw = (int) ($this->resolution_w * 11 / 12);
+       }
+
        $ah = (int) ($aw * $oh / $ow);
 
        return array(

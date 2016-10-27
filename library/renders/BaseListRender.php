@@ -6,7 +6,8 @@ define('LARGE_IMAGE_MAX_COUNT', 3);
 define('LARGE_IMAGE_MIN_WH_RATIO', 1.6);
 define('LARGE_IMAGE_MAX_WH_RATIO', 2.4);
 
-define('MAX_HOT_TAG', 1);
+define('MAX_HOT_TAG', 2);
+define('HOT_LIKE_THRESHOLD', 3);
 
 class BaseListRender {
     public function __construct($controller) {
@@ -37,7 +38,7 @@ class BaseListRender {
                 $cell["commentCount"] = $comment_counts[$sign];
             }
             
-            if ($hot_tags < MAX_HOT_TAG && mt_rand(0, 2) == 1) {
+            if ($hot_tags < MAX_HOT_TAG && $models->liked >= HOT_LIKE_THRESHOLD) {
                 $cell["tag"] = "Hot";
                 $hot_tags++;
             } else {
