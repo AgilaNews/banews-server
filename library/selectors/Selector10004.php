@@ -5,10 +5,13 @@ define('MAX_NEWS_COUNT', 10);
 define("LATELY_NEWS_COUNT", 2);
 
 class Selector10004 extends BaseNewsSelector {
-
     public function getPolicyTag(){
         return 'popularRanking';
     }
+
+    protected function getLatelyNewsCount(){
+        return LATELY_NEWS_COUNT;
+    } 
 
     public function sampling($sample_count, $prefer) {
         $randomPolicy = new ExpDecayListPolicy($this->_di);
@@ -17,7 +20,7 @@ class Selector10004 extends BaseNewsSelector {
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
-        $popularNewsCnt = max($sample_count - LATELY_NEWS_COUNT, 1);
+        $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
         $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
