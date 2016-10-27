@@ -39,7 +39,9 @@ class BaseListRender {
             }
             
             if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
-                $cell["tag"] = "Hot";
+                if (mt_rand() % 3 == 0) {
+                    $cell["tag"] = "Hot";
+                }
                 $hot_tags++;
             } else {
                 $cell["tag"] = "";
