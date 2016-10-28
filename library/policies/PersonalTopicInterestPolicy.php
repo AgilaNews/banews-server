@@ -9,7 +9,7 @@ define ('SAMPLE_TOPIC_CNT', 2);
 define ('TOPIC_NEWS_SELECT_CNT', 4);
 define ('TOPIC_NEWS_SPAN', 2);
 define ('ONE_DAY', 86400);
-define ('TOPIC_NEWS_CANDIDATE_CNT', 100);
+define ('TOPIC_NEWS_CANDIDATE_CNT', 200);
 
 class PersonalTopicInterestPolicy extends BaseListPolicy {
 
@@ -53,9 +53,9 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
         $userTopicLst = self::_getUserTopicDis($device_id);
         $topicIdxLst = array();
         $weightLst = array();
-        foreach ($wholeTopicLst as $topicIdx => $ratio) {
-            if (array_key_exists($topicIdx, $userTopicLst)) {
-                $curWeight = $userTopicLst[$topicIdx] * $ratio;
+        foreach ($userTopicLst as $topicIdx => $score) {
+            if (array_key_exists($topicIdx, $wholeTopicLst)) {
+                $curWeight = $wholeTopicLst[$topicIdx] * $score;
                 array_push($topicIdxLst, $topicIdx);
                 array_push($weightLst, $curWeight);
             }
