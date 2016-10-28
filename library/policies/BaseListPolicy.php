@@ -27,7 +27,7 @@ abstract class BaseListPolicy {
 
     protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
         $sent = $this->_cache->getDeviceSeen($device_id);
-        $ready_news_list = $this->_cache->getNewsOfchannel($channel_id, $day_till_now);
+        $ready_news_list = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
         $valid_news_list = array();
 
         foreach ($ready_news_list as $ready_news) {
