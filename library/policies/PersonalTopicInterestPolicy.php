@@ -5,11 +5,11 @@ define ('ALG_USER_TOPIC_KEY', 'ALG_USER_TOPIC_KEY');
 define ('ALG_TOPIC_RATIO_KEY', 'ALG_TOPIC_RATIO_KEY');
 define ('ALG_TOPIC_NEWS_SCO_KEY', 'ALG_TOPIC_NEWS_SCO_KEY');
 define ('NEWS_TOPIC_QUEUE_PREFIX', 'ALG_TOPIC_NEWS_QUEUE_');
-define ('SAMPLE_TOPIC_CNT', 3);
-define ('TOPIC_NEWS_SPAN', 3);
+define ('SAMPLE_TOPIC_CNT', 2);
+define ('TOPIC_NEWS_SELECT_CNT', 4);
+define ('TOPIC_NEWS_SPAN', 2);
 define ('ONE_DAY', 86400);
 define ('TOPIC_NEWS_CANDIDATE_CNT', 100);
-define ('TOPIC_NEWS_SELECT_CNT', 4);
 
 class PersonalTopicInterestPolicy extends BaseListPolicy {
 

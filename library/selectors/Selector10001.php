@@ -11,6 +11,7 @@
 
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
+define ('POPULAR_NEWS_CNT', 2);
 
 class Selector10001 extends BaseNewsSelector{
     protected function getDeviceGroup($deviceId) { 
@@ -68,7 +69,7 @@ class Selector10001 extends BaseNewsSelector{
             $personalTopicPolicy = new PersonalTopicInterestPolicy($this->_di);
             $recNewsLst = $personalTopicPolicy->sampling(
                 $this->_channel_id, $this->_device_id, $this->_user_id,
-                $sample_count, 3, $prefer, $options);
+                $sample_count - POPULAR_NEWS_CNT, 3, $prefer, $options);
             if (count($recNewsLst) < $sample_count) {
                 $popNewsLst = $popularPolicy->sampling($this->_channel_id, 
                     $this->_device_id, $this->_user_id, $sample_count, 
