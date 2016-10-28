@@ -7,7 +7,7 @@
  * @version $Id$
  */
 
-defeine ("VIDEO_CHANNEL_ID", 30001);
+define ("VIDEO_CHANNEL_ID", 30001);
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
@@ -28,7 +28,6 @@ class NewsController extends BaseController {
     }*/
 
     public function ListAction() {
-
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
         }
@@ -42,7 +41,6 @@ class NewsController extends BaseController {
         if (!($prefer == 'later' || $prefer == 'older')) {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
-
 
         $cname = "Selector$channel_id";
         if (class_exists($cname)) {

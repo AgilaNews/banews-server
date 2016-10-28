@@ -7,6 +7,8 @@
  * @version $Id$
  */
 
+use Phalcon\DI;
+
 class Videos extends BaseModel {
     public $id;
 
@@ -47,7 +49,7 @@ class Videos extends BaseModel {
     public $update_time;
 
     public function getSource(){
-        return "tb_news";
+        return "tb_video";
     }
 
     public static function getByNewsSign($sign) {
@@ -55,7 +57,7 @@ class Videos extends BaseModel {
         if ($model) {
             return $model;
         } else {
-            $model =  self::_getFromDB($sign);
+            $model = self::_getFromDB($sign);
             if ($model) {
                 self::_saveToCache($model);
             }
@@ -93,7 +95,7 @@ class Videos extends BaseModel {
                        "bind" => array (1 => $sign),
                       );
 
-        $news_model = Videos::findFirst($crit);
-        return $news_model;
+        $videos_model = Videos::findFirst($crit);
+        return $videos_model;
     }
 }

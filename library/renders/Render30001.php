@@ -7,7 +7,7 @@
  * @version $Id$
  */
 
-class Render30011 extends BaseListRender {
+class Render30001 extends BaseListRender {
 
     public function __construct($controller) {
         parent::__construct($controller);
@@ -37,7 +37,7 @@ class Render30011 extends BaseListRender {
             "public_time" => $news_model->publish_time,
             "likedCount" => $news_model->liked,
             "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
-            "views" => $video->origin_view,
+            "views" => 1000,
             "commentCount" => $commentCount,
             "imgs" => array(),
             "videos" => array(),
@@ -71,9 +71,9 @@ class Render30011 extends BaseListRender {
                 $quality = IMAGE_NORMAL_QUALITY;
             }
 
-/*            $url =  sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
+            $url =  sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
                 $video->cover_save_url, 
-                $aw, $aw, $ah, $quality);*/
+                $aw, $aw, $ah, $quality);
 
             $ret["imgs"][] = array(
                 "src" => $url,
@@ -82,8 +82,7 @@ class Render30011 extends BaseListRender {
             );
 
             $ret["videos"][] = array(
-                "id" => $video->youtube_video_id;
-                "src" => $video->origin_link,
+                "id" => $video->youtube_video_id,
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $video->duration,

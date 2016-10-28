@@ -1,4 +1,4 @@
 <?php
 
-class Selector10002 extends Selector10004 {
+class Selector30001 extends Selector10004 {
 }
