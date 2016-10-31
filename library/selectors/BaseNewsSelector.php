@@ -102,7 +102,7 @@ class BaseNewsSelector {
         return $ret;
     }
 
-    protected function interveneAt($ret, $tpl, $pos) {
+    protected function interveneAt(&$ret, $tpl, $pos) {
         $key = INTERVENE_TPL_CELL_PREFIX . $tpl;
 
         if ($pos >= count($ret)) {
