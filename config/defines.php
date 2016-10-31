@@ -7,6 +7,8 @@ define('VIDEO_NEWS_FEATURE', "1.2.0");
 define('LARGE_IMG_FEATURE', "1.1.3");
 define('FIXTOP_NBA_FEATURE', "1.2.0");
 
+define('AD_PRELOAD', 5);
+
 //used for publish
 define('NOT_PUBLISHED', 0);
 define('ANDROID_PUBLISHED', 1);
