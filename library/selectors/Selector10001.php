@@ -111,7 +111,14 @@ class Selector10001 extends BaseNewsSelector{
             }
         }
 
-        $this->interveneAt($ret, NEWS_LIST_TPL_AD_FB, 5);
+        if (version_compare($this->_client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
+            $ad_intervene = new AdIntervene(array(
+                                                  "tpl" => NEWS_LIST_TPL_AD_FB_MEDIUM,
+                                                  "device" => $this->_device_id,
+                                                  ));
+            $this->interveneAt($ret, $ad_intervene, 5);
+        }
+
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
     }

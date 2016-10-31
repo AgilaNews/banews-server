@@ -32,27 +32,34 @@ class BaseListRender {
 
         $keys = array();
         foreach ($models as $model) {
-            $keys []= $model->url_sign;
+            if (!$this->isIntervened($model)) {
+                $keys []= $model->url_sign;
+            }
         }
         
         $comment_counts = Comment::getCount(array_keys($keys));
         
         foreach ($models as $news_model) {
-            $cell = $this->serializeNewsCell($news_model);
-            if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
-            }
-            
-            if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
-                if (mt_rand() % 3 == 0) {
-                    $cell["tag"] = "Hot";
-                }
-                $hot_tags++;
+            if ($this->isIntervened($news_model)) {
+                $ret []= $news_model->render();
             } else {
-                $cell["tag"] = "";
+                $cell = $this->serializeNewsCell($news_model);
+                if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+                }
+                
+                if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
+                    if (mt_rand() % 3 == 0) {
+                        $cell["tag"] = "Hot";
+                    }
+                    $hot_tags++;
+                } else {
+                    $cell["tag"] = "";
+                }
+                $ret[] = $cell;
             }
-            $ret[] = $cell;
         }
+        
         return $ret;
     }
 
@@ -62,6 +69,7 @@ class BaseListRender {
         } else {
             $videos = null;
         }
+        
         $ret = array (
             "title" => $news_model->title,
             "commentCount" => 0,
@@ -209,8 +217,8 @@ class BaseListRender {
         return $cell;
 
     }
-
-    protected function isIntervened($cell, $tpl) {
-        return is_string($cell) && ($cell == INTERVENE_TPL_CELL_PREFIX . $tpl); 
+    
+    protected function isIntervened($model) {
+        return $model instanceof BaseIntervene;
     }
 }

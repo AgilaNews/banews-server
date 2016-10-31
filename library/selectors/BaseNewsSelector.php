@@ -14,10 +14,11 @@ define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
 
 class BaseNewsSelector {
-    public function __construct($channel_id, $device_id, $user_id, $di) {
+    public function __construct($channel_id, $device_id, $user_id, $client_version, $di) {
         $this->_channel_id = $channel_id;
         $this->_device_id = $device_id;
         $this->_user_id = $user_id;
+        $this->_client_version = $client_version;
         $this->_di = $di;
     }
 
@@ -102,9 +103,7 @@ class BaseNewsSelector {
         return $ret;
     }
 
-    protected function interveneAt(&$ret, $tpl, $pos) {
-        $key = INTERVENE_TPL_CELL_PREFIX . $tpl;
-
-        array_splice($ret, $pos, 0, $key);
+    protected function interveneAt(&$ret, $intervene, $pos) {
+        array_splice($ret, $pos, 0, array($intervene));
     }
 }
