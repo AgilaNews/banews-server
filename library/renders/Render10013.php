@@ -8,7 +8,7 @@ class Render10013 extends BaseListRender {
         $top = array();
 
         foreach ($models as $idx => $model) {
-            if (isIntervened($model, NEWS_LIST_TPL_NBA)) {
+            if ($this->isIntervened($model, NEWS_LIST_TPL_NBA)) {
                 if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
                     $top = array(array("data" =>
                                        array(
