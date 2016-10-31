@@ -39,7 +39,7 @@ class BaseListRender {
         
         foreach ($models as $news_model) {
             $cell = $this->serializeNewsCell($news_model);
-            if(array_key_exists($sign, $comment_counts)) {
+            if(array_key_exists($news_model->url_sign, $comment_counts)) {
                 $cell["commentCount"] = $comment_counts[$news_model->url_sign];
             }
             
