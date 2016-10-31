@@ -10,7 +10,7 @@ class Selector10013 extends Selector10004 {
         $ret = parent::select($prefer);
 
         if ($prefer == "later") {
-            $this->interveneAt(NEWS_LIST_TPL_NBA, 0);
+            $this->interveneAt($ret, NEWS_LIST_TPL_NBA, 0);
         }
 
         return $ret;
