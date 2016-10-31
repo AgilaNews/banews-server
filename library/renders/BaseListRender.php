@@ -30,12 +30,17 @@ class BaseListRender {
         $news_sign = "";
         $hot_tags = 0;
 
-        $comment_counts = Comment::getCount(array_keys($models));
+        $keys = array();
+        foreach ($models as $model) {
+            $keys []= $model->url_sign;
+        }
         
-        foreach ($models as $sign => $news_model) {
+        $comment_counts = Comment::getCount(array_keys($keys));
+        
+        foreach ($models as $news_model) {
             $cell = $this->serializeNewsCell($news_model);
             if(array_key_exists($sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$sign];
+                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
             }
             
             if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
@@ -203,5 +208,9 @@ class BaseListRender {
 
         return $cell;
 
+    }
+
+    protected function isIntervened($cell, $tpl) {
+        return substr($cell, 0, count(INTERVENE_TPL_CELL_PREFIX)) == INTERVENE_TPL_CELL_PREFIX;
     }
 }

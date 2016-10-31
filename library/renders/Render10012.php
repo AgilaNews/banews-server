@@ -7,7 +7,7 @@ class Render10012 extends BaseListRender {
     public function render($models) {
         $ret = array();
 
-        foreach ($models as $sign => $news_model) {
+        foreach ($models as $news_model) {
             $cell = $this->serializeNewsCell($news_model);
             if (!$cell) {
                 continue;   

@@ -172,12 +172,8 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this->deviceId, $this->userSign, $this->getDI());
         }
 
-        $models = $selector->select($prefer);
+        $dispatch_ids = $selector->select($prefer);
         
-        foreach ($models as $sign => $model) {
-            $dispatch_ids []= $sign;
-        }
-
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
             $render = new $cname($this);
@@ -186,7 +182,7 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret[$dispatch_id] = $render->render($models);
+        $ret[$dispatch_id] = $render->render($dispatch_ids);
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 

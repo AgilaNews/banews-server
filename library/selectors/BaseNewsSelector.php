@@ -12,6 +12,7 @@ define('MIN_NEWS_SEND_COUNT', 6);
 define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
+
 class BaseNewsSelector {
     public function __construct($channel_id, $device_id, $user_id, $di) {
         $this->_channel_id = $channel_id;
@@ -84,11 +85,40 @@ class BaseNewsSelector {
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
-        if (count($models) > $required) {
-            $models = array_slice($models, 0, $required);
+
+        $ret = array();
+        $filter = array();
+        for ($i = 0; $i < count($selected_news_list); $i++) {
+            if (array_key_exists($selected_news_list[$i], $models)) {
+                $ret []= $models[$selected_news_list[$i]];
+                $filter []= $models[$selected_news_list[$i]]->url_sign;
+                if (count($ret) >= $required) {
+                    break;
+                }
+            }
         }
         
-        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
-        return $models;
+        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+        return $ret;
+    }
+
+    protected function interveneAt($ret, $tpl, $pos) {
+        $key = INTERVENE_TPL_CELL_PREFIX . $tpl;
+
+        if ($pos >= count($ret)) {
+            $ret []= $key;
+            return;
+        }
+        if ($pos < 0) {
+            return;
+        }
+        
+        for ($i = count($ret) - 2; $i >= 0; $i--) {
+            $ret[$i+1] = $ret[$i];
+            if ($i == $pos) {
+                $ret[$pos] = $key;
+                break;
+            }
+        }
     }
 }
