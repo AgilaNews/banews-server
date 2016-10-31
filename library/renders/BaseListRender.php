@@ -211,7 +211,6 @@ class BaseListRender {
     }
 
     protected function isIntervened($cell, $tpl) {
-        return is_string($cell) &&
-            substr($cell, 0, strlen(INTERVENE_TPL_CELL_PREFIX)) == INTERVENE_TPL_CELL_PREFIX;
+        return is_string($cell) && ($cell == INTERVENE_TPL_CELL_PREFIX . $tpl); 
     }
 }

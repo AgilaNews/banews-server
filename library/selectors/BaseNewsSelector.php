@@ -105,20 +105,6 @@ class BaseNewsSelector {
     protected function interveneAt(&$ret, $tpl, $pos) {
         $key = INTERVENE_TPL_CELL_PREFIX . $tpl;
 
-        if ($pos >= count($ret)) {
-            $ret []= $key;
-            return;
-        }
-        if ($pos < 0) {
-            return;
-        }
-        
-        for ($i = count($ret) - 2; $i >= 0; $i--) {
-            $ret[$i+1] = $ret[$i];
-            if ($i == $pos) {
-                $ret[$pos] = $key;
-                break;
-            }
-        }
+        array_splice($ret, $pos, 0, $key);
     }
 }
