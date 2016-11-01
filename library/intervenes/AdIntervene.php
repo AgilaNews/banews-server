@@ -13,7 +13,7 @@ use Phalcon\DI;
 class AdIntervene extends BaseIntervene {
     public function render(){
         switch ($this->context["type"]) {
-        case "fb":
+        case NEWS_LIST_TPL_AD_FB_MEDIUM:
             return $this->renderFB();
             
         default:

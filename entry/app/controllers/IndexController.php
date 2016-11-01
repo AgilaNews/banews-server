@@ -52,6 +52,7 @@ class IndexController extends BaseController {
             "updates" => $update_info,
             "ad" => array(
                 "preload" => AD_PRELOAD,
+                "expire" => AD_EXPIRE,
             ),
         );
         
