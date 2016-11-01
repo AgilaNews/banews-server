@@ -113,7 +113,7 @@ class Selector10001 extends BaseNewsSelector{
 
         if (version_compare($this->_client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
             $ad_intervene = new AdIntervene(array(
-                                                  "tpl" => NEWS_LIST_TPL_AD_FB_MEDIUM,
+                                                  "type" => NEWS_LIST_TPL_AD_FB_MEDIUM,
                                                   "device" => $this->_device_id,
                                                   ));
             $this->interveneAt($ret, $ad_intervene, 5);
