@@ -41,7 +41,10 @@ class BaseListRender {
         
         foreach ($models as $news_model) {
             if ($this->isIntervened($news_model)) {
-                $ret []= $news_model->render();
+                $r = $news_model->render();
+                if ($r) {
+                    $ret [] = $r; 
+                }
             } else {
                 $cell = $this->serializeNewsCell($news_model);
                 if(array_key_exists($news_model->url_sign, $comment_counts)) {
