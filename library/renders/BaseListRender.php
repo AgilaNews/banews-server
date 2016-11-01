@@ -30,24 +30,39 @@ class BaseListRender {
         $news_sign = "";
         $hot_tags = 0;
 
-        $comment_counts = Comment::getCount(array_keys($models));
-        
-        foreach ($models as $sign => $news_model) {
-            $cell = $this->serializeNewsCell($news_model);
-            if(array_key_exists($sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$sign];
+        $keys = array();
+        foreach ($models as $model) {
+            if (!$this->isIntervened($model)) {
+                $keys []= $model->url_sign;
             }
-            
-            if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
-                if (mt_rand() % 3 == 0) {
-                    $cell["tag"] = "Hot";
-                }
-                $hot_tags++;
-            } else {
-                $cell["tag"] = "";
-            }
-            $ret[] = $cell;
         }
+        
+        $comment_counts = Comment::getCount(array_keys($keys));
+        
+        foreach ($models as $news_model) {
+            if ($this->isIntervened($news_model)) {
+                $r = $news_model->render();
+                if ($r) {
+                    $ret [] = $r; 
+                }
+            } else {
+                $cell = $this->serializeNewsCell($news_model);
+                if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+                }
+                
+                if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
+                    if (mt_rand() % 3 == 0) {
+                        $cell["tag"] = "Hot";
+                    }
+                    $hot_tags++;
+                } else {
+                    $cell["tag"] = "";
+                }
+                $ret[] = $cell;
+            }
+        }
+        
         return $ret;
     }
 
@@ -57,6 +72,7 @@ class BaseListRender {
         } else {
             $videos = null;
         }
+        
         $ret = array (
             "title" => $news_model->title,
             "commentCount" => 0,
@@ -203,5 +219,9 @@ class BaseListRender {
 
         return $cell;
 
+    }
+    
+    protected function isIntervened($model) {
+        return $model instanceof BaseIntervene;
     }
 }

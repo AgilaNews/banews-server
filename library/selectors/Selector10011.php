@@ -24,9 +24,20 @@ class Selector10011 extends BaseNewsSelector {
         $selected_news_list = $this->sampling($required, $prefer);
         $models = News::batchGet($selected_news_list);
         $models = $this->removeInvisible($models);
-//        $models = $this->removeDup($models);
         
-        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
-        return $models;
+        $ret = array();
+        $filter = array();
+        for ($i = 0; $i < count($selected_news_list); $i++) {
+            if (array_key_exists($selected_news_list[$i], $models)) {
+                $ret []= $models[$selected_news_list[$i]];
+                $filter []= $models[$selected_news_list[$i]]->url_sign;
+                if (count($ret) >= $required) {
+                    break;
+                }
+            }
+        }
+        
+        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+        return $ret;
     }
 }

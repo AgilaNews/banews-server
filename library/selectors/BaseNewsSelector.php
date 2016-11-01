@@ -12,11 +12,13 @@ define('MIN_NEWS_SEND_COUNT', 6);
 define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
+
 class BaseNewsSelector {
-    public function __construct($channel_id, $device_id, $user_id, $di) {
+    public function __construct($channel_id, $device_id, $user_id, $client_version, $di) {
         $this->_channel_id = $channel_id;
         $this->_device_id = $device_id;
         $this->_user_id = $user_id;
+        $this->_client_version = $client_version;
         $this->_di = $di;
     }
 
@@ -84,11 +86,24 @@ class BaseNewsSelector {
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
-        if (count($models) > $required) {
-            $models = array_slice($models, 0, $required);
+
+        $ret = array();
+        $filter = array();
+        for ($i = 0; $i < count($selected_news_list); $i++) {
+            if (array_key_exists($selected_news_list[$i], $models)) {
+                $ret []= $models[$selected_news_list[$i]];
+                $filter []= $models[$selected_news_list[$i]]->url_sign;
+                if (count($ret) >= $required) {
+                    break;
+                }
+            }
         }
         
-        $this->getPolicy()->setDeviceSent($this->_device_id, array_keys($models));
-        return $models;
+        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+        return $ret;
+    }
+
+    protected function interveneAt(&$ret, $intervene, $pos) {
+        array_splice($ret, $pos, 0, array($intervene));
     }
 }

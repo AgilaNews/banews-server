@@ -12,6 +12,7 @@ $settings = array (
         "renderDir" => LIBRARY_PATH . "/renders/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
         "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
+        "interveneDir" => LIBRARY_PATH . "/intervenes/",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',

@@ -50,6 +50,10 @@ class IndexController extends BaseController {
                 "referrer" => $this->config->entries->referrer,
             ),
             "updates" => $update_info,
+            "ad" => array(
+                "preload" => AD_PRELOAD,
+                "expire" => AD_EXPIRE,
+            ),
         );
         
         if ($cur_model->server_version == 1) {

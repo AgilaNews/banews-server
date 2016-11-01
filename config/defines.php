@@ -6,6 +6,11 @@ define('RICH_COMMENT_FEATURE', "1.2.2");
 define('VIDEO_NEWS_FEATURE', "1.2.0");
 define('LARGE_IMG_FEATURE', "1.1.3");
 define('FIXTOP_NBA_FEATURE', "1.2.0");
+define('AD_FEATURE', "1.2.3");
+
+define('AD_PRELOAD', 5);
+define('AD_EXPIRE', 3400);
+define('AD_INTERVENE_POS', 4);
 
 //used for publish
 define('NOT_PUBLISHED', 0);
@@ -65,6 +70,8 @@ define('CACHE_COMMENT_FREQ_PREFIX', "BS_COMMENT_FREQ_");
 define('CACHE_COMMENT_FREQ_TTL', 5);
 define('CACHE_VIDEOS_PREFIX', "BS_VIDEOS_");
 define('CACHE_VIDEOS_TTL', 14400);
+define('CACHE_AD_ID_KEY', "BS_AD_%s_%s"); // BS_AD_FB_deviceid
+define('CACHE_AD_ID_TTL', 3600);
 
 //used for redis device map
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
@@ -136,5 +143,6 @@ define('NEWS_LIST_TPL_BIG_YOUTUBE', 10);
 define('NEWS_LIST_TPL_SMALL_YOUTUBE', 11);
 
 define('NEWS_LIST_TPL_NBA', 1000);
+define('NEWS_LIST_TPL_AD_FB_MEDIUM', 5000);
 
 define("INTERVENE_TPL_CELL_PREFIX", "INTERVENE_TPL_CELL_");

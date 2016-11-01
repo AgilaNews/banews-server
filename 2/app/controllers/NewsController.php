@@ -108,7 +108,8 @@ class NewsController extends BaseController {
         }
 
         
-        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->deviceId, $this->userSign, $this->getDI());
+        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->deviceId, $this->userSign, $this->client_version,
+                                                            $this->getDI());
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "Recommend" . $news_model->channel_id;
         if (class_exists($cname)) {
@@ -167,17 +168,13 @@ class NewsController extends BaseController {
 
         $cname = "Selector$channel_id";
         if (class_exists($cname)) {
-            $selector = new $cname($channel_id, $this->deviceId, $this->userSign, $this->getDI()); 
+            $selector = new $cname($channel_id, $this->deviceId, $this->userSign, $this->client_version, $this->getDI()); 
         } else {
-            $selector = new BaseNewsSelector($channel_id, $this->deviceId, $this->userSign, $this->getDI());
+            $selector = new BaseNewsSelector($channel_id, $this->deviceId, $this->userSign, $this->client_version, $this->getDI());
         }
 
-        $models = $selector->select($prefer);
+        $dispatch_ids = $selector->select($prefer);
         
-        foreach ($models as $sign => $model) {
-            $dispatch_ids []= $sign;
-        }
-
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
             $render = new $cname($this);
@@ -186,7 +183,7 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret[$dispatch_id] = $render->render($models);
+        $ret[$dispatch_id] = $render->render($dispatch_ids);
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
