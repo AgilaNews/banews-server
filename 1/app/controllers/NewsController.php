@@ -108,8 +108,7 @@ class NewsController extends BaseController {
         }
 
         
-        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this->deviceId, $this->userSign, $this->client_version,
-                                                            $this->getDI());
+        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "Recommend" . $news_model->channel_id;
         if (class_exists($cname)) {
@@ -168,9 +167,9 @@ class NewsController extends BaseController {
 
         $cname = "Selector$channel_id";
         if (class_exists($cname)) {
-            $selector = new $cname($channel_id, $this->deviceId, $this->userSign, $this->client_version, $this->getDI()); 
+            $selector = new $cname($channel_id, $this); 
         } else {
-            $selector = new BaseNewsSelector($channel_id, $this->deviceId, $this->userSign, $this->client_version, $this->getDI());
+            $selector = new BaseNewsSelector($channel_id, $this);
         }
 
         $models = $selector->select($prefer);

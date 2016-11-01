@@ -14,12 +14,12 @@ define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
 
 class BaseNewsSelector {
-    public function __construct($channel_id, $device_id, $user_id, $client_version, $di) {
+    public function __construct($channel_id, $controller) {
         $this->_channel_id = $channel_id;
-        $this->_device_id = $device_id;
-        $this->_user_id = $user_id;
-        $this->_client_version = $client_version;
-        $this->_di = $di;
+        $this->_device_id = $controller->deviceId;
+        $this->_user_id = $controller->userSign;
+        $this->_client_version = $controller->client_version;
+        $this->_di = $controller->di;
     }
 
     protected function sampling($sample_count, $prefer){
