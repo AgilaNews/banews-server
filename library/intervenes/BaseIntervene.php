@@ -9,7 +9,7 @@
  * 
  */
 abstract class BaseIntervene {
-    public function __construct($context){
+    public function __construct($context = array()){
         $this->context = $context;
     }
 
