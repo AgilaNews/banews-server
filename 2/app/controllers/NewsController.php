@@ -106,7 +106,6 @@ class NewsController extends BaseController {
 
             $ret["youtube_videos"] = $videocell;
         }
-
         
         $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
         $models = $recommend_selector->select($news_model->url_sign);
