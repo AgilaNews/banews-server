@@ -23,7 +23,7 @@ class AdIntervene extends BaseIntervene {
 
     protected function renderFB(){
         $di = DI::getDefault();
-        $redis = $di->get('redis');
+        $redis = $di->get('cache');
         $device = $this->context["device"];
         $key = sprintf(CACHE_AD_ID_KEY, "FB", $device);
             
