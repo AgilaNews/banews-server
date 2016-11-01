@@ -10,7 +10,7 @@ define('AD_FEATURE', "1.2.3");
 
 define('AD_PRELOAD', 5);
 define('AD_EXPIRE', 3400);
-define('AD_INTERVENE_POS', 5);
+define('AD_INTERVENE_POS', 4);
 
 //used for publish
 define('NOT_PUBLISHED', 0);
