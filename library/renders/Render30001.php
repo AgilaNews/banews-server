@@ -28,7 +28,7 @@ class Render30001 extends BaseListRender {
     } 
 
     public function serializeNewsCell($news_model) {
-        $commentCount = Comment::getCount($news_model->id);
+        $commentCount = Comment::getCount($news_model->url_sign);
         $ret = array(
             "title" => $news_model->title,
             "news_id" => $news_model->url_sign,
@@ -38,7 +38,7 @@ class Render30001 extends BaseListRender {
             "likedCount" => $news_model->liked,
             "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
             "views" => 1000,
-            "commentCount" => $commentCount,
+            "commentCount" => $commentCount[$news_model->url_sign],
             "imgs" => array(),
             "videos" => array(),
             "tpl" => 12
