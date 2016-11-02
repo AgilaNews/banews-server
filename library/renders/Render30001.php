@@ -41,6 +41,7 @@ class Render30001 extends BaseListRender {
             "commentCount" => $commentCount,
             "imgs" => array(),
             "videos" => array(),
+            "tpl" => 12
             );
 
 
@@ -72,7 +73,7 @@ class Render30001 extends BaseListRender {
             }
 
             $url =  sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
-                $video->cover_save_url, 
+                urlencode($video->cover_image_sign), 
                 $aw, $aw, $ah, $quality);
 
             $ret["imgs"][] = array(
@@ -82,11 +83,12 @@ class Render30001 extends BaseListRender {
             );
 
             $ret["videos"][] = array(
-                "id" => $video->youtube_video_id,
+                "youtube_id" => $video->youtube_video_id,
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $video->duration,
-                "description" => $video->description
+                "description" => $video->description,
+                "display" => 0
             );
         }
         return $ret;
