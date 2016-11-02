@@ -129,6 +129,9 @@ define("LARGE_CHANNEL_IMG_PATTERN",
         IMAGE_PREFIX . 
         "/%s.jpg?p=t=%sx%s|q=%d");
 
+define("VIDEO_COVER_PATTERN",
+        IMAGE_PREFIX .
+        "/%s.jpg?p=t={w}x{h}|q=%d");
 
 define('GIF_COVER_PATTERN', 
         IMAGE_PREFIX . "/%s_cover.jpg");
