@@ -8,9 +8,9 @@ define('LARGE_IMG_FEATURE', "1.1.3");
 define('FIXTOP_NBA_FEATURE', "1.2.1");
 define('AD_FEATURE', "1.2.3");
 
-define('AD_PRELOAD', 5);
+define('AD_PRELOAD', 3);
 define('AD_EXPIRE', 3400);
-define('AD_INTERVENE_POS', 0);
+define('AD_INTERVENE_POS', 4);
 
 //used for publish
 define('NOT_PUBLISHED', 0);
@@ -147,4 +147,4 @@ define('NEWS_LIST_TPL_AD_FB_MEDIUM', 5000);
 
 define("INTERVENE_TPL_CELL_PREFIX", "INTERVENE_TPL_CELL_");
 
-define('DETAIL_AD_TPL_MEDIUM', 6000);
+define('DETAIL_AD_TPL_MEDIUM', 5001);
