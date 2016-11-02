@@ -51,7 +51,7 @@ class NewsController extends BaseController {
 
         $device_md5 = md5($this->deviceId);
         $usead = false;
-        if (in_array($device_md5[0], array('0', '9'))) {
+        if (in_array($device_md5[0], array('0', '5', '9', '13'))) {
             $usead = true; 
         }
         if ($usead) {
