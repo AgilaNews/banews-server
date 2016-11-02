@@ -75,5 +75,4 @@ $settings = array (
                         "suffix" => ".hk.ufileos.com"
                                     ),
     'elasticsearch' => 'http://localhost:9200', 
-
 );

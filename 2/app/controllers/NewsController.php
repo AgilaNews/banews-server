@@ -46,7 +46,22 @@ class NewsController extends BaseController {
             "channel_id" => $news_model->channel_id,
             "likedCount" => $news_model->liked,
             "collect_id" => 0, 
+            "ad" => new stdClass(),
         );
+
+        $device_md5 = md5($this->deviceId);
+        $usead = false;
+        if (in_array($device_md5[0], array('0', '9'))) {
+            $usead = true; 
+        }
+        if ($usead) {
+            $intervene = new AdIntervene(array(
+                "type" => DETAIL_AD_TPL_MEDIUM,
+                "device_id" => $this->deviceId,
+            ));
+
+            $ret["ad"] = $intervene->render();
+        }
 
         $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
 
@@ -138,10 +153,11 @@ class NewsController extends BaseController {
                                                                    "news" => array_keys($models),
                                                                    "policy"=> "random",
                                                                    ),
+                                               "ad" => $ret["ad"],
                                                  ));
         
-        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d]", $newsSign, count($ret["imgs"]),
-                                     $news_model->channel_id, count($ret["recommend_news"])));
+        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d][usead:%s]", $newsSign, count($ret["imgs"]),
+                                     $news_model->channel_id, count($ret["recommend_news"]), $usead));
         
         $this->setJsonResponse($ret);
         return $this->response;
