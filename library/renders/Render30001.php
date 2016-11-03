@@ -16,10 +16,23 @@ class Render30001 extends BaseListRender {
     public function render($models) {
         $ret = array();
 
+        $keys = array();
+        foreach ($models as $model) {
+            if (!$this->isIntervened($model)) {
+                $keys []= $model->url_sign;
+            }
+        }
+        
+        $comment_counts = Comment::getCount(array_keys($keys));
+
         foreach ($models as $sign => $news_model) {
             $cell = $this->serializeNewsCell($news_model);
-            if (count($cell["imgs"]) == 0) {
+            if (count($cell["videos"]) == 0) {
                 continue;
+            }
+
+            if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
             }
             $ret []= $cell;
         }
@@ -28,7 +41,6 @@ class Render30001 extends BaseListRender {
     } 
 
     public function serializeNewsCell($news_model) {
-        $commentCount = Comment::getCount($news_model->url_sign);
         $ret = array(
             "title" => $news_model->title,
             "news_id" => $news_model->url_sign,
@@ -38,7 +50,7 @@ class Render30001 extends BaseListRender {
             "likedCount" => $news_model->liked,
             "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
             "views" => 1000,
-            "commentCount" => $commentCount[$news_model->url_sign],
+            "commentCount" => 0,
             "imgs" => array(),
             "videos" => array(),
             "tpl" => 12
