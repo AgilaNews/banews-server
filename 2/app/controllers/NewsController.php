@@ -178,7 +178,6 @@ class NewsController extends BaseController {
 
         $channel_id = $this->get_request_param("channel_id", "int", true);
         $prefer = $this->get_request_param('dir', "string", false, "later");
-        $dispatch_ids = array();
         if (!($prefer == 'later' || $prefer == 'older')) {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
@@ -191,7 +190,11 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $dispatch_ids = $selector->select($prefer);
+        $dispatch_models = $selector->select($prefer);
+        $dispatch_ids = array();
+        foreach ($dispatch_models as $dispatch_model) {
+            $dispatch_ids []= $dispatch_model->url_sign;
+        }
         
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
@@ -201,7 +204,7 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret[$dispatch_id] = $render->render($dispatch_ids);
+        $ret[$dispatch_id] = $render->render($dispatch_models);
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
