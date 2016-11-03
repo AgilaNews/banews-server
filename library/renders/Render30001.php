@@ -69,6 +69,14 @@ class Render30001 extends BaseListRender {
             $ow = $meta["width"];
             $oh = $meta["height"];
 
+            if ($this->_os == "ios") {
+                $aw = (int) ($this->_screen_w  - 44);
+            } else {
+                $aw = (int) ($this->_screen_w * 11 / 12);
+            }
+            $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
+
+
             if ($this->_net == "WIFI") {
                 $quality = IMAGE_HIGH_QUALITY;
             } else if ($this->_net == "2G") {
@@ -77,19 +85,23 @@ class Render30001 extends BaseListRender {
                 $quality = IMAGE_NORMAL_QUALITY;
             }
 
-            $url =  sprintf(VIDEO_COVER_PATTERN, 
-                urlencode($video->cover_image_sign), $quality);
+            $url = sprintf(LARGE_CHANNEL_IMG_PATTERN,
+                           urlencode($video->cover_image_sign),
+                           $aw, $ah, $quality);
 
             $ret["imgs"][] = array(
                 "src" => $url,
-                "width" => $ow,
-                "height" => $oh
+                "width" => $aw,
+                "height" => $ah,
+                "pattern" = sprintf(LARGE_CHANNEL_IMG_PATTERN,
+                                    urlencode($video->cover_image_sign),
+                                    "{w}", "{h}", $quality);
             );
 
             $ret["videos"][] = array(
                 "youtube_id" => $video->youtube_video_id,
-                "width" => $ow,
-                "height" => $oh,
+                "width" => $aw,
+                "height" => $ah,
                 "duration" => $video->duration,
                 "description" => $video->description,
                 "display" => 0
