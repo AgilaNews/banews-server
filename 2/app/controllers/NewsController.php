@@ -55,7 +55,6 @@ class NewsController extends BaseController {
             $usead = true; 
         }
 
-        $usead = true;
         if ($usead) {
             $intervene = new AdIntervene(array(
                 "type" => DETAIL_AD_TPL_MEDIUM,
