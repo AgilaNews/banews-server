@@ -16,10 +16,23 @@ class Render30001 extends BaseListRender {
     public function render($models) {
         $ret = array();
 
+        $keys = array();
+        foreach ($models as $model) {
+            if (!$this->isIntervened($model)) {
+                $keys []= $model->url_sign;
+            }
+        }
+        
+        $comment_counts = Comment::getCount(array_keys($keys));
+
         foreach ($models as $sign => $news_model) {
             $cell = $this->serializeNewsCell($news_model);
-            if (count($cell["imgs"]) == 0) {
+            if (count($cell["videos"]) == 0) {
                 continue;
+            }
+
+            if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
             }
             $ret []= $cell;
         }
@@ -28,7 +41,6 @@ class Render30001 extends BaseListRender {
     } 
 
     public function serializeNewsCell($news_model) {
-        $commentCount = Comment::getCount($news_model->id);
         $ret = array(
             "title" => $news_model->title,
             "news_id" => $news_model->url_sign,
@@ -38,9 +50,10 @@ class Render30001 extends BaseListRender {
             "likedCount" => $news_model->liked,
             "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
             "views" => 1000,
-            "commentCount" => $commentCount,
+            "commentCount" => 0,
             "imgs" => array(),
             "videos" => array(),
+            "tpl" => 12
             );
 
 
@@ -55,13 +68,14 @@ class Render30001 extends BaseListRender {
 
             $ow = $meta["width"];
             $oh = $meta["height"];
+
             if ($this->_os == "ios") {
                 $aw = (int) ($this->_screen_w  - 44);
             } else {
                 $aw = (int) ($this->_screen_w * 11 / 12);
             }
-
             $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
+
 
             if ($this->_net == "WIFI") {
                 $quality = IMAGE_HIGH_QUALITY;
@@ -71,22 +85,26 @@ class Render30001 extends BaseListRender {
                 $quality = IMAGE_NORMAL_QUALITY;
             }
 
-            $url =  sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
-                $video->cover_save_url, 
-                $aw, $aw, $ah, $quality);
+            $url = sprintf(LARGE_CHANNEL_IMG_PATTERN,
+                           urlencode($video->cover_image_sign),
+                           $aw, $ah, $quality);
 
             $ret["imgs"][] = array(
                 "src" => $url,
                 "width" => $aw,
-                "height" => $ah
+                "height" => $ah,
+                "pattern" => sprintf(LARGE_CHANNEL_IMG_PATTERN,
+                                    urlencode($video->cover_image_sign),
+                                    "{w}", "{h}", $quality),
             );
 
             $ret["videos"][] = array(
-                "id" => $video->youtube_video_id,
+                "youtube_id" => $video->youtube_video_id,
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $video->duration,
-                "description" => $video->description
+                "description" => $video->description,
+                "display" => 0
             );
         }
         return $ret;
