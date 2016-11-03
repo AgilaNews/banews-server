@@ -111,8 +111,8 @@ class Selector10001 extends BaseNewsSelector{
             }
         }
 
-        if (version_compare($this->client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
-            $device_md5 = md5($this->deviceId);
+        if (version_compare($this->_client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
+            $device_md5 = md5($this->_device_id);
             $usead = false;
             if (in_array($device_md5[0], array('0', '5', '9', '13'))) {
                 $usead = true;                    
@@ -122,7 +122,7 @@ class Selector10001 extends BaseNewsSelector{
             if ($usead) {
                 $ad_intervene = new AdIntervene(array(
                                                       "type" => NEWS_LIST_TPL_AD_FB_MEDIUM,
-                                                      "device" => $this->deviceId,
+                                                      "device" => $this->_device_id,
                                                       ));
                 $this->interveneAt($ret, $ad_intervene, AD_INTERVENE_POS);
             }

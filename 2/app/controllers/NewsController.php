@@ -57,7 +57,7 @@ class NewsController extends BaseController {
 
         $usead = true;
         if ($usead) {
-            if (version_compare($this->_client_version, AD_FEATURE, ">=")) {
+            if (version_compare($this->client_version, AD_FEATURE, ">=")) {
                 $intervene = new AdIntervene(array(
                     "type" => DETAIL_AD_TPL_MEDIUM,
                     "device" => $this->deviceId,
