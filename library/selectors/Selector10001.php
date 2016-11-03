@@ -116,7 +116,8 @@ class Selector10001 extends BaseNewsSelector{
             $usead = false;
             if (in_array($device_md5[0], array('0', '5', '9', '13'))) {
                 $usead = true;                    
-            }                                     
+            }
+            $usead = true;
 
             if ($usead) {
                 $ad_intervene = new AdIntervene(array(

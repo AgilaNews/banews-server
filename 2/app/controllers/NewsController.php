@@ -54,6 +54,8 @@ class NewsController extends BaseController {
         if (in_array($device_md5[0], array('0', '5', '9', '13'))) {
             $usead = true; 
         }
+
+        $usead = true;
         if ($usead) {
             $intervene = new AdIntervene(array(
                 "type" => DETAIL_AD_TPL_MEDIUM,
