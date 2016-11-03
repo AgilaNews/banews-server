@@ -59,7 +59,7 @@ class NewsController extends BaseController {
         if ($usead) {
             $intervene = new AdIntervene(array(
                 "type" => DETAIL_AD_TPL_MEDIUM,
-                "device_id" => $this->deviceId,
+                "device" => $this->deviceId,
             ));
 
             $ret["ad"] = $intervene->render();
