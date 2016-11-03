@@ -95,7 +95,7 @@ class Render30001 extends BaseListRender {
                 "height" => $ah,
                 "pattern" => sprintf(LARGE_CHANNEL_IMG_PATTERN,
                                     urlencode($video->cover_image_sign),
-                                    "{w}", "{h}", $quality);
+                                    "{w}", "{h}", $quality),
             );
 
             $ret["videos"][] = array(
