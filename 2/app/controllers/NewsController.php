@@ -57,12 +57,14 @@ class NewsController extends BaseController {
 
         $usead = true;
         if ($usead) {
-            $intervene = new AdIntervene(array(
-                "type" => DETAIL_AD_TPL_MEDIUM,
-                "device" => $this->deviceId,
-            ));
+            if (version_compare($this->_client_version, AD_FEATURE, ">=")) {
+                $intervene = new AdIntervene(array(
+                    "type" => DETAIL_AD_TPL_MEDIUM,
+                    "device" => $this->deviceId,
+                ));
 
-            $ret["ad"] = $intervene->render();
+                $ret["ad"] = $intervene->render();
+            }
         }
 
         $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
