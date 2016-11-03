@@ -192,8 +192,11 @@ class NewsController extends BaseController {
 
         $dispatch_models = $selector->select($prefer);
         $dispatch_ids = array();
+
         foreach ($dispatch_models as $dispatch_model) {
-            $dispatch_ids []= $dispatch_model->url_sign;
+            if (isset($dispatch_model->url_sign)) {
+                $dispatch_ids []= $dispatch_model->url_sign;
+            }
         }
         
         $cname = "Render$channel_id";
