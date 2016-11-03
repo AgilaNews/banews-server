@@ -145,7 +145,7 @@ class NewsController extends BaseController {
 
         $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
         $models = $recommend_selector->select($news_model->url_sign);
-        $cname = "Recommend" . $news_model->channel_id;
+        $cname = "RecommendRender" . $news_model->channel_id;
         if (class_exists($cname)) {
             $render = new $cname($this);
         } else {
@@ -156,7 +156,8 @@ class NewsController extends BaseController {
         if ($this->userSign) {
             $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
         }
-
+        $this->setJsonResponse($ret);
+        return $this->response;
     }
 
     public function ViewAction() {
