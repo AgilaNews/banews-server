@@ -10,7 +10,7 @@ class Selector10013 extends Selector10004 {
         $ret = parent::select($prefer);
 
         if ($prefer == "later") {
-            $intervene = new NbaIntervene();
+            $intervene = new NbaIntervene(array());
             $this->interveneAt($ret, $intervene, 0);
         }
 
