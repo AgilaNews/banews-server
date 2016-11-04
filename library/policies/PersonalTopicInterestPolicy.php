@@ -5,6 +5,7 @@ define ('ALG_USER_TOPIC_KEY', 'ALG_USER_TOPIC_KEY');
 define ('ALG_TOPIC_RATIO_KEY', 'ALG_TOPIC_RATIO_KEY');
 define ('ALG_TOPIC_NEWS_SCO_KEY', 'ALG_TOPIC_NEWS_SCO_KEY');
 define ('NEWS_TOPIC_QUEUE_PREFIX', 'ALG_TOPIC_NEWS_QUEUE_');
+define ('ALG_TOPIC_GRAVITY_KEY', 'ALG_TOPIC_GRAVITY_KEY');
 define ('SAMPLE_TOPIC_CNT', 2);
 define ('TOPIC_NEWS_SELECT_CNT', 4);
 define ('TOPIC_NEWS_SPAN', 2);
@@ -41,7 +42,7 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
                         $userTopicArr[$curVals[0]] = $curVals[1];
                     }
                     $clickCnt = $valLst[1];
-                    return $userTopicArr;
+                    return array($userTopicArr, $clickCnt);
                 }
             } 
         }
@@ -50,15 +51,25 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
 
     protected function combineTopicInterest($device_id) {
         $wholeTopicLst = self::_getWholeTopicDis();
-        $userTopicLst = self::_getUserTopicDis($device_id);
+        #$userTopicLst = self::_getUserTopicDis($device_id);
+        $valsLst = self::_getUserTopicDis($device_id);
+        if (count($valsLst) != 2) {
+            return array();
+        }
+        $userTopicLst = $valsLst[0];
+        $totalClickCnt = $valsLst[1];
+        $cache = DI::getDefault()->get('cache');
+        $gravity = floatval($cache->get(ALG_TOPIC_GRAVITY_KEY));
         $topicIdxLst = array();
         $weightLst = array();
-        foreach ($userTopicLst as $topicIdx => $score) {
-            if (array_key_exists($topicIdx, $wholeTopicLst)) {
-                $curWeight = $wholeTopicLst[$topicIdx] * $score;
-                array_push($topicIdxLst, $topicIdx);
-                array_push($weightLst, $curWeight);
+        foreach ($wholeTopicLst as $topicIdx => $score) {
+            if (array_key_exists($topicIdx, $userTopicLst)) {
+                $curWeight = $userTopicLst[$topicIdx] * $score;
+            } else {
+                $curWeight = ($gravity / ($gravity + $totalClickCnt)) * $score;
             }
+            array_push($topicIdxLst, $topicIdx);
+            array_push($weightLst, $curWeight);
         }
         if (count($topicIdxLst) <= SAMPLE_TOPIC_CNT) {
             return $topicIdxLst;
