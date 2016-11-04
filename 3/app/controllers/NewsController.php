@@ -18,8 +18,6 @@ class NewsController extends BaseController {
                 "read news must be get");
         }
 
-        $channel_id = $this->get_request_param("channel_id", "int", true);
-
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
         if (!$news_model) {
@@ -30,8 +28,19 @@ class NewsController extends BaseController {
         $redis->setDeviceClick(
                                $this->deviceId, $newsSign, time()); 
         $ret = $this->getPublic($newsSign, $news_model);
-        $ret["imgs"] = $this->getImgs($newsSign, $channel_id);
-        $ret["videos"] = $this->getVideos($newsSign, $channel_id);
+        $ret["imgs"] = $this->getImgs($newsSign, $news_model->channel_id);
+        $ret["videos"] = $this->getVideos($newsSign, $news_model->channel_id);
+        $ret["tpl"] = $this->getTPL($news_channel_id);
+        $this->setJsonResponse($ret);
+        return $this->response;
+    }
+
+    private function getTPL($channel_id) {
+        if ($channel_id == 30001) {
+            return 12;
+        } else {
+            return 5;
+        }
     }
 
     private function getPublic($newsSign, $news_model) {

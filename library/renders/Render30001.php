@@ -57,7 +57,7 @@ class Render30001 extends BaseListRender {
             );
 
 
-        $video = Videos::getByNewsSign($news_model->url_sign);
+        $video = Video::getByNewsSign($news_model->url_sign);
         if ($video) {
             $meta = json_decode($video->cover_meta, true);
             if (!$meta || 

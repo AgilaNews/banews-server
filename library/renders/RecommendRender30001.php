@@ -56,7 +56,7 @@ class RecommendRender30001 extends BaseRecommendRender {
             );
 
 
-        $video = Videos::getByNewsSign($news_model->url_sign);
+        $video = Video::getByNewsSign($news_model->url_sign);
         if ($video) {
             $meta = json_decode($video->cover_meta, true);
             if (!$meta || 
