@@ -7,8 +7,7 @@
  * @version $Id$
  */
 
-class Render30001 extends BaseListRender {
-
+class RecommendRender30001 extends BaseRecommendRender {
     public function __construct($controller) {
         parent::__construct($controller);
     }
@@ -90,7 +89,7 @@ class Render30001 extends BaseListRender {
                            $aw, $ah, $quality);
             $pattern = sprintf(LARGE_CHANNEL_IMG_PATTERN,
                                     urlencode($video->cover_image_sign),
-                                    "{w}", "{h}", $quality),
+                                    "{w}", "{h}", $quality);
 
             $ret["imgs"][] = array(
                 "src" => $url,

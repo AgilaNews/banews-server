@@ -11,8 +11,8 @@ define ("VIDEO_CHANNEL_ID", 30001);
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
-    
-/*    public function DetailAction() {
+
+    public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
                 "read news must be get");
@@ -25,7 +25,133 @@ class NewsController extends BaseController {
         if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
-    }*/
+        $cache = $this->di->get("cache");
+        $redis = new NewsRedis($cache);
+        $redis->setDeviceClick(
+                               $this->deviceId, $newsSign, time()); 
+        $ret = $this->getPublic($newsSign, $news_model);
+        $ret["imgs"] = $this->getImgs($newsSign, $channel_id);
+        $ret["videos"] = $this->getVideos($newsSign, $channel_id);
+    }
+
+    private function getPublic($newsSign, $news_model) {
+        $commentCount = Comment::getCount(array($newsSign));
+
+        $ret = array(
+            "body" => $news_model->json_text,
+            "commentCount" => $commentCount[$newsSign],
+            "news_id" => $news_model->url_sign,
+            "title" => $news_model->title,
+            "source" => $news_model->source_name,
+            "source_url" => $news_model->source_url,
+            "public_time" => $news_model->publish_time,
+            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
+            "channel_id" => $news_model->channel_id,
+            "likedCount" => $news_model->liked,
+            "collect_id" => 0, 
+        );
+
+        if ($this->userSign) {
+            $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
+        }
+        return $ret;
+    }
+
+    private function getImgs($newsSign, $channel_id) {
+        $imgs = array();
+        if ($channel_id != 30001) {
+            $imgs = NewsImage::getImagesOfNews($newsSign);
+            $imgcell = array();
+
+            foreach ($imgs as $img) {
+                if (!$img || $img->is_deadlink == 1 || !$img->meta) {
+                    continue;
+                }
+
+                if ($img->origin_url) {
+                    $meta = json_decode($img->meta, true);
+                    if (!$meta || !$meta["width"] || !$meta["height"]) {
+                        continue;
+                    }
+                }
+        
+                $c = $this->getImgCell($img->url_sign, $meta);
+                $c["name"] = "<!--IMG" . $img->news_pos_id . "-->";
+                $imgcell[] = $c;
+            }
+        } else {
+            $video = Video::getByNewsSign($newsSign);
+            $imgcell[] = $this->getImgCell(
+                $video->cover_image_sign, $video->cover_meta);
+        }
+
+        return $imgcell;
+    }
+
+    protected function getImgCell($url_sign, $meta) {
+       if ($this->net == "WIFI") {
+            $quality = IMAGE_HIGH_QUALITY;
+        } else if ($this->net == "2G") {
+            $quality = IMAGE_LOW_QUALITY;
+        } else {
+            $quality = IMAGE_NORMAL_QUALITY;
+        }
+        
+               
+       $ow = $meta["width"];
+       $oh = $meta["height"];
+
+       if ($this->os == "ios") {
+           $aw = (int) ($this->resolution_w  - 44);
+       } else {
+           $aw = (int) ($this->resolution_w * 11 / 12);
+       }
+
+       $ah = (int) ($aw * $oh / $ow);
+
+       return array(
+                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, $quality),
+                    "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
+                    "width" => $aw,
+                    "height" => $ah,
+                    );
+   }
+
+    private function getVideos($newsSign, $channel_id) {
+        $videocell = array();
+        if ($channel_id != 30001) {
+            $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
+            foreach($videos as $video) {
+                if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
+                    continue;
+                }
+                    
+                if ($video->cover_origin_url) {
+                    $cover_meta = json_decode($video->cover_meta, true);
+                    if (!$cover_meta || !$cover_meta["width"] || !$cover_meta["height"]) {
+                        continue;
+                    }
+                }
+
+                $c = $this->getImgCell($video->video_url_sign, $cover_meta);
+                $c["video_pattern"] = $c["pattern"] . "|v=1";
+                $c["youtube_id"] = $video->youtube_video_id;
+                $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
+                $videocell []= $c;
+            }
+        } else {
+            $video = Video::getByNewsSign($newsSign);
+            $videocell [] = array(
+                "youtube_id" => $video->youtube_video_id,
+                "width" => $aw,
+                "height" => $ah,
+                "duration" => $video->duration,
+                "description" => $video->description,
+                "display" => 0
+            );
+        }
+        return $videocell;
+    }
 
     public function ListAction() {
         if (!$this->request->isGet()) {
@@ -153,9 +279,6 @@ class NewsController extends BaseController {
         }
 
         $ret["recommend_news"]= $render->render($models);
-        if ($this->userSign) {
-            $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
-        }
         $this->setJsonResponse($ret);
         return $this->response;
     }
