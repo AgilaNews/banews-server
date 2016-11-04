@@ -51,7 +51,6 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
 
     protected function combineTopicInterest($device_id) {
         $wholeTopicLst = self::_getWholeTopicDis();
-        #$userTopicLst = self::_getUserTopicDis($device_id);
         $valsLst = self::_getUserTopicDis($device_id);
         if (count($valsLst) != 2) {
             return array();
@@ -123,6 +122,5 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
         }
         return $recNewsLst;
     }
-         
 }
 
