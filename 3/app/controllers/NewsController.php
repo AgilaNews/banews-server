@@ -34,7 +34,7 @@ class NewsController extends BaseController {
         $ret = $this->getPublic($newsSign, $news_model);
         $ret["imgs"] = $this->getImgs($newsSign, $news_model->channel_id);
         $ret["videos"] = $this->getVideos($newsSign, $news_model->channel_id);
-        $ret["tpl"] = $this->getTPL($news_channel_id);
+        $ret["tpl"] = $this->getTPL($news_model->channel_id);
         $this->setJsonResponse($ret);
         return $this->response;
     }
