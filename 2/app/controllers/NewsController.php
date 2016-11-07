@@ -50,20 +50,14 @@ class NewsController extends BaseController {
         );
 
         $device_md5 = md5($this->deviceId);
-        $usead = false;
-        if (in_array($device_md5[0], array('0', '5', '9', 'b'))) {
-            $usead = true; 
-        }
 
-        if ($usead) {
-            if (version_compare($this->client_version, AD_FEATURE, ">=")) {
-                $intervene = new AdIntervene(array(
-                    "type" => DETAIL_AD_TPL_MEDIUM,
-                    "device" => $this->deviceId,
-                ));
+        if (version_compare($this->client_version, AD_FEATURE, ">=")) {
+            $intervene = new AdIntervene(array(
+                "type" => DETAIL_AD_TPL_MEDIUM,
+                "device" => $this->deviceId,
+            ));
 
-                $ret["ad"] = $intervene->render();
-            }
+            $ret["ad"] = $intervene->render();
         }
 
         $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
