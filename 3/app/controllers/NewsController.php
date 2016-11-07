@@ -24,6 +24,10 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
         $cache = $this->di->get("cache");
+        if (!$cache) {
+            throw new HttpException(ERR_INTERNAL_DB, "cache error");
+            
+        }
         $redis = new NewsRedis($cache);
         $redis->setDeviceClick(
                                $this->deviceId, $newsSign, time()); 
@@ -91,7 +95,8 @@ class NewsController extends BaseController {
         } else {
             $video = Video::getByNewsSign($newsSign);
             $imgcell[] = $this->getImgCell(
-                $video->cover_image_sign, $video->cover_meta);
+                $video->cover_image_sign,
+                json_decode($video->cover_meta, true));
         }
 
         return $imgcell;
