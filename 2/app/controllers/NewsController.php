@@ -200,12 +200,15 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        if (version_compare($this->client_version, "1.2.3", ">=")) {
+        if (version_compare($this->client_version, "1.2.4", ">=")) {
             $ret = array(
                 "dispatch_id" => $dispatch_id,
                 "news" => $render->render($dispatch_models),
                 "abflag" => array(),
             );
+            if (in_array($channel_id, array(10001))) {
+                $ret["has_ad"] = 1;
+            }
         } else { 
             $ret[$dispatch_id] = $render->render($dispatch_models);
         }
