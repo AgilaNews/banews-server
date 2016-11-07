@@ -1,13 +1,31 @@
 <?php
+define("VIDEO_LENGTH", 3000);
 class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
+    }
+
+    public function getVideos() {
+        $key = "banews:ph:30001";
+        $count = $this->_redis->zCount($key, 0, +inf);
+        $limit = max(0, $count - VIDEO_LENGTH);
+        $start = rand(0, $limit);
+        $end = $start + $limit;
+        $ret = array();
+        $tmp = $this->_redis->zRange($key, $start, $end, true);
+        
+        foreach ($tmp as $id=>$weight) {
+            $ret []= array("id" => $id, "weight"=>$weight);
+        }
+        return $ret;
     }
     
     public function getNewsOfChannel($channel_id, $day) {
         $image_gif_channel = array("10011", "10012");
         if (in_array($channel_id, $image_gif_channel)) {
             $key = "banews:ph:v2:$channel_id";
+        } else if ($channel_id == "30001") {
+            return $this->getVideos();
         } else {
             $key = "banews:ph:$channel_id";
         }
