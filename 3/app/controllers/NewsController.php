@@ -308,7 +308,7 @@ class NewsController extends BaseController {
         $ret["recommend_news"]= $render->render($models);
         $this->logger->info(sprintf("[Recommend][policy:%s][cnl:%d][sent:%d]",
                                     $recommend_selector->getPolicyTag(), 
-                                    $channel_id, count($ret["recommend_news"]));
+                                    $channel_id, count($ret["recommend_news"])));
         $this->setJsonResponse($ret);
         return $this->response;
     }
