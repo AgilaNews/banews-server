@@ -189,10 +189,12 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $models = $selector->select($prefer);
+        $dispatch_models = $selector->select($prefer);
         
-        foreach ($models as $sign => $model) {
-            $dispatch_ids []= $sign;
+        foreach ($dispatch_models as $dispatch_model) {
+            if (isset($dispatch_model->url_sign)) {
+                $dispatch_ids []= $dispatch_model->url_sign;
+            }
         }
 
         $cname = "Render$channel_id";
@@ -203,7 +205,18 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret[$dispatch_id] = $render->render($models);
+        if (version_compare($this->client_version, "1.2.4", ">=")) {
+            $ret = array(
+                "dispatch_id" => $dispatch_id,
+                "news" => $render->render($dispatch_models),
+                "abflag" => array(),
+            );
+            if (in_array($channel_id, array(10001))) {
+                $ret["has_ad"] = 1;
+            }
+        } else { 
+            $ret[$dispatch_id] = $render->render($dispatch_models);
+        }
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
