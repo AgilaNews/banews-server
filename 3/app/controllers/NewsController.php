@@ -157,8 +157,8 @@ class NewsController extends BaseController {
             $video = Video::getByNewsSign($newsSign);
             $videocell [] = array(
                 "youtube_id" => $video->youtube_video_id,
-                "width" => $aw,
-                "height" => $ah,
+                //"width" => $aw,
+                //"height" => $ah,
                 "duration" => $video->duration,
                 "description" => $video->description,
                 "display" => 0
@@ -220,7 +220,7 @@ class NewsController extends BaseController {
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
-                                    $channel_id, count($ret[$dispatch_id])));
+                                    $channel_id, count($dispatch_models]));
 
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
@@ -308,7 +308,7 @@ class NewsController extends BaseController {
         $ret["recommend_news"]= $render->render($models);
         $this->logger->info(sprintf("[Recommend][policy:%s][cnl:%d][sent:%d]",
                                     $recommend_selector->getPolicyTag(), 
-                                    $channel_id, count($ret["recommend_news"])));
+                                    $news_model->channel_id, count($ret["recommend_news"])));
         $this->setJsonResponse($ret);
         return $this->response;
     }

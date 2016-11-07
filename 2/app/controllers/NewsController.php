@@ -215,7 +215,7 @@ class NewsController extends BaseController {
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
-                                    $channel_id, count($ret[$dispatch_id])));
+                                    $channel_id, count($dispatch_models));
 
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
