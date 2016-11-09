@@ -14,17 +14,18 @@ use Phalcon\Logger\Adapter\File as FA;
 
 
 class BanewsLogger extends FA {
-    public function __construct($name, $option = null){
+    public function __construct($name, $options = null){
         $mode = "ab";
         $this->wf_handler = fopen($name . ".wf", $mode);
         if (!$this->wf_handler) {
             throw new Exception("optn $name.wf error");
         }
-        $this->handler = fopen($name, $mode);
-        if (!$this->handler) {
+        $this->_fileHandler = fopen($name, $mode);
+        if (!$this->_fileHandler) {
             throw new Exception("open $name error");
         }
-        $this->path = $name;
+        $this->_path = $name;
+        $this->_options = $options;
     }
 
     public function commit(){
@@ -48,19 +49,19 @@ class BanewsLogger extends FA {
         }
 
         if ($msg) {
-            fwrite($this->handler,
+            fwrite($this->_fileHandler,
                    $this->getFormatter()->format($msg, Logger::NOTICE, $time));
         }
     }
 
     public function close(){
-        fclose($this->handler);
+        fclose($this->_fileHandler);
         fclose($this->wf_handler);
     }
 
     public function __wakeup(){
         $mode = "ab";
-        $this->handler = fopen($name, $mode);
+        $this->_fileHandler = fopen($name, $mode);
         $this->wf_handler = fopen($name . ".wf", $mode);
     }
 }

@@ -22,12 +22,12 @@ class BaseController extends Controller{
     public function initialize(){
         $this->logger = $this->di->get('logger');
         $this->eventlogger = $this->di->get('eventlogger');
-        $this->logger->begin();
 
+        $this->logger->begin();
         $this->response = new Response();
         $this->filter = new Filter();
         $this->_start_time = microtime(true);
-        $this->logger->notice(sprintf("[%s:%s]",
+        $this->logger->info(sprintf("[%s:%s]",
                                       $_SERVER["REQUEST_METHOD"],
                                       $_SERVER["REQUEST_URI"]));
         $this->view->disable();
@@ -89,6 +89,8 @@ class BaseController extends Controller{
                 }
             }
         }
+
+        $this->initAbFlag();
     }
 
     public function check_user_and_device(){
@@ -106,10 +108,10 @@ class BaseController extends Controller{
         }
     }
 
-    public function __destruct() {
-        $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s]",
-                                      $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
-                                      $this->tz, $this->lat, $this->lng, $this->lang));
+    public function afterExecuteRoute($dispatcher) {
+        $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s][abflag:%s]",
+                                    $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
+                                    $this->tz, $this->lat, $this->lng, $this->lang, json_encode($this->abflags)));
         $this->logger->info(sprintf("[cost:%sms]",
                                       round((microtime(true) - $this->_start_time) * 1000)));
         $this->logger->commit();
@@ -192,7 +194,33 @@ class BaseController extends Controller{
         $param["os"] = $this->os;
         $param["os-version"] = $this->os_version;
         $param["build"] = $this->build;
+        $param["abflags"] = $this->abflags;
 
         $this->eventlogger->info(json_encode($param));
+    }
+
+
+    private function initAbFlag() {
+        $ctx = new iface\RequestContext();
+        
+        $ctx->UserId = $this->userSign;
+        $ctx->DeviceId = $this->deviceId;
+        $ctx->SessionId = $this->session;
+        $ctx->UserAgent = $this->ua;
+        $ctx->Net = $this->net;
+        $ctx->Isp = $this->isp;
+        $ctx->Language = $this->lang;
+        $ctx->ClientVersion = $this->client_version;
+        $ctx->Os = $this->os;
+        $ctx->OsVersion = $this->os_version;
+        $ctx->Longitude = $this->lng;
+        $ctx->Latitude = $this->lat;
+        $ctx->TimeZone = $this->tz;
+        $ctx->ScreenWidth = $this->resolution_w;
+        $ctx->ScreenHeight = $this->resolution_h;
+        $ctx->Dpi = $this->dpi;
+        
+        $service = $this->di->get("abtest");
+        $this->abflags = $service->requestFlags($this->config->abtest->product_key, $ctx);
     }
 }
