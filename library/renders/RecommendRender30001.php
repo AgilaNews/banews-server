@@ -22,7 +22,7 @@ class RecommendRender30001 extends BaseRecommendRender {
             }
         }
         
-        $comment_counts = Comment::getCount(array_keys($keys));
+        $comment_counts = Comment::getCount($keys);
 
         foreach ($models as $sign => $news_model) {
             $cell = $this->serializeNewsCell($news_model);

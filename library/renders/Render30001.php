@@ -23,7 +23,7 @@ class Render30001 extends BaseListRender {
             }
         }
         
-        $comment_counts = Comment::getCount(array_keys($keys));
+        $comment_counts = Comment::getCount($keys);
 
         foreach ($models as $sign => $news_model) {
             $cell = $this->serializeNewsCell($news_model);
