@@ -37,7 +37,7 @@ class BaseListRender {
             }
         }
         
-        $comment_counts = Comment::getCount(array_keys($keys));
+        $comment_counts = Comment::getCount($keys);
         
         foreach ($models as $news_model) {
             if ($this->isIntervened($news_model)) {
