@@ -1,7 +1,7 @@
 <?php
 
-define('MIN_NEWS_COUNT', 8);
-define('MAX_NEWS_COUNT', 10);
+define('MIN_NEWS_COUNT', 4);
+define('MAX_NEWS_COUNT', 6);
 define("LATELY_NEWS_COUNT", 2);
 
 class Selector30001 extends BaseNewsSelector {
@@ -14,7 +14,7 @@ class Selector30001 extends BaseNewsSelector {
     } 
 
     public function sampling($sample_count, $prefer) {
-        $randomPolicy = new ExpDecayListPolicy($this->_di);
+        $randomPolicy = new RandomListPolicy($this->_di);
         $popularPolicy = new PopularListPolicy($this->_di);
         $options = array();
         if ($prefer == "later") {

@@ -2,6 +2,7 @@
 class CollectListRender extends BaseListRender {
     public function __construct($controller) {
         parent::__construct($controller);
+        $this->video_render = new Render30001($controller);
     }
 
     public function render($collect_models) {
@@ -16,8 +17,14 @@ class CollectListRender extends BaseListRender {
 
         $news_model_list = News::batchGet($signs);
 
+
         foreach ($news_model_list as $sign => $news_model) {
-            $cell = $this->serializeNewsCell($news_model);
+            $cell = "";
+            if ($news_model->channel_id == "30001") {
+                $cell = $this->video_render->serializeNewsCell($news_model);
+            } else {
+                $cell = $this->serializeNewsCell($news_model);
+            }
             $collect = $collects[$news_model->url_sign];
             $cell["collect_id"] = $collect->id;
             $cell["public_time"] = $collect->create_time;

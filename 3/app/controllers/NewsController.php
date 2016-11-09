@@ -23,6 +23,7 @@ class NewsController extends BaseController {
         if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
+        $this->addView($newsSign)
         $cache = $this->di->get("cache");
         if (!$cache) {
             throw new HttpException(ERR_INTERNAL_DB, "cache error");
@@ -220,7 +221,7 @@ class NewsController extends BaseController {
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
-                                    $channel_id, count($dispatch_models]));
+                                    $channel_id, count($dispatch_models));
 
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
@@ -324,34 +325,11 @@ class NewsController extends BaseController {
         }
 
         $newsSign = $this->get_or_fail($req, "news_id", "string");
-        $now = News::getBySign($newsSign);
-        if (!$now) {
-            throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
-        }
-
-        if (!isset($now->content_sign) || $now->content_sign == null || count($now->content_sign) == 0) {
-            $now->content_sign = "";
-        } 
-
-        
-        $originView = $now->liked;
-        $pseudoView = mt_rand(1, 10);
-        if ($pseudoView == 1) {
-            $now->viewed += 2;
-            $this->logger->info(sprintf("[pseudo:%d]", $now->viewed));
-        } else {
-            $now->viewed += 1;
-        }
-
-        $ret = $now->save();
-        if (!$ret) {
-            $this->logger->warning(sprintf("save error: %s", join(",",$now->getMessages())));
-            throw new HttpException(ERR_INTERNAL_DB, "internal error");
-        }
+        $originView = addView($newsSign);
 
         $ret = array (
             "message" => "ok",
-            "viewed" => $originLike + 1,
+            "viewed" => $originView + 1,
         );
 
         $this->logger->info(sprintf("[View][viewed:%s]", $ret["viewed"]));
@@ -359,5 +337,30 @@ class NewsController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
 
+    }
+
+    private function addView($newsSign) {
+        $video_model = Video::getByNewsSign($newsSign);
+        if (!$video_model) {
+            throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
+        }
+
+        if (!$video_model) {
+            return 0;
+        }
+
+        if (!isset($video_model->content_sign) || $video_model->content_sign == null || count($video_model->content_sign) == 0) {
+            $video_model->content_sign = "";
+        } 
+        
+        $originView = $video_model->view;
+        $video_model->view += 1;
+
+        $ret = $video_model->save();
+        if (!$ret) {
+            $this->logger->warning(sprintf("save error: %s", join(",",$video_model->getMessages())));
+            throw new HttpException(ERR_INTERNAL_DB, "internal error");
+        }
+        return $originView;
     }
 }

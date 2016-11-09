@@ -153,8 +153,8 @@ class NewsController extends BaseController {
                                                "ad" => $ret["ad"],
                                                  ));
         
-        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d][usead:%s]", $newsSign, count($ret["imgs"]),
-                                     $news_model->channel_id, count($ret["recommend_news"]), $usead));
+        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d]", $newsSign, count($ret["imgs"]),
+                                     $news_model->channel_id, count($ret["recommend_news"])));
         
         $this->setJsonResponse($ret);
         return $this->response;
@@ -215,7 +215,7 @@ class NewsController extends BaseController {
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
-                                    $channel_id, count($dispatch_models));
+                                    $channel_id, count($dispatch_models)));
 
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
