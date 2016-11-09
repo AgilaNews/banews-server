@@ -210,7 +210,7 @@ class NewsController extends BaseController {
             $ret = array(
                 "dispatch_id" => $dispatch_id,
                 "news" => $render->render($dispatch_models),
-                "abflag" => array(),
+                "abflag" => json_encode(array()),
             );
             if (in_array($channel_id, array(10001))) {
                 $ret["has_ad"] = 1;
