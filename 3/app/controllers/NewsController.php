@@ -23,7 +23,7 @@ class NewsController extends BaseController {
         if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
-        $this->addView($newsSign)
+        $this->addView($newsSign);
         $cache = $this->di->get("cache");
         if (!$cache) {
             throw new HttpException(ERR_INTERNAL_DB, "cache error");
@@ -221,7 +221,7 @@ class NewsController extends BaseController {
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
-                                    $channel_id, count($dispatch_models));
+                                    $channel_id, count($dispatch_models)));
 
         $this->logEvent(EVENT_NEWS_LIST, array(
                                               "dispatch_id"=> $dispatch_id,
