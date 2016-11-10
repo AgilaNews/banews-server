@@ -46,7 +46,10 @@ class Comment{
         $config = $di->get("config");
         $comment_service = $di->get('comment');
         $logger = $di->get("logger");
-
+        $ret = array();
+        foreach ($newsSignList as $sign) {
+            $ret[$sign] = 0;
+        }
 
         $req = new iface\GetCommentsCountRequest();
         $req->setProduct($config->comment->product_key);
@@ -55,7 +58,7 @@ class Comment{
         list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . $status->code . ":" . json_encode($status->details, true));
-            return array();
+            return $ret;
         }
         
         $ret = array();
