@@ -10,7 +10,7 @@ define("DEVICE_SMALL", "hdpi");
 
 define("EVENT_NEWS_DETAIL", "020103");
 define("EVENT_NEWS_LIST", "020104");
-define("EVENT_NEWS_VIEWED", "020105");
+define("EVENT_NEWS_RECOMMEND", "020108");
 define("EVENT_NEWS_LIKE", "020204");
 define("EVENT_NEWS_COLLECT", "020205");
 define("EVENT_NEWS_COMMENT", "020207");
