@@ -36,6 +36,9 @@ class NewsController extends BaseController {
         $ret["imgs"] = $this->getImgs($newsSign, $news_model->channel_id);
         $ret["videos"] = $this->getVideos($newsSign, $news_model->channel_id);
         $ret["tpl"] = $this->getTPL($news_model->channel_id);
+        $this->logEvent(EVENT_NEWS_DETAIL, array(
+                                               "news_id"=> $newsSign
+                                            ));
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -307,6 +310,13 @@ class NewsController extends BaseController {
         }
 
         $ret["recommend_news"]= $render->render($models);
+        $this->logEvent(EVENT_NEWS_RECOMMEND, array(
+                                                    "recommend"=> array(
+                                                                   "news" => array_keys($models),
+                                                                   "policy"=> "random",
+                                                                   ),
+                                                    "ad" => ""
+                                               ));
         $this->logger->info(sprintf("[Recommend][policy:%s][cnl:%d][sent:%d]",
                                     $recommend_selector->getPolicyTag(), 
                                     $news_model->channel_id, count($ret["recommend_news"])));
@@ -333,7 +343,6 @@ class NewsController extends BaseController {
         );
 
         $this->logger->info(sprintf("[View][viewed:%s]", $ret["viewed"]));
-        $this->logEvent(EVENT_NEWS_VIEW, array("news_id"=>$newsSign, "viewed"=>$ret["viewed"]));
         $this->setJsonResponse($ret);
         return $this->response;
 
