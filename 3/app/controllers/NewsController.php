@@ -324,29 +324,6 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
-    public function ViewAction() {
-        if (!$this->request->isPost()) {
-            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
-        } 
-
-        $req = $this->request->getJsonRawBody(true);
-        if (null === $req) {
-            throw new HttpException(ERR_BODY, "body format error");
-        }
-
-        $newsSign = $this->get_or_fail($req, "news_id", "string");
-        $originView = addView($newsSign);
-
-        $ret = array (
-            "message" => "ok",
-            "viewed" => $originView + 1,
-        );
-
-        $this->logger->info(sprintf("[View][viewed:%s]", $ret["viewed"]));
-        $this->setJsonResponse($ret);
-        return $this->response;
-
-    }
 
     private function addView($newsSign) {
         $video_model = Video::getByNewsSign($newsSign);
