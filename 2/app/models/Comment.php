@@ -32,12 +32,6 @@ class Comment{
             return array();
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-        //    $logger->warning("get comment error:" . $s->getErrorMsg());
-            return array();
-        }
-
         $comments = $resp->getCommentsList();
         $ret = array();
 
@@ -63,11 +57,6 @@ class Comment{
             return 0;
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            return 0;
-        }
-
         $ret = array();
         
         $count = $resp->getCommentsCountList();

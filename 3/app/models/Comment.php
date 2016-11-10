@@ -28,16 +28,9 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
         if ($status->code != 0) {
-          //  $logger->warning("get comment error:" . json_encode($status->details, true));
             return array();
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-        //    $logger->warning("get comment error:" . $s->getErrorMsg());
-            return array();
-        }
-
         $comments = $resp->getCommentsList();
         $ret = array();
 
@@ -63,11 +56,6 @@ class Comment{
             return 0;
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            return 0;
-        }
-
         $ret = array();
         
         $count = $resp->getCommentsCountList();
