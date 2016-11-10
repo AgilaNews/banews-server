@@ -32,13 +32,6 @@ class NotificationController extends BaseController {
                                     "get comment error:" . json_encode($status->details, true));
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "add comment error: " . $s->getErrorMsg()
-                                    );
-        }
-
         $ret = array();
 
         foreach ($resp->getNotifications() as $notify) {
@@ -87,13 +80,6 @@ class NotificationController extends BaseController {
                                     json_encode($status->details, true));
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    $s->getErrorMsg()
-                                    );
-        }
-
         $sign = $resp->getDocId();
         $news_model = News::getBySign($sign);
 
