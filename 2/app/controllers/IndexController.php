@@ -9,7 +9,7 @@
  * 
  * 
  */
-class IndexController{
+class IndexController extends BaseController{
     public function ErrorAction() {
         $exception = $this->dispatcher->getParam(0);
         $this->response->setHeader("Content-Type", "application/json; charset=UTF-8");
