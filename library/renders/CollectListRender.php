@@ -16,12 +16,15 @@ class CollectListRender extends BaseListRender {
         }
 
         $news_model_list = News::batchGet($signs);
-
+        $comment_counts = Comment::getCount($signs);
 
         foreach ($news_model_list as $sign => $news_model) {
             $cell = "";
             if ($news_model->channel_id == "30001") {
                 $cell = $this->video_render->serializeNewsCell($news_model);
+                if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+                }
             } else {
                 $cell = $this->serializeNewsCell($news_model);
             }
