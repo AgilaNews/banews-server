@@ -256,4 +256,13 @@ class Video extends BaseModel {
 
         return $ret;
     }
+
+    public function save($data = null, $whitelist = null) {
+        $ret = parent::save($data, $whitelist);
+        if ($ret) {
+            Video::_saveToCache($this);
+        }
+        return $ret;
+
+    } 
 }
