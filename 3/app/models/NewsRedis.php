@@ -1,5 +1,5 @@
 <?php
-define("VIDEO_LENGTH", 3000);
+define("VIDEO_LENGTH", 100);
 class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
