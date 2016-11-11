@@ -90,7 +90,7 @@ class IndexController extends BaseController {
             $log .= "[$k:$v]";
         }
 
-        $this->logger->notice($log);
+        $this->logger->info($log);
         $this->logEvent(EVENT_NEWS_COLDSETTING, $kw);
         $this->setJsonResponse($ret);
         return $this->response;

@@ -97,12 +97,7 @@ class CommentController extends BaseController {
                                     "get comment error:" . json_encode($status->details, true));
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            throw new HttpException(ERR_INTERNAL_BG,
-                                    "add comment error: " . $s->getErrorMsg()
-                                    );
-        }
+
         $this->logEvent(EVENT_NEWS_COMMENT, array(
                                                   "news_id" => $newsSign,
                                                   "ref_id" => $ref_id,
@@ -170,16 +165,11 @@ class CommentController extends BaseController {
         if ($status->code != 0) {
             $this->logger->warning("communicate to comment server error");
         } else {
-            $s = $resp->getResponse();
-            if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-                $this->logger->warning("communicate to comment server error: " . $s->getErrorMsg());
-            } else {
-                $currentLiked = $resp->getCurrentLiked();
-                
-                $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
-                                                               "comment_id" => $comment_id,
-                                                               ));
-            }
+            $currentLiked = $resp->getCurrentLiked();
+            
+            $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
+                                                           "comment_id" => $comment_id,
+                                                           ));
         }
 
         $this->setJsonResponse(array(

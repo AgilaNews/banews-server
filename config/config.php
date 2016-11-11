@@ -43,6 +43,11 @@ $settings = array (
         "port" => "6087",
         "product_key" => "agilanews",
     ),
+    'abtest' => array(
+        'host' => '10.8.23.37',
+        'port' => '6097',
+        'product_key' => 'agilanews',
+    ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/data/logs/banews-server/banews-server.log",

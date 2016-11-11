@@ -14,6 +14,7 @@ use Elasticsearch\ClientBuilder;
 $di = new FactoryDefault();
 
 require(ROOT_PATH . "/library/pb/comment.php");
+require(ROOT_PATH . "/library/pb/abtest.php");
 
 $di->set('dispatcher', function () {
     $em = new EventsManager();
@@ -29,7 +30,7 @@ $di->set('dispatcher', function () {
             return false;
             }
         );
-    
+
     $dispatcher = new MvcDispatcher();
     $dispatcher->setEventsManager($em);
     return $dispatcher;
@@ -90,6 +91,15 @@ $di->set('comment', function() use ($config) {
     ]);
     return $client;
 });
+
+$di->set('abtest', function() use ($config) {
+        $client = new iface\AbtestServiceClient(sprintf("%s:%s", $config->abtest->host, $config->abtest->port), 
+                                                [
+                                                 'credentials' => Grpc\ChannelCredentials::createInsecure(),
+                                                 ]);
+        $service = new Abservice($client);
+        return $service;
+    });
 
 
 $di->set('cache', function() use ($config) {

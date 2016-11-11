@@ -28,16 +28,10 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
         if ($status->code != 0) {
-          //  $logger->warning("get comment error:" . json_encode($status->details, true));
+            $logger->warning("get comment error:" . json_encode($status->details, true));
             return array();
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-        //    $logger->warning("get comment error:" . $s->getErrorMsg());
-            return array();
-        }
-
         $comments = $resp->getCommentsList();
         $ret = array();
 
@@ -52,7 +46,10 @@ class Comment{
         $config = $di->get("config");
         $comment_service = $di->get('comment');
         $logger = $di->get("logger");
-
+        $ret = array();
+        foreach ($newsSignList as $sign) {
+            $ret[$sign] = 0;
+        }
 
         $req = new iface\GetCommentsCountRequest();
         $req->setProduct($config->comment->product_key);
@@ -60,14 +57,10 @@ class Comment{
         
         list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
         if ($status->code != 0) {
-            return 0;
+            $logger->warning("get comment error:" . $status->code . ":" . json_encode($status->details, true));
+            return $ret;
         }
         
-        $s = $resp->getResponse();
-        if ($s->getCode() != iface\GeneralResponse\ErrorCode::NO_ERROR) {
-            return 0;
-        }
-
         $ret = array();
         
         $count = $resp->getCommentsCountList();

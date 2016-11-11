@@ -17,13 +17,15 @@ class ChannelV2 extends BaseModel {
 
     public $publish_latest_version;
 
+    public $ios_publish_latest_version;
+
     public $is_visible;
 
     public function getSource(){
         return "tb_channel_v2";
     }
 
-    public static function getChannelsOfVersion($channel_version, $client_version) {
+    public static function getChannelsOfVersion($channel_version, $client_version, $os) {
         $cache = DI::getDefault()->get('cache');
 
         if ($cache) {
@@ -48,7 +50,7 @@ class ChannelV2 extends BaseModel {
           }
           ]
         */
-        $channel_list = ChannelV2::getAll($client_version);
+        $channel_list = ChannelV2::getAll($client_version, $os);
 
         $channel_map = array();
         foreach ($channel_list as $channel) {
@@ -78,14 +80,17 @@ class ChannelV2 extends BaseModel {
         return $ret;
     }
 
-    public static function getAll($client_version) {
+    public static function getAll($client_version, $os) {
         $channels = ChannelV2::find(array("conditions" => "is_visible=1"));
         $ret = [];
 
         foreach ($channels as $channel) {
-            $ret []= $channel;
-            if (version_compare($client_version, $channel->publish_latest_version, ">=")) {
+            if ($os == "ios" && version_compare($client_version, $channel->ios_publish_latest_version, ">=")) {
                 $ret []= $channel;    
+            } else {
+                if (version_compare($client_version, $channel->publish_latest_version, ">=")) {
+                    $ret []= $channel;    
+                }
             }
         }
 
