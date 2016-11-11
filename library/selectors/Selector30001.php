@@ -45,6 +45,7 @@ class Selector30001 extends BaseNewsSelector {
         $selected_news_list = $this->sampling($required, $prefer);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
+        $models = $this->removeDup($models);
 
         $ret = array();
         $filter = array();
