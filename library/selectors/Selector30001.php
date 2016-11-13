@@ -2,7 +2,7 @@
 
 define('MIN_NEWS_COUNT', 4);
 define('MAX_NEWS_COUNT', 6);
-define("LATELY_NEWS_COUNT", 2);
+define("LATELY_NEWS_COUNT", 3);
 
 class Selector30001 extends BaseNewsSelector {
     public function getPolicyTag(){
