@@ -7,7 +7,7 @@
  * @version $Id$
  */
 
-define("DESCRIPTION_LIMIT", 1500)
+define("DESCRIPTION_LIMIT", 1500);
 
 class Render30001 extends BaseListRender {
 
