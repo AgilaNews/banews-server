@@ -62,6 +62,9 @@ class CommentController extends BaseController {
         if (!$this->userSign) {
             throw new HttpException(ERR_NOT_AUTH, "usersign not set");
         }
+        if (!$comment_service) {
+            throw new HttpException(ERR_INTERNAL_BG, "internal error");
+        }
         
         $newsSign = $this->get_or_fail($param, "news_id", "string");
         $detail = $this->get_or_fail($param, "comment_detail", "string");

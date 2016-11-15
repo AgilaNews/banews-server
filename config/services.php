@@ -63,18 +63,6 @@ $di->set('logger', function() use($config) {
     return $logger;
 });
 
-/*
-$di->set('ufileuploader', function() use ($config) {
-        $uploader = new UFileUploader($config->ufile->public_key,
-                                      $config->ufile->private_key,
-                                      $config->ufile->bucket,
-                                      $config->ufile->proxy,
-                                      $config->ufile->suffix);
-        return $uploader;
-});
-*/
-
-
 $di->set('eventlogger', function() use ($config) {
     try {
         $el = new EventLogger($config->logger->event->addr, $config->logger->event->category);
@@ -86,19 +74,37 @@ $di->set('eventlogger', function() use ($config) {
 
 $di->set('comment', function() use ($config) {
     $client = new iface\CommentServiceClient(sprintf("%s:%s", $config->comment->host, $config->comment->port), 
-    [
-            'credentials' => Grpc\ChannelCredentials::createInsecure(),
-    ]);
+                                             [
+                                                 'credentials' => Grpc\ChannelCredentials::createInsecure(),
+                                                 'timeout' => $config->comment->call_timeout,
+                                             ]);
+    
+    try {
+        $client->waitForReady($config->comment->conn_timeout);
+    } catch(\Exception $e) {
+        return false;
+    }
+    
     return $client;
 });
 
 $di->set('abtest', function() use ($config) {
         $client = new iface\AbtestServiceClient(sprintf("%s:%s", $config->abtest->host, $config->abtest->port), 
                                                 [
-                                                 'credentials' => Grpc\ChannelCredentials::createInsecure(),
-                                                 ]);
-        $service = new Abservice($client);
-        return $service;
+                                                'credentials' => Grpc\ChannelCredentials::createInsecure(),
+                                                'timeout' => $config->abtest->call_timeout,
+                                                ]);
+        try {
+            $client->waitForReady($config->abtest->conn_timeout);
+        } catch (\Exception $e){
+            return false;
+        }
+
+        if ($client) {
+            return new Abservice($client);
+        } else {
+            return false;
+        }
     });
 
 

@@ -8,6 +8,9 @@ class Comment{
         $di = DI::getDefault();
         $config = $di->get("config");
         $comment_service = $di->get('comment');
+        if (!$comment_service) {
+            return array();
+        }
         $logger = $di->get('logger');
 
         $req = new iface\GetCommentsOfDocRequest();
@@ -53,6 +56,10 @@ class Comment{
 
         foreach ($newsSignList as $sign) {
             $ret[$sign] = 0;
+        }
+
+        if (!$comment_service) {
+            return $ret;
         }
         
         list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
