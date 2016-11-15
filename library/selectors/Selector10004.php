@@ -59,7 +59,7 @@ class Selector10004 extends BaseNewsSelector {
             }
         }
         
-        
+        $this->insertAd($ret);        
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
     }
