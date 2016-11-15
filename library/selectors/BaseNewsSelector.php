@@ -121,7 +121,7 @@ class BaseNewsSelector {
                                                   ));
 
             if ($t == "forth_pos") {
-                $pos =4 ;
+                $pos = 3;
             } else {
                 $pos = AD_INTERVENE_POS;
             }
