@@ -34,9 +34,12 @@ $di->set('dispatcher', function () {
     $dispatcher = new MvcDispatcher();
     $dispatcher->setEventsManager($em);
     return $dispatcher;
-    });
+    }, true);
 
-
+$di->set('view', function () use ($config) {
+            $view = new View();
+            return $view;
+    }, true);
 $di->set('db_w', function() use ($config) {
     $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db_w->adapter;
     
