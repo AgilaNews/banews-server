@@ -8,7 +8,8 @@ class Comment{
         $di = DI::getDefault();
         $config = $di->get("config");
         $comment_service = $di->get('comment');
-        if ($comment_service) {
+        if (!$comment_service) {
+            $this->logger->warning("get comment service error");
             return array();
         }
         
@@ -33,7 +34,7 @@ class Comment{
         list($resp, $status) = $comment_service->GetCommentsByDoc($req,
                                                                   array(),
                                                                   array(
-                                                                        "timeout" => $config->comment->call_timeout)
+                                                                      "timeout" => $config->comment->call_timeout)
                                                                   )->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . json_encode($status->details, true));
@@ -61,6 +62,7 @@ class Comment{
         }
 
         if (!$comment_service) {
+            $this->logger->warning("get comment service error");
             return $ret;
         }
 
@@ -68,7 +70,10 @@ class Comment{
         $req->setProduct($config->comment->product_key);
         $req->setDocIds($newsSignList);
         
-        list($resp, $status) = $comment_service->GetCommentsCount($req, array(), array("timeout" => $config->comment->call_timeout))->wait();
+        list($resp, $status) = $comment_service->GetCommentsCount($req, array(),
+                                                                  array(
+                                                                        "timeout" => $config->comment->call_timeout)
+                                                                  )->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . $status->code . ":" . json_encode($status->details, true));
             return $ret;
@@ -79,7 +84,7 @@ class Comment{
         
         $count = $resp->getCommentsCountList();
         if (count($count) != count($newsSignList)) {
-            $logger->warn("mismatched comment count");
+            $logger->warning("mismatched comment count");
             return $ret;
         }
         

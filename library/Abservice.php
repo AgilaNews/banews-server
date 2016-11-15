@@ -18,12 +18,20 @@ class Abservice {
     }
 
     public function requestFlags($product, $ctx){
+        if (!$this->client) {
+            $this->logger->warning("connect abtest service error");
+            return array();
+        }
+        
         $config = DI::getDefault()->get('config');
         $req = new iface\GetExperimentGroupRequest();
         $req->setProduct($product);
         $req->setContext($ctx);
 
-        list($resp, $status) = $this->client->GetExperimentGroup($req, array(), array("timeout" => $config->abtest->call_timeout))->wait();
+        list($resp, $status) = $this->client->GetExperimentGroup($req, array(),
+                                                                 array(
+                                                                       "timeout" => $config->abtest->call_timeout)
+                                                                 )->wait();
 
         if ($status->code != 0) {
             $this->logger->warning("get abflag error:" . $status->code . ":" . json_encode($status->details, true));

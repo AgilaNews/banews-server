@@ -76,7 +76,7 @@ $di->set('comment', function() use ($config) {
     $client = new iface\CommentServiceClient(sprintf("%s:%s", $config->comment->host, $config->comment->port), 
                                              [
                                                  'credentials' => Grpc\ChannelCredentials::createInsecure(),
-                                                 'timeout' => $config->comment->call_timeout,
+                                                 'timeout' => $config->comment->conn_timeout,
                                              ]);
     
     try {
@@ -92,7 +92,7 @@ $di->set('abtest', function() use ($config) {
         $client = new iface\AbtestServiceClient(sprintf("%s:%s", $config->abtest->host, $config->abtest->port), 
                                                 [
                                                 'credentials' => Grpc\ChannelCredentials::createInsecure(),
-                                                'timeout' => $config->abtest->call_timeout,
+                                                'timeout' => $config->abtest->conn_timeout,
                                                 ]);
         try {
             $client->waitForReady($config->abtest->conn_timeout);
