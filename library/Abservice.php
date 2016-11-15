@@ -47,7 +47,7 @@ class Abservice {
     }
 
     public function getTag($experiment) {
-        if (in_array($experiment, $this->abflags)) {
+        if (array_key_exists($experiment, $this->abflags)) {
             return $this->abflags[$experiment];
         }
 

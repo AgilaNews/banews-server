@@ -111,7 +111,6 @@ class BaseNewsSelector {
 
     protected function insertAd(&$ret) {
         if (version_compare($this->_client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
-
             $abservice = DI::getDefault()->get('abtest');
             $t = $abservice->getTag("timeline_ad_position");
             $device_md5 = md5($this->_device_id);
@@ -122,9 +121,12 @@ class BaseNewsSelector {
                                                   ));
 
             if ($t == "forth_pos") {
-                $this->interveneAt($ret, $ad_intervene, 4);
+                $pos =4 ;
             } else {
-                $this->interveneAt($ret, $ad_intervene, AD_INTERVENE_POS);
+                $pos = AD_INTERVENE_POS;
+            }
+            if (count($ret) >= $pos) {
+                $this->interveneAt($ret, $ad_intervene, $pos);
             }
         }
     }
