@@ -14,6 +14,24 @@ class Selector10011 extends BaseNewsSelector {
         return $this->_policy;
     }
 
+    public function removeDup($models) {
+        $ret = array();
+        $uniq = array();
+
+        foreach ($models as $sign => $news_model) { 
+            if (array_key_exists($news_model->url_sign, $uniq) 
+            ) {
+                //url sign dup continue
+                continue;
+            }
+
+            $ret [$sign] = $news_model;
+            $uniq[$news_model->url_sign] = $news_model;
+        }
+
+        return $ret;
+    }
+
     public function sampling($sampling_count, $prefer) {
         return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id,
                                  $this->_user_id, $sampling_count, null, $prefer);
@@ -24,6 +42,7 @@ class Selector10011 extends BaseNewsSelector {
         $selected_news_list = $this->sampling($required, $prefer);
         $models = News::batchGet($selected_news_list);
         $models = $this->removeInvisible($models);
+        $models = $this->removeDup($models);
         
         $ret = array();
         $filter = array();
