@@ -30,7 +30,11 @@ class Comment{
             assert(false, "filter is invalid : " . $filter);
         }
         
-        list($resp, $status) = $comment_service->GetCommentsByDoc($req, array(), array("timeout" => $config->comment->call_timeout))->wait();
+        list($resp, $status) = $comment_service->GetCommentsByDoc($req,
+                                                                  array(),
+                                                                  array(
+                                                                        "timeout" => $config->comment->call_timeout)
+                                                                  )->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . json_encode($status->details, true));
             return array();
