@@ -43,7 +43,7 @@ $settings = array (
         'host' => '127.0.0.1',
         'port' => '6087',
         'conn_timeout' => 30000,
-        'call_timeout' => 100000,
+        'call_timeout' => 70000,
         'product_key' => 'agilanews',
     ),
     'abtest' => array(
