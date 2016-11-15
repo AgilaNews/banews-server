@@ -42,7 +42,7 @@ class Abservice {
             return $this->abflags[$experiment];
         }
 
-        return "default";
+        return "unknown";
     }
     
 }
