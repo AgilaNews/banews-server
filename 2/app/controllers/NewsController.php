@@ -209,6 +209,13 @@ class NewsController extends BaseController {
             if (in_array($channel_id, array(10001))) {
                 $ret["has_ad"] = 1;
             }
+            $vselector = new Selector30001(30001, $this);
+            $vmodels = $vselector->select($prefer);
+            $vrender = new Render30001($this);
+            $vvideos = $vrender->render($vmodels);
+            $vvideo = array_pop($vvideos);
+            $vvideo["tag"] = "Video";
+            $ret["news"][] = $vvideo;
         } else { 
             $ret[$dispatch_id] = $render->render($dispatch_models);
         }
