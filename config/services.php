@@ -41,18 +41,13 @@ $di->set('db_w', function() use ($config) {
     $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db_w->adapter;
     
     return new $db_clz($config->db_w->conf->toArray());
-    });
+    }, true);
 
 $di->set('db_r', function() use ($config) {
     $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db_r->adapter;
     
     return new $db_clz($config->db_r->conf->toArray());
-    });
-
-$di->set('view', function () use ($config) {
-    $view = new View();
-    return $view;
-});
+    }, true);
 
     
 $di->set('logger', function() use($config) {
@@ -61,7 +56,7 @@ $di->set('logger', function() use($config) {
     $logger->setFormatter(new LineFormatter($config->logger->banews->format));
 
     return $logger;
-});
+    }, true);
 
 $di->set('eventlogger', function() use ($config) {
     try {
@@ -70,7 +65,7 @@ $di->set('eventlogger', function() use ($config) {
     } catch (\Exception $e) {
         return null;
     }
-});
+    }, true);
 
 $di->set('comment', function() use ($config) {
     $client = new iface\CommentServiceClient(sprintf("%s:%s", $config->comment->host, $config->comment->port), 
@@ -86,7 +81,7 @@ $di->set('comment', function() use ($config) {
     }
     
     return $client;
-});
+    }, true);
 
 $di->set('abtest', function() use ($config) {
         $client = new iface\AbtestServiceClient(sprintf("%s:%s", $config->abtest->host, $config->abtest->port), 
@@ -105,7 +100,7 @@ $di->set('abtest', function() use ($config) {
         } else {
             return false;
         }
-    });
+    }, true);
 
 
 $di->set('cache', function() use ($config) {
@@ -117,7 +112,7 @@ $di->set('cache', function() use ($config) {
     }
 
     return $cache;
-});
+    }, true);
 
 $di->set('elasticsearch', function() use ($config) {
     $hosts = array($config->elasticsearch);
@@ -128,6 +123,6 @@ $di->set('elasticsearch', function() use ($config) {
         return null;
     }
     return $esClient;
-});
+    }, true);
 
 $di->set("config", $config);
