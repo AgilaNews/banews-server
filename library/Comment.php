@@ -69,10 +69,16 @@ class Comment{
             $logger->warning("get comment error:" . $status->code . ":" . json_encode($status->details, true));
             return $ret;
         }
+
         
         $ret = array();
         
         $count = $resp->getCommentsCountList();
+        if (count($count) != count($newsSignList)) {
+            $logger->warn("mismatched comment count");
+            return $ret;
+        }
+        
         foreach ($newsSignList as $idx => $sign) {
             $ret[$sign] = $count[$idx];
         }
