@@ -92,8 +92,13 @@ class CommentController extends BaseController {
         $req->setDeviceId($this->deviceId);
         $req->setRefCommentId($ref_id);
         $req->setIsAnonymous($anonymous);
-        
-        list($resp, $status) = $comment_service->AddComment($req)->wait();
+
+        list($resp, $status) = $comment_service->AddComment($req,
+                                                            array(),
+                                                            array(
+                                                                  "timeout" => $config->comment->call_timeout
+                                                                  )
+                                                            )->wait();
 
         if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,

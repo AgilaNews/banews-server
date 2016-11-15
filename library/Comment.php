@@ -30,7 +30,7 @@ class Comment{
             assert(false, "filter is invalid : " . $filter);
         }
         
-        list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
+        list($resp, $status) = $comment_service->GetCommentsByDoc($req, array(), array("timeout" => $config->comment->call_timeout))->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . json_encode($status->details, true));
             return array();
@@ -64,7 +64,7 @@ class Comment{
         $req->setProduct($config->comment->product_key);
         $req->setDocIds($newsSignList);
         
-        list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
+        list($resp, $status) = $comment_service->GetCommentsCount($req, array(), array("timeout" => $config->comment->call_timeout))->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . $status->code . ":" . json_encode($status->details, true));
             return $ret;
