@@ -69,6 +69,7 @@ class UserController extends BaseController {
 
     private function addComment(){
         $comment_service = $this->di->get('comment');
+        $config = $this->di->get('config');
         $param = $this->request->getJsonRawBody(true);
 
         if (!$this->userSign) {
