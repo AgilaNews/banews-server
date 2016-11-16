@@ -2,7 +2,7 @@
 
 
 class Selector30001 extends BaseNewsSelector {
-    MIN_NEWS_COUNT = 4;
+    const MIN_NEWS_COUNT = 4;
     const MAX_NEWS_COUNT = 6;
     const LATELY_NEWS_COUNT = 3;
 
