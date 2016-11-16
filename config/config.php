@@ -39,14 +39,14 @@ $settings = array (
             ),
         ),
     'comment' => array(
-        "host" => "10.8.19.78",
+        "host" => "10.8.91.237",
         "port" => "6087",
         'conn_timeout' => 30000,
         'call_timeout' => 70000,
         "product_key" => "agilanews",
     ),
     'abtest' => array(
-        'host' => '10.8.19.78',
+        'host' => '10.8.91.237',
         'port' => '6097',
         'conn_timeout' => 30000,
         'call_timeout' => 70000,
