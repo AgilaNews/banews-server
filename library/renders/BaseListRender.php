@@ -81,7 +81,7 @@ class BaseListRender {
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
             "channel_id" => $news_model->channel_id,
-            "filter_tags" => $this->getFilter($news_model);
+            "filter_tags" => $this->getFilter($news_model),
         );
         
         if ($videos && $videos->count() != 0) {
