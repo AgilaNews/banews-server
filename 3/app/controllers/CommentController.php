@@ -57,10 +57,14 @@ class CommentController extends BaseController {
 
     private function addComment(){
         $comment_service = $this->di->get('comment');
+        $config = $this->di->get('config');
         $param = $this->request->getJsonRawBody(true);
 
         if (!$this->userSign) {
             throw new HttpException(ERR_NOT_AUTH, "usersign not set");
+        }
+        if (!$comment_service) {
+            throw new HttpException(ERR_INTERNAL_BG, "internal error");
         }
         
         $newsSign = $this->get_or_fail($param, "news_id", "string");
@@ -89,8 +93,13 @@ class CommentController extends BaseController {
         $req->setDeviceId($this->deviceId);
         $req->setRefCommentId($ref_id);
         $req->setIsAnonymous($anonymous);
-        
-        list($resp, $status) = $comment_service->AddComment($req)->wait();
+
+        list($resp, $status) = $comment_service->AddComment($req,
+                                                            array(),
+                                                            array(
+                                                                  "timeout" => $config->comment->call_timeout
+                                                                  )
+                                                            )->wait();
 
         if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
@@ -159,7 +168,7 @@ class CommentController extends BaseController {
         $req->setDeviceId($this->deviceId);
         $req->setUserId($this->userSign);
 
-        list($resp, $status) = $comment_service->LikeComment($req)->wait();
+        list($resp, $status) = $comment_service->LikeComment($req, array(), array("timeout" => $this->config->comment->call_timeout))->wait();
 
         $currentLiked = 0;
         if ($status->code != 0) {

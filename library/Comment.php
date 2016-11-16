@@ -8,6 +8,11 @@ class Comment{
         $di = DI::getDefault();
         $config = $di->get("config");
         $comment_service = $di->get('comment');
+        if (!$comment_service) {
+            $this->logger->warning("get comment service error");
+            return array();
+        }
+        
         $logger = $di->get('logger');
 
         $req = new iface\GetCommentsOfDocRequest();
@@ -26,7 +31,11 @@ class Comment{
             assert(false, "filter is invalid : " . $filter);
         }
         
-        list($resp, $status) = $comment_service->GetCommentsByDoc($req)->wait();
+        list($resp, $status) = $comment_service->GetCommentsByDoc($req,
+                                                                  array(),
+                                                                  array(
+                                                                      "timeout" => $config->comment->call_timeout)
+                                                                  )->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . json_encode($status->details, true));
             return array();
@@ -45,25 +54,40 @@ class Comment{
         $di = DI::getDefault();
         $config = $di->get("config");
         $comment_service = $di->get('comment');
+        
         $logger = $di->get("logger");
         $ret = array();
         foreach ($newsSignList as $sign) {
             $ret[$sign] = 0;
         }
 
+        if (!$comment_service) {
+            $this->logger->warning("get comment service error");
+            return $ret;
+        }
+
         $req = new iface\GetCommentsCountRequest();
         $req->setProduct($config->comment->product_key);
         $req->setDocIds($newsSignList);
         
-        list($resp, $status) = $comment_service->GetCommentsCount($req)->wait();
+        list($resp, $status) = $comment_service->GetCommentsCount($req, array(),
+                                                                  array(
+                                                                        "timeout" => $config->comment->call_timeout)
+                                                                  )->wait();
         if ($status->code != 0) {
             $logger->warning("get comment error:" . $status->code . ":" . json_encode($status->details, true));
             return $ret;
         }
+
         
         $ret = array();
         
         $count = $resp->getCommentsCountList();
+        if (count($count) != count($newsSignList)) {
+            $logger->warning("mismatched comment count");
+            return $ret;
+        }
+        
         foreach ($newsSignList as $idx => $sign) {
             $ret[$sign] = $count[$idx];
         }

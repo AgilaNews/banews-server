@@ -18,7 +18,7 @@ class BanewsLogger extends FA {
         $mode = "ab";
         $this->wf_handler = fopen($name . ".wf", $mode);
         if (!$this->wf_handler) {
-            throw new Exception("optn $name.wf error");
+            throw new Exception("open $name.wf error");
         }
         $this->_fileHandler = fopen($name, $mode);
         if (!$this->_fileHandler) {

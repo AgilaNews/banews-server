@@ -8,6 +8,7 @@
  * 
  * 
  */
+use Phalcon\DI;
 define('MIN_NEWS_SEND_COUNT', 6);
 define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
@@ -98,12 +99,35 @@ class BaseNewsSelector {
                 }
             }
         }
-        
+
+        $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
     }
 
     protected function interveneAt(&$ret, $intervene, $pos) {
         array_splice($ret, $pos, 0, array($intervene));
+    }
+
+    protected function insertAd(&$ret) {
+        if (version_compare($this->_client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
+            $abservice = DI::getDefault()->get('abtest');
+            $t = $abservice->getTag("timeline_ad_position");
+            $device_md5 = md5($this->_device_id);
+
+            $ad_intervene = new AdIntervene(array(
+                                                  "type" => NEWS_LIST_TPL_AD_FB_MEDIUM,
+                                                  "device" => $this->_device_id,
+                                                  ));
+
+            if ($t == "forth_pos") {
+                $pos = 3;
+            } else {
+                $pos = AD_INTERVENE_POS;
+            }
+            if (count($ret) >= $pos) {
+                $this->interveneAt($ret, $ad_intervene, $pos);
+            }
+        }
     }
 }
