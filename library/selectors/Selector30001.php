@@ -2,7 +2,7 @@
 
 define('MIN_NEWS_COUNT', 4);
 define('MAX_NEWS_COUNT', 6);
-define("LATELY_NEWS_COUNT", 2);
+define("LATELY_NEWS_COUNT", 3);
 
 class Selector30001 extends BaseNewsSelector {
     public function getPolicyTag(){
@@ -45,6 +45,7 @@ class Selector30001 extends BaseNewsSelector {
         $selected_news_list = $this->sampling($required, $prefer);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
+        $models = $this->removeDup($models);
 
         $ret = array();
         $filter = array();
