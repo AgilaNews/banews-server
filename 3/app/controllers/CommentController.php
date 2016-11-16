@@ -168,7 +168,7 @@ class CommentController extends BaseController {
         $req->setDeviceId($this->deviceId);
         $req->setUserId($this->userSign);
 
-        list($resp, $status) = $comment_service->LikeComment($req)->wait();
+        list($resp, $status) = $comment_service->LikeComment($req, array(), array("timeout" => $this->config->comment->call_timeout))->wait();
 
         $currentLiked = 0;
         if ($status->code != 0) {
