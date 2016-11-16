@@ -71,7 +71,7 @@ define('CACHE_COMMENT_FREQ_TTL', 5);
 define('CACHE_VIDEOS_PREFIX', "BS_VIDEOS_");
 define('CACHE_VIDEOS_TTL', 14400);
 define('CACHE_AD_ID_KEY', "BS_AD_%s_%s"); // BS_AD_FB_deviceid
-define('CACHE_AD_ID_TTL', 86400);
+define('CACHE_AD_ID_TTL', 172800);
 
 //used for redis device map
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
