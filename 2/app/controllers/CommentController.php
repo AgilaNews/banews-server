@@ -55,7 +55,7 @@ class CommentController extends BaseController {
 
         $currentLiked = 0;
         if ($status->code != 0) {
-            $this->logger->warning("communicate to comment server error " . $status->code);
+            $this->logger->warning("communicate to comment server error " . $status->code . json_encode($status->details, true));
             throw new HttpException(ERR_INTERNAL_DB, "internal error");
         } else {
             $currentLiked = $resp->getCurrentLiked();
