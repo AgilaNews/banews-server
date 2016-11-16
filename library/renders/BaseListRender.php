@@ -81,7 +81,6 @@ class BaseListRender {
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
             "channel_id" => $news_model->channel_id,
-            "filter_tags" => $this->getFilter($news_model);
         );
         
         if ($videos && $videos->count() != 0) {
@@ -224,30 +223,5 @@ class BaseListRender {
     
     protected function isIntervened($model) {
         return $model instanceof BaseIntervene;
-    }
-
-    protected function getFilter($model) {
-        $ret = array();
-        $ret[] = array(
-            "name" => "source",
-            "id" => "1",
-        );
-
-        $ret[] = array(
-            "name" => "content",
-            "id" => "2"
-        );
-
-        $ret[] = array(
-            "name" => "repeated",
-            "id" => "3"
-        );
-
-        $ret[] = array(
-            "name" => "too old",
-            "id" => "4"
-        );
-
-        return $ret;
     }
 }
