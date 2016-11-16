@@ -8,7 +8,7 @@ class RandomListPolicy extends BaseListPolicy {
                              $day_till_now, $prefer, array $options = array()) {
         $valid_news_list = $this->getAllUnsent($channel_id, $device_id, null);
 
-        if (!$valid_news_list) {
+        if (!$valid_news_list || count($valid_news_list) == 0) {
             return array();
         }
 
