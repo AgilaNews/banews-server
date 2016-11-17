@@ -9,6 +9,34 @@
  * 
  */
 class UserController extends BaseController {
+    public function UnlikeAction() {
+        if (!$this->request->isPost()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+
+        if (!$this->userSign) {
+            throw new HttpException(ERR_NOT_AUTH, "usersign not set");
+        }
+
+        $param = $this->request->getJsonRawBody(true);
+
+        $news_id = $this->get_or_fail($param, "news_id", "string");
+        $reason_type = $this->get_or_fail($param, "id", "string");
+        $reason_name = $this->get_or_fail($param, "name", "string");
+
+        $model = new UserUnlike();
+        $model->user_id = $this->userSign;
+        $model->news_id = $news_id;
+        $model->reason_type = $reason_type;
+        $model->reason_name = $reason_name;
+        $model->upload_time = time();
+        $model->save();
+        $this->setJsonResponse(
+            array({"message" => "OK"})
+            );
+        return $this->response;
+    }
+
     public function CommentAction(){
         if ($this->request->isPost()) {
             return $this->addComment();
