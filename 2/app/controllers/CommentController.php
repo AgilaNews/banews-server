@@ -10,17 +10,6 @@
  */
 
 class CommentController extends BaseController {
-    public function IndexAction(){
-        if ($this->request->isPost()) {
-            return $this->addComment();
-        } else if ($this->request->isGet()) {
-            return $this->getComment();
-        } else {
-            throw new HttpException(ERR_INVALID_METHOD,
-                                    "add new comment error");
-        }
-    }
-
     public function LikeAction(){
         if (!$this->request->isPost()){
             throw new HttpException(ERR_INVALID_METHOD,
