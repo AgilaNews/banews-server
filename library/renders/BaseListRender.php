@@ -40,7 +40,7 @@ class BaseListRender {
         $comment_counts = Comment::getCount($keys);
         
         foreach ($models as $news_model) {
-            if ($this->isIntervened($news_model)) {
+            if ($news_model instanceof AdIntervene) {
                 $r = $news_model->render();
                 if ($r) {
                     $ret [] = $r; 
@@ -219,7 +219,6 @@ class BaseListRender {
         }
 
         return $cell;
-
     }
     
     protected function isIntervened($model) {
@@ -229,22 +228,22 @@ class BaseListRender {
     protected function getFilter($model) {
         $ret = array();
         $ret[] = array(
-            "name" => "source",
+            "name" => "Outdated",
             "id" => "1",
         );
 
         $ret[] = array(
-            "name" => "content",
+            "name" => "Boring topic",
             "id" => "2"
         );
 
         $ret[] = array(
-            "name" => "repeated",
+            "name" => "Source: " . $model->source_name,
             "id" => "3"
         );
 
         $ret[] = array(
-            "name" => "too old",
+            "name" => "Poor writing",
             "id" => "4"
         );
 

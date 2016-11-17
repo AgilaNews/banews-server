@@ -122,6 +122,8 @@ class BaseNewsSelector {
 
             if ($t == "forth_pos") {
                 $pos = 3;
+            } else if ($t == "six_pos") {
+                $pos = 5;
             } else {
                 $pos = AD_INTERVENE_POS;
             }
