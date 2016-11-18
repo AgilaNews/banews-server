@@ -13,6 +13,7 @@ $settings = array (
         "selectorDir" => LIBRARY_PATH . "/selectors/",
         "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
         "interveneDir" => LIBRARY_PATH . "/intervenes/",
+        "simhashDir" => LIBRARY_PATH . "/filter/simhash",
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
