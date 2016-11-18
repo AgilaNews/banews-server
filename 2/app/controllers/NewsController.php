@@ -241,11 +241,18 @@ class NewsController extends BaseController {
     protected function getHotVideos($prefer) {
         $cname = "Selector" . self::VideoChannel;
         $selector = new $cname(self::VideoChannel, $this);
-        $videos = $selector->selectWithCount($prefer, self::HotVideNum);
+        $samples = $selector->selectWithCount($prefer, self::HotVideNum);
 
         $cname = "Render" . self::VideoChannel;
         $render = new $cname($this);
-        return $render->render($videos);
+        $videos $render->render($samples);
+        $ret = array();
+        foreach ($videos as $video) {
+            $video["tpl"] = 10;
+            $video["tag"] = "Video";
+            $ret[] = $video;
+        }
+        return $ret;
     }
 
     public function likeAction() {
