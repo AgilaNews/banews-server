@@ -20,6 +20,7 @@ class BaseNewsSelector {
         $this->_device_id = $controller->deviceId;
         $this->_user_id = $controller->userSign;
         $this->_client_version = $controller->client_version;
+        $this->_os = $controller->os;
         $this->_di = $controller->di;
     }
 
