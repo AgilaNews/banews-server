@@ -125,6 +125,9 @@ class NotificationController extends BaseController {
                                     json_encode($status->details, true));
         }
         $result = $resp->getHasNew();
+        if($result == null){
+            $result = 0;
+        }
         $ret = array(
             "status"=>strval($result)
         );
