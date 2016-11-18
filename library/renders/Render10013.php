@@ -10,9 +10,7 @@ class Render10013 extends BaseListRender {
         
         foreach ($models as $idx => $model) {
             if ($model instanceof NbaIntervene) {
-                if (version_compare($this->_client_version, FIXTOP_NBA_FEATURE, ">=")) {
-                    $intervenes[$idx] = $model->render();                  
-                }
+                $intervenes[$idx] = $model->render();                  
             } else {
                 $normal []= $model;
             }
