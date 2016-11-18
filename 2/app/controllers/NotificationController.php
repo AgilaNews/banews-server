@@ -119,7 +119,7 @@ class NotificationController extends BaseController {
         $req->setUserId($this->userSign);
         $req->setLatestId($latest_id);
 
-        list($resp, $status) = $comment_service->CheckNotification($req);
+        list($resp, $status) = $comment_service->CheckNotification($req)->wait();
         if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
                                     json_encode($status->details, true));
