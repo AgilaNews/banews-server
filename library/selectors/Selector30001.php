@@ -1,16 +1,17 @@
 <?php
 
-define('MIN_NEWS_COUNT', 4);
-define('MAX_NEWS_COUNT', 6);
-define("LATELY_NEWS_COUNT", 2);
 
 class Selector30001 extends BaseNewsSelector {
+    const MIN_NEWS_COUNT = 4;
+    const MAX_NEWS_COUNT = 6;
+    const LATELY_NEWS_COUNT = 3;
+
     public function getPolicyTag(){
         return 'popularRanking';
     }
 
     protected function getLatelyNewsCount(){
-        return LATELY_NEWS_COUNT;
+        return self::LATELY_NEWS_COUNT;
     } 
 
     public function sampling($sample_count, $prefer) {
@@ -25,7 +26,7 @@ class Selector30001 extends BaseNewsSelector {
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, MAX_NEWS_COUNT, 
+            $this->_device_id, $this->_user_id, self::MAX_NEWS_COUNT, 
             3, $prefer, $options);
 
         foreach($randomNewsLst as $randomNews) {
@@ -41,10 +42,11 @@ class Selector30001 extends BaseNewsSelector {
     }
 
     public function select($prefer) {
-        $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
+        $required = mt_rand(self::MIN_NEWS_COUNT, self::MAX_NEWS_COUNT);
         $selected_news_list = $this->sampling($required, $prefer);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
+        $models = $this->removeDup($models);
 
         $ret = array();
         $filter = array();

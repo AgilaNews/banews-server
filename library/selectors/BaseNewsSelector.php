@@ -20,6 +20,7 @@ class BaseNewsSelector {
         $this->_device_id = $controller->deviceId;
         $this->_user_id = $controller->userSign;
         $this->_client_version = $controller->client_version;
+        $this->_os = $controller->os;
         $this->_di = $controller->di;
     }
 
@@ -122,6 +123,8 @@ class BaseNewsSelector {
 
             if ($t == "forth_pos") {
                 $pos = 3;
+            } else if ($t == "six_pos") {
+                $pos = 5;
             } else {
                 $pos = AD_INTERVENE_POS;
             }

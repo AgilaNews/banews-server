@@ -40,7 +40,7 @@ class BaseListRender {
         $comment_counts = Comment::getCount($keys);
         
         foreach ($models as $news_model) {
-            if ($this->isIntervened($news_model)) {
+            if ($news_model instanceof AdIntervene) {
                 $r = $news_model->render();
                 if ($r) {
                     $ret [] = $r; 
