@@ -104,5 +104,32 @@ class NotificationController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
     }
+    public function checkAction(){
+        if (!$this->request->isGet()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+        $product_id = "agilanews";
+        $latest_id = $this->get_request_param("latest_id", "int", false, 0);
+        
+        $comment_service = $this->di->get('comment');
+        $req = new iface\CheckNotificationRequest();
+        
+        $req->setProductId($this->config->comment->product_key);
+        $req->setDeviceId($this->deviceId);
+        $req->setUserId($this->userSign);
+        $req->setLatestId($latest_id);
+
+        list($resp, $status) = $comment_service->CheckNotification($req);
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    json_encode($status->details, true));
+        }
+        $status = $resp.HasNew;
+        $ret = array(
+            "status"=>strval($status)
+        );
+        $this->setJsonResponse($ret);
+        return $this->response;
+    }
 }
 
