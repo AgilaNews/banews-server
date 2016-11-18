@@ -204,7 +204,6 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $videos = $this->getHotVideos($prefer);
         
         if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
             $ret = array(
@@ -213,14 +212,11 @@ class NewsController extends BaseController {
                 "abflag" => json_encode($this->abflags),
             );
 
-            array_splice($ret["news"], 3, 0, $videos);
-
             if (in_array($channel_id, array(10001))) {
                 $ret["has_ad"] = 1;
             }
         } else { 
             $ret[$dispatch_id] = $render->render($dispatch_models);
-            array_splice($ret[$dispatch_id], 3, 0, $videos);
         }
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",

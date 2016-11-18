@@ -1,48 +1,42 @@
 <?php
-/**
- * 
- * @file    Render30001.php
- * @authors Zhao Yulong (elysium.zyl@gmail.com)
- * @date    2016-10-27 21:35:42
- * @version $Id$
- */
-
-define("DESCRIPTION_LIMIT", 1500);
-
-class Render30001 extends BaseListRender {
-
+class Render10001 extends BaseListRender {
     public function __construct($controller) {
         parent::__construct($controller);
     }
 
-    public function render($models) {
+    public function render($collect_models) {
         $ret = array();
+        $signs = array();
+        $collects = array();
 
-        $keys = array();
-        foreach ($models as $model) {
-            if (!$this->isIntervened($model)) {
-                $keys []= $model->url_sign;
-            }
+        foreach ($collect_models as $collect) {
+            $signs []= $collect->news_sign;
+            $collects[$collect->news_sign] = $collect;
         }
-        
-        $comment_counts = Comment::getCount($keys);
 
-        foreach ($models as $sign => $news_model) {
-            $cell = $this->serializeNewsCell($news_model);
-            if (count($cell["videos"]) == 0) {
-                continue;
-            }
+        $news_model_list = News::batchGet($signs);
+        $comment_counts = Comment::getCount($signs);
 
-            if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+        foreach ($news_model_list as $sign => $news_model) {
+            $cell = "";
+            if ($news_model->channel_id == "30001") {
+                $cell = $this->serializeVideoCell($news_model);
+                if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+                }
+            } else {
+                $cell = $this->serializeNewsCell($news_model);
             }
+            $collect = $collects[$news_model->url_sign];
+            $cell["collect_id"] = $collect->id;
+            $cell["public_time"] = $collect->create_time;
             $ret []= $cell;
         }
 
         return $ret;
-    } 
+    }
 
-    public function serializeNewsCell($news_model) {
+    protected function serializeVideoCell($news_model) {
         $ret = array(
             "title" => $news_model->title,
             "news_id" => $news_model->url_sign,
@@ -55,7 +49,8 @@ class Render30001 extends BaseListRender {
             "commentCount" => 0,
             "imgs" => array(),
             "videos" => array(),
-            "tpl" => 12
+            "tpl" => 10,
+            "tag" => "Video"
             );
 
         $video = Video::getByNewsSign($news_model->url_sign);
