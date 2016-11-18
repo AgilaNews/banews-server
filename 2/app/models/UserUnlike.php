@@ -19,8 +19,10 @@ class UserUnlike extends BaseModel {
     public $reason_name;
 
     public $upload_time;
-    
+
+    public $devide_id;
+
     public function getSource() {
-        return "tb_user_like";
+        return "tb_user_unlike";
     }
 }
