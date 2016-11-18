@@ -67,7 +67,7 @@ class BaseListRender {
     }
 
     protected function serializeNewsCell($news_model) {
-        if (version_compare($this->_client_version, VIDEO_NEWS_FEATURE, ">=")) {
+        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->_client_version, $this->_os)) {
             $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
         } else {
             $videos = null;
@@ -161,9 +161,10 @@ class BaseListRender {
     
     protected function useLargeImageNews($img) {
         if($this->_large_img_count > LARGE_IMAGE_MAX_COUNT ||
-           version_compare($this->_client_version, LARGE_IMG_FEATURE, "<")) {
-            return false;
-        }
+           !Features::Enabled(Features::LARGE_IMG_FEATURE, $this->_client_version, $this->_os)) {
+               return false;
+           }
+           
         
         $quality = $this->getImageQuality($img);
         if ($quality > 0.0 and rand(1,10) > 2){

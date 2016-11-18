@@ -26,7 +26,7 @@ class Selector30001 extends BaseNewsSelector {
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
 
-        if (count($popularNewsCnt) >= $sample_count) {
+        if (count($popularNewsLst) >= $sample_count) {
             return $popularNewsLst;
         }
 
@@ -35,7 +35,7 @@ class Selector30001 extends BaseNewsSelector {
             3, $prefer, $options);
 
         foreach($randomNewsLst as $randomNews) {
-            if (count($popularNewsCnt) >= $sample_count) {
+            if (count($popularNewsLst) >= $sample_count) {
                 break;
             }
             if (in_array($randomNews, $popularNewsLst)) {
