@@ -19,6 +19,8 @@ class Features {
 
     const AD_FEATURE = 5;
 
+    const AB_FLAG_FEATURE = 6;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(

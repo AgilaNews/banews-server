@@ -4,35 +4,57 @@ class Render10001 extends BaseListRender {
         parent::__construct($controller);
     }
 
-    public function render($collect_models) {
+
+    public function render($models) {
+        $di = DI::getDefault();
+        $comment_service = $di->get('comment');
+        $config = $di->get('config');
+        
         $ret = array();
-        $signs = array();
-        $collects = array();
+        $max_quality = 0.0;
+        $news_sign = "";
+        $hot_tags = 0;
 
-        foreach ($collect_models as $collect) {
-            $signs []= $collect->news_sign;
-            $collects[$collect->news_sign] = $collect;
+        $keys = array();
+        foreach ($models as $model) {
+            if (!$this->isIntervened($model)) {
+                $keys []= $model->url_sign;
+            }
         }
-
-        $news_model_list = News::batchGet($signs);
-        $comment_counts = Comment::getCount($signs);
-
-        foreach ($news_model_list as $sign => $news_model) {
-            $cell = "";
-            if ($news_model->channel_id == "30001") {
+        
+        $comment_counts = Comment::getCount($keys);
+        
+        foreach ($models as $news_model) {
+            if ($news_model instanceof AdIntervene) {
+                $r = $news_model->render();
+                if ($r) {
+                    $ret [] = $r; 
+                }
+            } else if ($news_model->channel_id == "30001") {
                 $cell = $this->serializeVideoCell($news_model);
                 if(array_key_exists($news_model->url_sign, $comment_counts)) {
                     $cell["commentCount"] = $comment_counts[$news_model->url_sign];
                 }
+                $cell["tag"] = "Video";
+                $ret[] = $cell;
             } else {
                 $cell = $this->serializeNewsCell($news_model);
+                if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+                }
+                
+                if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
+                    if (mt_rand() % 3 == 0) {
+                        $cell["tag"] = "Hot";
+                    }
+                    $hot_tags++;
+                } else {
+                    $cell["tag"] = "";
+                }
+                $ret[] = $cell;
             }
-            $collect = $collects[$news_model->url_sign];
-            $cell["collect_id"] = $collect->id;
-            $cell["public_time"] = $collect->create_time;
-            $ret []= $cell;
         }
-
+        
         return $ret;
     }
 
@@ -50,7 +72,6 @@ class Render10001 extends BaseListRender {
             "imgs" => array(),
             "videos" => array(),
             "tpl" => 10,
-            "tag" => "Video"
             );
 
         $video = Video::getByNewsSign($news_model->url_sign);

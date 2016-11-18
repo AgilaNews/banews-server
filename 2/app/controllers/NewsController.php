@@ -234,23 +234,6 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
-    protected function getHotVideos($prefer) {
-        $cname = "Selector" . self::VideoChannel;
-        $selector = new $cname(self::VideoChannel, $this);
-        $samples = $selector->selectWithCount($prefer, self::HotVideNum);
-
-        $cname = "Render" . self::VideoChannel;
-        $render = new $cname($this);
-        $videos $render->render($samples);
-        $ret = array();
-        foreach ($videos as $video) {
-            $video["tpl"] = 10;
-            $video["tag"] = "Video";
-            $ret[] = $video;
-        }
-        return $ret;
-    }
-
     public function likeAction() {
         if (!$this->request->isPost()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
