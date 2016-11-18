@@ -148,11 +148,7 @@ class BaseController extends Controller{
         $content = json_encode($arr, $options);
         $this->response->setContent($content);
         $this->response->setHeader("Content-Length", strlen($content));
-        if (version_compare($this->client_version, "1.1.2", ">=")) {
-            $this->response->setHeader("Content-Type", "application/ph");
-        } else {
-            $this->response->setHeader("Content-Type", "application/json");
-        }
+        $this->response->setHeader("Content-Type", "application/ph");
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
         $this->response->setHeader("Pragma", "no-cache");
     }

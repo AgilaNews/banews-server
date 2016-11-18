@@ -54,7 +54,7 @@ class NewsController extends BaseController {
 
         $device_md5 = md5($this->deviceId);
 
-        if (version_compare($this->client_version, AD_FEATURE, ">=")) {
+        if (Features::Enabled(Features::AD_FEATURE, $this->client_version, $this->os)) {
             $intervene = new AdIntervene(array(
                 "type" => DETAIL_AD_TPL_MEDIUM,
                 "device" => $this->deviceId,
@@ -65,7 +65,8 @@ class NewsController extends BaseController {
 
         $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
 
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
             $ret["comments"] = array(
                                       "new" => $topNewComment,
@@ -99,7 +100,7 @@ class NewsController extends BaseController {
         }
         $ret["imgs"] = $imgcell;
 
-        if (version_compare($this->client_version, VIDEO_NEWS_FEATURE, ">=")) {
+        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->client_version, $this->os)) {
             foreach($videos as $video) {
                 if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
                     continue;
@@ -205,7 +206,7 @@ class NewsController extends BaseController {
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         $videos = $this->getHotVideos($prefer);
         
-        if (version_compare($this->client_version, "1.2.4", ">=")) {
+        if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
             $ret = array(
                 "dispatch_id" => $dispatch_id,
                 "news" => $render->render($dispatch_models),

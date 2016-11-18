@@ -2,12 +2,6 @@
 define('BUILD_MAIN', 1);
 define('BUILD_ACCESSORY', 2);
 
-define('RICH_COMMENT_FEATURE', "1.2.2");
-define('VIDEO_NEWS_FEATURE', "1.2.0");
-define('LARGE_IMG_FEATURE', "1.1.3");
-define('FIXTOP_NBA_FEATURE', "1.2.1");
-define('AD_FEATURE', "1.2.3");
-
 define('AD_PRELOAD', 3);
 define('AD_EXPIRE', 3400);
 define('AD_INTERVENE_POS', 4);

@@ -20,6 +20,7 @@ class BaseNewsSelector {
         $this->_device_id = $controller->deviceId;
         $this->_user_id = $controller->userSign;
         $this->_client_version = $controller->client_version;
+        $this->_os = $controller->os;
         $this->_di = $controller->di;
     }
 
@@ -110,7 +111,7 @@ class BaseNewsSelector {
     }
 
     protected function insertAd(&$ret) {
-        if (version_compare($this->_client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
+        if (Features::Enabled(Features::AD_FEATURE, $this->_client_version, $this->_os) && count($ret) >= AD_INTERVENE_POS) {
             $abservice = DI::getDefault()->get('abtest');
             $t = $abservice->getTag("timeline_ad_position");
             $device_md5 = md5($this->_device_id);
