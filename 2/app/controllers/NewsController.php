@@ -11,6 +11,9 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
+    const HotVideNum = 1;
+    const VideoChannel = "30001";
+
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
@@ -200,17 +203,27 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
+        $videos = $this->getHotVideos($prefer);
+        
         if (version_compare($this->client_version, "1.2.4", ">=")) {
             $ret = array(
                 "dispatch_id" => $dispatch_id,
                 "news" => $render->render($dispatch_models),
                 "abflag" => json_encode($this->abflags),
             );
+
+            foreach ($videos as $video) {
+                $ret["news"][] = $video;
+            }
+
             if (in_array($channel_id, array(10001))) {
                 $ret["has_ad"] = 1;
             }
         } else { 
             $ret[$dispatch_id] = $render->render($dispatch_models);
+            foreach ($videos as $video) {
+                $ret[$dispatch_id][] = $video;
+            }
         }
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
@@ -226,6 +239,16 @@ class NewsController extends BaseController {
                                               ));
         $this->setJsonResponse($ret);
         return $this->response;
+    }
+
+    protected function getHotVideos($prefer) {
+        $cname = "Selector" . VideoChannel;
+        $selector = new $cname(VideoChannel, $this);
+        $videos = $selector->selectWithCount($prefer, HotVideNum);
+
+        $cname = "Render" . VideoChannel;
+        $render = new $cname($this);
+        return $render->render($videos);
     }
 
     public function likeAction() {
@@ -274,7 +297,6 @@ class NewsController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
     }
-
 
    protected function getImgCell($url_sign, $meta) {
        if ($this->net == "WIFI") {

@@ -14,10 +14,6 @@ class UserController extends BaseController {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
         }
 
-        if (!$this->userSign) {
-            throw new HttpException(ERR_NOT_AUTH, "usersign not set");
-        }
-
         $param = $this->request->getJsonRawBody(true);
 
         $news_id = $this->get_or_fail($param, "newsId", "string");
@@ -25,7 +21,7 @@ class UserController extends BaseController {
         $reason_name = $this->get_or_fail($param, "name", "string");
 
         $model = new UserUnlike();
-        if ($this->iserSign) {
+        if ($this->userSign) {
             $model->user_id = $this->userSign;
         }
         $model->device_id = $this->deviceId;
