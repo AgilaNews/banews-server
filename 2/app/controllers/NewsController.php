@@ -213,18 +213,14 @@ class NewsController extends BaseController {
                 "abflag" => json_encode($this->abflags),
             );
 
-            foreach ($videos as $video) {
-                $ret["news"][] = $video;
-            }
+            array_splice($ret["news"], 3, 0, $videos);
 
             if (in_array($channel_id, array(10001))) {
                 $ret["has_ad"] = 1;
             }
         } else { 
             $ret[$dispatch_id] = $render->render($dispatch_models);
-            foreach ($videos as $video) {
-                $ret[$dispatch_id][] = $video;
-            }
+            array_splice($ret[$dispatch_id], 3, 0, $videos);
         }
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
