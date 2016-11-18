@@ -124,9 +124,9 @@ class NotificationController extends BaseController {
             throw new HttpException(ERR_INTERNAL_BG,
                                     json_encode($status->details, true));
         }
-        $status = $resp.HasNew;
+        $result = $resp.HasNew;
         $ret = array(
-            "status"=>strval($status)
+            "status"=>strval($result)
         );
         $this->setJsonResponse($ret);
         return $this->response;
