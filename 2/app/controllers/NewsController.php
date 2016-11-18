@@ -242,11 +242,11 @@ class NewsController extends BaseController {
     }
 
     protected function getHotVideos($prefer) {
-        $cname = "Selector" . VideoChannel;
-        $selector = new $cname(VideoChannel, $this);
-        $videos = $selector->selectWithCount($prefer, HotVideNum);
+        $cname = "Selector" . self::VideoChannel;
+        $selector = new $cname(self::VideoChannel, $this);
+        $videos = $selector->selectWithCount($prefer, self::HotVideNum);
 
-        $cname = "Render" . VideoChannel;
+        $cname = "Render" . self::VideoChannel;
         $render = new $cname($this);
         return $render->render($videos);
     }
