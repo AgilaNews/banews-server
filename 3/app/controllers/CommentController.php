@@ -30,7 +30,7 @@ class CommentController extends BaseController {
         $hot_length = $this->get_request_param("hot_pn", "int", false, 10);
         $length = $this->get_request_param("pn", "int", false, 20);
 
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             if ($length > 0) {
                 $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
             } else {
@@ -113,7 +113,7 @@ class CommentController extends BaseController {
                                                   "anonymous" => $anonymous,
                                                   ));
         
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             $this->setJsonResponse(array(
                                          "message" => "ok",
                                          "id" => $resp->getCommentId(),

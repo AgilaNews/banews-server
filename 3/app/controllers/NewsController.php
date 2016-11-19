@@ -209,7 +209,7 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        if (version_compare($this->client_version, "1.2.4", ">=")) {
+        if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
             $ret = array(
                 "dispatch_id" => $dispatch_id,
                 "news" => $render->render($dispatch_models),

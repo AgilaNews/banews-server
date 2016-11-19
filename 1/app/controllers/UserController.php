@@ -192,7 +192,7 @@ class UserController extends BaseController {
         }
 
         $ret = array(
-         "news_id" => $cell["news_id"],
+         "news_id" => $req["news_id"],
          "collect_id" => $saved_cid,
          );
             
