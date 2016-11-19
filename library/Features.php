@@ -21,6 +21,8 @@ class Features {
 
     const AB_FLAG_FEATURE = 6;
 
+    const VIDEO_SUPPORT_FEATURE = 7;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
@@ -29,7 +31,7 @@ class Features {
                                                                              ),
                                          self::VIDEO_NEWS_FEATURE => array(
                                                                            "ios" => "1.2.0",
-                                                                           "andriod" => "1.2.0",
+                                                                           "android" => "1.2.0",
                                                                            ),
                                          self::LARGE_IMG_FEATURE => array(
                                                                           "ios" => "1.1.3",
@@ -46,6 +48,10 @@ class Features {
                                          self::AB_FLAG_FEATURE => array(
                                                                         "ios" => "1.2.2",
                                                                         "android" => "1.2.4",
+                                                                        ),
+                                         self::VIDEO_SUPPORT_FEATURE => array(
+                                                                        "ios" => "1.2.2",
+                                                                        "android" => "1.2.5",
                                                                         ),
                                          );
                                    
