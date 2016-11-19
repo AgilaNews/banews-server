@@ -169,35 +169,32 @@ class UserController extends BaseController {
         }
 
         $news_ids = array();
-        $ret = array();
         
-        foreach ($req as $cell) {
-            $news_model = News::getBySign($cell["news_id"]);
-            if (!$news_model) {
-                throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
-            }
-            $news_ids []= $cell["news_id"];
-        
-            if(($saved_cid = Collect::getCollectId($this->userSign, $news_model->url_sign))) {
-                //                throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
-            } else {
-                $collect_model = new Collect();
-                $collect_model->user_sign = $this->userSign;
-                $collect_model->news_sign = $news_model->url_sign;
-                $collect_model->create_time = $cell["ctime"];
-                $result = $collect_model->save();
-                if (!$result) {
-                    throw new HttpException(ERR_INTERNAL_DB,
-                                            "save collect model error");
-                }
-                $saved_cid = $collect_model->id;
-            }
-
-            $ret []= array(
-                           "news_id" => $cell["news_id"],
-                           "collect_id" => $saved_cid,
-                           );
+        $news_model = News::getBySign($req["news_id"]);
+        if (!$news_model) {
+            throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
+        $news_ids []= $req["news_id"];
+        
+        if(($saved_cid = Collect::getCollectId($this->userSign, $news_model->url_sign))) {
+                //                throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
+        } else {
+            $collect_model = new Collect();
+            $collect_model->user_sign = $this->userSign;
+            $collect_model->news_sign = $news_model->url_sign;
+            $collect_model->create_time = $cell["ctime"];
+            $result = $collect_model->save();
+            if (!$result) {
+                throw new HttpException(ERR_INTERNAL_DB,
+                    "save collect model error");
+            }
+            $saved_cid = $collect_model->id;
+        }
+
+        $ret = array(
+         "news_id" => $cell["news_id"],
+         "collect_id" => $saved_cid,
+         );
             
         $this->logEvent(EVENT_NEWS_COLLECT, array("news_id" => $news_ids));
         $this->logger->info(sprintf("[PostCollect][news:%s]",

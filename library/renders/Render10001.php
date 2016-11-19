@@ -1,4 +1,6 @@
 <?php
+
+use Phalcon\DI;
 class Render10001 extends BaseListRender {
     public function __construct($controller) {
         parent::__construct($controller);
