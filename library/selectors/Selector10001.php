@@ -91,7 +91,7 @@ class Selector10001 extends BaseNewsSelector{
                 $recNewsLst, $options, $prefer);
         }
 
-        if () {
+        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, $this->_client_version, $this->_os)) {
             $videos = $popularPolicy->sampling("30001", $this->_device_id,
                         $this->_user_id, 1, 3, $prefer, $options);
             array_splice($recNewsLst, 3, 0, $videos);
