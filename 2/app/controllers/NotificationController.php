@@ -8,7 +8,18 @@
  * 
  * 
  */
+
+define('REPLY_COMMENT_NOTIFICATION_TYPE', 1);
+define('LIKE_NOTIFICATION_TYPE', 3);
+define('LIKE_NOTIFY_FEATURE', "1.2.5");
 class NotificationController extends BaseController {
+
+    public function IsLikeNotifyVersion(){
+        if ($this->os == "android" and version_compare($this->client_version, LIKE_NOTIFY_FEATURE, "<")) {
+            return False;
+        }  
+        return True;
+    }
     public function IndexAction(){
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
@@ -35,9 +46,24 @@ class NotificationController extends BaseController {
         $ret = array();
 
         foreach ($resp->getNotifications() as $notify) {
-            $cell = Comment::renderComment($notify->getComment());
+            $notiType = $resp->getType();
+            if ($notiType == REPLY_COMMENT_NOTIFICATION_TYPE){ 
+                $replyMsg = $notify->getReplyMsg();
+                $cell = Comment::renderComment($replyMsg->getComment());
+            }
+            else if ($notiType == LIKE_NOTIFICATION_TYPE){
+                if (!$this->IsLikeNotifyVersion()){
+                    continue;
+                }
+                $LikeMsg = $notify->getLikeMsg();
+                $cell = Comment::renderLikeComment($LikeMsg->getComment(), $LikeMsg->getLikeNum());
+            }
+            else{
+                continue;
+            }
             $cell["notify_id"] = $notify->getNotificationId();
             $cell["status"] = $notify->getStatus();
+            $cell["type"] = $notiType;
             if ($cell["status"] == null) {
                 $cell["status"] = 0;
             }

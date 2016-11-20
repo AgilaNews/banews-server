@@ -3,6 +3,28 @@ use Phalcon\DI;
 
 define('DEFAULT_HOT_LIKED_COUNT', 3);
 
+function getLikeNotifyMsg($LikeNum){
+    $msg = "";
+    if ($LikeNum == 1){
+        $msg = "Cool！someone sent you 1 like to your wonderful comment!";
+    }
+    else if ($LikeNum == 5){
+        $msg = "Wow, you have received 5 likes till now！";
+    }
+    else if($LikeNum == 10){
+        $msg = "Great, 10 likes come to your comment";
+    }
+    else if($LikeNum == 50){
+        $msg = "Amazing, your wonderful comment has received 50 likes";
+    }
+    else if($LikeNum == 100){
+        $msg = "Oh my god genius, your comment has received 100 likes, you are popular now!";
+    }
+    else{
+        $msg = "";
+    }
+    return $msg;
+}
 class Comment{
     public static function getCommentByFilter($deviceId, $newsSign, $last_id, $length, $filter) {
         $di = DI::getDefault();
@@ -94,6 +116,29 @@ class Comment{
 
         return $ret;
     }
+
+     public static function renderLikeComment($comment, $likeNum){
+         $cell = array("comment" => $comment->getCommentDetail(),
+             "id" => $comment->getCommentId(),
+             "user_id" => $comment->getUserId(),
+             "user_name" => "anonymous",
+             "device_liked" => $comment->getDeviceLiked() || false,
+             "liked" => $comment->getLiked(),
+             "time" => $comment->getTimeStamp(),
+             "message" => "",
+         );
+         if ($cell["liked"] == null) {
+             $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
+         }
+         $user_model = User::getBySign($comment->getUserId());
+         if ($user_model) {
+             $cell["user_name"] = $user_model->name;
+         }
+
+         $cell["message"] = getLikeNotifyMsg($LikeNum);
+        return $cell;
+     }
+    
 
     public static function renderComment($comment){
         $cell = array("comment" => $comment->getCommentDetail(),
