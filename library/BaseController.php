@@ -159,6 +159,7 @@ class BaseController extends Controller{
         $this->response->setHeader("Pragma", "no-cache");
         $this->response->setHeader("ACCESS-CONTROL-ALLOW-ORIGIN", "*");
         $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "GET,OPTIONS");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-HEADERS", "X-USER-D,X-USER-A,AUTHORIZATION,DENSITY,X-SESSION");
     }
 
     protected function setJsonResponse($arr, $options = 0) {
