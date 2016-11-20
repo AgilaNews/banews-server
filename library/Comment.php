@@ -118,27 +118,53 @@ class Comment{
     }
 
      public static function renderLikeComment($comment, $likeNum){
-         $cell = array("comment" => $comment->getCommentDetail(),
-             "id" => $comment->getCommentId(),
-             "user_id" => $comment->getUserId(),
-             "user_name" => "anonymous",
-             "device_liked" => $comment->getDeviceLiked() || false,
-             "liked" => $comment->getLiked(),
+         $cell = array("comment" => getLikeNotifyMsg($likeNum),
              "time" => $comment->getTimeStamp(),
-             "message" => "",
+             "news_id" => "",
+             "tpl"=> "",
          );
-         if ($cell["liked"] == null) {
-             $cell["liked"] = 0; // this is maybe a php protobuf bug towards proto syntax3
-         }
-         $user_model = User::getBySign($comment->getUserId());
-         if ($user_model) {
-             $cell["user_name"] = $user_model->name;
+
+         $ref_comment = $comment->getRefComment();
+         if ($ref_comment) {
+             $cell["reply"] = array(
+                 "id" => $ref_comment->getCommentId(),
+                 "user_id" => $ref_comment->getUserId(),
+                 "user_name" => "anonymous",
+                 "user_portrait_url" => "",
+                 "liked" => $ref_comment->getLiked(),
+                 "device_liked" => $ref_comment->getDeviceLiked() || false,
+                 "comment" => $ref_comment->getCommentDetail(),
+                 "time" => $ref_comment->getTimeStamp(),
+             );
+             if ($cell["reply"]["liked"] == null) {
+                 $cell["reply"]["liked"] = 0;
+             }
+
+             $ref_user = User::getBySign($ref_comment->getUserId());
+
+             if ($ref_user) {
+                 $cell["reply"]["user_name"] = $ref_user->name;
+                 $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
+             }
+             $sign = $ref_comment->getDocId();
+             $cell["news_id"] = $sign;
+             //!!ugly code to judge tpl, reconstrut it later
+             $news_model = News::getBySign($sign);
+             $channel_id = $news_model->channel_id;
+             $cname = "Render$channel_id";
+             if (class_exists($cname)) {
+                 $render = new $cname($this);
+             } else {
+                 $render = new BaseListRender($this);
+             }
+
+             $news_cell = $render->render(array($sign => $news_model))[0];
+             $cell["tpl"] = $news_cell["tpl"];
          }
 
-         $cell["message"] = getLikeNotifyMsg($LikeNum);
         return $cell;
      }
-    
+
 
     public static function renderComment($comment){
         $cell = array("comment" => $comment->getCommentDetail(),

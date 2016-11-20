@@ -46,7 +46,7 @@ class NotificationController extends BaseController {
         $ret = array();
 
         foreach ($resp->getNotifications() as $notify) {
-            $notiType = $resp->getType();
+            $notiType = $notify->getType();
             if ($notiType == REPLY_COMMENT_NOTIFICATION_TYPE){ 
                 $replyMsg = $notify->getReplyMsg();
                 $cell = Comment::renderComment($replyMsg->getComment());
@@ -56,7 +56,7 @@ class NotificationController extends BaseController {
                     continue;
                 }
                 $LikeMsg = $notify->getLikeMsg();
-                $cell = Comment::renderLikeComment($LikeMsg->getComment(), $LikeMsg->getLikeNum());
+                $cell = Comment::renderLikeComment($LikeMsg->getComment(), $LikeMsg->getLikeNumber());
             }
             else{
                 continue;
