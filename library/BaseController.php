@@ -160,7 +160,7 @@ class BaseController extends Controller{
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
         $this->response->setHeader("Pragma", "no-cache");
         $this->response->setHeader("ACCESS-CONTROL-ALLOW-ORIGIN", "*");
-        $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "GET");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "GET,OPTIONS");
     }
 
     protected function logEvent($event_id, $param) {
