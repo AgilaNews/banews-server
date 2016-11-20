@@ -110,6 +110,7 @@ class BaseController extends Controller{
 
     public function beforeExecuteRoute($dispatcher) {
         if ($this->request->isOptions()) {
+            $this->setResponseHeaders();
             return false;
         }
 
@@ -152,15 +153,19 @@ class BaseController extends Controller{
         }
     }
 
-    protected function setJsonResponse($arr, $options = 0) {
-        $content = json_encode($arr, $options);
-        $this->response->setContent($content);
-        $this->response->setHeader("Content-Length", strlen($content));
+    protected function setResponseHeaders(){
         $this->response->setHeader("Content-Type", "application/ph");
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
         $this->response->setHeader("Pragma", "no-cache");
         $this->response->setHeader("ACCESS-CONTROL-ALLOW-ORIGIN", "*");
         $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "GET,OPTIONS");
+    }
+
+    protected function setJsonResponse($arr, $options = 0) {
+        $content = json_encode($arr, $options);
+        $this->response->setHeader("Content-Length", strlen($content));
+        $this->response->setContent($content);
+        $this->setResponseHeaders();
     }
 
     protected function logEvent($event_id, $param) {
