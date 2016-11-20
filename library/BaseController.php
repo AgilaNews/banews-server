@@ -108,6 +108,14 @@ class BaseController extends Controller{
         }
     }
 
+    public function beforeExecuteRoute($dispatcher) {
+        if ($this->request->isOptions()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function afterExecuteRoute($dispatcher) {
         $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s][abflag:%s]",
                                     $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
@@ -152,7 +160,7 @@ class BaseController extends Controller{
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
         $this->response->setHeader("Pragma", "no-cache");
         $this->response->setHeader("ACCESS-CONTROL-ALLOW-ORIGIN", "*");
-        $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "*");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "GET");
     }
 
     protected function logEvent($event_id, $param) {
