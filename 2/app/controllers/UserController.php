@@ -9,6 +9,33 @@
  * 
  */
 class UserController extends BaseController {
+    public function UnlikeAction() {
+        if (!$this->request->isPost()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+
+        $param = $this->request->getJsonRawBody(true);
+
+        $news_id = $this->get_or_fail($param, "newsId", "string");
+        $reason_type = $this->get_or_fail($param, "id", "string");
+        $reason_name = $this->get_or_fail($param, "name", "string");
+
+        $model = new UserUnlike();
+        if ($this->userSign) {
+            $model->user_id = $this->userSign;
+        }
+        $model->device_id = $this->deviceId;
+        $model->news_id = $news_id;
+        $model->reason_type = $reason_type;
+        $model->reason_name = $reason_name;
+        $model->upload_time = time();
+        $model->save();
+        $this->setJsonResponse(
+            array("message" => "OK")
+            );
+        return $this->response;
+    }
+
     public function CommentAction(){
         if ($this->request->isPost()) {
             return $this->addComment();
@@ -42,7 +69,7 @@ class UserController extends BaseController {
         $hot_length = $this->get_request_param("hot_pn", "int", false, 10);
         $length = $this->get_request_param("pn", "int", false, 20);
 
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             if ($length > 0) {
                 $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
             } else {
@@ -125,7 +152,7 @@ class UserController extends BaseController {
                                                   "anonymous" => $anonymous,
                                                   ));
         
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             $this->setJsonResponse(array(
                                          "message" => "ok",
                                          "id" => $resp->getCommentId(),

@@ -8,6 +8,7 @@ $settings = array (
         "libraryDir" => LIBRARY_PATH,
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models/",
+        "modelDirPub" => LIBRARY_PATH . "/models",
         "policyDir" => LIBRARY_PATH . "/policies/",
         "renderDir" => LIBRARY_PATH . "/renders/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",

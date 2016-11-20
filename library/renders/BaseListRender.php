@@ -67,7 +67,7 @@ class BaseListRender {
     }
 
     protected function serializeNewsCell($news_model) {
-        if (version_compare($this->_client_version, VIDEO_NEWS_FEATURE, ">=")) {
+        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->_client_version, $this->_os)) {
             $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
         } else {
             $videos = null;
@@ -81,6 +81,7 @@ class BaseListRender {
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
             "channel_id" => $news_model->channel_id,
+            "filter_tags" => $this->getFilter($news_model),
         );
         
         if ($videos && $videos->count() != 0) {
@@ -160,9 +161,10 @@ class BaseListRender {
     
     protected function useLargeImageNews($img) {
         if($this->_large_img_count > LARGE_IMAGE_MAX_COUNT ||
-           version_compare($this->_client_version, LARGE_IMG_FEATURE, "<")) {
-            return false;
-        }
+           !Features::Enabled(Features::LARGE_IMG_FEATURE, $this->_client_version, $this->_os)) {
+               return false;
+           }
+           
         
         $quality = $this->getImageQuality($img);
         if ($quality > 0.0 and rand(1,10) > 2){
@@ -218,10 +220,34 @@ class BaseListRender {
         }
 
         return $cell;
-
     }
     
     protected function isIntervened($model) {
         return $model instanceof BaseIntervene;
+    }
+
+    protected function getFilter($model) {
+        $ret = array();
+        $ret[] = array(
+            "name" => "Outdated",
+            "id" => "1",
+        );
+
+        $ret[] = array(
+            "name" => "Boring topic",
+            "id" => "2"
+        );
+
+        $ret[] = array(
+            "name" => "Source: " . $model->source_name,
+            "id" => "3"
+        );
+
+        $ret[] = array(
+            "name" => "Poor writing",
+            "id" => "4"
+        );
+
+        return $ret;
     }
 }
