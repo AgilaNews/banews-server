@@ -151,6 +151,8 @@ class BaseController extends Controller{
         $this->response->setHeader("Content-Type", "application/ph");
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
         $this->response->setHeader("Pragma", "no-cache");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-ORIGIN", "*");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "*");
     }
 
     protected function logEvent($event_id, $param) {
@@ -178,10 +180,7 @@ class BaseController extends Controller{
         $param["os"] = $this->os;
         $param["os-version"] = $this->os_version;
         $param["build"] = $this->build;
-        $param["abflag"] = $this->abflags;
-
-        $this->eventlogger->info(json_encode($param));
-    }
+        $param["abflag"] = $this->abflags; $this->eventlogger->info(json_encode($param)); }
 
 
     private function initAbFlag() {
