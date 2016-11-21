@@ -150,18 +150,6 @@ class Comment{
              }
              $sign = $ref_comment->getDocId();
              $cell["news_id"] = $sign;
-             //!!ugly code to judge tpl, reconstrut it later
-             $news_model = News::getBySign($sign);
-             $channel_id = $news_model->channel_id;
-             $cname = "Render$channel_id";
-             if (class_exists($cname)) {
-                 $render = new $cname($this);
-             } else {
-                 $render = new BaseListRender($this);
-             }
-
-             $news_cell = $render->render(array($sign => $news_model))[0];
-             $cell["tpl"] = $news_cell["tpl"];
          }
 
         return $cell;

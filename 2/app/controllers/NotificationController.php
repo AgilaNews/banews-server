@@ -57,6 +57,18 @@ class NotificationController extends BaseController {
                 }
                 $LikeMsg = $notify->getLikeMsg();
                 $cell = Comment::renderLikeComment($LikeMsg->getComment(), $LikeMsg->getLikeNumber());
+                //!!ugly code to judge tpl, reconstrut it later
+                $sign = $cell["news_id"];
+                $news_model = News::getBySign($sign);
+                $channel_id = $news_model->channel_id;
+                $cname = "Render$channel_id";
+                if (class_exists($cname)) {
+                    $render = new $cname($this);
+                } else {
+                    $render = new BaseListRender($this);
+                }
+                $news_cell = $render->render(array($sign => $news_model))[0];
+                $cell["tpl"] = $news_cell["tpl"];
             }
             else{
                 continue;
