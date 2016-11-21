@@ -7,8 +7,6 @@
  * @version $Id$
  */
 
-define("DESCRIPTION_LIMIT", 1500);
-
 class Render30001 extends BaseListRender {
 
     public function __construct($controller) {
@@ -105,7 +103,7 @@ class Render30001 extends BaseListRender {
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $video->duration,
-                "description" => substr($video->description, 0, DESCRIPTION_LIMIT),
+                "description" => substr($video->description, 0, VIDEO_DESCRIPTION_LIMIT),
                 "display" => 0
             );
         }
