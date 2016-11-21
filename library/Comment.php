@@ -10,7 +10,7 @@ function getLikeNotifyMsg($LikeNum){
         $msg = "Cool! Someone sent you 1 like to your wonderful comment!";
     }
     else if ($LikeNum == 5){
-        $msg = "Wow! You have received 5 likes till now！";
+        $msg = "Wow! You have received 5 likes till now!";
     }
     else if($LikeNum == 10){
         $msg = "Great! 10 likes come to your comment!";
