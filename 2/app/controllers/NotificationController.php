@@ -146,7 +146,7 @@ class NotificationController extends BaseController {
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
         }
-        $product_id = "agilanews";
+        $this->check_user_and_device();
         $latest_id = $this->get_request_param("latest_id", "int", false, 0);
         
         $comment_service = $this->di->get('comment');
@@ -170,6 +170,32 @@ class NotificationController extends BaseController {
             "status"=>strval($result)
         );
         $this->setJsonResponse($ret);
+        return $this->response;
+    }
+    public function readAction(){
+        if (!$this->request->isGet()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+        $this->check_user_and_device();
+        $notification_id = $this->get_request_param("notification_id", "int", false, 0);
+        $comment_service = $this->di->get('comment');
+        $req = new iface\ReadNotificationRequest();
+        $req->setProductId($this->config->comment->product_key);
+        $req->setDeviceId($this->deviceId);
+        $req->setUserId($this->userSign);
+        $req->setNotificationId($notification_id);
+        list($resp, $status) = $comment_service->CheckNotification($req)->wait();
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    json_encode($status->details, true));
+        }
+        $result = $resp->getStatus();
+        if($result == 0){
+            $this->setJsonResponse(array("message" => "ok"));
+        }
+        else{
+            $this->setJsonResponse(array("message" => "fail"));
+        }
         return $this->response;
     }
 }
