@@ -7,19 +7,19 @@ define('DEFAULT_SYSTEM_USER_NAME', "system notifcation");
 function getLikeNotifyMsg($LikeNum){
     $msg = "";
     if ($LikeNum == 1){
-        $msg = "Cool!someone sent you 1 like to your wonderful comment!";
+        $msg = "Cool! Someone sent you 1 like to your wonderful comment!";
     }
     else if ($LikeNum == 5){
-        $msg = "Wow,you have received 5 likes till now！";
+        $msg = "Wow! You have received 5 likes till now!";
     }
     else if($LikeNum == 10){
-        $msg = "Great,10 likes come to your comment!";
+        $msg = "Great! 10 likes come to your comment!";
     }
     else if($LikeNum == 50){
-        $msg = "Amazing,your wonderful comment has received 50 likes!";
+        $msg = "Amazing! Your wonderful comment has received 50 likes!";
     }
     else if($LikeNum == 100){
-        $msg = "Oh my god genius,your comment has received 100 likes, you are popular now!";
+        $msg = "Oh my god genius! Your comment has received 100 likes!! You are popular now!";
     }
     else{
         $msg = "";
