@@ -328,10 +328,6 @@ class NewsController extends BaseController {
     private function addView($newsSign) {
         $video_model = Video::getByNewsSign($newsSign);
         if (!$video_model) {
-            throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
-        }
-
-        if (!$video_model) {
             return 0;
         }
 
