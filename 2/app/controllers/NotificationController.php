@@ -184,7 +184,7 @@ class NotificationController extends BaseController {
         $req->setDeviceId($this->deviceId);
         $req->setUserId($this->userSign);
         $req->setNotificationId($notification_id);
-        list($resp, $status) = $comment_service->CheckNotification($req)->wait();
+        list($resp, $status) = $comment_service->ReadNotification($req)->wait();
         if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
                                     json_encode($status->details, true));
