@@ -19,7 +19,7 @@ function getLikeNotifyMsg($LikeNum){
         $msg = "Amazing! Your wonderful comment has received 50 likes!";
     }
     else if($LikeNum == 100){
-        $msg = "Oh my god genius! your comment has received 100 likes, you are popular now!";
+        $msg = "Oh my god genius! Your comment has received 100 likes!! You are popular now!";
     }
     else{
         $msg = "";
