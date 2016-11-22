@@ -1,5 +1,7 @@
 <?php
 
+require_once (LIBRARY_PATH . "/pb/classify.php"); 
+
 define ("ALG_NEWS_FEATURE_KEY", "ALG_NEWS_FEATURE_KEY"); 
 define ("MAX_RANKER_NEWS_CNT", 100);
 define ("ORIGINAL_FEATURE_CNT", 13);
