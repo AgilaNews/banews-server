@@ -116,7 +116,7 @@ class LrNewsRanker extends BaseNewsRanker {
                     $featureObj->setValue($featureVal);
                     $sampleObj->addFeatures($featureObj);
                 }
-                $predictReq.addSamples($sampleObj);
+                $predictReq->addSamples($sampleObj);
             }
         }
         return $predictReq;
