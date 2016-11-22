@@ -14,24 +14,12 @@ define('MAX_NEWS_COUNT', 10);
 define ('POPULAR_NEWS_CNT', 2);
 
 class Selector10001 extends BaseNewsSelector{
-    protected function getDeviceGroup($deviceId) { 
-        $hashCode = hash('md5', $deviceId);
-        $lastChar = substr($hashCode, -1);
-        if (in_array($lastChar, 
-                array('0', '1', '2', '3', '4', '5', '6', '7'))) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
 
     public function getPolicyTag(){
-        $groupId = $this->getDeviceGroup($this->_device_id);
-        if ($groupId == 0) {
-            return "popularRanking";
-        } else {
-            return 'personalTopicRec';
-        }
+        $abService = $this->_di->get('abtest');
+        $experiment = 'channel_' . $this->_channel_id . '_strategy';
+        $tag = $abService->getTag($experiment);
+        return $tag;
     }
 
     public function emergence($sample_count, $recNewsLst, $options, $prefer) {
@@ -58,15 +46,15 @@ class Selector10001 extends BaseNewsSelector{
         }
         // divide whole user into two group, one combine popular & recommend, 
         // the other one only contain popular list 
-        $groupId = $this->getDeviceGroup($this->_device_id);
+        $strategyTag = $this->getPolicyTag();
         $popularPolicy = new PopularListPolicy($this->_di); 
+        $personalTopicPolicy = new PersonalTopicInterestPolicy($this->_di);
         $recNewsLst = array();
-        if ($groupId == 0) {
+        if ($strategyTag == "10001_popularRanking") {
             $recNewsLst = $popularPolicy->sampling($this->_channel_id, 
                 $this->_device_id, $this->_user_id, $sample_count, 
                 3, $prefer, $options);
-        } else {
-            $personalTopicPolicy = new PersonalTopicInterestPolicy($this->_di);
+        } elseif ($strategyTag == "10001_personalTopicRec") {
             $recNewsLst = $personalTopicPolicy->sampling(
                 $this->_channel_id, $this->_device_id, $this->_user_id,
                 $sample_count - POPULAR_NEWS_CNT, 3, $prefer, $options);
@@ -84,7 +72,20 @@ class Selector10001 extends BaseNewsSelector{
                     $recNewsLst[] = $popNews;
                 }
             } 
+        } else {
+            // combine popular & topic recommend recall with rerank
+            $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
+                $this->_device_id, $this->_user_id, 30, 3, $prefer, 
+                $options);
+            $topicRecNewsLst = $personalTopicPolicy->sampling(
+                $this->_channel_id, $this->_device_id, $this->_user_id,
+                20, 3, $prefer, $options);
+            $candidateNewsLst = array_merge($popularNewsLst, $topicRecNewsLst); 
+            $lrRanker = new LrNewsRanker($this->_di); 
+            $recNewsLst = $lrRanker->ranking($this->_channel_id,
+                $this->_device_id, $candidateNewsLst, $prefer, $sample_count);
         }
+            
         if (count($recNewsLst) < $sample_count) {
             $recNewsLst = $this->emergence($sample_count, 
                 $recNewsLst, $options, $prefer);

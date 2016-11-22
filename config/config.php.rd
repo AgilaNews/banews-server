@@ -52,6 +52,13 @@ $settings = array (
         'call_timeout' => 100,
         'product_key' => 'agilanews',
     ),
+    'lrRanker' => array(
+        'host' => '127.0.0.1',
+        'port' => '6077',
+        'conn_timeout' => 30,
+        'call_timeout' => 100,
+        'product_key' => 'agilanews',
+    ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/home/work/logs/banews.log",
