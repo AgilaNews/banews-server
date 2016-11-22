@@ -10,6 +10,7 @@ $settings = array (
         "modelDir" => APP_PATH . "/app/models/",
         "policyDir" => LIBRARY_PATH . "/policies/",
         "renderDir" => LIBRARY_PATH . "/renders/",
+        "rankerDir" => LIBRARY_PATH . "/rankers/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
         "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
         "interveneDir" => LIBRARY_PATH . "/intervenes/",
