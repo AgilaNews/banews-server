@@ -17,19 +17,24 @@ class UserController extends BaseController {
         $param = $this->request->getJsonRawBody(true);
 
         $news_id = $this->get_or_fail($param, "newsId", "string");
-        $reason_type = $this->get_or_fail($param, "id", "string");
-        $reason_name = $this->get_or_fail($param, "name", "string");
+        $reasons = $param["reasons"];
 
-        $model = new UserUnlike();
-        if ($this->userSign) {
-            $model->user_id = $this->userSign;
+        foreach ($reasons as $reason) {
+            $reason_type = $this->get_or_fail($param, "id", "string");
+            $reason_name = $this->get_or_fail($param, "name", "string");
+            
+            $model = new UserUnlike();
+            if ($this->userSign) {
+                $model->user_id = $this->userSign;
+            }
+            $model->device_id = $this->deviceId;
+            $model->news_id = $news_id;
+            $model->reason_type = $reason_type;
+            $model->reason_name = $reason_name;
+            $model->upload_time = time();
+            $model->save();
         }
-        $model->device_id = $this->deviceId;
-        $model->news_id = $news_id;
-        $model->reason_type = $reason_type;
-        $model->reason_name = $reason_name;
-        $model->upload_time = time();
-        $model->save();
+
         $this->setJsonResponse(
             array("message" => "OK")
             );
