@@ -152,7 +152,7 @@ class LrNewsRanker extends BaseNewsRanker {
         }
 
         $newsIdScoArr = array();
-        if (count(newsIdLst) != count($predictRes->getSamplesList())) {
+        if (count($newsIdLst) != count($predictRes->getSamplesList())) {
             return array();
         }
         for ($idx=0; $idx<count($newsIdLst); $idx++) {
@@ -185,8 +185,8 @@ class LrNewsRanker extends BaseNewsRanker {
         $newsScoArr = $this->getScores($filterNewsIdLst, $predictReq);
 
         // post-filter & sorting
-        $sortedNewsScoArr = arsort($newsScoArr, SORT_NUMERIC);
-        $recNewsIdLst = array_keys($sortedNewsScoArr);
+        arsort($newsScoArr, SORT_NUMERIC);
+        $recNewsIdLst = array_keys($newsScoArr);
         if (count($recNewsIdLst) > $newsCnt) {
             return array_slice($recNewsIdLst, 0, $newsCnt);
         } else  {
