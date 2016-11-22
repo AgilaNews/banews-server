@@ -147,13 +147,12 @@ class LrNewsRanker extends BaseNewsRanker {
                 ":" . json_encode($status->details, true));
             return array();
         }
-        $newsScoreLst = array();
         if (!$predictRes->hasSamples()) {
             return array();
         }
 
         $newsIdScoArr = array();
-        if (count(newsScoLst) != count($predictRes->getSamplesList())) {
+        if (count(newsIdLst) != count($predictRes->getSamplesList())) {
             return array();
         }
         for ($idx=0; $idx<count($newsIdLst); $idx++) {
