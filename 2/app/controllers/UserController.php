@@ -16,12 +16,12 @@ class UserController extends BaseController {
 
         $param = $this->request->getJsonRawBody(true);
 
-        $news_id = $this->get_or_fail($param, "newsId", "string");
+        $news_id = $this->get_or_fail($param, "news_id", "string");
         $reasons = $param["reasons"];
 
         foreach ($reasons as $reason) {
-            $reason_type = $this->get_or_fail($param, "id", "string");
-            $reason_name = $this->get_or_fail($param, "name", "string");
+            $reason_type = $this->get_or_fail($reason, "id", "string");
+            $reason_name = $this->get_or_fail($reason, "name", "string");
             
             $model = new UserUnlike();
             if ($this->userSign) {
