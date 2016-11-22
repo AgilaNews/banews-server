@@ -8,23 +8,26 @@ define ("ORIGINAL_FEATURE_CNT", 13);
 define ("HOUR", 60 * 60);
 define ("MIN_FEATURE_VALUE", 0.001);
 
-$FEATURE_MAPPING = array(
-    "HISTORY_DISPLAY_COUNT" => 1,
-    "HISTORY_READ_COUNT" => 2,
-    "HISTORY_LIKE_COUNT" => 3,
-    "HISTORY_COMMENT_COUNT" => 4,
-    "HISTORY_READ_DISPLAY_RATIO" => 5,
-    "HISTORY_LIKE_DISPLAY_RATIO" => 6,
-    "HISTORY_COMMENT_DISPLAY_RATIO" => 7,
-    "PICTURE_COUNT" => 8,
-    "VIDEO_COUNT" => 9,
-    "TITLE_LENGTH" => 10,
-    "CONTENT_LENGTH" => 11,
-    "FETCH_TIMESTAMP_INTERVAL" => 12,
-    "POST_TIMESTAMP_INTERTVAL" => 13
-);
-
 class LrNewsRanker extends BaseNewsRanker {
+
+    public function __construct($di) {
+        parent::__construct($di);
+        $this->FEATURE_MAPPING = array(
+            "HISTORY_DISPLAY_COUNT" => 1,
+            "HISTORY_READ_COUNT" => 2,
+            "HISTORY_LIKE_COUNT" => 3,
+            "HISTORY_COMMENT_COUNT" => 4,
+            "HISTORY_READ_DISPLAY_RATIO" => 5,
+            "HISTORY_LIKE_DISPLAY_RATIO" => 6,
+            "HISTORY_COMMENT_DISPLAY_RATIO" => 7,
+            "PICTURE_COUNT" => 8,
+            "VIDEO_COUNT" => 9,
+            "TITLE_LENGTH" => 10,
+            "CONTENT_LENGTH" => 11,
+            "FETCH_TIMESTAMP_INTERVAL" => 12,
+            "POST_TIMESTAMP_INTERTVAL" => 13
+        );
+    }
 
     public function getRankerTag() {
         return "LrRanker";
@@ -92,7 +95,7 @@ class LrNewsRanker extends BaseNewsRanker {
             }
         }
         $resArr = array();
-        foreach ($FEATURE_MAPPING as $featureName => $featureIdx) {
+        foreach ($this->FEATURE_MAPPING as $featureName => $featureIdx) {
             if (array_key_exists($featureName, $transferFeatureArr)) {
                 $resArr[$featureIdx] = $transferFeatureArr[$featureName];
             }
@@ -114,9 +117,12 @@ class LrNewsRanker extends BaseNewsRanker {
                 $originalFeatureLst = json_decode($featureStr);
                 $featureArr = $this->_formatFeatures($originalFeatureLst);
                 foreach ($featureArr as $featureIdx => $featureVal) {
+                    if (!empty($featureVal)) {
+                        continue;
+                    }
                     $featureObj = new iface\Feature();
                     $featureObj->setIndex($featureIdx);
-                    $featureObj->setValue($featureVal);
+                    $featureObj->setValue(floatval($featureVal));
                     $sampleObj->addFeatures($featureObj);
                 }
                 $predictReq->addSamples($sampleObj);
