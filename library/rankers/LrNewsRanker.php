@@ -107,6 +107,9 @@ class LrNewsRanker extends BaseNewsRanker {
             $newsFeatureArr = $cache->hMGet(ALG_NEWS_FEATURE_KEY, 
                 $newsIdLst);
             foreach ($newsFeatureArr as $newsId => $featureStr) {
+                if (!$featureStr) {
+                    continue;
+                }
                 $sampleObj = new iface\Sample();
                 $originalFeatureLst = json_decode($featureStr);
                 $featureArr = $this->_formatFeatures($originalFeatureLst);
