@@ -106,6 +106,7 @@ class LrNewsRanker extends BaseNewsRanker {
     protected function _getNewsFeatureFromCache($newsIdLst) {
         $cache = $this->_di->get('cache');
         $predictReq = new iface\PredictRequest();
+        $filterNewsIdLst = array();
         if ($cache) {
             $newsFeatureArr = $cache->hMGet(ALG_NEWS_FEATURE_KEY, 
                 $newsIdLst);
@@ -117,7 +118,7 @@ class LrNewsRanker extends BaseNewsRanker {
                 $originalFeatureLst = json_decode($featureStr);
                 $featureArr = $this->_formatFeatures($originalFeatureLst);
                 foreach ($featureArr as $featureIdx => $featureVal) {
-                    if (!empty($featureVal)) {
+                    if (empty($featureVal)) {
                         continue;
                     }
                     $featureObj = new iface\Feature();
@@ -125,34 +126,46 @@ class LrNewsRanker extends BaseNewsRanker {
                     $featureObj->setValue(floatval($featureVal));
                     $sampleObj->addFeatures($featureObj);
                 }
+                if (!$sampleObj->hasFeatures()) {
+                    continue;
+                }
+                $filterNewsIdLst[] = $newsId;
                 $predictReq->addSamples($sampleObj);
             }
         }
-        return $predictReq;
+        return array($filterNewsIdLst, $predictReq);
     }
 
     protected function getScores($newsIdLst, $predictReq) {
         $lrRankerClient = $this->_di->get('lrRanker');
-        if (!$lrRankerClient) {
+        if (empty($lrRankerClient)) {
             return array();
         }
-        $predictRes = $lrRankderClient->Predict($predictReq);
+        list($predictRes, $status) = $lrRankerClient->Predict($predictReq)->wait();
+        if ($status->code != 0) {
+            $this->logger->warning("get classify error:" . $status->code . 
+                ":" . json_encode($status->details, true));
+            return array();
+        }
         $newsScoreLst = array();
         if (!$predictRes->hasSamples()) {
             return array();
         }
 
-        $newsScoArr = array();
+        $newsIdScoArr = array();
+        if (count(newsScoLst) != count($predictRes->getSamplesList())) {
+            return array();
+        }
         for ($idx=0; $idx<count($newsIdLst); $idx++) {
             $newsId = $newsIdLst[$idx];
-            $probOfSample = $predictReq->getSamples($idx); 
-            if (!$probOfSample.hasProbs()) {
-                $newsScoArr[$newsId] = 0.0;
+            $probOfSample = $predictRes->getSamples($idx); 
+            if (!$probOfSample->hasProbs()) {
+                $newsIdScoArr[$newsId] = 0.0;
             } else {
-                $newsScoArr[$newsId] = $probOfSample->getProbs();
+                $newsIdScoArr[$newsId] = $probOfSample->getProbs();
             }
         }
-        return $newsScoArr;
+        return $newsIdScoArr;
     }
 
     public function ranking($channelId, $deviceId, $newsIdLst, 
@@ -163,13 +176,14 @@ class LrNewsRanker extends BaseNewsRanker {
         }
         // user & news feature collection
         // TODO: Realtime features logging & aggregating
-        $predictReq = $this->_getNewsFeatureFromCache($newsIdLst);
+        list($filterNewsIdLst, $predictReq) = 
+            $this->_getNewsFeatureFromCache($newsIdLst);
         if (!$predictReq->hasSamples()) {
             return array();
         }
 
         // calculate news score according to Logistic Regression Model
-        $newsScoArr = $this->getScores($newsIdLst, $predictReq);
+        $newsScoArr = $this->getScores($filterNewsIdLst, $predictReq);
 
         // post-filter & sorting
         $sortedNewsScoArr = arsort($newsScoArr, SORT_NUMERIC);
