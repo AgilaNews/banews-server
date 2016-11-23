@@ -28,7 +28,7 @@ class Selector10001 extends BaseNewsSelector{
     public function emergence($sample_count, $recNewsLst, $options, $prefer) {
         $randomPolicy = new ExpDecayListPolicy($this->_di); 
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-                $this->_device_id, $this->_user_id, MAX_NEWS_COUNT, 
+                $this->_device_id, $this->_user_id, $sample_count, 
                 3, $prefer, $options);
         foreach ($randomNewsLst as $randomNews) {
             if (count($recNewsLst) >= $sample_count) {
