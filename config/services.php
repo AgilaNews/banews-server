@@ -15,6 +15,7 @@ $di = new FactoryDefault();
 
 require(ROOT_PATH . "/library/pb/comment.php");
 require(ROOT_PATH . "/library/pb/abtest.php");
+require(ROOT_PATH . "/library/pb/classify.php");
 
 $di->set('dispatcher', function () {
     $em = new EventsManager();
@@ -40,6 +41,7 @@ $di->set('view', function () use ($config) {
             $view = new View();
             return $view;
     }, true);
+
 $di->set('db_w', function() use ($config) {
     $db_clz = 'Phalcon\Db\Adapter\Pdo\\' . $config->db_w->adapter;
     
@@ -51,7 +53,6 @@ $di->set('db_r', function() use ($config) {
     
     return new $db_clz($config->db_r->conf->toArray());
     }, true);
-
     
 $di->set('logger', function() use($config) {
     $logger = new BanewsLogger($config->logger->banews->path);
@@ -105,6 +106,18 @@ $di->set('abtest', function() use ($config) {
         }
     }, true);
 
+$di->set('lrRanker', function() use ($config) {
+    $client = new iface\ClassificationServiceClient(sprintf("%s:%s", 
+        $config->lrRanker->host, $config->lrRanker->port), 
+        ['credentials' => Grpc\ChannelCredentials::createInsecure(),
+         'timeout' => $config->lrRanker->conn_timeout,]);
+    try {
+        $client->waitForReady($config->lrRanker->conn_timeout);
+    } catch(\Exception $e) {
+        return false;
+    }
+    return $client;
+}, true);
 
 $di->set('cache', function() use ($config) {
     $cache = new Redis();

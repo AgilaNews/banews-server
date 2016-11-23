@@ -175,6 +175,9 @@ class CommentController extends BaseController {
             $this->logger->warning("communicate to comment server error");
         } else {
             $currentLiked = $resp->getCurrentLiked();
+            if (!$currentLiked) {
+                $currentLiked = 0;
+            }
             
             $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
                                                            "comment_id" => $comment_id,
