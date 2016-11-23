@@ -48,6 +48,9 @@ class CommentController extends BaseController {
             throw new HttpException(ERR_INTERNAL_DB, "internal error");
         } else {
             $currentLiked = $resp->getCurrentLiked();
+            if (!$currentLiked) {
+                $currentLiked = 0;
+            }
             
             $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
                                                            "comment_id" => $comment_id,
