@@ -89,6 +89,9 @@ class Selector10001 extends BaseNewsSelector{
             $recNewsLst = $lrRanker->ranking($this->_channel_id,
                 $this->_device_id, $popularNewsLst, $prefer, $sample_count);
         }
+        $logger->info("====>channel 10001 strategy: " . $strategyTag .
+            ". deviceId:" . $this->_device_id . ". newsCnt:" 
+            . count($recNewsLst));
 
         if (count($recNewsLst) < $sample_count) {
             $recNewsLst = $this->emergence($sample_count, 
