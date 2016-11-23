@@ -53,6 +53,7 @@ class Selector10001 extends BaseNewsSelector{
         $popularPolicy = new PopularListPolicy($this->_di); 
         $personalTopicPolicy = new PersonalTopicInterestPolicy($this->_di);
         $recNewsLst = array();
+        $logger = $this->$di->get('logger');
         if ($strategyTag == "10001_popularRanking") {
             $recNewsLst = $popularPolicy->sampling($this->_channel_id, 
                 $this->_device_id, $this->_user_id, $sample_count, 
@@ -84,17 +85,20 @@ class Selector10001 extends BaseNewsSelector{
             $recNewsLst = $lrRanker->ranking($this->_channel_id,
                 $this->_device_id, $popularNewsLst, $prefer, $sample_count);
         }
-            
+        $logger->info("====>channel 10001 strategy: " . $strategyTag . 
+            ". deviceId:" . $this->_device_id . 
+            ". newsCnt:" . count($recNewsLst));
         if (count($recNewsLst) < $sample_count) {
             $recNewsLst = $this->emergence($sample_count, 
                 $recNewsLst, $options, $prefer);
         }
+        
         return $recNewsLst;
     }
 
     public function select($prefer) {
         $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
-        $selected_news_list = $this->sampling($required, $prefer); 
+        $selected_news_list = $this->sampling($required, $prefer);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
