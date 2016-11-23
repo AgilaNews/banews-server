@@ -25,12 +25,17 @@ class Selector30001 extends BaseNewsSelector {
         $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
+
+        if (count($popularNewsLst) >= $sample_count) {
+            return $popularNewsLst;
+        }
+
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, self::MAX_NEWS_COUNT, 
             3, $prefer, $options);
 
         foreach($randomNewsLst as $randomNews) {
-            if (count($popularNewsCnt) >= $sample_count) {
+            if (count($popularNewsLst) >= $sample_count) {
                 break;
             }
             if (in_array($randomNews, $popularNewsLst)) {
@@ -43,7 +48,11 @@ class Selector30001 extends BaseNewsSelector {
 
     public function select($prefer) {
         $required = mt_rand(self::MIN_NEWS_COUNT, self::MAX_NEWS_COUNT);
-        $selected_news_list = $this->sampling($required, $prefer);
+        return $this->selectWithCount($prefer, $required);
+    }
+
+    public function selectWithCount($prefer, $count) {
+        $selected_news_list = $this->sampling($count, $prefer);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
@@ -54,7 +63,7 @@ class Selector30001 extends BaseNewsSelector {
             if (array_key_exists($selected_news_list[$i], $models)) {
                 $ret []= $models[$selected_news_list[$i]];
                 $filter []= $models[$selected_news_list[$i]]->url_sign;
-                if (count($ret) >= $required) {
+                if (count($ret) >= $count) {
                     break;
                 }
             }

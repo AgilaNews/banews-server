@@ -108,6 +108,15 @@ class BaseController extends Controller{
         }
     }
 
+    public function beforeExecuteRoute($dispatcher) {
+        if ($this->request->isOptions()) {
+            $this->setResponseHeaders();
+            return false;
+        }
+
+        return true;
+    }
+
     public function afterExecuteRoute($dispatcher) {
         $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s][abflag:%s]",
                                     $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
@@ -144,17 +153,20 @@ class BaseController extends Controller{
         }
     }
 
-    protected function setJsonResponse($arr, $options = 0) {
-        $content = json_encode($arr, $options);
-        $this->response->setContent($content);
-        $this->response->setHeader("Content-Length", strlen($content));
-        if (version_compare($this->client_version, "1.1.2", ">=")) {
-            $this->response->setHeader("Content-Type", "application/ph");
-        } else {
-            $this->response->setHeader("Content-Type", "application/json");
-        }
+    protected function setResponseHeaders(){
+        $this->response->setHeader("Content-Type", "application/ph");
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
         $this->response->setHeader("Pragma", "no-cache");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-ORIGIN", "*");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "GET,OPTIONS");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-HEADERS", "X-USER-D,X-USER-A,AUTHORIZATION,DENSITY,X-SESSION");
+    }
+
+    protected function setJsonResponse($arr, $options = 0) {
+        $content = json_encode($arr, $options);
+        $this->response->setHeader("Content-Length", strlen($content));
+        $this->response->setContent($content);
+        $this->setResponseHeaders();
     }
 
     protected function logEvent($event_id, $param) {
@@ -182,10 +194,7 @@ class BaseController extends Controller{
         $param["os"] = $this->os;
         $param["os-version"] = $this->os_version;
         $param["build"] = $this->build;
-        $param["abflag"] = $this->abflags;
-
-        $this->eventlogger->info(json_encode($param));
-    }
+        $param["abflag"] = $this->abflags; $this->eventlogger->info(json_encode($param)); }
 
 
     private function initAbFlag() {

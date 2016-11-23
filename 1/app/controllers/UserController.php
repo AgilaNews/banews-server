@@ -42,7 +42,7 @@ class UserController extends BaseController {
         $hot_length = $this->get_request_param("hot_pn", "int", false, 10);
         $length = $this->get_request_param("pn", "int", false, 20);
 
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             if ($length > 0) {
                 $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
             } else {
@@ -115,7 +115,7 @@ class UserController extends BaseController {
                                                   "anonymous" => $anonymous,
                                                   ));
         
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             $this->setJsonResponse(array(
                                          "message" => "ok",
                                          "id" => $resp->getCommentId(),
@@ -177,7 +177,7 @@ class UserController extends BaseController {
         $news_ids []= $req["news_id"];
         
         if(($saved_cid = Collect::getCollectId($this->userSign, $news_model->url_sign))) {
-            // throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
+                //                throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
         } else {
             $collect_model = new Collect();
             $collect_model->user_sign = $this->userSign;
@@ -195,7 +195,7 @@ class UserController extends BaseController {
          "news_id" => $req["news_id"],
          "collect_id" => $saved_cid,
          );
-
+            
         $this->logEvent(EVENT_NEWS_COLLECT, array("news_id" => $news_ids));
         $this->logger->info(sprintf("[PostCollect][news:%s]",
                                      json_encode($news_ids)));

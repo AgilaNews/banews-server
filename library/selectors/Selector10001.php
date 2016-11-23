@@ -89,14 +89,17 @@ class Selector10001 extends BaseNewsSelector{
             $recNewsLst = $lrRanker->ranking($this->_channel_id,
                 $this->_device_id, $popularNewsLst, $prefer, $sample_count);
         }
-        $logger->info("====>channel 10001 strategy: " . $strategyTag . 
-            ". deviceId:" . $this->_device_id . 
-            ". newsCnt:" . count($recNewsLst));
+
         if (count($recNewsLst) < $sample_count) {
             $recNewsLst = $this->emergence($sample_count, 
                 $recNewsLst, $options, $prefer);
         }
-        
+
+        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, $this->_client_version, $this->_os)) {
+            $videos = $popularPolicy->sampling("30001", $this->_device_id,
+                        $this->_user_id, 1, 3, $prefer, $options);
+            array_splice($recNewsLst, 3, 0, $videos);
+        }
         return $recNewsLst;
     }
 
