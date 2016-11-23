@@ -50,7 +50,7 @@ $settings = array (
         'host' => '10.8.91.237',
         'port' => '6097',
         'conn_timeout' => 30000,
-        'call_timeout' => 70000,
+        'call_timeout' => 150000,
         'product_key' => 'agilanews',
     ),
     'logger' => array (
