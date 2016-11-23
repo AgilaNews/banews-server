@@ -75,11 +75,8 @@ class Selector10001 extends BaseNewsSelector{
         } else {
             // combine popular & topic recommend recall with rerank
             $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
-                $this->_device_id, $this->_user_id, 30, 3, $prefer, 
+                $this->_device_id, $this->_user_id, 50, 3, $prefer, 
                 $options);
-            $topicRecNewsLst = $personalTopicPolicy->sampling(
-                $this->_channel_id, $this->_device_id, $this->_user_id,
-                20, 3, $prefer, $options);
             $candidateNewsLst = array_unique(array_merge($popularNewsLst,
                 $topicRecNewsLst)); 
             $lrRanker = new LrNewsRanker($this->_di); 
