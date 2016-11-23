@@ -110,27 +110,29 @@ class LrNewsRanker extends BaseNewsRanker {
         if ($cache) {
             $newsFeatureArr = $cache->hMGet(ALG_NEWS_FEATURE_KEY, 
                 $newsIdLst);
-            foreach ($newsFeatureArr as $newsId => $featureStr) {
-                if (!$featureStr) {
-                    continue;
-                }
-                $sampleObj = new iface\Sample();
-                $originalFeatureLst = json_decode($featureStr);
-                $featureArr = $this->_formatFeatures($originalFeatureLst);
-                foreach ($featureArr as $featureIdx => $featureVal) {
-                    if (empty($featureVal)) {
+            if (!empty($newsFeatureArr)) {
+                foreach ($newsFeatureArr as $newsId => $featureStr) {
+                    if (!$featureStr) {
                         continue;
                     }
-                    $featureObj = new iface\Feature();
-                    $featureObj->setIndex($featureIdx);
-                    $featureObj->setValue(floatval($featureVal));
-                    $sampleObj->addFeatures($featureObj);
+                    $sampleObj = new iface\Sample();
+                    $originalFeatureLst = json_decode($featureStr);
+                    $featureArr = $this->_formatFeatures($originalFeatureLst);
+                    foreach ($featureArr as $featureIdx => $featureVal) {
+                        if (empty($featureVal)) {
+                            continue;
+                        }
+                        $featureObj = new iface\Feature();
+                        $featureObj->setIndex($featureIdx);
+                        $featureObj->setValue(floatval($featureVal));
+                        $sampleObj->addFeatures($featureObj);
+                    }
+                    if (!$sampleObj->hasFeatures()) {
+                        continue;
+                    }
+                    $filterNewsIdLst[] = $newsId;
+                    $predictReq->addSamples($sampleObj);
                 }
-                if (!$sampleObj->hasFeatures()) {
-                    continue;
-                }
-                $filterNewsIdLst[] = $newsId;
-                $predictReq->addSamples($sampleObj);
             }
         }
         return array($filterNewsIdLst, $predictReq);

@@ -53,7 +53,7 @@ class Selector10001 extends BaseNewsSelector{
         $popularPolicy = new PopularListPolicy($this->_di); 
         $personalTopicPolicy = new PersonalTopicInterestPolicy($this->_di);
         $recNewsLst = array();
-        $logger = $this->$di->get('logger');
+        $logger = $this->_di->get('logger');
         if ($strategyTag == "10001_popularRanking") {
             $recNewsLst = $popularPolicy->sampling($this->_channel_id, 
                 $this->_device_id, $this->_user_id, $sample_count, 
