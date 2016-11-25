@@ -44,14 +44,14 @@ $settings = array (
         "host" => "10.8.91.237",
         "port" => "6087",
         'conn_timeout' => 30000,
-        'call_timeout' => 70000,
+        'call_timeout' => 150000,
         "product_key" => "agilanews",
     ),
     'abtest' => array(
         'host' => '10.8.91.237',
         'port' => '6097',
         'conn_timeout' => 30000,
-        'call_timeout' => 150000,
+        'call_timeout' => 50000,
         'product_key' => 'agilanews',
     ),
     'lrRanker' => array(
@@ -60,6 +60,12 @@ $settings = array (
         'conn_timeout' => 30000,
         'call_timeout' => 70000,
         'product_key' => 'agilanews',
+    ),
+    'bloomfilter' => array(
+        'host' => "10.8.91.237"
+        'port' => '6097',
+        'conn_timeout' => 30000,
+        'call_timeout' => 100000,
     ),
     'logger' => array (
                        'banews' => array (
