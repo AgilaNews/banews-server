@@ -25,12 +25,12 @@ abstract class BaseListPolicy {
         }
     }
 
-    protected function getAllUnsentVideo($channel_id, $device_id, $day_till_now) {
+    protected function getAllUnsentNewsByBloomfilter($filterName, $channel_id, $device_id, $day_till_now) {
         $ready_news_list = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
 
         $bf_service = $this->_di->get("bloomfilter");
         $ret = $bf_service->filter(
-                                   BloomFilterService::FILTER_FOR_VIDEO,
+                                   $filterName,
                                    $ready_news_list,
                                    function($news) use ($device_id) {
                                        return $device_id . "_" . $news["id"];
@@ -40,10 +40,16 @@ abstract class BaseListPolicy {
         
         return $ret;
     }
-    
+
     protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
-        if($channel_id == 30001 || $channel_id == 10011 || $channel_id == 10012) {
-            return $this->getAllUnsentVideo($channel_id, $device_id, $day_till_now);
+        if($channel_id == 30001) {
+            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_IMAGE, $channel_id, $device_id, $day_till_now);
+        }
+        if($channel_id == 10011) {
+            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_IMAGE, $channel_id, $device_id, $day_till_now);
+        }
+        if($channel_id == 10012) {
+            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_GIF, $channel_id, $device_id, $day_till_now);
         }
         
         $sent = $this->_cache->getDeviceSeen($device_id);

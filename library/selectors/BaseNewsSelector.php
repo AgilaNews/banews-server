@@ -133,4 +133,28 @@ class BaseNewsSelector {
             }
         }
     }
+
+    protected function setDeviceSeenToBF($keys) {
+        switch ($this->_channel_id) {
+            case 10011:
+                $filterName = BloomFilterService::FILTER_FOR_IMAGE;
+                break;
+            case 10012:
+                $filterName = BloomFilterService::FILTER_FOR_GIF;
+                break;
+            case 30001:
+                $filterName = BloomFilterService::FILTER_FOR_VIDEO;
+                break;
+            default:
+                return;
+        }
+
+        $device_id = $this->_device_id;
+        $bf_service = $this->_di->get("bloomfilter");
+        $bf_service->add($filterName, 
+                         array_map(
+                                   function($key) use ($device_id){ 
+                                       return $device_id . "_" . $key;
+                                   }, $keys));
+    }
 }

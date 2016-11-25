@@ -11,6 +11,8 @@
 use Phalcon\DI;
 class BloomFilterService {
     const FILTER_FOR_VIDEO = "agilanews_video_channel_filter";
+    const FILTER_FOR_IMAGE = "agilanews_images_channel_filter";
+    const FILTER_FOR_GIF = "agilanews_gifs_channel_filter";
     
     public function BloomFilterService($client) {
         $this->client = $client;
