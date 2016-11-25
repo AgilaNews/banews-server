@@ -25,7 +25,33 @@ abstract class BaseListPolicy {
         }
     }
 
+    protected function getAllUnsentVideo($channel_id, $device_id, $day_till_now) {
+        $ready_news_list = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
+        $news_ids = array_map(function ($ready_news) {return $ready_news["id"];}, $ready_news_list);
+        
+        $bf_service = $this->_di->get("bloomfilter");
+        $exists = $bf_service->test(
+                                    BloomFilterService::FILTER_FOR_VIDEO,
+                                    array_map(
+                                              function($news_id) use ($device_id) {
+                                                  return $device_id . "_" . $news_id;
+                                              }, $news_ids)
+                                    );
+        $ret = array();
+        for ($i = 0 ; $i < count($exists); $i++) {
+            if (!$exists[$i]) {
+                $ret []= $ready_news_list[$i];
+            }
+        }
+
+        return $ret;
+    }
+    
     protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
+        if($channel_id == 30001) {
+            return $this->getAllUnsentVideo($channel_id, $device_id, $day_till_now);
+        }
+        
         $sent = $this->_cache->getDeviceSeen($device_id);
         $ready_news_list = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
         $valid_news_list = array();

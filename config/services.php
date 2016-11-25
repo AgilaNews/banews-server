@@ -16,6 +16,7 @@ $di = new FactoryDefault();
 require(ROOT_PATH . "/library/pb/comment.php");
 require(ROOT_PATH . "/library/pb/abtest.php");
 require(ROOT_PATH . "/library/pb/classify.php");
+require(ROOT_PATH . "/library/pb/bloomfilter.php");
 
 $di->set('dispatcher', function () {
     $em = new EventsManager();
@@ -118,6 +119,20 @@ $di->set('lrRanker', function() use ($config) {
     }
     return $client;
 }, true);
+
+$di->set("bloomfilter", function() use($config) {
+        $client = new bloomiface\BloomFilterServiceClient(sprintf("%s:%s",
+                                                             $config->bloomfilter->host, $config->bloomfilter->port),
+                                                     ['credentials' => Grpc\ChannelCredentials::createInsecure(),
+                                                      'timeout' => $config->bloomfilter->conn_timeout,]);
+        try {
+            $client->waitForReady($config->bloomfilter->conn_timeout);
+        } catch(\Exception $e) {
+            return false;
+        }
+        
+        return new BloomFilterService($client);
+    }, true);
 
 $di->set('cache', function() use ($config) {
     $cache = new Redis();

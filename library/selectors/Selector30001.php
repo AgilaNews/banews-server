@@ -68,8 +68,14 @@ class Selector30001 extends BaseNewsSelector {
                 }
             }
         }
-        
-        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+
+        $device_id = $this->_device_id;
+        $bf_service = $this->_di->get("bloomfilter");
+        $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
+                         array_map(
+                                   function($key) use ($device_id){
+                                       return $device_id . "_" . $key;
+                                   }, $filter));
         return $ret;
     }
 }

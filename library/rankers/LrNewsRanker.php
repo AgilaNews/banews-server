@@ -27,6 +27,7 @@ class LrNewsRanker extends BaseNewsRanker {
             "FETCH_TIMESTAMP_INTERVAL" => 12,
             "POST_TIMESTAMP_INTERTVAL" => 13
         );
+        $this->logger = $di->get("logger");
     }
 
     public function getRankerTag() {
