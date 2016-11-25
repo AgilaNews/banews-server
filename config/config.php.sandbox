@@ -59,8 +59,14 @@ $settings = array (
         'host' => '127.0.0.1',
         'port' => '6077',
         'conn_timeout' => 30000,
-        'call_timeout' => 70000,
+        'call_timeout' => 100000,
         'product_key' => 'agilanews',
+    ),
+    'bloomfilter' => array(
+        'host' => '127.0.0.1',
+        'port' => '6066',
+        'conn_timeout' => 30000,
+        'call_timeout' => 100000,
     ),
     'logger' => array (
                        'banews' => array (
