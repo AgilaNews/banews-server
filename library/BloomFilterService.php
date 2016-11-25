@@ -45,6 +45,20 @@ class BloomFilterService {
             return array();
         }
         return $resp->getExistsList();
+    }
 
+    public function filter($filterName, $objs, $get_key_func) {
+        $keys = array_map($get_key_func, $objs);
+        $exists = $this->test($filterName, $keys);
+
+        $ret = array();
+
+        for ($i = 0 ; $i < count($exists); $i++) {
+            if (!$exists[$i]) {
+                $ret []= $objs[$i];
+            }
+        }
+
+        return $ret;
     }
 }
