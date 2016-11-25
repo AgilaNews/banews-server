@@ -42,7 +42,7 @@ abstract class BaseListPolicy {
     }
     
     protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
-        if($channel_id == 30001) {
+        if($channel_id == 30001 || $channel_id == 10011 || $channel_id == 10012) {
             return $this->getAllUnsentVideo($channel_id, $device_id, $day_till_now);
         }
         
