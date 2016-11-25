@@ -102,6 +102,14 @@ class Selector10001 extends BaseNewsSelector{
             $videos = $popularPolicy->sampling("30001", $this->_device_id,
                         $this->_user_id, 1, 3, $prefer, $options);
             array_splice($recNewsLst, 3, 0, $videos);
+
+            $device_id = $this->_device_id;
+            $bf_service = $this->_di->get("bloomfilter");
+            $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
+                             array_map(
+                                       function($key) use ($device_id){
+                                           return $device_id . "_" . $key;
+                                       }, $videos));
         }
         return $recNewsLst;
     }
