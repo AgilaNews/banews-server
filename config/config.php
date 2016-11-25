@@ -63,7 +63,7 @@ $settings = array (
     ),
     'bloomfilter' => array(
         'host' => "10.8.91.237"
-        'port' => '6097',
+        'port' => '6066',
         'conn_timeout' => 30000,
         'call_timeout' => 100000,
     ),
