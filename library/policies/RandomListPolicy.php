@@ -16,7 +16,7 @@ class RandomListPolicy extends BaseListPolicy {
             function($key) use ($valid_news_list) {
                 return $valid_news_list[$key]["id"];
                 },
-                array_rand($valid_news_list, $pn)
+            array_rand($valid_news_list, min($pn, count($valid_news_list)))
             );
 
         return $ret;
