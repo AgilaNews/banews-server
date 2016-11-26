@@ -20,6 +20,7 @@ class Selector30001 extends BaseNewsSelector {
             $options["long_tail_weight"] = 0;
         }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
+        $popularNewsCnt = 1; // just test one hot, added by zgx
         $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
