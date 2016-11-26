@@ -37,7 +37,7 @@ abstract class BaseListPolicy {
             $filterName = BloomFilterService::FILTER_FOR_GIF;
             break;
         default:
-            return false;
+            return null;
         }
         
         $bf_service = $this->_di->get("bloomfilter");
@@ -61,7 +61,7 @@ abstract class BaseListPolicy {
         $ready_news_list = $this->getReadyNews($channel_id, $day_till_now);
         $ret = $this->tryBloomfilter($channel_id, $device_id, $ready_news_list);
         
-        if ($ret != false) {
+        if ($ret !== null) {
             return $ret;
         }
         
