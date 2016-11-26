@@ -43,7 +43,7 @@ abstract class BaseListPolicy {
 
     protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
         if($channel_id == 30001) {
-            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_IMAGE, $channel_id, $device_id, $day_till_now);
+            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_VIDEO, $channel_id, $device_id, $day_till_now);
         }
         if($channel_id == 10011) {
             return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_IMAGE, $channel_id, $device_id, $day_till_now);
