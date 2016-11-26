@@ -1,6 +1,4 @@
 <?php
-
-
 class Selector30001 extends BaseNewsSelector {
     const MIN_NEWS_COUNT = 4;
     const MAX_NEWS_COUNT = 6;
@@ -33,7 +31,7 @@ class Selector30001 extends BaseNewsSelector {
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, self::MAX_NEWS_COUNT, 
             3, $prefer, $options);
-
+        
         foreach($randomNewsLst as $randomNews) {
             if (count($popularNewsLst) >= $sample_count) {
                 break;

@@ -43,8 +43,8 @@ class BloomFilterService {
 
         list($resp, $status) = $this->client->Test($req, array(), array("timeout" => $this->call_timeout))->wait();
         if ($status->code != 0) {
-            $this->logger->warning("add filter error:" . $status->code . ":". json_encode($status->details, true));
-            return array();
+            $this->logger->warning("test filter error:" . $status->code . ":". json_encode($status->details, true));
+            return $keys;
         }
         return $resp->getExistsList();
     }

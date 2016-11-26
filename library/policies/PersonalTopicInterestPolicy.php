@@ -120,6 +120,7 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
         if (count($recNewsLst) >= $pn) {
             $recNewsLst = array_slice($recNewsLst, 0, $pn);
         }
+
         return $recNewsLst;
     }
 }

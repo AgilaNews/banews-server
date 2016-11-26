@@ -25,13 +25,25 @@ abstract class BaseListPolicy {
         }
     }
 
-    protected function getAllUnsentNewsByBloomfilter($filterName, $channel_id, $device_id, $day_till_now) {
-        $ready_news_list = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
-
+    protected function tryBloomfilter($channel_id, $device_id, $news_list) {
+        switch($channel_id){
+        case "30001":
+            $filterName = BloomFilterService::FILTER_FOR_VIDEO;
+            break;
+        case "10011":
+            $filterName = BloomFilterService::FILTER_FOR_IMAGE;
+            break;
+        case "10012":
+            $filterName = BloomFilterService::FILTER_FOR_GIF;
+            break;
+        default:
+            return false;
+        }
+        
         $bf_service = $this->_di->get("bloomfilter");
         $ret = $bf_service->filter(
                                    $filterName,
-                                   $ready_news_list,
+                                   $news_list,
                                    function($news) use ($device_id) {
                                        return $device_id . "_" . $news["id"];
                                    }
@@ -41,19 +53,19 @@ abstract class BaseListPolicy {
         return $ret;
     }
 
+    protected function getReadyNews($channel_id, $day_till_now) {
+        return $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
+    }
+    
     protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
-        if($channel_id == 30001) {
-            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_VIDEO, $channel_id, $device_id, $day_till_now);
-        }
-        if($channel_id == 10011) {
-            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_IMAGE, $channel_id, $device_id, $day_till_now);
-        }
-        if($channel_id == 10012) {
-            return $this->getAllUnsentNewsByBloomfilter(BloomFilterService::FILTER_FOR_GIF, $channel_id, $device_id, $day_till_now);
+        $ready_news_list = $this->getReadyNews($channel_id, $day_till_now);
+        $ret = $this->tryBloomfilter($channel_id, $device_id, $ready_news_list);
+        
+        if ($ret != false) {
+            return $ret;
         }
         
         $sent = $this->_cache->getDeviceSeen($device_id);
-        $ready_news_list = $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
         $valid_news_list = array();
 
         foreach ($ready_news_list as $ready_news) {

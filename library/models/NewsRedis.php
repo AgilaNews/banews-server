@@ -131,14 +131,20 @@ class NewsRedis {
             $new_backup_idx = 0;
         }
         $this->setDeviceChannelCursor($device_id, $channel_id, $new_backup_idx);
+
         return $news_lst;
     }
 
     public function getChannelTopPopularNews($channelId) {
-        $retLst = $this->_redis->lRange('BA_POPULAR_NEWS_' . $channelId, 0, -1);
-        if (!$retLst) {
+        $news_lst = $this->_redis->lRange('BA_POPULAR_NEWS_' . $channelId, 0, -1);
+        if (!$news_lst) {
             return array();
         }
-        return $retLst;
+
+        $ret = array();
+        foreach ($news_lst as $news) {
+            $ret []= array("id" => $news, "weight" => 1);
+        }
+        return $ret;
     }
 }
