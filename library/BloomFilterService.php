@@ -22,6 +22,9 @@ class BloomFilterService {
     }
 
     public function add($filterName, $keys)  {
+        if (!$keys){
+            return;
+        }
         $req = new bloomiface\AddRequest();
         $req->setName($filterName);
         $req->setAsync(false); //TODO change this to configurable
@@ -37,6 +40,10 @@ class BloomFilterService {
 
 
     public function test($filterName, $keys) {
+        if (!$keys) {
+            return array();
+        }
+        
         $req = new bloomiface\TestRequest();
         $req->setName($filterName);
         $req->setKeys($keys);
