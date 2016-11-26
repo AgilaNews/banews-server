@@ -8,13 +8,14 @@ class PopularListPolicy extends BaseListPolicy {
     public function sampling($channel_id, $device_id, $user_id, $pn, 
         $day_till_now, $prefer, array $options = array()) {
         $news = $this->getAllUnsent($channel_id, $device_id, $day_till_now);
+        $news_ids = array_map(function($news) {return $news["id"];}, $news);
 
-        if (!$news) {
+        if (!$news_ids) {
             return array();
-        } else if (count($news) < $pn) {
-            return $news;
+        } else if (count($news_ids) < $pn) {
+            return $news_ids;
         } else {
-            return array_slice($news, 0, $pn);
+            return array_slice($news_ids, 0, $pn);
         }
     }
 
