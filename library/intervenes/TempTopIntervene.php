@@ -10,7 +10,7 @@
  */
 use Phalcon\DI;
 
-define("TEMP_TOP_INTERVENE_KEY", "%s_%s_%s");
+define("TEMP_TOP_INTERVENE_KEY", "BS_TOP_INTERVENE_%s_%s_%s");
 define("TEMP_TOP_INTERVENE_TTL", 86400);
 
 class TempTopIntervene extends BaseIntervene {
