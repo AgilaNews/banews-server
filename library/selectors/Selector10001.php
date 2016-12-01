@@ -13,7 +13,7 @@ define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define ('POPULAR_NEWS_CNT', 2);
 define("OPERATING_CHRISTMAS", 1);
-define("CHIRISTMAS_NEWS_ID", "9yKyG6TZ4A8=");
+define("CHIRISTMAS_NEWS_ID", "WabhTzb6bbs=");
 
 class Selector10001 extends BaseNewsSelector{
 
