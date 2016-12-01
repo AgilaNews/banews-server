@@ -46,7 +46,12 @@ class BaseListRender {
                     $ret [] = $r; 
                 }
             } else {
-                $cell = $this->serializeNewsCell($news_model);
+                if ($news_model instanceof TempTopIntervene) {
+                    $cell = $news_model->render();
+                } else {
+                    $cell = $this->serializeNewsCell($news_model);
+                }
+                
                 if(array_key_exists($news_model->url_sign, $comment_counts)) {
                     $cell["commentCount"] = $comment_counts[$news_model->url_sign];
                 }
