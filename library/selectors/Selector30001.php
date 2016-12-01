@@ -17,7 +17,7 @@ class Selector30001 extends BaseNewsSelector {
         $popularPolicy = new PopularListPolicy($this->_di);
         $options = array();
         if ($prefer == "later") {
-            $options["long_tail_weight"] = 0;
+            $options["long_tail_weight"] = 1;
         }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
         $popularNewsCnt = 2; //TODO just test one hot, added by zgx
