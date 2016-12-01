@@ -13,10 +13,6 @@ define('MIN_NEWS_SEND_COUNT', 6);
 define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
-
-define("OPERATING_CHRISTMAS", 1);
-define("CHIRISTMAS_NEWS_ID", "9yKyG6TZ4A8=");
-
 class BaseNewsSelector {
     public function __construct($channel_id, $controller) {
         $this->_channel_id = $channel_id;
@@ -104,21 +100,11 @@ class BaseNewsSelector {
             }
         }
 
-        $this->intervenTop(new TempTopIntervene(array(
-                                                      "device_id" => $this->_device_id,
-                                                      "operating_id" => OPERATING_CHRISTMAS,
-                                                      "news_id" => CHIRISTMAS_NEWS_ID,
-                                                      )));
         $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
     }
 
-
-    protected function intervenTop(&$ret, $intervene) {
-        array_splice($ret, 0, 0, array($intervene));
-    }
-    
     protected function interveneAt(&$ret, $intervene, $pos) {
         array_splice($ret, $pos, 0, array($intervene));
     }

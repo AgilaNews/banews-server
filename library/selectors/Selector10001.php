@@ -12,6 +12,8 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define ('POPULAR_NEWS_CNT', 2);
+define("OPERATING_CHRISTMAS", 1);
+define("CHIRISTMAS_NEWS_ID", "9yKyG6TZ4A8=");
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -133,6 +135,11 @@ class Selector10001 extends BaseNewsSelector{
             }
         }
         
+        $this->interveneAt($ret, new TempTopIntervene(array(
+                                                      "device_id" => $this->_device_id,
+                                                      "operating_id" => OPERATING_CHRISTMAS,
+                                                      "news_id" => CHIRISTMAS_NEWS_ID,
+                                                      )), 0);
         $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
