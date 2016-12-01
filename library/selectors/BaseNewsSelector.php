@@ -15,7 +15,7 @@ define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
 
 define("OPERATING_CHRISTMAS", 1);
-define("CHIRISTMAS_NEWS_ID", "abc");
+define("CHIRISTMAS_NEWS_ID", "9yKyG6TZ4A8=");
 
 class BaseNewsSelector {
     public function __construct($channel_id, $controller) {
