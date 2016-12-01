@@ -35,11 +35,11 @@ class Render10001 extends BaseListRender {
                 }
                 continue; 
             } else if ($news_model instanceof TempTopIntervene) {
-                $cell = $news_model->render();
-                if (!$cell) {
+                $m = $news_model->render();
+                if (!$m) {
                     continue;
                 }
-                $cell["tag"] = "Promotion";
+                $news_model = $m;
             } else if ($news_model->channel_id == "30001") {
                 $cell = $this->serializeVideoCell($news_model);
                 if(array_key_exists($news_model->url_sign, $comment_counts)) {

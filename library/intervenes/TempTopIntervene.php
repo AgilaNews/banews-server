@@ -23,8 +23,23 @@ class TempTopIntervene extends BaseIntervene {
             return null;
         } else {
             $news = News::getBySign($news_id);
+            
+            $this->setDeviceUsed($news_id, $device_id, $operating_id);
             return $news;
         }
+    }
+
+    protected function setDeviceUsed($news_id, $device_id, $operating_id) {
+        $cache = DI::getDefault()->get('cache');
+        if (!$cache) {
+            return;
+        }
+    
+        $key = sprintf(TEMP_TOP_INTERVENE_KEY, $news_id, $device_id, $operating_id);
+        $cache->multi();
+        $cache->set($key, 1);
+        $cache->expire($key, TEMP_TOP_INTERVENE_TTL);
+        $cache->exec();
     }
 
     protected function isDeviceUsed($news_id, $device_id, $operating_id){
