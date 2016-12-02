@@ -21,8 +21,8 @@ class Selector10001 extends BaseNewsSelector{
         $abService = $this->_di->get('abtest');
         $experiment = 'channel_' . $this->_channel_id . '_strategy';
         $tag = $abService->getTag($experiment);
-        if ($tag != "10001_popularRanking" and $tag != "10001_personalTopicRec") {
-            $tag = "10001_lrRanker";
+        if ($tag != "10001_popularRanking" and $tag != "10001_lrRanker") {
+            $tag = "10001_personalTopicRec";
         }
         return $tag;
     }
