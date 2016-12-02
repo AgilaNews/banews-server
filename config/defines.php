@@ -6,6 +6,8 @@ define('AD_PRELOAD', 3);
 define('AD_EXPIRE', 3400);
 define('AD_INTERVENE_POS', 4);
 
+define("CHRISTMAS_NEWS_ID", "dHofTzhwSGU=");
+
 //used for publish
 define('NOT_PUBLISHED', 0);
 define('ANDROID_PUBLISHED', 1);
