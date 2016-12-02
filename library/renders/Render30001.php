@@ -103,7 +103,7 @@ class Render30001 extends BaseListRender {
                 "width" => $aw,
                 "height" => $ah,
                 "duration" => $video->duration,
-                "description" => substr($video->description, 0, VIDEO_DESCRIPTION_LIMIT),
+                "description" => mb_substr($video->description, 0, VIDEO_DESCRIPTION_LIMIT, "UTF-8"),
                 "display" => 0
             );
         }

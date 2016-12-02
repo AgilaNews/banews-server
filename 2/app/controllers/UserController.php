@@ -19,6 +19,8 @@ class UserController extends BaseController {
         $news_id = $this->get_or_fail($param, "news_id", "string");
         $reasons = $param["reasons"];
 
+        $this->logger->info(sprintf("[UserUnlike][news:%d]", $news_id));
+
         foreach ($reasons as $reason) {
             $reason_type = $this->get_or_fail($reason, "id", "string");
             $reason_name = $this->get_or_fail($reason, "name", "string");
@@ -33,8 +35,8 @@ class UserController extends BaseController {
             $model->reason_name = $reason_name;
             $model->upload_time = time();
             $model->save();
+            $this->logger->info(sprintf("[name:%d]", $reason_name));
         }
-
         $this->setJsonResponse(
             array("message" => "OK")
             );

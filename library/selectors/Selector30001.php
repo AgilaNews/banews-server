@@ -2,7 +2,7 @@
 class Selector30001 extends BaseNewsSelector {
     const MIN_NEWS_COUNT = 4;
     const MAX_NEWS_COUNT = 6;
-    const LATELY_NEWS_COUNT = 3;
+    const LATELY_NEWS_COUNT = 2;
 
     public function getPolicyTag(){
         return 'popularRanking';
