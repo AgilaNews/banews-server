@@ -83,6 +83,15 @@ class Selector10001 extends BaseNewsSelector{
             $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
                 $this->_device_id, $this->_user_id, 50, 3, $prefer, 
                 $options);
+            $topicNewsLst = $personalTopicPolicy->sampling(
+                $this->_channel_id, $this->_device_id, $this->_user_id,
+                30, 3, $prefer, $options);
+            // merge news from different strategy without duplicate
+            foreach ($topicNewsLst as $curNewsId) {
+                if (in_array($curNewsId, $popularNewsLst)) {
+                    $popularNewsLst[] = $curNewsId;
+                }
+            }
             if (count($popularNewsLst) == 0) {
                 $popularNewsLst = $this->emergence(30, $recNewsLst, 
                     $options, $prefer);
