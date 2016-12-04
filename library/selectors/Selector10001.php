@@ -12,6 +12,7 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define ('POPULAR_NEWS_CNT', 2);
+define('POPULAR_NEWS_CNT', 2);
 define("OPERATING_CHRISTMAS", 1);
 define("CHIRISTMAS_NEWS_ID", "WabhTzb6bbs=");
 
@@ -142,8 +143,27 @@ class Selector10001 extends BaseNewsSelector{
                                                       "news_id" => CHRISTMAS_NEWS_ID,
                                                       )), 0);
                                                       */
+        $this->InsertBanner($ret);
         $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
+    }
+
+    protected function InsertBanner(&$%ret) {
+        /*
+        $banner_id = BANNER_ID_OLD;
+        if (Features::Enabled(Features::BANNER_FEATURE, $this->_client_version, $this->_os)) {
+            $banner_id = BANNER_ID_NEW;
+        }
+        
+        $this->interveneAt($ret, new BannerIntervene(array(
+                                                      "device_id" => $this->_device_id,
+                                                      "operating_id" => OPERATING_CHRISTMAS,
+                                                      "news_id" => $banner_id,
+                                                      "client_version" => $this->_client_version,
+                                                      "os" => $this->_os,
+                                                      "net" => $this->_net,
+                                                      )), 0);
+                                                      */
     }
 }

@@ -36,6 +36,7 @@ class NewsImage extends BaseModel {
         $crit = array (
             "conditions" => "news_url_sign=?1",
             "bind" => array(1 => $news_sign),
+            "order" => "news_pos_id",
             );
 
         $rs = NewsImage::find($crit);
