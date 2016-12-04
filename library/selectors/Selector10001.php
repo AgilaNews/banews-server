@@ -85,7 +85,7 @@ class Selector10001 extends BaseNewsSelector{
                 $options);
             $topicNewsLst = $personalTopicPolicy->sampling(
                 $this->_channel_id, $this->_device_id, $this->_user_id,
-                30, 3, $prefer, $options);
+                10, 3, $prefer, $options);
             // merge news from different strategy without duplicate
             foreach ($topicNewsLst as $curNewsId) {
                 if (in_array($curNewsId, $popularNewsLst)) {
