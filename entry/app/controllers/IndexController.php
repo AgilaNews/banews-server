@@ -57,7 +57,7 @@ class IndexController extends BaseController {
         );
 
         if (Features::Enabled(Features::LOG_V3_FEATURE, $this->client_version, $this->os)) {
-            "log" => sprintf($this->config->entries->log, 3),
+            $ret["log"] = sprintf($this->config->entries->log, 3),
         }
         
         if ($cur_model->server_version == 1) {
