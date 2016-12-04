@@ -23,6 +23,8 @@ class Features {
 
     const VIDEO_SUPPORT_FEATURE = 7;
 
+    const LOG_V3_FEATURE = 8;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
