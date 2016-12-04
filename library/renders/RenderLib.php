@@ -24,7 +24,7 @@ class RenderLib {
         return $ret;
     }
 
-    protected static function GetImageQuality($net) {
+    public static function GetImageQuality($net) {
         if ($net == "WIFI") {
             return IMAGE_HIGH_QUALITY;
         } else if ($net == "2G") {
@@ -96,7 +96,7 @@ class RenderLib {
         );
 
         $ret[] = array(
-            "name" => "Source: " . source_name,
+            "name" => "Source: " . $source_name,
             "id" => "3"
         );
 

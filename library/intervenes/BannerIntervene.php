@@ -12,8 +12,10 @@ use Phalcon\DI;
 define('BANNER_IMAGE_SIGN', 'WabhTzb6bbs=');
 define('BANNER_WIDTH', 225);
 define('BANNER_HEIGHT', 40);
+define("BANNER_INTERVENE_KEY", "BANNER_INTERVENE_%s_%s_%s");
+define("BANNER_INTERVENE_TTL", 86400);
 
-class AdIntervene extends BaseIntervene {
+class BannerIntervene extends BaseIntervene {
     
     public function render(){
         $news_id = $this->context["news_id"];
@@ -27,7 +29,7 @@ class AdIntervene extends BaseIntervene {
             $ret = $this->serializeNewsCell($news_model);
             
             $this->setDeviceUsed($news_id, $device_id, $operating_id);
-            return $news;
+            return $ret;
         }
     }
 
@@ -80,10 +82,10 @@ class AdIntervene extends BaseIntervene {
             return;
         }
     
-        $key = sprintf(TEMP_TOP_INTERVENE_KEY, $news_id, $device_id, $operating_id);
+        $key = sprintf(BANNER_INTERVENE_KEY, $news_id, $device_id, $operating_id);
         $cache->multi();
         $cache->set($key, 1);
-        $cache->expire($key, TEMP_TOP_INTERVENE_TTL);
+        $cache->expire($key, BANNER_INTERVENE_TTL);
         $cache->exec();
     }
 
@@ -93,7 +95,7 @@ class AdIntervene extends BaseIntervene {
             return true;
         }
         
-        $key = sprintf(TEMP_TOP_INTERVENE_KEY, $news_id, $device_id, $operating_id);
+        $key = sprintf(BANNER_INTERVENE_KEY, $news_id, $device_id, $operating_id);
         $exists = $cache->exists($key);
         return $exists;
     }
