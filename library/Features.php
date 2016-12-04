@@ -25,6 +25,8 @@ class Features {
 
     const LOG_V3_FEATURE = 8;
 
+    const BANNER_FEATURE = 9;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
@@ -58,6 +60,10 @@ class Features {
                                          self::LOG_V3_FEATURE => array(
                                                                         "ios" => "1.2.3",
                                                                         "android" => "1.2.6",
+                                                                        ),
+                                         self::BANNER_FEATURE => array(
+                                                                        "ios" => "1.2.3",
+                                                                        "android" => "1.2.6"
                                                                         ),
                                          );
                                    
