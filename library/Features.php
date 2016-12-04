@@ -53,6 +53,10 @@ class Features {
                                                                         "ios" => "1.2.2",
                                                                         "android" => "1.2.5",
                                                                         ),
+                                         self::LOG_V3_VERSION => array(
+                                                                        "ios" => "1.2.3",
+                                                                        "android" => "1.2.6",
+                                                                        ),
                                          );
                                    
     
