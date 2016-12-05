@@ -52,22 +52,22 @@ class RenderLib {
         return $cell;
     }
 
-    protected static function LargeImageScale($meta) {
+    protected static function LargeImageScale($meta, $screen_w, $screen_h) {
         $ow = $meta["width"];
         $oh = $meta["height"];
 
         if ($this->_os == "ios") {
-            $aw = (int) ($this->_screen_w  - 44);
+            $aw = (int) ($screen_w  - 44);
         } else {
-            $aw = (int) ($this->_screen_w * 11 / 12);
+            $aw = (int) ($screen_w * 11 / 12);
         }
-        $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
+        $ah = (int) min($screen_h * 0.9, $aw * $oh / $ow);
         return array($aw, $ah);
     }
 
-    public static function LargeImageRender($net, $url_sign, $meta) {
-        $quality = GetImageQuality($net);
-        $scale = LargeImageScale($meta);
+    public static function LargeImageRender($net, $url_sign, $meta, $screen_w, $screen_h) {
+        $quality = RenderLib::GetImageQuality($net);
+        $scale = RenderLib::LargeImageScale($meta, $screen_w, $screen_h);
 
         $url = sprintf( LARGE_CHANNEL_IMG_PATTERN,
                         urlencode($url_sign),

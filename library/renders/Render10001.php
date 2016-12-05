@@ -88,7 +88,8 @@ class Render10001 extends BaseListRender {
                 continue;
             }
 
-            $ret["imgs"][] = RenderLib::LargeImageRender($this->_net, $news_model->url_sign, $meta);
+            $ret["imgs"][] = RenderLib::LargeImageRender($this->_net, $news_model->url_sign,
+                $meta, $this->_screen_w, $this->_screen_h);
             $ret["videos"][] = RenderLib::VideoRender($video, $meta);
             return $ret;
         } 

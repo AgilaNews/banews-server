@@ -13,7 +13,7 @@ define('BANNER_IMAGE_SIGN', 'WabhTzb6bbs=');
 define('BANNER_WIDTH', 225);
 define('BANNER_HEIGHT', 40);
 define("BANNER_INTERVENE_KEY", "BANNER_INTERVENE_%s_%s_%s");
-define("BANNER_INTERVENE_TTL", 86400);
+define("BANNER_INTERVENE_TTL", 14400);
 
 class BannerIntervene extends BaseIntervene {
     
@@ -90,6 +90,11 @@ class BannerIntervene extends BaseIntervene {
     }
 
     protected function isDeviceUsed($news_id, $device_id, $operating_id){
+        if (Features::Enabled(Features::BANNER_FEATURE, 
+            $this->context["client_version"], $this->context["os"])) {
+            return false;
+        }
+
         $cache = DI::getDefault()->get('cache');
         if (!$cache) {
             return true;
