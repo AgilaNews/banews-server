@@ -109,7 +109,7 @@ class RenderLib {
     }
 
     public static function VideoRender($video, $meta) {
-        $scale = LargeImageScale($meta);
+        $scale = RenderLib::LargeImageScale($meta);
         return array(
             "youtube_id" => $video->youtube_video_id,
             "width" => $scale[0],
