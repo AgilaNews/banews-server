@@ -1,4 +1,5 @@
 <?php
+use Phalcon\DI;
 class Selector30001 extends BaseNewsSelector {
     const MIN_NEWS_COUNT = 4;
     const MAX_NEWS_COUNT = 6;
@@ -24,6 +25,16 @@ class Selector30001 extends BaseNewsSelector {
         $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
+
+        //* hack for oppo phone
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = sprintf(OPPO_DEVICE_KEY, $news_id, $device_id, $operating_id);
+            if($cache->exists($key)) {
+                $popularNewsLst = array();
+            }
+        }
+        //*/
 
         if (count($popularNewsLst) >= $sample_count) {
             return $popularNewsLst;
