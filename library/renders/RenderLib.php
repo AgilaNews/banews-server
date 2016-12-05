@@ -52,11 +52,11 @@ class RenderLib {
         return $cell;
     }
 
-    protected static function LargeImageScale($meta, $screen_w, $screen_h) {
+    protected static function LargeImageScale($meta, $screen_w, $screen_h, $os) {
         $ow = $meta["width"];
         $oh = $meta["height"];
 
-        if ($this->_os == "ios") {
+        if ($os == "ios") {
             $aw = (int) ($screen_w  - 44);
         } else {
             $aw = (int) ($screen_w * 11 / 12);
@@ -65,9 +65,9 @@ class RenderLib {
         return array($aw, $ah);
     }
 
-    public static function LargeImageRender($net, $url_sign, $meta, $screen_w, $screen_h) {
+    public static function LargeImageRender($net, $url_sign, $meta, $screen_w, $screen_h, $os) {
         $quality = RenderLib::GetImageQuality($net);
-        $scale = RenderLib::LargeImageScale($meta, $screen_w, $screen_h);
+        $scale = RenderLib::LargeImageScale($meta, $screen_w, $screen_h, $os);
 
         $url = sprintf( LARGE_CHANNEL_IMG_PATTERN,
                         urlencode($url_sign),
