@@ -10,8 +10,8 @@
 use Phalcon\DI;
 
 define('BANNER_IMAGE_SIGN', 'WabhTzb6bbs=');
-define('BANNER_WIDTH', 225);
-define('BANNER_HEIGHT', 40);
+define('BANNER_WIDTH', 720);
+define('BANNER_HEIGHT', 240); //200
 define("BANNER_INTERVENE_KEY", "BANNER_INTERVENE_%s_%s_%s");
 define("BANNER_INTERVENE_TTL", 14400);
 
