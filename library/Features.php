@@ -23,6 +23,8 @@ class Features {
 
     const VIDEO_SUPPORT_FEATURE = 7;
 
+    const LOG_V3_FEATURE = 8;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
@@ -52,6 +54,10 @@ class Features {
                                          self::VIDEO_SUPPORT_FEATURE => array(
                                                                         "ios" => "1.2.2",
                                                                         "android" => "1.2.5",
+                                                                        ),
+                                         self::LOG_V3_FEATURE => array(
+                                                                        "ios" => "1.2.3",
+                                                                        "android" => "1.2.6",
                                                                         ),
                                          );
                                    
