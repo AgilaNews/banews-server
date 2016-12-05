@@ -29,9 +29,10 @@ class Selector30001 extends BaseNewsSelector {
         //* hack for oppo phone
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
-            $key = sprintf(OPPO_DEVICE_KEY, $news_id, $device_id, $operating_id);
+            $key = sprintf(OPPO_DEVICE_KEY, $this->deviceId);
             if($cache->exists($key)) {
                 $popularNewsLst = array();
+                $popularNewsCnt = 0;
             }
         }
         //*/

@@ -19,7 +19,10 @@ class ReferrerController extends BaseController {
         if (stristr($referrer, "oppo")) {
             $cache = DI::getDefault()->get('cache');
             if ($cache) {
-                $key = sprintf(OPPO_DEVICE_KEY, $device_id);
+                $key = sprintf(OPPO_DEVICE_KEY, $this->deviceId);
+                if ($cache->exists($key)) {
+                    break;
+                }
                 $cache->multi();
                 $cache->set($key, 1);
                 $cache->expire($key, OPPO_DEVICE_KEY_TTL);
