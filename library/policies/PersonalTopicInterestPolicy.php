@@ -97,12 +97,14 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
             $newsWeightLst = $cache->hMGet(
                     ALG_TOPIC_NEWS_SCO_KEY, $curTopicNewsLst);
             arsort($newsWeightLst);
+            $curNewsCnt = 0;
             foreach ($newsWeightLst as $newsId => $weight) {
                 if (in_array($newsId, $selectedNewsLst) || 
                     in_array($newsId, $sentNewsLst)) {
                     continue;
                 }
-                if (count($selectedNewsLst) > TOPIC_NEWS_SELECT_CNT) {
+                $curNewsCnt += 1;
+                if ($curNewsCnt > TOPIC_NEWS_SELECT_CNT) {
                     break;
                 }
                 array_push($selectedNewsLst, $newsId);
