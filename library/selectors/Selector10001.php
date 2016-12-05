@@ -14,8 +14,7 @@ define('MAX_NEWS_COUNT', 10);
 define('POPULAR_NEWS_CNT', 2);
 define("OPERATING_CHRISTMAS", 1);
 define("CHIRISTMAS_NEWS_ID", "WabhTzb6bbs=");
-define('BANNER_ID_NEW', 'WabhTzb6bbs=');
-define('BANNER_ID_OLD', 'WabhTzb6bbs=');
+define('BANNER_NEWS_ID', 'WabhTzb6bbs=');
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -121,6 +120,7 @@ class Selector10001 extends BaseNewsSelector{
     public function select($prefer) {
         $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
         $selected_news_list = $this->sampling($required, $prefer);
+        $selected_news_list = $this->newsFilter($selected_news_list);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
@@ -151,15 +151,10 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     protected function InsertBanner(&$ret) {
-        $banner_id = BANNER_ID_OLD;
-        if (Features::Enabled(Features::BANNER_FEATURE, $this->_client_version, $this->_os)) {
-            $banner_id = BANNER_ID_NEW;
-        }
-        
         $this->interveneAt($ret, new BannerIntervene(array(
                                                       "device_id" => $this->_device_id,
                                                       "operating_id" => OPERATING_CHRISTMAS,
-                                                      "news_id" => $banner_id,
+                                                      "news_id" => BANNER_NEWS_ID,
                                                       "client_version" => $this->_client_version,
                                                       "os" => $this->_os,
                                                       "net" => $this->_net,

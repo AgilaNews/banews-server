@@ -55,7 +55,8 @@ class Render30001 extends BaseListRender {
 
             $ret["imgs"][] = RenderLib::LargeImageRender($this->_net, $news_model->url_sign,
                 $meta, $this->_screen_w, $this->_screen_h, $this->_os);
-            $ret["videos"][] = RenderLib::VideoRender($video, $meta);
+            $ret["videos"][] = RenderLib::VideoRender($video, $meta, $this->_screen_w, 
+                $this->_screen_h, $this->_os);
             return $ret;
         }
         return null;
