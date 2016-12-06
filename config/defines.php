@@ -145,3 +145,7 @@ define("INTERVENE_TPL_CELL_PREFIX", "INTERVENE_TPL_CELL_");
 
 define('DETAIL_AD_TPL_MEDIUM', 5001);
 define("VIDEO_DESCRIPTION_LIMIT", 1500);
+
+define("OPERATING_CHRISTMAS", 1);
+define("CHIRISTMAS_NEWS_ID", "WabhTzb6bbs=");
+define('BANNER_NEWS_ID', 'WabhTzb6bbs=');

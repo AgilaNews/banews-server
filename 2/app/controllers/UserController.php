@@ -9,6 +9,7 @@
  * 
  */
 class UserController extends BaseController {
+    const AnimationNews = array(BANNER_NEWS_ID);
     public function UnlikeAction() {
         if (!$this->request->isPost()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
@@ -160,11 +161,15 @@ class UserController extends BaseController {
                                                   ));
         
         if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
-            $this->setJsonResponse(array(
-                                         "message" => "ok",
-                                         "id" => $resp->getCommentId(),
-                                         "time" => time(),
-                                         ));
+            $ret = array(
+                "message" => "ok",
+                "id" => $resp->getCommentId(),
+                "time" => time(),
+                );
+            if (in_array($newsSign, self::AnimationNews)) {
+                $ret["Animation"] = 1;
+            }
+            $this->setJsonResponse($ret);
         } else {
             $this->setJsonResponse(array(
                                          "message" => "ok",

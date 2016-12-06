@@ -114,11 +114,15 @@ class CommentController extends BaseController {
                                                   ));
         
         if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
-            $this->setJsonResponse(array(
-                                         "message" => "ok",
-                                         "id" => $resp->getCommentId(),
-                                         "time" => time(),
-                                         ));
+            $ret = array(
+                "message" => "ok",
+                "id" => $resp->getCommentId(),
+                "time" => time(),
+                );
+            if (in_array($newsSign, self::AnimationNews)) {
+                $ret["Animation"] = 1;
+            }
+            $this->setJsonResponse($ret);
         } else {
             $this->setJsonResponse(array(
                                          "message" => "ok",
