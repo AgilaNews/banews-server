@@ -132,7 +132,7 @@ class NewsController extends BaseController {
             $render = new BaseListRender($this);
         }
 
-        if ($newsSign == CHRISTMAS_NEWS_ID) {
+        if ($newsSign != CHRISTMAS_NEWS_ID) {
             $ret["recommend_news"]= $render->render($models);
         }
 
