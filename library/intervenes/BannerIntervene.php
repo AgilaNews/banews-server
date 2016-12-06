@@ -10,7 +10,8 @@
 use Phalcon\DI;
 
 define('BANNER_IMAGE_SIGN_NEW', 'banner_new');
-define('BANNER_IMAGE_SIGN_OLD', 'banner_old');
+define('BANNER_IMAGE_SIGN_ANDROID', 'Android_banner_old');
+define('BANNER_IMAGE_SIGN_IOS', 'iOS_banner_old');
 define('BANNER_WIDTH', 720);
 define('BANNER_HEIGHT', 240); //200
 define("BANNER_INTERVENE_KEY", "BANNER_INTERVENE_%s_%s_%s");
@@ -50,15 +51,26 @@ class BannerIntervene extends BaseIntervene {
                     "{w}", "{h}", $quality),
                 );
         } else {
+            if ($this->context["os"] == "android") {
+                $ret["imgs"][] = array(
+                    "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_ANDROID, 
+                        720, 410, $quality), 
+                    "width" => 720, 
+                    "height" => 410,
+                    "pattern" => sprintf(LARGE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_ANDROID, 
+                        "{w}", "{h}", $quality),
+                    );
+            } else if ($this->context["os"] == "ios") {
+                $ret["imgs"][] = array(
+                    "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_IOS, 
+                        706, 379, $quality), 
+                    "width" => 706, 
+                    "height" => 379,
+                    "pattern" => sprintf(LARGE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_IOS, 
+                        "{w}", "{h}", $quality),
+                    );
+            }
             $ret["tpl"] = NEWS_LIST_TPL_LARGE_IMG;
-            $ret["imgs"][] = array(
-                "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_OLD, 
-                    660, 410, $quality), 
-                "width" => 660, 
-                "height" => 410,
-                "pattern" => sprintf(LARGE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_OLD, 
-                    "{w}", "{h}", $quality),
-                );
         }
 
         return $ret;
@@ -88,6 +100,7 @@ class BannerIntervene extends BaseIntervene {
             return true;
         }
         
+        return false;
         $key = sprintf(BANNER_INTERVENE_KEY, $news_id, $device_id, $operating_id);
         $exists = $cache->exists($key);
         return $exists;
