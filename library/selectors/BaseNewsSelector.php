@@ -13,7 +13,7 @@ define('MIN_NEWS_SEND_COUNT', 6);
 define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
-define('CACHE_NEWS_FILTER', 'BS_NEWS_FILTER')
+define('CACHE_NEWS_FILTER', 'BS_NEWS_FILTER');
 
 class BaseNewsSelector {
     public function __construct($channel_id, $controller) {
