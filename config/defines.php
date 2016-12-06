@@ -149,3 +149,6 @@ define("VIDEO_DESCRIPTION_LIMIT", 1500);
 define("OPERATING_CHRISTMAS", 1);
 define("CHIRISTMAS_NEWS_ID", "WabhTzb6bbs=");
 define('BANNER_NEWS_ID', 'WabhTzb6bbs=');
+
+define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');
+define('OPPO_DEVICE_KEY_TTL', 86400);

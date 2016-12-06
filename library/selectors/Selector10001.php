@@ -12,6 +12,7 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define('POPULAR_NEWS_CNT', 2);
+define('ALG_LR_SWITCH_KEY', 'ALG_LR_SWITCH_KEY');
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -19,8 +20,14 @@ class Selector10001 extends BaseNewsSelector{
         $abService = $this->_di->get('abtest');
         $experiment = 'channel_' . $this->_channel_id . '_strategy';
         $tag = $abService->getTag($experiment);
-        if ($tag != "10001_popularRanking" and $tag != "10001_personalTopicRec") {
-            $tag = "10001_lrRanker";
+        if ($tag != "10001_popularRanking" and $tag != "10001_lrRanker") {
+            $tag = "10001_personalTopicRec";
+        }
+        # switch for lr model update
+        $cache = $this->_di->get('cache');
+        $isTopicAlg = $cache->get(ALG_LR_SWITCH_KEY);
+        if (empty($isTopicAlg) and ($tag=="10001_lrRanker")) {
+            $tag = "10001_personalTopicRec";
         }
         return $tag;
     }
@@ -81,6 +88,15 @@ class Selector10001 extends BaseNewsSelector{
             $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
                 $this->_device_id, $this->_user_id, 50, 3, $prefer, 
                 $options);
+            $topicNewsLst = $personalTopicPolicy->sampling(
+                $this->_channel_id, $this->_device_id, $this->_user_id,
+                10, 3, $prefer, $options);
+            // merge news from different strategy without duplicate
+            foreach ($topicNewsLst as $curNewsId) {
+                if (in_array($curNewsId, $popularNewsLst)) {
+                    $popularNewsLst[] = $curNewsId;
+                }
+            }
             if (count($popularNewsLst) == 0) {
                 $popularNewsLst = $this->emergence(30, $recNewsLst, 
                     $options, $prefer);
