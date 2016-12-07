@@ -74,16 +74,8 @@ class BaseListRender {
             $videos = null;
         }
         
-        $ret = array (
-            "title" => $news_model->title,
-            "commentCount" => 0,
-            "news_id" => $news_model->url_sign,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-            "channel_id" => $news_model->channel_id,
-            "filter_tags" => $this->getFilter($news_model),
-        );
+        $ret = RenderLib::GetPublicData($news_model);
+        $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
         
         if ($videos && $videos->count() != 0) {
             foreach ($videos as $v) {
@@ -105,10 +97,10 @@ class BaseListRender {
             } else {
                 if ($this->useLargeVideo($video)) {
                     $ret["tpl"] = NEWS_LIST_TPL_BIG_YOUTUBE;
-                    $cell = $this->getImgCell($video->video_url_sign, $cover_meta, true);
+                    $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, true);
                 } else {
                     $ret["tpl"] = NEWS_LIST_TPL_SMALL_YOUTUBE;
-                    $cell = $this->getImgCell($video->video_url_sign, $cover_meta, false);
+                    $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, true);
                 }
                 $ret["imgs"] = array($cell);
             }
@@ -129,13 +121,13 @@ class BaseListRender {
                     
                     if ($this->useLargeImageNews($meta)){
                         //replaced all imgs, only take the big one
-                        $cell = $this->getImgCell($img->url_sign, $meta, true);
+                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, true);
                         $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
                         $ret["imgs"] = array($cell);
                         $usedLarge = true;
                         break;
                     } else{
-                        $cell = $this->getImgCell($img->url_sign, $meta, false);
+                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, true);
                         $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
                         $ret["imgs"] []= $cell;
                     }
@@ -195,60 +187,9 @@ class BaseListRender {
     protected function useLargeVideo($video) {
         return false;
     }
-
-    protected function getImgCell($url_sign, $meta, $large) {
-        if ($this->_net == "WIFI") {
-            $quality = IMAGE_HIGH_QUALITY;
-        } else if ($this->_net == "2G") {
-            $quality = IMAGE_LOW_QUALITY;
-        } else {
-            $quality = IMAGE_NORMAL_QUALITY;
-        }
-
-        $oh = $meta["height"];
-        $ow = $meta["width"];
-
-        $cell = array(
-                      "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, $url_sign, "225", "180", $quality), 
-                      "width" => $ow, 
-                      "height" => $oh, 
-                      );
-        
-        if ($large) {
-            $cell["pattern"] = sprintf(LARGE_CHANNEL_IMG_PATTERN, $url_sign, "{w}", "{h}", $quality);
-        } else {
-            $cell["pattern"] = sprintf(BASE_CHANNEL_IMG_PATTERN, $url_sign, "{w}", "{h}", $quality);
-        }
-
-        return $cell;
-    }
     
     protected function isIntervened($model) {
         return $model instanceof BaseIntervene;
     }
 
-    protected function getFilter($model) {
-        $ret = array();
-        $ret[] = array(
-            "name" => "Outdated",
-            "id" => "1",
-        );
-
-        $ret[] = array(
-            "name" => "Boring topic",
-            "id" => "2"
-        );
-
-        $ret[] = array(
-            "name" => "Source: " . $model->source_name,
-            "id" => "3"
-        );
-
-        $ret[] = array(
-            "name" => "Poor writing",
-            "id" => "4"
-        );
-
-        return $ret;
-    }
 }

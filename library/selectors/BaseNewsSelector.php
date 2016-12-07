@@ -13,6 +13,8 @@ define('MIN_NEWS_SEND_COUNT', 6);
 define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
+define('CACHE_NEWS_FILTER', 'BS_NEWS_FILTER');
+
 class BaseNewsSelector {
     public function __construct($channel_id, $controller) {
         $this->_channel_id = $channel_id;
@@ -21,13 +23,13 @@ class BaseNewsSelector {
         $this->_client_version = $controller->client_version;
         $this->_os = $controller->os;
         $this->_di = $controller->di;
+        $this->_net = $controller->net;
     }
 
     protected function sampling($sample_count, $prefer){
         return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id, $this->_user_id,
                                             $sample_count, DEFAULT_SAMPLING_DAY, $prefer);
     }
-
 
     public function getPolicy() {
         if (!isset($this->_policy)) {
@@ -41,6 +43,22 @@ class BaseNewsSelector {
         return "expdecay";
     }
 
+    protected function newsFilter($newslist) {
+        $ret = array();
+
+        $cache = DI::getDefault()->get('cache');
+        $key = CACHE_NEWS_FILTER;
+        if ($cache && $cache->exists($key)) {
+            foreach ($newslist as $newsid) {
+                if (!($cache->sIsMember($key, $newsid))) {
+                    $ret[] = $newsid;
+                }
+            }
+        } else {
+            $ret = $newslist;
+        }
+        return $ret;
+    }
 
     protected function removeInvisible($models) {
         $ret = array();
@@ -50,7 +68,6 @@ class BaseNewsSelector {
                 $ret[$sign] = $news_model;
             }
         }
-
         return $ret;
     }
 

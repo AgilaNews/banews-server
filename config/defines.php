@@ -6,8 +6,6 @@ define('AD_PRELOAD', 3);
 define('AD_EXPIRE', 3400);
 define('AD_INTERVENE_POS', 4);
 
-define("CHRISTMAS_NEWS_ID", "dHofTzhwSGU=");
-
 //used for publish
 define('NOT_PUBLISHED', 0);
 define('ANDROID_PUBLISHED', 1);
@@ -138,12 +136,17 @@ define('NEWS_LIST_TPL_BIG_YOUTUBE', 10);
 define('NEWS_LIST_TPL_SMALL_YOUTUBE', 11);
 
 define('NEWS_LIST_TPL_NBA', 1000);
+define('NEWS_LIST_TPL_BANNER', 1001);
 define('NEWS_LIST_TPL_AD_FB_MEDIUM', 5000);
 
 define("INTERVENE_TPL_CELL_PREFIX", "INTERVENE_TPL_CELL_");
 
 define('DETAIL_AD_TPL_MEDIUM', 5001);
 define("VIDEO_DESCRIPTION_LIMIT", 1500);
+
+define("OPERATING_CHRISTMAS", 1);
+define("CHRISTMAS_NEWS_ID", "PETxVxMAoow=");
+define('BANNER_NEWS_ID', 'PETxVxMAoow=');
 
 define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');
 define('OPPO_DEVICE_KEY_TTL', 86400);

@@ -12,9 +12,7 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define('POPULAR_NEWS_CNT', 2);
-define('ALG_LR_SWITCH_KEY', 'ALG_LR_SWITCH_KEY'); 
-define("OPERATING_CHRISTMAS", 1);
-define("CHIRISTMAS_NEWS_ID", "WabhTzb6bbs=");
+define('ALG_LR_SWITCH_KEY', 'ALG_LR_SWITCH_KEY');
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -135,6 +133,7 @@ class Selector10001 extends BaseNewsSelector{
     public function select($prefer) {
         $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
         $selected_news_list = $this->sampling($required, $prefer);
+        $selected_news_list = $this->newsFilter($selected_news_list);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
@@ -158,8 +157,24 @@ class Selector10001 extends BaseNewsSelector{
                                                       "news_id" => CHRISTMAS_NEWS_ID,
                                                       )), 0);
                                                       */
+        /*
+        if ($prefer == 'later') {
+            $this->InsertBanner($ret);
+        }
+        //*/
         $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
+    }
+
+    protected function InsertBanner(&$ret) {
+        $this->interveneAt($ret, new BannerIntervene(array(
+                                                      "device_id" => $this->_device_id,
+                                                      "operating_id" => OPERATING_CHRISTMAS,
+                                                      "news_id" => BANNER_NEWS_ID,
+                                                      "client_version" => $this->_client_version,
+                                                      "os" => $this->_os,
+                                                      "net" => $this->_net,
+                                                      )), 0);
     }
 }

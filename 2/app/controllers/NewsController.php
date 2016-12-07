@@ -13,6 +13,7 @@ use Phalcon\Mvc\Model\Query;
 class NewsController extends BaseController {
     const HotVideNum = 1;
     const VideoChannel = "30001";
+    const NO_RECOMMEND_LIST = array('PETxVxMAoow=','z1wBLjMstQo=');
 
     public function DetailAction() {
         if (!$this->request->isGet()){
@@ -132,7 +133,7 @@ class NewsController extends BaseController {
             $render = new BaseListRender($this);
         }
 
-        if ($newsSign != CHRISTMAS_NEWS_ID) {
+        if (!in_array($newsSign, self::NO_RECOMMEND_LIST)) {
             $ret["recommend_news"]= $render->render($models);
         }
 
