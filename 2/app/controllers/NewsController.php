@@ -136,7 +136,7 @@ class NewsController extends BaseController {
             if (!in_array($newsSign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
                 $ret["recommend_news"]= $render->render($models);
             } else {
-                $ret["ad"] = array();
+                unset($ret["ad"]);
             }
         }
 
