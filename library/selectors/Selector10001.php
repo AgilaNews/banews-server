@@ -157,9 +157,11 @@ class Selector10001 extends BaseNewsSelector{
                                                       "news_id" => CHRISTMAS_NEWS_ID,
                                                       )), 0);
                                                       */
+        /*
         if ($prefer == 'later') {
             $this->InsertBanner($ret);
         }
+        //*/
         $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;

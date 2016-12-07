@@ -9,11 +9,11 @@
 
 use Phalcon\DI;
 
-define('BANNER_IMAGE_SIGN_NEW', 'banner_new');
+define('BANNER_IMAGE_SIGN_NEW', 'bannernew');
 define('BANNER_IMAGE_SIGN_ANDROID', 'Android_banner_old');
 define('BANNER_IMAGE_SIGN_IOS', 'iOS_banner_old');
 define('BANNER_WIDTH', 720);
-define('BANNER_HEIGHT', 240); //200
+define('BANNER_HEIGHT', 250); //200
 define("BANNER_INTERVENE_KEY", "BANNER_INTERVENE_%s_%s_%s");
 define("BANNER_INTERVENE_TTL", 14400);
 

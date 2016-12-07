@@ -6,8 +6,6 @@ define('AD_PRELOAD', 3);
 define('AD_EXPIRE', 3400);
 define('AD_INTERVENE_POS', 4);
 
-define("CHRISTMAS_NEWS_ID", "dHofTzhwSGU=");
-
 //used for publish
 define('NOT_PUBLISHED', 0);
 define('ANDROID_PUBLISHED', 1);
@@ -147,8 +145,8 @@ define('DETAIL_AD_TPL_MEDIUM', 5001);
 define("VIDEO_DESCRIPTION_LIMIT", 1500);
 
 define("OPERATING_CHRISTMAS", 1);
-define("CHIRISTMAS_NEWS_ID", "WabhTzb6bbs=");
-define('BANNER_NEWS_ID', 'WabhTzb6bbs=');
+define("CHRISTMAS_NEWS_ID", "PETxVxMAoow=");
+define('BANNER_NEWS_ID', 'PETxVxMAoow=');
 
 define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');
 define('OPPO_DEVICE_KEY_TTL', 86400);

@@ -50,7 +50,7 @@ class BaseNewsSelector {
         $key = CACHE_NEWS_FILTER;
         if ($cache && $cache->exists($key)) {
             foreach ($newslist as $newsid) {
-                if (!$cache->sIsMember($key, $newsid)) {
+                if (!($cache->sIsMember($key, $newsid))) {
                     $ret[] = $newsid;
                 }
             }
