@@ -157,7 +157,7 @@ class Selector10001 extends BaseNewsSelector{
                                                       "news_id" => CHRISTMAS_NEWS_ID,
                                                       )), 0);
                                                       */
-        /*
+        //*
         if ($prefer == 'later') {
             $this->InsertBanner($ret);
         }
