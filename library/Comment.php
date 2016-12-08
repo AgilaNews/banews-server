@@ -1,7 +1,7 @@
 <?php
 use Phalcon\DI;
 
-define('DEFAULT_HOT_LIKED_COUNT', 3);
+define('DEFAULT_HOT_LIKED_COUNT', 5);
 define('DEFAULT_SYSTEM_USER_NAME', "system notifcation");
 
 function getLikeNotifyMsg($LikeNum){
