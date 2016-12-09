@@ -54,6 +54,27 @@ class Version extends BaseModel {
        return $versions;
     }
 
+    public static function getAllVersionBelow($client_version){
+        $models = Version::getAllUseable();
+        if (!$models) {
+            return $models;
+        }
+
+        $ret = array();
+
+        usort($models, function($a, $b) {
+                return version_compare($a->client_version, $b->client_version);
+            });
+        
+        foreach ($models as $model) {
+            if (version_compare($model->client_version, $client_version, "<")) {
+                $ret []= $model;
+            }
+        }
+
+        return $ret;
+    }
+
     public static function getUpdateInfo($client_version, $os, $build) {
         $ret = Version::getAllUseable();
         if (!$ret) {
