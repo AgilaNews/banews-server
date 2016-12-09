@@ -23,7 +23,7 @@ class CheckController extends BaseController {
         $ret = array("belows" => array());
 
         foreach ($belows as $below) {
-            $ret["belows"] []= $below->client_version;
+            $ret["belows"] []= "v" . $below->client_version;
         }
 
         $this->setJsonResponse($ret);
