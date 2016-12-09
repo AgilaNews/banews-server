@@ -67,7 +67,7 @@ class NewsController extends BaseController {
 
         
         if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
-            $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
+            $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 10, "hot");
             $ret["comments"] = array(
                                       "new" => $topNewComment,
                                       "hot" => $topHotComment,
