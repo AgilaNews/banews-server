@@ -66,6 +66,10 @@ define('CACHE_VIDEOS_PREFIX', "BS_VIDEOS_");
 define('CACHE_VIDEOS_TTL', 14400);
 define('CACHE_AD_ID_KEY', "BS_AD_%s_%s"); // BS_AD_FB_deviceid
 define('CACHE_AD_ID_TTL', 172800);
+define('CACHE_TOPIC_NEWS_PREFIX', 'BS_TOPIC_NEWS_');
+define('CACHE_TOPIC_NEWS_TTL', 14400);
+define('CACHE_TOPIC_REPFIX', 'BS_TOPIC_');
+define('CACHE_TOPIC_TTL', 14400);
 
 //used for redis device map
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
@@ -152,3 +156,5 @@ define('CACHE_NO_RECOMMEND_NEWS', 'BS_NO_RECOMMEND');
 
 define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');
 define('OPPO_DEVICE_KEY_TTL', 86400);
+
+define ("VIDEO_CHANNEL_ID", 30001);
