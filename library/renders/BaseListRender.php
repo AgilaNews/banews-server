@@ -100,7 +100,7 @@ class BaseListRender {
                     $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, true);
                 } else {
                     $ret["tpl"] = NEWS_LIST_TPL_SMALL_YOUTUBE;
-                    $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, true);
+                    $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, false);
                 }
                 $ret["imgs"] = array($cell);
             }
@@ -127,7 +127,7 @@ class BaseListRender {
                         $usedLarge = true;
                         break;
                     } else{
-                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, true);
+                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, false);
                         $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
                         $ret["imgs"] []= $cell;
                     }
