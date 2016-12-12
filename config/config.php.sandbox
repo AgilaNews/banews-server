@@ -2,7 +2,8 @@
 
 use Phalcon\Logger;
 
-define("LIBRARY_PATH", "/home/work/banews-server/library");
+define('APP_PATH', realpath('..') . '/');
+define("LIBRARY_PATH", APP_PATH . "../library");
 
 $settings = array (
     "appdirs" => array (
