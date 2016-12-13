@@ -23,33 +23,65 @@ class SearchController extends BaseController {
         return $this->response;
     }
 
+    private function checkValid($searchResult){
+        $channel_id = $searchResult["_source"]["channel"];
+        if($channel_id == "10011" or $channel_id == "10012" or $channel_id == "30001"){
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+    private function getNewsModel($searchResult){
+        $newslist = array();
+        foreach($searchResult['hits']['hits'] as $result) {
+            if (!checkValid($result)){
+                continue;
+            } 
+            $sign = $result["_source"]["id"];
+            $highlight = $result["highlight"]["title"];
+            $newslist[$sign] = $highlight;
+        }
+        $newskey = array_keys($newslist);
+        $models = News::batchGet($newskey);
+        foreach ($models as $urlsign=>$model){
+            $models[$urlsign][$title] = $newslist[$urlsign];
+        }
+        return $models;
+    } 
+
     public function IndexAction() {
         $channel_id = $this->get_request_param("channel_id", "int", true);
         $from = $this->get_request_param("from", "int", true);
         $size = $this->get_request_param("size", "int", true);
         $words = $this->get_request_param("words", "string", true);
+        $words = urldecode($words);
 
-        $searchParams = array(
+       $searchParams = array(
             'index' => 'banews-article',
             'type'  => 'article',
+            'from' => $from,
+            'size' => $size,
             'body'  => array(
                 'query' => array(
-                    'match' => array('title', $words),
+                    'match' => array('title'=>$words),
                 ),
                 'highlight' => array(
-                    'fields' => array('content', array())
+                    'fields' => array('title'=>new \stdClass()),
                 ),
             ),
-        );
+        ); 
         try {
             $resLst = array();
-            $relatedNews = $this->esClient->search($searchParams);
-            return $resLst;
         } catch(\Exception $e) {
             #$this->logger->error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
             #    $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
-            return array();
+            $searchResult =  array();
         }
+
+        $searchResult = $this->esClient->search($searchParams);
+        $models = $this->getNewsModel($searchResult);
+        $ret = RenderSearch::render($models);
+        return $ret;
     }
 }
 
