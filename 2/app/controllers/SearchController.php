@@ -32,7 +32,7 @@ class SearchController extends BaseController {
                 continue;
             } 
             $sign = $result["_source"]["id"];
-            $highlight = $result["highlight"]["title"];
+            $highlight = $result["highlight"]["title"][0];
             $newslist[$sign] = $highlight;
         }
         $newskey = array_keys($newslist);
