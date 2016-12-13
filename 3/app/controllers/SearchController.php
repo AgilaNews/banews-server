@@ -75,8 +75,13 @@ class SearchController extends BaseController {
         }
         $models = $this->getNewsModel($searchResult);
         $render = new RenderSearch($this);
-        $ret = $render->render($models);
-        return $ret;
+        $dispatch_id = substr(md5($words . $channel_id . $this->deviceId . time()), 16);
+        $ret = array(
+            "dispatch_id" => $dispatch_id,
+            "news"=> $render->render($models),
+        );
+        $this->setJsonResponse($ret);
+        return $this->response;
     }
 }
 

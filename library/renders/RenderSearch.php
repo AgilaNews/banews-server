@@ -64,8 +64,6 @@ class RenderSearch extends BaseListRender {
         }
         
         $ret = RenderLib::GetPublicData($news_model);
-        $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
-        
         if ($videos && $videos->count() != 0) {
             foreach ($videos as $v) {
                 if (!$v || $v->is_deadlink == 1 ||
