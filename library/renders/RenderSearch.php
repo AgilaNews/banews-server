@@ -18,9 +18,7 @@ class RenderSearch extends BaseListRender {
 
         $keys = array();
         foreach ($models as $model) {
-            if (!$this->isIntervened($model)) {
-                $keys []= $model->url_sign;
-            }
+            $keys []= $model->url_sign;
         }
         
         $comment_counts = Comment::getCount($keys);
@@ -58,7 +56,7 @@ class RenderSearch extends BaseListRender {
         return $ret;
     }
 
-    protected function serializeNewsCell($news_model, $largeimage = false) {
+    protected function serializeNewsCell($news_model) {
         if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->_client_version, $this->_os)) {
             $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
         } else {
@@ -93,8 +91,6 @@ class RenderSearch extends BaseListRender {
         } else {
             $ret["tpl"] = NEWS_LIST_TPL_RAW_TEXT;
             $ret["imgs"] = array();
-            $usedLarge = false;
-
             $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
             
             foreach ($imgs as $img) {
@@ -104,19 +100,9 @@ class RenderSearch extends BaseListRender {
                 
                 if ($img->origin_url) {
                     $meta = json_decode($img->meta, true);
-                    
-                    if ($largeimage){
-                        //replaced all imgs, only take the big one
-                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, true);
-                        $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
-                        $ret["imgs"] = array($cell);
-                        $usedLarge = true;
-                        break;
-                    } else{
-                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, false);
-                        $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
-                        $ret["imgs"] []= $cell;
-                    }
+                    $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, false);
+                    $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
+                    $ret["imgs"] []= $cell;
                 }
             }
             
@@ -129,12 +115,7 @@ class RenderSearch extends BaseListRender {
                 $ret["imgs"] = array_slice($ret["imgs"], 0 ,3);
                 $ret["tpl"] = NEWS_LIST_TPL_THREE_IMG;
             }
-
-            if ($usedLarge) {
-                $ret["tpl"] = NEWS_LIST_TPL_LARGE_IMG;
-            }
         }
-        
         return $ret;
     }
 

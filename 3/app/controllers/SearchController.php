@@ -10,7 +10,6 @@
  */
 class SearchController extends BaseController {
 
-
     public function HotwordsAction() {
         $this->setJsonResponse(array(
                                      "hotwords" => array("lian", "zhan", "animal"),
@@ -26,10 +25,10 @@ class SearchController extends BaseController {
         return TRUE;
     }
 
-    private function getNewsModel($searchResult){
-        $newslist = array();
+    public function getNewsModel($searchResult){
+
         foreach($searchResult['hits']['hits'] as $result) {
-            if (!checkValid($result)){
+            if (!$this->checkValid($result)){
                 continue;
             } 
             $sign = $result["_source"]["id"];
@@ -39,7 +38,7 @@ class SearchController extends BaseController {
         $newskey = array_keys($newslist);
         $models = News::batchGet($newskey);
         foreach ($models as $urlsign=>$model){
-            $models[$urlsign][$title] = $newslist[$urlsign];
+            $models[$urlsign]->title = $newslist[$urlsign];
         }
         return $models;
     } 
@@ -74,9 +73,9 @@ class SearchController extends BaseController {
             #    $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
             $searchResult =  array();
         }
-
         $models = $this->getNewsModel($searchResult);
-        $ret = RenderSearch::render($models);
+        $render = new RenderSearch($this);
+        $ret = $render->render($models);
         return $ret;
     }
 }
