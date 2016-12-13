@@ -10,11 +10,6 @@
  */
 class SearchController extends BaseController {
 
-    public function __construct($di) {
-        parent::__construct($di);
-        $this->esClient = $di->get('elasticsearch');
-        $this->logger = $di->get('logger');
-    }
 
     public function HotwordsAction() {
         $this->setJsonResponse(array(
@@ -55,6 +50,7 @@ class SearchController extends BaseController {
         $size = $this->get_request_param("size", "int", true);
         $words = $this->get_request_param("words", "string", true);
         $words = urldecode($words);
+        $esClient = $this->di->get('elasticsearch');
 
        $searchParams = array(
             'index' => 'banews-article',
@@ -71,6 +67,7 @@ class SearchController extends BaseController {
             ),
         ); 
         try {
+            $searchResult = $esClient->search($searchParams);
             $resLst = array();
         } catch(\Exception $e) {
             #$this->logger->error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
@@ -78,7 +75,6 @@ class SearchController extends BaseController {
             $searchResult =  array();
         }
 
-        $searchResult = $this->esClient->search($searchParams);
         $models = $this->getNewsModel($searchResult);
         $ret = RenderSearch::render($models);
         return $ret;
