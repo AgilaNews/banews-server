@@ -100,7 +100,6 @@ class BannerIntervene extends BaseIntervene {
             return true;
         }
         
-        return false;
         $key = sprintf(BANNER_INTERVENE_KEY, $news_id, $device_id, $operating_id);
         $exists = $cache->exists($key);
         return $exists;

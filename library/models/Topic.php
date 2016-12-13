@@ -23,7 +23,7 @@ CREATE TABLE `tb_topic` (
   `publish_time` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_topic_id` (`topic_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='topic table'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='topic table';
 */
 
 use Phalcon\DI;
@@ -105,11 +105,19 @@ class Topic extends BaseModel {
     protected static function _saveToCache($model){
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
-            $key = CACHE_TOPIC_REPFIX . $model->news_url_sign;
+            $key = CACHE_TOPIC_REPFIX . $model->topic_id;
             $cache->multi();
             $cache->set($key, $model->serialize());
             $cache->expire($key, CACHE_TOPIC_TTL);
             $cache->exec();
         }
     }
+
+    public function save($data = null, $whitelist = null) {
+        $ret = parent::save($data, $whitelist);
+        if ($ret) {
+            Topic::_saveToCache($this);
+        }
+        return $ret;
+    } 
 }
