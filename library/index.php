@@ -2,7 +2,7 @@
 
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..') . '/');
-define('ROOT_PATH', "/home/work/banews-server/");
+define('ROOT_PATH', APP_PATH . "../"); 
 define("VENDOR_PATH", "/home/work/php-thirdParty/vendor/");
 
 use Phalcon\Config;
