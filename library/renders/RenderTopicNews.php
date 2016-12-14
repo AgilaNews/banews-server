@@ -35,7 +35,7 @@ class RenderTopicNews extends BaseListRender {
         
         foreach ($models as $news_model) {
             $cell = null;
-            if ($news_model->channel_id == "30001") {
+            if ($news_model->channel_id == VIDEO_CHANNEL_ID) {
                 $cell = $this->serializeVideoCell($news_model);
                 if ($cell == null) {
                     continue;
@@ -55,14 +55,12 @@ class RenderTopicNews extends BaseListRender {
                 */
             }
 
-
             if(array_key_exists($news_model->url_sign, $comment_counts)) {
                 $cell["commentCount"] = $comment_counts[$news_model->url_sign];
             }
 
             $ret[] = $cell;
         }
-        
         return $ret;
     }
 
@@ -74,7 +72,6 @@ class RenderTopicNews extends BaseListRender {
         }
         
         $ret = RenderLib::GetPublicData($news_model);
-        $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
         
         if ($videos && $videos->count() != 0) {
             foreach ($videos as $v) {

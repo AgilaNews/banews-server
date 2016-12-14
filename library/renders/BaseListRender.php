@@ -95,13 +95,8 @@ class BaseListRender {
             if (!$video || !$cover_meta) {
                 $ret["imgs"] = array();
             } else {
-                if ($this->useLargeVideo($video)) {
-                    $ret["tpl"] = NEWS_LIST_TPL_BIG_YOUTUBE;
-                    $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, true);
-                } else {
-                    $ret["tpl"] = NEWS_LIST_TPL_SMALL_YOUTUBE;
-                    $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, false);
-                }
+                $ret["tpl"] = NEWS_LIST_TPL_SMALL_YOUTUBE;
+                $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, false);
                 $ret["imgs"] = array($cell);
             }
         } else {

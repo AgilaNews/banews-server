@@ -16,14 +16,14 @@ class TopicController extends BaseController {
             "tags" => $topic->tags,
             "news_id" => $topic->topic_id,
             "is_valid" => $topic->is_valid,
-            "imgs" => RenderLib::ImageRender($this->net, $topic->image_sign, $meta, true);
+            "imgs" => RenderLib::ImageRender($this->net, $topic->image_sign, $meta, true),
             );
     }
 
     public function DetailAction() {
         $topic_id = $this->get_request_param("news_id", "string", true);
         $pn = $this->get_request_param("pn", "int", false, 20);
-        $last_id = $this->get_request_param("last_id", "int", false, 0);
+        $from = $this->get_request_param("from", "int", false, 0);
 
         $ret = array(
             "news" => array(),
@@ -32,9 +32,9 @@ class TopicController extends BaseController {
         if ($topic) {
             $ret = $this->formatTopic($topic);
 
-            $news = TopicNews::GetNewsOfTopic($topic_id, $last_id, $pn);
-            $models = News::BatchGet($news);
-            if ($models) {
+            $news = TopicNews::GetNewsOfTopic($topic_id, $from, $pn);
+            if ($news) {
+                $models = News::BatchGet($news);
                 $render = new RenderTopicNews($this);
                 $ret["news"] = $render->render($models);
             }

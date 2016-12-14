@@ -2,7 +2,6 @@
 
 use Phalcon\Logger;
 
-define('APP_PATH', realpath('..') . '/');
 define("LIBRARY_PATH", APP_PATH . "../library");
 
 $settings = array (

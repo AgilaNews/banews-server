@@ -28,6 +28,7 @@ CREATE TABLE `tb_topic` (
 
 use Phalcon\DI;
 
+define("CACHE_VALID_TOPIC", "BS_VALID_TOPICS")
 class Topic extends BaseModel {
     public $id;
 
@@ -79,7 +80,6 @@ class Topic extends BaseModel {
         }
     }
 
-
     protected static function _getFromCache($topic_id) {
         $cache = DI::getDefault()->get('cache');
         if($cache) {
@@ -119,5 +119,60 @@ class Topic extends BaseModel {
             Topic::_saveToCache($this);
         }
         return $ret;
-    } 
+    }
+
+    public static function getValidTopic() {
+        $topics = self::_getValidTopicFromCache();
+        if ($topics) {
+            return $topics;
+        } else {
+            $topics = self::_getValidTopicFromDB();
+            if ($topics) {
+                self::_saveValidTopicToCache($topics);
+            }
+            return $topics;
+        }
+    }
+
+    public static function _getValidTopicFromCache() {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = CACHE_VALID_TOPIC;
+            $count = $cache->sCard($key);
+            return $cache->sRandMember($key, $count);
+        }
+        return null;
+    }
+
+    public static function _getValidTopicFromDB() {
+        $crit = array(
+            "conditions" => "is_valid = 1",
+            "columns" => "topic_id"
+            );
+        $models = Topic::find($crit);
+        $ret = array();
+        foreach ($models as $model) {
+            $ret[] = $model["topic_id"];
+        }
+        return $ret;
+    }
+
+    public static function _saveValidTopicToCache($topics) {
+        $cache = DI::getDefault()->get('cache');
+        if($cache) {
+            foreach ($topics as $topic_id) {
+                $cache->sAdd($key, $topic_id);
+            }
+        }
+    }
+
+    public static function SetTopicValid($topic_id, $isValid) {
+        $topic = self::GetByTopicId($topic_id);
+        $topic->is_valid = $isValid;
+        $topic->save();
+        $topics = self::_getValidTopicFromDB();
+        if ($topics) {
+            self::_saveValidTopicToCache($topics);
+        }
+    }
 }
