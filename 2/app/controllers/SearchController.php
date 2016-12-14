@@ -62,6 +62,8 @@ class SearchController extends BaseController {
                 ),
                 'highlight' => array(
                     'fields' => array('title'=>new \stdClass()),
+                    'pre_tags' => array('<font>'),
+                    'post_tags' => array('</font>'),
                 ),
             ),
         ); 
