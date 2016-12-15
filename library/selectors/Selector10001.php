@@ -150,16 +150,11 @@ class Selector10001 extends BaseNewsSelector{
             }
         }
         
-        /*
-        $this->interveneAt($ret, new TempTopIntervene(array(
-                                                      "device_id" => $this->_device_id,
-                                                      "operating_id" => OPERATING_CHRISTMAS,
-                                                      "news_id" => CHRISTMAS_NEWS_ID,
-                                                      )), 0);
-                                                      */
-        /*
+        //*
         if ($prefer == 'later') {
-            $this->InsertBanner($ret);
+            $cache = $this->_di->get('cache');
+            if ($cache->exists("BS_BANNER_SWITCH"))
+                $this->InsertBanner($ret);
         }
         //*/
         $this->insertAd($ret);
