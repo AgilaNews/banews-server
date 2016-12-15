@@ -16,6 +16,13 @@ class TopicController extends BaseController {
             "tags" => $topic->tags,
             "news_id" => $topic->topic_id,
             "is_valid" => $topic->is_valid,
+            "count" => TopicNews::count(
+                [
+                    "topic_id = ?0",
+                    "bind" => [
+                        $topic->topic_id,
+                        ],
+                ]),
             "imgs" => RenderLib::ImageRender($this->net, $topic->image_sign, $meta, true),
             );
     }
