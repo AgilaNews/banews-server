@@ -28,7 +28,8 @@ CREATE TABLE `tb_topic` (
 
 use Phalcon\DI;
 
-define("CACHE_VALID_TOPIC", "BS_VALID_TOPICS")
+define("CACHE_VALID_TOPIC", "BS_VALID_TOPICS");
+
 class Topic extends BaseModel {
     public $id;
 
