@@ -50,7 +50,7 @@ class Render30001 extends BaseListRender {
             if (!$meta || 
                 !is_numeric($meta["width"]) || 
                 !is_numeric($meta["height"])) {
-                continue;
+                return null;
             }
 
             $ret["imgs"][] = RenderLib::LargeImageRender($this->_net, $video->cover_image_sign,
