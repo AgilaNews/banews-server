@@ -21,7 +21,6 @@ class Selector30001 extends BaseNewsSelector {
             $options["long_tail_weight"] = 1;
         }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
-        $popularNewsCnt = 2; //TODO just test one hot, added by zgx
         $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
@@ -39,6 +38,13 @@ class Selector30001 extends BaseNewsSelector {
 
         if (count($popularNewsLst) >= $sample_count) {
             return $popularNewsLst;
+        }
+
+        $abservice = DI::getDefault()->get('abtest');
+        $t = $abservice->getTag("video_random_policy");
+
+        if ($t == "video_exp") {
+            $randomPolicy = new VideoExpDecayListPolicy($this->_di);
         }
 
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
