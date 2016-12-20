@@ -20,7 +20,9 @@ class Selector10001 extends BaseNewsSelector{
         $abService = $this->_di->get('abtest');
         $experiment = 'channel_' . $this->_channel_id . '_strategy';
         $tag = $abService->getTag($experiment);
-        if ($tag != "10001_popularRanking" and $tag != "10001_lrRanker") {
+        if (!in_array($tag, array("10001_popularRanking", 
+                                 "10001_lrRanker",
+                                 "10001_editorRec"))) {
             $tag = "10001_personalTopicRec";
         }
         # switch for lr model update
@@ -83,6 +85,21 @@ class Selector10001 extends BaseNewsSelector{
                     $recNewsLst[] = $popNews;
                 }
             } 
+        } elseif ($strategyTag == "10001_editorRec") {
+            $editorRecPolicy = new EditorRecPolicy($this->_di); 
+            $editorRecNewsCnt = 5;
+            $recNewsLst = $editorRecPolicy->sampling(
+                $this->_channel_id, $this->_device_id, $this->_user_id,
+                $editorRecNewsCnt, 3, $prefer, $options);
+            $popularNewsCnt = max(0, $sample_count - $editorRecNewsCnt);
+            $popularNewsLst = $popularPolicy->sampling(
+                $this->_channel_id, $this->_device_id, $this->_user_id, 
+                $popularNewsCnt, 3, $prefer,  $options);
+            foreach ($popularNewsLst as $curNewsId) {
+                if (in_array($curNewsId, $recNewsLst)) {
+                    $recNewsLst[] = $curNewsId;
+                }
+            }
         } else {
             // combine popular & topic recommend recall with rerank
             $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
@@ -93,7 +110,7 @@ class Selector10001 extends BaseNewsSelector{
                 10, 3, $prefer, $options);
             // merge news from different strategy without duplicate
             foreach ($topicNewsLst as $curNewsId) {
-                if (in_array($curNewsId, $popularNewsLst)) {
+                if (!in_array($curNewsId, $popularNewsLst)) {
                     $popularNewsLst[] = $curNewsId;
                 }
             }
@@ -114,7 +131,8 @@ class Selector10001 extends BaseNewsSelector{
                 $recNewsLst, $options, $prefer);
         }
 
-        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, $this->_client_version, $this->_os)) {
+        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, 
+                $this->_client_version, $this->_os)) {
             $videos = $popularPolicy->sampling("30001", $this->_device_id,
                         $this->_user_id, 1, 3, $prefer, $options);
             array_splice($recNewsLst, 3, 0, $videos);
