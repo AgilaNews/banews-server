@@ -24,7 +24,7 @@ CREATE TABLE `tb_user_interests` (
 
 */
 
-class Interests extends BaseModel {
+class UserInterests extends BaseModel {
     public $id;
 
     public $user_id;

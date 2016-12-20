@@ -28,7 +28,7 @@ class InterestController extends BaseController {
             $interest_id = $this->get_or_fail($interest, "id", "string");
             $interest_name = $this->get_or_fail($interest, "name", "string");
 
-            $userInterest = new UserInterest();
+            $userInterest = new UserInterests();
             $userInterest->device_id = $this->deviceId;
             if ($this->userSign) {
                 $model->user_id = $this->userSign;
@@ -49,9 +49,9 @@ class InterestController extends BaseController {
             );
         $interests = Interests::getAll();
         foreach ($interests as $interest) {
-            $ret["interests"] = array(
-                "id" => $interests->id,
-                "name" => $interests->name,
+            $ret["interests"][] = array(
+                "id" => $interest->id,
+                "name" => $interest->name,
                 );
         }
         $this->setJsonResponse($ret);
