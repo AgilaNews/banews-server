@@ -10,15 +10,6 @@ define('MAX_HOT_TAG', 2);
 define('HOT_LIKE_THRESHOLD', 3);
 
 class BaseListRender {
-    public function __construct($controller) {
-        $this->_device_id = $controller->deviceId;
-        $this->_screen_w = $controller->resolution_w;
-        $this->_screen_h = $controller->resolution_h;
-        $this->_net = $controller->net;
-        $this->_os = $controller->os;
-        $this->_client_version = $controller->client_version;
-        $this->_large_img_count = 0;
-    }
 
     public function render($models) {
         $di = DI::getDefault();
@@ -32,14 +23,15 @@ class BaseListRender {
 
         $keys = array();
         foreach ($models as $model) {
-            if (!$this->isIntervened($model)) {
-                $keys []= $model->url_sign;
-            }
+            $keys []= $model->url_sign;
         }
         
         $comment_counts = Comment::getCount($keys);
         
         foreach ($models as $news_model) {
+            if(!$news_model) {
+                continue;
+            }
             if ($news_model instanceof AdIntervene) {
                 $r = $news_model->render();
                 if ($r) {
@@ -68,11 +60,7 @@ class BaseListRender {
     }
 
     protected function serializeNewsCell($news_model) {
-        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->_client_version, $this->_os)) {
-            $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
-        } else {
-            $videos = null;
-        }
+        $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
         
         $ret = RenderLib::GetPublicData($news_model);
         $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
@@ -96,7 +84,7 @@ class BaseListRender {
                 $ret["imgs"] = array();
             } else {
                 $ret["tpl"] = NEWS_LIST_TPL_SMALL_YOUTUBE;
-                $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, false);
+                $cell = RenderLib::ImageRender("WIFI", $video->video_url_sign, $cover_meta, false);
                 $ret["imgs"] = array($cell);
             }
         } else {
@@ -116,13 +104,13 @@ class BaseListRender {
                     
                     if ($this->useLargeImageNews($meta)){
                         //replaced all imgs, only take the big one
-                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, true);
+                        $cell = RenderLib::ImageRender("WIFI", $img->url_sign, $meta, true);
                         $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
                         $ret["imgs"] = array($cell);
                         $usedLarge = true;
                         break;
                     } else{
-                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, false);
+                        $cell = RenderLib::ImageRender("WIFI", $img->url_sign, $meta, false);
                         $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
                         $ret["imgs"] []= $cell;
                     }
@@ -148,35 +136,7 @@ class BaseListRender {
     } 
     
     protected function useLargeImageNews($img) {
-        if($this->_large_img_count > LARGE_IMAGE_MAX_COUNT ||
-           !Features::Enabled(Features::LARGE_IMG_FEATURE, $this->_client_version, $this->_os)) {
-               return false;
-           }
-           
-        
-        $quality = $this->getImageQuality($img);
-        if ($quality > 0.0 and rand(1,10) > 2){
-            $this->_large_img_count += 1;
-            return true;
-        }
         return false;
-    }
-
-    protected function getImageQuality($img) {
-        if (!$img){
-            return 0.0;
-        }
-        $oh = $img["height"];
-        $ow = $img["width"];
-        
-        if ($oh == 0){
-            return 0.0;
-        }
-        $rate = $ow/$oh;
-        if ($rate < LARGE_IMAGE_MIN_WH_RATIO or $rate > LARGE_IMAGE_MAX_WH_RATIO){
-            return 0.0;
-        }
-        return $rate;
     }
 
     protected function useLargeVideo($video) {
@@ -186,5 +146,4 @@ class BaseListRender {
     protected function isIntervened($model) {
         return $model instanceof BaseIntervene;
     }
-
 }

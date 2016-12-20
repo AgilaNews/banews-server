@@ -16,10 +16,10 @@ class TopicIntervene extends BaseIntervene {
     public function select() {
         $topics = Topic::getValidTopic();
         $cache = DI::getDefault()->get('cache');
-        $key = TOPIC_INTERVENE_KEY;
+        $key = TOPIC_INTERVENE_KEY + $this->context["device_id"];
         if ($cache) {
             foreach ($topics as $topic_id) {
-                if($cache->sIsMember($topic_id)){
+                if($cache->sIsMember($key, $topic_id)){
                     continue;
                 }
                 return $topic_id;
@@ -47,6 +47,7 @@ class TopicIntervene extends BaseIntervene {
             "news_id" => $topic_model->topic_id,
             "public_time" => $topic_model->publish_time,
             "imgs" => array(),
+            "tags" => "Topics",
             );
 
         $meta = json_encode($topic_model->image_meta, true);

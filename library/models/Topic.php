@@ -63,7 +63,7 @@ class Topic extends BaseModel {
         $crit = array(
             "limit" => $count,
             "offset" => $start,
-            "order" => "id desc",
+            "order" => "update_time desc",
             );
         return Topic::find($crit);
     }
@@ -80,6 +80,7 @@ class Topic extends BaseModel {
             return $model;
         }
     }
+
 
     protected static function _getFromCache($topic_id) {
         $cache = DI::getDefault()->get('cache');
@@ -121,7 +122,7 @@ class Topic extends BaseModel {
         }
         return $ret;
     }
-
+    
     public static function getValidTopic() {
         $topics = self::_getValidTopicFromCache();
         if ($topics) {
@@ -161,19 +162,25 @@ class Topic extends BaseModel {
     public static function _saveValidTopicToCache($topics) {
         $cache = DI::getDefault()->get('cache');
         if($cache) {
+            $key = CACHE_VALID_TOPIC;
+            $cache->multi();
+            $cache->delete($key);
             foreach ($topics as $topic_id) {
                 $cache->sAdd($key, $topic_id);
             }
+            $cache->exec();
         }
     }
 
     public static function SetTopicValid($topic_id, $isValid) {
         $topic = self::GetByTopicId($topic_id);
         $topic->is_valid = $isValid;
-        $topic->save();
-        $topics = self::_getValidTopicFromDB();
-        if ($topics) {
-            self::_saveValidTopicToCache($topics);
+        if ($isValid == 1) {
+            $topic->publish_time = time();
         }
+        $topic->save();
+
+        $topics = self::_getValidTopicFromDB();
+        self::_saveValidTopicToCache($topics);
     }
 }

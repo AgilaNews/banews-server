@@ -24,6 +24,8 @@ class BaseNewsSelector {
         $this->_os = $controller->os;
         $this->_di = $controller->di;
         $this->_net = $controller->net;
+        $this->_screen_w = $controller->resolution_w;
+        $this->_screen_h = $controller->resolution_h;
     }
 
     protected function sampling($sample_count, $prefer){

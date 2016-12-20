@@ -64,9 +64,9 @@ class Selector30001 extends BaseNewsSelector {
 
     public function selectWithCount($prefer, $count) {
         $selected_news_list = $this->sampling($count, $prefer);
+        $selected_news_list = array_unique($selected_news_list);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
-        $models = $this->removeDup($models);
 
         $ret = array();
         $filter = array();

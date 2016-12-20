@@ -83,10 +83,11 @@ class TopicNews extends BaseModel {
         if ($cache) {
             $key = CACHE_TOPIC_NEWS_PREFIX . $topic_id;
             $cache->multi();
+            $cache->delete($key);
             foreach ($news as $n) {
                 $cache->rPush($key, $n);
             }
-            $cache->expire($key, CACHE_VIDEO_TTL);
+            $cache->expire($key, CACHE_TOPIC_TTL);
             $cache->exec();
         }
     }
@@ -100,7 +101,7 @@ class TopicNews extends BaseModel {
         return TopicNews::findFirst($crit);
     }
 
-    public static function UpdateNews($newsList, $topic_id) {
+    public static function SaveNews($from, $newsList, $topic_id) {
         foreach ($newsList as $key => $news_id) {
             $crit = array(
                 "conditions" => "news_id = ?1 and topic_id = ?2",
@@ -115,11 +116,73 @@ class TopicNews extends BaseModel {
                 $model->topic_id = $topic_id;
             }
 
-            $model->index = $key;
+            $model->index = $key + $from;
             $model->save();
         }
-        //del cache
+
+        $ret["next"] = $from + count($newsList);
         $cache = DI::getDefault()->get('cache');
         $cache->delete(CACHE_TOPIC_NEWS_PREFIX . $topic_id);
+        return $ret;
+    }
+
+    public static function AddNews($newsList, $topic_id) {
+        $from = TopicNews::count(
+            [
+                "topic_id = ?0",
+                "bind" => [
+                    $topic_id,
+                    ],
+            ]
+            );
+        $ret = array(
+            "news" => array()
+            );
+        foreach ($newsList as $key => $news_id) {
+            $crit = array(
+                "conditions" => "news_id = ?1 and topic_id = ?2",
+                "bind" => array(
+                    1 => $news_id,
+                    2 => $topic_id),
+                );
+            $model = TopicNews::findFirst($crit);
+            if (!$model) {
+                $model = new TopicNews();
+                $model->news_id = $news_id;
+                $model->topic_id = $topic_id;
+                $model->index = $from;
+                $from = $from + 1;
+                $model->save();
+                $ret["news"][] = $news_id;
+            }
+        }
+        $ret["next"] = $from;
+
+        $cache = DI::getDefault()->get('cache');
+        $cache->delete(CACHE_TOPIC_NEWS_PREFIX . $topic_id);
+        return $ret;
+    }
+
+    public static function DeleteNews($newsList, $topic_id) {
+        $ret = array(
+            "news" => array()
+            );
+        foreach ($newsList as $key => $news_id) {
+            $crit = array(
+                "conditions" => "news_id = ?1 and topic_id = ?2",
+                "bind" => array(
+                    1 => $news_id,
+                    2 => $topic_id),
+                );
+            $model = TopicNews::findFirst($crit);
+            if ($model) {
+                $model->delete();
+                $ret["news"][] = $news_id;
+            }
+        }
+
+        $cache = DI::getDefault()->get('cache');
+        $cache->delete(CACHE_TOPIC_NEWS_PREFIX . $topic_id);
+        return $ret;
     }
 }

@@ -27,6 +27,9 @@ class Render10001 extends BaseListRender {
         $comment_counts = Comment::getCount($keys);
         
         foreach ($models as $news_model) {
+            if (!$news_model) {
+                continue;
+            }
             $cell = null;
             if ($news_model instanceof TempTopIntervene) {
                 $m = $news_model->render();

@@ -34,6 +34,9 @@ class RenderTopicNews extends BaseListRender {
         
         foreach ($models as $news_model) {
             $cell = null;
+            if (!$news_model) {
+                continue;
+            }
             if ($news_model->channel_id == VIDEO_CHANNEL_ID) {
                 $cell = $this->serializeVideoCell($news_model);
                 if ($cell == null) {

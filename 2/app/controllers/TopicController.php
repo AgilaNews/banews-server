@@ -10,9 +10,9 @@
 class TopicController extends BaseController {
     protected function formatTopic($topic) {
         $meta = json_decode($topic->image_meta, true);
-        return array(
+        $ret = array(
             "title" => $topic->title,
-            "publish_time" => $topic->publish_time,
+            "public_time" => $topic->publish_time,
             "tags" => $topic->tags,
             "news_id" => $topic->topic_id,
             "is_valid" => $topic->is_valid,
@@ -25,6 +25,8 @@ class TopicController extends BaseController {
                 ]),
             "imgs" => RenderLib::ImageRender($this->net, $topic->image_sign, $meta, true),
             );
+        $ret["imgs"]["image_sign"] = $topic->image_sign;
+        return $ret;
     }
 
     public function DetailAction() {
