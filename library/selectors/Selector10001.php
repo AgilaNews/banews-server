@@ -96,7 +96,7 @@ class Selector10001 extends BaseNewsSelector{
                 $this->_channel_id, $this->_device_id, $this->_user_id, 
                 $popularNewsCnt, 3, $prefer,  $options);
             foreach ($popularNewsLst as $curNewsId) {
-                if (in_array($curNewsId, $recNewsLst)) {
+                if (!in_array($curNewsId, $recNewsLst)) {
                     $recNewsLst[] = $curNewsId;
                 }
             }
