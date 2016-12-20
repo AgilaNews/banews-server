@@ -9,7 +9,7 @@ class NewsRedis {
         $key = "banews:ph:30001";
         $step = VIDEO_LENGTH;
         $count = $this->_redis->zCard($key);
-        $start = max(0, $count - $step);
+        $start = 0;
         $end = $start + $step;
         $ret = array();
         $tmp = $this->_redis->zRange($key, $start, $end, true);
@@ -17,7 +17,6 @@ class NewsRedis {
         foreach ($tmp as $id=>$weight) {
             $ret []= array("id" => $id, "weight"=>$weight);
         }
-        shuffle($ret);
         return $ret;
     }
     

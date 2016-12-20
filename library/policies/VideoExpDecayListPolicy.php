@@ -6,7 +6,7 @@ define ('MIN_WEIGHT', 1);
 define ('DECAY_SLOP_PREFER_LATER', 10);
 define ('DECAY_SLOP_PREFER_OLDER', 2);
 
-class ExpDecayListPolicy extends BaseListPolicy {
+class VideoExpDecayListPolicy extends BaseListPolicy {
     public function __construct($di) {
         parent::__construct($di);
     }
