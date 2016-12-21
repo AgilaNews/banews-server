@@ -16,11 +16,18 @@ class SearchController extends BaseController {
         if (!$this->deviceId) {
             throw new HttpException(ERR_DEVICE_NON_EXISTS, "device id not found");
         }
+
+        $size = $this->get_request_param("from", "int", false, 10);
         $cache = $this->di->get("cache");
         $hotwords = $cache->hGetAll(REDIS_HOT_WORD_KEY);
-        $res = array();
+        arsort($hotwords);
+        $cnt = 0;
         foreach ($hotwords as $key => $value) {
+            if ($cnt > $size){
+                break;
+            }
             $res [] = $value;
+            $cnt += 1;
         }
         $this->setJsonResponse(array(
                                      "hotwords" => $res,
