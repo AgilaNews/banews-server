@@ -43,6 +43,16 @@ class SearchController extends BaseController {
         return TRUE;
     }
 
+    private function emptyResponse($dispatch_id){
+        $ret = array(
+            "dispatch_id" => $dispatch_id,
+            "news"=>array(),
+        );
+        $this->setJsonResponse($ret);
+        return $this->response;
+
+    }
+
     public function getNewsModel($searchResult){
         $newslist = array();
         foreach($searchResult['hits']['hits'] as $result) {
@@ -72,37 +82,68 @@ class SearchController extends BaseController {
         $channel_id = $this->get_request_param("channel_id", "int", true);
         $from = $this->get_request_param("from", "int", true);
         $size = $this->get_request_param("size", "int", true);
+        $source = $this->get_request_param("source", "int", false, "searchbox");
         $words = $this->get_request_param("words", "string", true);
         $words = urldecode($words);
         $esClient = $this->di->get('elasticsearch');
+        $percentage ="0%";
+        $dispatch_id = substr(md5($words . $channel_id . $this->deviceId . time()), 16);
+        if ($from + $size >= 200){
+            return $this->emptyResponse($dispatch_id);
+        }
 
-        $searchParams = array(
+        if($source=="hotwords"){
+            $percentage ="100%";
+        }
+
+        $matchQuery = array(
+            'match'=>array(
+                'title'=>array(
+                 "query"=>$words,
+                 "minimum_should_match"=>$percentage,
+                ),
+            ),
+        );
+        $typeFilter = array('term'=>array('content_type'=>0));
+
+        $now = time();
+        //we only fetch recent 30 day news
+        $timeLimit  = $now - ($now % 86400) - 86400 * 30;
+        $timeFilter = array('range'=>array("post_timestamp"=>array("gte"=>$timeLimit)));
+        $highlightPara = array(
+                    'fields' => array('title'=>new \stdClass()),
+                    'pre_tags' => array('<font>'),
+                    'post_tags' => array('</font>'),
+                );
+        $searchParams = [
             'index' => 'banews',
             'type'  => 'article',
             'from' => $from,
             'size' => $size,
-            'body'  => array(
-                'query' => array(
-                    'match' => array('title'=>$words),
-                ),
-                'highlight' => array(
-                    'fields' => array('title'=>new \stdClass()),
-                    'pre_tags' => array('<font>'),
-                    'post_tags' => array('</font>'),
-                ),
-            ),
-        ); 
+            'body' => [
+                'query'=>[
+                    'filtered' => [
+                        'query' => $matchQuery,
+                        'filter' => $typeFilter,
+                        'filter' => $timeFilter,
+                    ]
+                ],
+                'highlight' => $highlightPara,
+            ]
+        ]; 
+
         try {
             $searchResult = $esClient->search($searchParams);
-            $resLst = array();
         } catch(\Exception $e) {
             #$this->logger->error(sprintf("[file:%s][line:%s][message:%s][code:%s]", 
             #    $e->getFile(), $e->getLine(), $e->getMessage(), $e->getCode()));
             $searchResult =  array();
         }
+        if (empty($searchResult)){
+            return $this->emptyResponse($dispatch_id);
+        }
         $models = $this->getNewsModel($searchResult);
         $render = new RenderSearch($this);
-        $dispatch_id = substr(md5($words . $channel_id . $this->deviceId . time()), 16);
         $ret = array(
             "dispatch_id" => $dispatch_id,
             "news"=> $render->render($models),
