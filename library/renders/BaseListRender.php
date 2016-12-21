@@ -35,6 +35,9 @@ class BaseListRender {
         $comment_counts = Comment::getCount($keys);
         
         foreach ($models as $news_model) {
+            if (!$news_model) {
+                continue;
+            }
             if ($news_model instanceof AdIntervene) {
                 $r = $news_model->render();
                 if ($r) {

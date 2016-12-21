@@ -16,7 +16,7 @@ class TopicIntervene extends BaseIntervene {
     public function select() {
         $topics = Topic::getValidTopic();
         $cache = DI::getDefault()->get('cache');
-        $key = TOPIC_INTERVENE_KEY + $this->context["device_id"];
+        $key = TOPIC_INTERVENE_KEY + $this->context["deviceId"];
         if ($cache) {
             foreach ($topics as $topic_id) {
                 if($cache->sIsMember($key, $topic_id)){
