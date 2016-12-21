@@ -8,12 +8,20 @@
  * 
  * 
  */
+
+define("REDIS_HOT_WORD_KEY", "ALG_HOT_KEYWORDS_KEY");
 class SearchController extends BaseController {
 
     public function HotwordsAction() {
+        $cache = $this->di->get("cache");
+        $hotwords = $cache->hGetAll(REDIS_HOT_WORD_KEY);
+        $res = array();
+        foreach ($res as $key => $value) {
+            $res [] = $value;
+        }
         $this->setJsonResponse(array(
-                                     "hotwords" => array("lian", "zhan", "animal"),
-                                     ));
+                                     "hotwords" => $res,
+                                    ));
         return $this->response;
     }
 
@@ -51,8 +59,8 @@ class SearchController extends BaseController {
         $words = urldecode($words);
         $esClient = $this->di->get('elasticsearch');
 
-       $searchParams = array(
-            'index' => 'banews-article',
+        $searchParams = array(
+            'index' => 'banews',
             'type'  => 'article',
             'from' => $from,
             'size' => $size,
