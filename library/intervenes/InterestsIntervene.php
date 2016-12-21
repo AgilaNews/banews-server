@@ -11,7 +11,7 @@ use Phalcon\DI;
 
 class InterestsIntervene extends BaseIntervene {
     public function render() {
-        $this->setDeviceUsed($device_id);
+        $this->setDeviceUsed($this->context["devideId"]);
         return array("tpl" => NEWS_LIST_INTERESTS);
     }
 

@@ -47,7 +47,7 @@ class TopicIntervene extends BaseIntervene {
             "news_id" => $topic_model->topic_id,
             "public_time" => $topic_model->publish_time,
             "imgs" => array(),
-            "tags" => "Topics",
+            "tag" => "Topics",
             );
 
         $meta = json_encode($topic_model->image_meta, true);
