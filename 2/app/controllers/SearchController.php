@@ -13,10 +13,13 @@ define("REDIS_HOT_WORD_KEY", "ALG_HOT_KEYWORDS_KEY");
 class SearchController extends BaseController {
 
     public function HotwordsAction() {
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device id not found");
+        }
         $cache = $this->di->get("cache");
         $hotwords = $cache->hGetAll(REDIS_HOT_WORD_KEY);
         $res = array();
-        foreach ($res as $key => $value) {
+        foreach ($hotwords as $key => $value) {
             $res [] = $value;
         }
         $this->setJsonResponse(array(
@@ -56,6 +59,9 @@ class SearchController extends BaseController {
     } 
 
     public function IndexAction() {
+        if (!$this->deviceId) {
+            throw new HttpException(ERR_DEVICE_NON_EXISTS, "device id not found");
+        }
         $channel_id = $this->get_request_param("channel_id", "int", true);
         $from = $this->get_request_param("from", "int", true);
         $size = $this->get_request_param("size", "int", true);
