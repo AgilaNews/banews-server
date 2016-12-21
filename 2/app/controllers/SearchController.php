@@ -23,10 +23,10 @@ class SearchController extends BaseController {
         arsort($hotwords);
         $cnt = 0;
         foreach ($hotwords as $key => $value) {
-            if ($cnt > $size){
+            if ($cnt >= $size){
                 break;
             }
-            $res [] = $value;
+            $res [] = $key;
             $cnt += 1;
         }
         $this->setJsonResponse(array(
