@@ -77,6 +77,10 @@ $settings = array (
                                         "addr" => "tcp://127.0.0.1:7070",
                                         "category" => "useraction",
                                         ),
+                       "feature" => array (
+                                        "addr" => "tcp://127.0.0.1:7070",
+                                        "category" => "samplefeature",
+                                        ),
                        ),
     'cache' => array (
                       "redis" => array (

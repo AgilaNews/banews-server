@@ -65,12 +65,25 @@ $di->set('logger', function() use($config) {
 
 $di->set('eventlogger', function() use ($config) {
     try {
-        $el = new EventLogger($config->logger->event->addr, $config->logger->event->category);
+        $el = new EventLogger(
+            $config->logger->event->addr, 
+            $config->logger->event->category);
         return $el;
     } catch (\Exception $e) {
         return null;
     }
-    }, true);
+}, true);
+    
+$di->set('featureLogger', function() use($config) {
+    try {
+        $el = new EventLogger(
+            $config->logger->feature->addr, 
+            $config->logger->feature->category);
+        return $el;
+    } catch (\Exception $e) {
+        return null;
+    }
+}, true);
 
 $di->set('comment', function() use ($config) {
     $client = new iface\CommentServiceClient(sprintf("%s:%s", $config->comment->host, $config->comment->port), 

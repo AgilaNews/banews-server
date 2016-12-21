@@ -183,6 +183,9 @@ class LrNewsRanker extends BaseNewsRanker {
         return $newsIdScoArr;
     }
 
+    public function dumpFeature() {
+    }
+
     public function ranking($channelId, $deviceId, $newsIdLst, 
         $prefer, $newsCnt, array $options=array()) {
         if (count($newsIdLst) > MAX_RANKER_NEWS_CNT) {
