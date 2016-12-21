@@ -46,6 +46,10 @@ class SearchController extends BaseController {
         $newskey = array_keys($newslist);
         $models = News::batchGet($newskey);
         foreach ($models as $urlsign=>$model){
+             if(!$model){
+                unset($models[$urlsign]);
+                continue;
+            }
             $models[$urlsign]->title = $newslist[$urlsign];
         }
         return $models;
