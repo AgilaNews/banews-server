@@ -162,9 +162,31 @@ class Selector10001 extends BaseNewsSelector{
             $this->InsertBanner($ret);
         }
         //*/
+        $this->insertTopic($ret);
+        $this->InsertInterests($ret);
         $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return $ret;
+    }
+
+    protected function InsertInterests(&$ret) {
+        $this->interveneAt($ret, new InterestsIntervene(
+            array(
+                "deviceId" => $this->_device_id,
+                )
+            ), 4);
+    }
+
+    protected function InsertTopic(&$ret) {
+        $this->interveneAt($ret, new TopicIntervene(
+            array(
+                "deviceId" => $this->_device_id,
+                "net" => $this->_net,
+                "screen_w" => $this->_screen_w,
+                "screen_h" => $this->_screen_h,
+                "os" => $this->_os,
+                )),
+            3);
     }
 
     protected function InsertBanner(&$ret) {
