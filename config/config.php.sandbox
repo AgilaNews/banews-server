@@ -1,9 +1,7 @@
 <?php
 
 use Phalcon\Logger;
-
 define("LIBRARY_PATH", APP_PATH . "../library");
-
 $settings = array (
     "appdirs" => array (
         "libraryDir" => LIBRARY_PATH,

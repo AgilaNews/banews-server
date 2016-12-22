@@ -6,6 +6,7 @@
  * @date    2016-12-20 11:58:15
  * @version $Id$
  */
+use Phalcon\DI;
 
 class InterestController extends BaseController {
     public function IndexAction() {
@@ -31,7 +32,7 @@ class InterestController extends BaseController {
             $userInterest = new UserInterests();
             $userInterest->device_id = $this->deviceId;
             if ($this->userSign) {
-                $model->user_id = $this->userSign;
+                $userInterest->user_id = $this->userSign;
             }
             $userInterest->interest_id = $interest_id;
             $userInterest->interest_name = $interest_name;
@@ -63,6 +64,6 @@ class InterestController extends BaseController {
         $filterName = BloomFilterService::FILTER_FOR_INTERESTS;
         $bf_service = DI::getDefault()->get("bloomfilter");
 
-        $bf_service->add($filterName, array($this->_device_id));
+        $bf_service->add($filterName, array($this->deviceId));
     }
 }

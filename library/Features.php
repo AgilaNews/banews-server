@@ -73,7 +73,7 @@ class Features {
                                                                         "ios" => "1.2.6",
                                                                         "android" => "1.2.7"
                                                                         ),
-                                         self::BANNER_FEATURE => array(
+                                         self::TOPIC_FEATURE => array(
                                                                         "ios" => "1.2.6",
                                                                         "android" => "1.2.7"
                                                                         ),

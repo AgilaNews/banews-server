@@ -20,7 +20,8 @@ $settings = array (
     'db_w' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-            'host' => '10.8.6.7',
+#            'host' => '10.8.6.7',
+            'host' => '127.0.0.1',
             'username' => 'banews_w',
             'password' => 'MhxzKhl-Happy!@#',
             'dbname' => 'banews',
@@ -32,8 +33,9 @@ $settings = array (
     'db_r' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-            'host' => '10.8.6.7',
-            'username' => 'banews_r',
+#            'host' => '10.8.6.7',       
+            'host' => '127.0.0.1',
+            'username' => 'root',
             'password' => 'MhxzKhl-Happy!@#',
             'dbname' => 'banews',
             "options" => array(
@@ -81,7 +83,8 @@ $settings = array (
                        ),
     'cache' => array (
                       "redis" => array (
-                                        "host" => "10.8.14.136",
+            #                            "host" => "10.8.14.136",
+                                        "host" => "127.0.0.1",
                                         "port" => 6379,
                                         ),
                       ),

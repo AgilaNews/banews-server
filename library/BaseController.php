@@ -18,6 +18,7 @@ define("EVENT_NEWS_COMMENT_LIKE", "020208");
 define("EVENT_TOPIC_DETAIL", "021701");
 define("EVENT_NEWS_COLDSETTING", "030101");
 define("EVENT_NEWS_REFERRER", "040102");
+define("EVENT_SEARCH_LIST", "070101");
 
 class BaseController extends Controller{
     public function initialize(){

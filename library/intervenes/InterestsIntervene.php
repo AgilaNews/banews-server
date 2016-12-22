@@ -19,16 +19,17 @@ class InterestsIntervene extends BaseIntervene {
             $this->context["os"])) {
             return null;
         }
+        $device_id = $this->context["device_id"];
 
-        if ($this->tryBloomfilter($this->context["devide_id"])) {
+        if ($this->tryBloomfilter($device_id)) {
             return null;
         }
 
-        if ($this->isDeviceUsed($this->context["device_id"])) {
+        if ($this->isDeviceUsed($device_id)) {
             return null;
         }
 
-        $this->setDeviceUsed($this->context["devide_id"]);
+        $this->setDeviceUsed($device_id);
         return array("tpl" => NEWS_LIST_INTERESTS);
     }
 
@@ -38,7 +39,7 @@ class InterestsIntervene extends BaseIntervene {
             return;
         }
     
-        $key = INTERESTS_INTERVENE_KEY + $device_id;
+        $key = INTERESTS_INTERVENE_KEY . $device_id;
         $cache->multi();
         $cache->set($key, 1);
         $cache->expire($key, INTERESTS_INTERVENE_TTL);
@@ -51,8 +52,8 @@ class InterestsIntervene extends BaseIntervene {
             return true;
         }
 
-        $key = INTERESTS_INTERVENE_KEY + $device_id;
-        return $cache->exists($key)
+        $key = INTERESTS_INTERVENE_KEY . $device_id;
+        return $cache->exists($key);
     }
 
     protected function tryBloomfilter($device_id) {
@@ -61,7 +62,7 @@ class InterestsIntervene extends BaseIntervene {
         $bf_service = DI::getDefault()->get("bloomfilter");
         $ret = $bf_service->test(
             $filterName,
-            $device_id,
+            $device_id
             );
         
         return $ret;

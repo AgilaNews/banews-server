@@ -163,9 +163,12 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     protected function InsertInterests(&$ret) {
+        if (mt_rand(1, 10) > 1) {
+            return;
+        } 
         $this->interveneAt($ret, new InterestsIntervene(
             array(
-                "deviceId" => $this->_device_id,
+                "device_id" => $this->_device_id,
                 "os" => $this->_os,
                 "client_version" => $this->_client_version,
                 )
@@ -175,7 +178,7 @@ class Selector10001 extends BaseNewsSelector{
     protected function InsertTopic(&$ret) {
         $this->interveneAt($ret, new TopicIntervene(
             array(
-                "deviceId" => $this->_device_id,
+                "device_id" => $this->_device_id,
                 "net" => $this->_net,
                 "screen_w" => $this->_screen_w,
                 "screen_h" => $this->_screen_h,
