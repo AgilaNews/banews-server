@@ -150,7 +150,7 @@ class SearchController extends BaseController {
         );
         $this->logEvent(EVENT_SEARCH_LIST, array(
                                                 "dispatch_id"=>$dispatch_id,
-                                                "news"=>array_keys($model),
+                                                "news"=>array_keys($models),
                                                 "channel_id"=>$channel_id,
                                                 "from"=>$from,
                                                 "size"=>$size,
