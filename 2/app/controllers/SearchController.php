@@ -111,7 +111,7 @@ class SearchController extends BaseController {
                 'type'  => 'article',
                 'from' => $from,
                 'size' => $size,
-                '_source'=> "id",
+                '_source'=> array("id","channel"),
                 'body' => [
                     'highlight' => $highlightPara,
                     'query'=>[
