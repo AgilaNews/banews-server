@@ -86,7 +86,7 @@ class SearchController extends BaseController {
         $words = $this->get_request_param("words", "string", true);
         $words = urldecode($words);
         $esClient = $this->di->get('elasticsearch');
-        $percentage ="0%";
+        $percentage ="60%";
         $dispatch_id = substr(md5($words . $channel_id . $this->deviceId . time()), 16);
         if ($from + $size >= 200){
             return $this->emptyResponse($dispatch_id);
@@ -148,6 +148,14 @@ class SearchController extends BaseController {
             "dispatch_id" => $dispatch_id,
             "news"=> $render->render($models),
         );
+        $this->logEvent(EVENT_SEARCH_LIST, array(
+                                                "dispatch_id"=>$dispatch_id,
+                                                "news"=>array_keys($model),
+                                                "channel_id"=>$channel_id,
+                                                "from"=>$from,
+                                                "size"=>$size,
+                                                "words"=>$words,
+                                                ));
         $this->setJsonResponse($ret);
         return $this->response;
     }
