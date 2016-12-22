@@ -80,15 +80,12 @@ class SearchController extends BaseController {
         if($source=="hotwords"){
             $percentage ="100%";
         }
-        #$gaussDecay = array("gauss"=>array("post_timestamp"=>array("offset"=>"5d", "scale"=>"25d")));
-        #$decayParam = ['functions'=>array($gaussDecay)]; 
-        #main body
         $highlightPara = [
                     'fields' => array('title'=>new \stdClass()),
                     'pre_tags' => array('<font>'),
                     'post_tags' => array('</font>'),
                 ];
-        $scoreFunction = array(array("gauss"=>array("post_timestamp"=>array("offset"=>"5d", "scale"=>"25d"))));
+        $scoreFunction = array(array("gauss"=>array("post_timestamp"=>array("offset"=>"0d", "scale"=>"7d"))));
         $matchQuery = array(
             'match'=>array(
                 'title'=>array(
@@ -100,22 +97,21 @@ class SearchController extends BaseController {
         #we just fetch baseic news and require the news published in 60d
         $typeFilter = array('term'=>array('content_type'=>0));
         $timeFilter = array('range'=>array("post_timestamp"=>array("gte"=>"now-60d/d")));
-
+        $queryFilter = array("bool"=>array("must"=>array($typeFilter, $timeFilter)));
         $query = 
             [
                 'filtered' => [
                     'query' => $matchQuery,
-                    'filter' => $typeFilter,
-                    'filter' => $timeFilter,
+                    'filter' => $queryFilter,
                 ]
             ];
-        //main body
         $searchParams = 
             [
                 'index' => 'banews',
                 'type'  => 'article',
                 'from' => $from,
                 'size' => $size,
+                '_source'=> "id",
                 'body' => [
                     'highlight' => $highlightPara,
                     'query'=>[
@@ -140,56 +136,12 @@ class SearchController extends BaseController {
         $words = $this->get_request_param("words", "string", true);
         $words = urldecode($words);
         $esClient = $this->di->get('elasticsearch');
-        $percentage ="60%";
         $dispatch_id = substr(md5($words . $channel_id . $this->deviceId . time()), 16);
         if ($from + $size >= 200){
             return $this->emptyResponse($dispatch_id);
         }
-
-        if($source=="hotwords"){
-            $percentage ="100%";
-        }
-
-        $matchQuery = array(
-            'match'=>array(
-                'title'=>array(
-                 "query"=>$words,
-                 "minimum_should_match"=>$percentage,
-                ),
-            ),
-        );
         $typeFilter = array('term'=>array('content_type'=>0));
-
-        $now = time();
-        //we only fetch recent 30 day news
-        $timeLimit  = $now - ($now % 86400) - 86400 * 30;
-        $timeFilter = array('range'=>array("post_timestamp"=>array("gte"=>$timeLimit)));
-        $highlightPara = array(
-                    'fields' => array('title'=>new \stdClass()),
-                    'pre_tags' => array('<font>'),
-                    'post_tags' => array('</font>'),
-                );
-
-
-        $searchParams = [
-            'index' => 'banews',
-            'type'  => 'article',
-            'from' => $from,
-            'size' => $size,
-            'body' => [
-                'query'=>[
-                    'filtered' => [
-                        'query' => $matchQuery,
-                        'filter' => $typeFilter,
-                        'filter' => $timeFilter,
-                    ]
-                ],
-                'highlight' => $highlightPara,
-            ]
-        ]; 
-
         $searchParams = $this->GenerateSearchParam($from, $size, $words, $source);
-
         try {
             $searchResult = $esClient->search($searchParams);
         } catch(\Exception $e) {
