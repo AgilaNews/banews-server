@@ -75,6 +75,60 @@ class SearchController extends BaseController {
         return $models;
     } 
 
+    private function GenerateSearchParam($from, $size, $words, $source){
+        $percentage ="60%";
+        if($source=="hotwords"){
+            $percentage ="100%";
+        }
+        #$gaussDecay = array("gauss"=>array("post_timestamp"=>array("offset"=>"5d", "scale"=>"25d")));
+        #$decayParam = ['functions'=>array($gaussDecay)]; 
+        #main body
+        $highlightPara = [
+                    'fields' => array('title'=>new \stdClass()),
+                    'pre_tags' => array('<font>'),
+                    'post_tags' => array('</font>'),
+                ];
+        $scoreFunction = array(array("gauss"=>array("post_timestamp"=>array("offset"=>"5d", "scale"=>"25d"))));
+        $matchQuery = array(
+            'match'=>array(
+                'title'=>array(
+                 "query"=>$words,
+                 "minimum_should_match"=>$percentage,
+                ),
+            ),
+        );
+        #we just fetch baseic news and require the news published in 60d
+        $typeFilter = array('term'=>array('content_type'=>0));
+        $timeFilter = array('range'=>array("post_timestamp"=>array("gte"=>"now-60d/d")));
+
+        $query = 
+            [
+                'filtered' => [
+                    'query' => $matchQuery,
+                    'filter' => $typeFilter,
+                    'filter' => $timeFilter,
+                ]
+            ];
+        //main body
+        $searchParams = 
+            [
+                'index' => 'banews',
+                'type'  => 'article',
+                'from' => $from,
+                'size' => $size,
+                'body' => [
+                    'highlight' => $highlightPara,
+                    'query'=>[
+                        "function_score"=>[
+                            "functions"=>$scoreFunction, 
+                            "query"=>$query,
+                        ]
+                    ],
+                ]
+            ];
+        return $searchParams;
+    }
+
     public function IndexAction() {
         if (!$this->deviceId) {
             throw new HttpException(ERR_DEVICE_NON_EXISTS, "device id not found");
@@ -115,6 +169,8 @@ class SearchController extends BaseController {
                     'pre_tags' => array('<font>'),
                     'post_tags' => array('</font>'),
                 );
+
+
         $searchParams = [
             'index' => 'banews',
             'type'  => 'article',
@@ -131,6 +187,8 @@ class SearchController extends BaseController {
                 'highlight' => $highlightPara,
             ]
         ]; 
+
+        $searchParams = $this->GenerateSearchParam($from, $size, $words, $source);
 
         try {
             $searchResult = $esClient->search($searchParams);
