@@ -39,6 +39,7 @@ class InterestController extends BaseController {
             $userInterest->save();
             $this->logger->info(sprintf("[name:%d]", $interest_name));
         }
+        $this->setDeviceSeenToBF();
         $this->setJsonResponse(array("message" => "OK"));
         return $this->response;
     }
@@ -56,5 +57,12 @@ class InterestController extends BaseController {
         }
         $this->setJsonResponse($ret);
         return $this->response;
+    }
+
+    protected function setDeviceSeenToBF() {
+        $filterName = BloomFilterService::FILTER_FOR_INTERESTS;
+        $bf_service = DI::getDefault()->get("bloomfilter");
+
+        $bf_service->add($filterName, array($this->_device_id));
     }
 }

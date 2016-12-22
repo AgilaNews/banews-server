@@ -42,6 +42,7 @@ class TopicController extends BaseController {
             $ret = $this->formatTopic($topic);
 
             $news = TopicNews::GetNewsOfTopic($topic_id, $from, $pn);
+            $ret["news"] = array();
             if ($news) {
                 $models = News::BatchGet($news);
                 $render = new RenderTopicNews($this);

@@ -16,7 +16,7 @@ class TopicIntervene extends BaseIntervene {
     public function select() {
         $topics = Topic::getValidTopic();
         $cache = DI::getDefault()->get('cache');
-        $key = TOPIC_INTERVENE_KEY + $this->context["deviceId"];
+        $key = TOPIC_INTERVENE_KEY + $this->context["device_id"];
         if ($cache) {
             foreach ($topics as $topic_id) {
                 if($cache->sIsMember($key, $topic_id)){
@@ -29,6 +29,12 @@ class TopicIntervene extends BaseIntervene {
     }
 
     public function render() {
+        if (!Features::Enabled(Features::TOPIC_FEATURE, 
+            $this->context["client_version"], 
+            $this->context["os"])) {
+            return null;
+        }
+
         $topic_id = $this->select();
         if(!$topic_id) {
             return null;
