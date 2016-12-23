@@ -70,7 +70,7 @@ class SearchController extends BaseController {
                 unset($models[$urlsign]);
                 continue;
             }
-            $models[$urlsign]->title = $newslist[$urlsign];
+            $models[$urlsign]->title = trim($newslist[$urlsign]);
         }
         return $models;
     } 
