@@ -20,7 +20,7 @@ class RequestContext {
             $ctx->setNet(ipeninsula\NetworkStatus::CELLAR_4G);
             break;
         case "WIFI":
-            $ctx->setNet(ipeninsula\NetworkStatus::CELLAR_WIFI);
+            $ctx->setNet(ipeninsula\NetworkStatus::WIFI);
             break;
         default:
             $ctx->setNet(ipeninsula\NetworkStatus::NET_Unknown);
