@@ -2,7 +2,6 @@
 
 use Phalcon\Logger;
 
-define("LIBRARY_PATH",  "/home/work/banews-server/library/");
 $settings = array (
     "appdirs" => array (
         "libraryDir" => LIBRARY_PATH,
@@ -66,6 +65,13 @@ $settings = array (
         'port' => '6066',
         'conn_timeout' => 30000,
         'call_timeout' => 100000,
+    ),
+    'sphinx' => array(
+        'host' => '127.0.0.1',
+        'port' => 5034,
+        'conn_timeout'=> 30000,
+        'call_timeout' => 500000,
+        'suite_name' => 'agila_timeline',
     ),
     'logger' => array (
                        'banews' => array (

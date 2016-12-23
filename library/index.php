@@ -2,8 +2,9 @@
 
 error_reporting(E_ALL);
 define('APP_PATH', realpath('..') . '/');
-define('ROOT_PATH', realpath("../.." . '/'));
+define('ROOT_PATH', realpath("../..") . '/');
 define("VENDOR_PATH", "/home/work/php-thirdParty/vendor/");
+define("LIBRARY_PATH", ROOT_PATH . "/library/");
 
 use Phalcon\Config;
 use Phalcon\Mvc\Application;
