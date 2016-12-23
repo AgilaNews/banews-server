@@ -78,7 +78,7 @@ class SearchController extends BaseController {
     private function GenerateSearchParam($from, $size, $words, $source){
         $percentage ="60%";
         if($source=="hotwords"){
-            $percentage ="100%";
+            $percentage ="75%";
         }
         $highlightPara = [
                     'fields' => array('title'=>new \stdClass()),
