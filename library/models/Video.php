@@ -306,7 +306,7 @@ class Video extends BaseModel {
             $cache->multi();
             $cache->delete($key);
             foreach($videos as $video) {
-                $cache->lpush($video);
+                $cache->lpush($key, $video);
             }
             $cache->expire($key, CACHE_CHANNEL_VIDEO_TTL);
             $cache->exec();

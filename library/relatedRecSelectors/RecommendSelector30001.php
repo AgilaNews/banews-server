@@ -22,7 +22,7 @@ class RecommendSelector30001 extends BaseRecommendNewsSelector {
             DEFAULT_RECOMMEND_NEWS_COUNT * 2);
 
         $models = array();
-        if (!$relatedNewsLst) {
+        if ($relatedNewsLst) {
             $models = News::batchGet($relatedNewsLst);
         }
         foreach ($models as $sign => $model) {
