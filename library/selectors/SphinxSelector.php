@@ -15,7 +15,7 @@ class SphinxSelector extends BaseNewsSelector {
         parent::__construct($channel_id, $controller);
     }
 
-    protected function select($prefer) {
+    public function select($prefer) {
         $sphinx = DI::getDefault()->get('sphinx');
         $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
 
