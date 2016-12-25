@@ -1,5 +1,5 @@
 <?php
-define("VIDEO_LENGTH", 1000);
+define("VIDEO_LENGTH", 3000);
 class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
@@ -9,16 +9,14 @@ class NewsRedis {
         $key = "banews:ph:30001";
         $step = VIDEO_LENGTH;
         $count = $this->_redis->zCard($key);
-        $limit = max(1, $count - $step);
-        $start = mt_rand(0, $limit);
+        $start = 0;
         $end = $start + $step;
         $ret = array();
-        $tmp = $this->_redis->zRange($key, $start, $end, true);
+        $tmp = $this->_redis->zRevRange($key, $start, $end, true);
 
         foreach ($tmp as $id=>$weight) {
             $ret []= array("id" => $id, "weight"=>$weight);
         }
-        shuffle($ret);
         return $ret;
     }
     

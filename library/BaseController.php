@@ -34,6 +34,7 @@ class BaseController extends Controller{
     }
     
     public function onConstruct(){
+        $this->logid = mt_rand();
         $this->deviceId = $this->request->getHeader('X-USER-D');
         $this->userSign = $this->request->getHeader('X-USER-A');
         $this->density = $this->request->getHeader('X-DENSITY');
@@ -118,9 +119,9 @@ class BaseController extends Controller{
     }
 
     public function afterExecuteRoute($dispatcher) {
-        $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s][abflag:%s]",
+        $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s][abflag:%s][logid:%s]",
                                     $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
-                                    $this->tz, $this->lat, $this->lng, $this->lang, json_encode($this->abflags)));
+                                    $this->tz, $this->lat, $this->lng, $this->lang, json_encode($this->abflags), $this->logid));
         $this->logger->info(sprintf("[cost:%sms]",
                                       round((microtime(true) - $this->_start_time) * 1000)));
         $this->logger->commit();
@@ -200,25 +201,7 @@ class BaseController extends Controller{
 
 
     private function initAbFlag() {
-        $ctx = new ipeninsula\RequestContext();
-
-        $ctx->ProductId = $this->config->abtest->product_key;
-        $ctx->UserId = $this->userSign;
-        $ctx->DeviceId = $this->deviceId;
-        $ctx->SessionId = $this->session;
-        $ctx->UserAgent = $this->ua;
-        $ctx->Net = $this->net;
-        $ctx->Isp = $this->isp;
-        //        $ctx->Language = $this->lang;
-        $ctx->ClientVersion = $this->client_version;
-        $ctx->Os = $this->os;
-        $ctx->OsVersion = $this->os_version;
-        $ctx->Longitude = $this->lng;
-        $ctx->Latitude = $this->lat;
-        $ctx->TimeZone = $this->tz;
-        $ctx->ScreenWidth = $this->resolution_w;
-        $ctx->ScreenHeight = $this->resolution_h;
-        $ctx->Dpi = $this->dpi;
+        $ctx = RequestContext::GetCtxFromController($this);
         
         $service = $this->di->get("abtest");
         $this->abflags = $service->requestFlags($this->config->abtest->product_key, $ctx);

@@ -8,6 +8,7 @@ class RequestContext {
         $ctx->setSessionId($controller->session);
         $ctx->setUserAgent($controller->ua);
         $ctx->setClientIp($controller->client_ip);
+        $ctx->setTraceId($controller->logid);
 
         switch($controller->net) {
         case "2G":
