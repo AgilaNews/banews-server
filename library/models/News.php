@@ -121,7 +121,7 @@ class News extends BaseModel {
             foreach ($signs as $sign) {
                 $keys []= CACHE_NEWS_PREFIX . $sign;
             }
-            $rret = $cache->mget($keys);
+            $rret = $cache->mGet($keys);
             if (!$rret) {
                 return array();
             }
@@ -204,4 +204,67 @@ class News extends BaseModel {
         return $ret;
 
     } 
+
+    public function saveActionToCache($model, $prefixKey, $ttlKey, $cnt=1) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = $prefixKey . $model->url_sign; 
+            $cache->multi();
+            $cache->incrBy($key, $cnt);
+            $cache->expire($key, $ttlKey);
+            $cache->exec();
+        }
+    }
+
+    public function batchSaveActionToCache($models, $prefixKey, $ttlKey, $cnt=1) {
+        $cache = DI::getDefault()->get('cache');
+        $cache->multi();
+        foreach ($models as $model) {
+            if (!$model) {
+                continue;
+            }
+            $key = $prefixKey . $model->url_sign;
+            $cache->incrBy($key, $cnt);
+            $cache->expire($key, $ttlKey);
+        }
+        $cache->exec();
+        return ;
+    }
+
+    public function getActionFromCache($model, $prefixKey) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = $prefixKey . $model->url_sign;  
+            $value = $cache->get($key);
+            if (!empty($value)) {
+                return $value;
+            }
+        }
+        return 0;
+    }
+
+    public function batchGetActionFromCache($models, $prefixKey) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $keys = array();
+            foreach ($models as $model) {
+                $keys[] = $prefixKey . $model->url_sign;
+            }
+            $newsArr = $cache->mGet($keys);
+            if (empty($newsArr)) {
+                return array();
+            } else  {
+                $ret = array();
+                foreach ($newsArr as $idx => $value) {
+                    if (empty($value)) {
+                        $ret[$keys[$idx]] = 0; 
+                    } else {
+                        $ret[$keys[$idx]] = $value;
+                    }
+                }
+                return $ret;
+            }
+        }
+        return array();
+    }
 }

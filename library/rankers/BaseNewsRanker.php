@@ -15,6 +15,6 @@ abstract class BaseNewsRanker {
 
     abstract public function getRankerTag();
 
-    abstract public function ranking($channelId, $deviceId, $newsIdLst, 
+    abstract public function ranking($channelId, $deviceId, $newsObjLst, 
         $prefer, $newsCnt, array $options=array());
 }

@@ -67,6 +67,12 @@ define('CACHE_VIDEOS_TTL', 14400);
 define('CACHE_AD_ID_KEY', "BS_AD_%s_%s"); // BS_AD_FB_deviceid
 define('CACHE_AD_ID_TTL', 172800);
 
+// cache for feature dumping
+define ('CACHE_FEATURE_CLICK_PREFIX', 'BS_FEATURE_CLICK_');
+define ('CACHE_FEATURE_CLICK_TTL', 172800);
+define ('CACHE_FEATURE_DISPLAY_PREFIX', 'BS_FEATURE_DISPLAY_');
+define ('CACHE_FEATURE_DISPLAY_PREFIX', 172800);
+
 //used for redis device map
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
 define('DEVICEMAP_DEVICE_KEY', "PUSH_DEVICE_ID_");

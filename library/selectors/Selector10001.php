@@ -102,7 +102,7 @@ class Selector10001 extends BaseNewsSelector{
             }
         } else {
             // combine popular & topic recommend recall with rerank
-            $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
+            $recNewsLst = $popularPolicy->sampling($this->_channel_id, 
                 $this->_device_id, $this->_user_id, 50, 3, $prefer, 
                 $options);
             $topicNewsLst = $personalTopicPolicy->sampling(
@@ -110,17 +110,14 @@ class Selector10001 extends BaseNewsSelector{
                 10, 3, $prefer, $options);
             // merge news from different strategy without duplicate
             foreach ($topicNewsLst as $curNewsId) {
-                if (!in_array($curNewsId, $popularNewsLst)) {
-                    $popularNewsLst[] = $curNewsId;
+                if (!in_array($curNewsId, $recNewsLst)) {
+                    $recNewsLst[] = $curNewsId;
                 }
             }
-            if (count($popularNewsLst) == 0) {
-                $popularNewsLst = $this->emergence(30, $recNewsLst, 
+            if (count($recNewsLst) == 0) {
+                $recNewsLst = $this->emergence(30, $recNewsLst, 
                     $options, $prefer);
             }
-            $lrRanker = new LrNewsRanker($this->_di); 
-            $recNewsLst = $lrRanker->ranking($this->_channel_id,
-                $this->_device_id, $popularNewsLst, $prefer, $sample_count);
         }
         $logger->info("====>channel 10001 strategy: " . $strategyTag .
             ". deviceId:" . $this->_device_id . ". newsCnt:" 
@@ -149,13 +146,22 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function select($prefer) {
-        $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
-        $selected_news_list = $this->sampling($required, $prefer);
+        $sample_count = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
+        $selected_news_list = $this->sampling($sample_count, 
+            $prefer);
         $selected_news_list = $this->newsFilter($selected_news_list);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
 
+        // add ranking according to user group
+        $strategyTag = $this->getPolicyTag();
+        if ($strategyTag == "10001_lrRanker") {
+            $lrRanker = new LrNewsRanker($this->_di); 
+            $models = $lrRanker->ranking($this->_channel_id,
+                $this->_device_id, $models, $prefer, $sample_count);
+        }
+        
         $ret = array();
         $filter = array();
         for ($i = 0; $i < count($selected_news_list); $i++) {
@@ -181,13 +187,15 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     protected function InsertBanner(&$ret) {
-        $this->interveneAt($ret, new BannerIntervene(array(
-                                                      "device_id" => $this->_device_id,
-                                                      "operating_id" => OPERATING_CHRISTMAS,
-                                                      "news_id" => BANNER_NEWS_ID,
-                                                      "client_version" => $this->_client_version,
-                                                      "os" => $this->_os,
-                                                      "net" => $this->_net,
-                                                      )), 0);
+        $this->interveneAt($ret, 
+            new BannerIntervene(array(
+                "device_id" => $this->_device_id,
+                "operating_id" => OPERATING_CHRISTMAS,
+                "news_id" => BANNER_NEWS_ID,
+                "client_version" => $this->_client_version,
+                "os" => $this->_os,
+                "net" => $this->_net,
+            )
+        ), 0);
     }
 }
