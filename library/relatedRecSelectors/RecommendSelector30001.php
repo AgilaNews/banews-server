@@ -1,5 +1,4 @@
 <?php
-define ("DEFAULT_RECOMMEND_NEWS_COUNT", 3);
 
 class RecommendSelector30001 extends BaseRecommendNewsSelector {
     public function __construct($channel_id, $controller) {

@@ -7,6 +7,8 @@
  * @version $Id$
  */
 
+use Phalcon\DI;
+
 class VideoRelatedRecPolicy extends BaseRecommendPolicy {
     public function __construct($di) {
         parent::__construct($di);
@@ -15,13 +17,9 @@ class VideoRelatedRecPolicy extends BaseRecommendPolicy {
     }
 
     protected function getRecommendNews($myself, $pn, $minThre=0.) {
-        $recNewsLst = self::_getRecFromCache($myself);
-        if ($recNewsLst) {
-            return $recNewsLst;
-        }
-
         $video = Video::getByNewsSign($myself);
         $youtube_channel_id = $video->youtube_channel_id;
+
         $videos = Video::getVideosByAuthor($youtube_channel_id, $pn);
         return $videos;
     }
