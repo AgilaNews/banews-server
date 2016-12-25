@@ -70,7 +70,7 @@ define('CACHE_TOPIC_NEWS_PREFIX', 'BS_TOPIC_NEWS_');
 define('CACHE_TOPIC_NEWS_TTL', 14400);
 define('CACHE_TOPIC_REPFIX', 'BS_TOPIC_');
 define('CACHE_TOPIC_TTL', 14400);
-defien('CACHE_CHANNEL_VIDEO_PREFIX', "YoutubeChannelVideos_");
+define('CACHE_CHANNEL_VIDEO_PREFIX', "YoutubeChannelVideos_");
 define('CACHE_CHANNEL_VIDEO_TTL', 14400);
 
 //used for redis device map

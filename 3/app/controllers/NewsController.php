@@ -299,10 +299,10 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
-
+        $channel_id = $news_model->channel_id;
         $cname = "RecommendSelector$channel_id";
         if (class_exists($cname)) {
-            $recommend_selector = new cname($news_model->channel_id, $this);
+            $recommend_selector = new $cname($news_model->channel_id, $this);
         } else {
             $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
         }
