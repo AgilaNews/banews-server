@@ -67,6 +67,12 @@ $settings = array (
         'conn_timeout' => 30000,
         'call_timeout' => 100000,
     ),
+    'sphinx' => array(
+        'host' => '10.8.69.141',
+        'port' => '5034',
+        'conn_timeout' => 300000,
+        'call_timeout' => 1000000,
+    ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/data/logs/banews-server/banews-server.log",
