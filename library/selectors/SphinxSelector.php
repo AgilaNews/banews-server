@@ -21,7 +21,7 @@ class SphinxSelector extends BaseNewsSelector {
     protected function sampling($sample_count, $prefer) {
         $sphinx = DI::getDefault()->get('sphinx');
 
-        $selected_news_list = $sphinx->select($this->ctx, $this->_channel_id, $prefer);
+        $selected_news_list = $sphinx->select($this->ctx, $this->_channel_id, $prefer, $sample_count);
         if ($selected_news_list === null) {
             //TODO
         }
