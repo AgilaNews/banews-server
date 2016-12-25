@@ -198,25 +198,7 @@ class BaseController extends Controller{
 
 
     private function initAbFlag() {
-        $ctx = new ipeninsula\RequestContext();
-
-        $ctx->ProductId = $this->config->abtest->product_key;
-        $ctx->UserId = $this->userSign;
-        $ctx->DeviceId = $this->deviceId;
-        $ctx->SessionId = $this->session;
-        $ctx->UserAgent = $this->ua;
-        $ctx->Net = $this->net;
-        $ctx->Isp = $this->isp;
-        //        $ctx->Language = $this->lang;
-        $ctx->ClientVersion = $this->client_version;
-        $ctx->Os = $this->os;
-        $ctx->OsVersion = $this->os_version;
-        $ctx->Longitude = $this->lng;
-        $ctx->Latitude = $this->lat;
-        $ctx->TimeZone = $this->tz;
-        $ctx->ScreenWidth = $this->resolution_w;
-        $ctx->ScreenHeight = $this->resolution_h;
-        $ctx->Dpi = $this->dpi;
+        $ctx = RequestContext::GetCtxFromController($this);
         
         $service = $this->di->get("abtest");
         $this->abflags = $service->requestFlags($this->config->abtest->product_key, $ctx);
