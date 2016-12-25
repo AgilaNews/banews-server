@@ -23,13 +23,20 @@ class SphinxSelector extends BaseNewsSelector {
         if ($selected_news_list === null) {
             //TODO
         }
-        
+
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
         $models = $this->removeDup($models);
+        $ret = array();
 
-        $this->insertAd($selected_news_list);
+        for ($i = 0; $i < count($selected_news_list); $i++) {
+            if (array_key_exists($selected_news_list[$i], $models)) {
+                $ret []= $models[$selected_news_list[$i]];
+            }
+        }
 
-        return $selected_news_list;
+        $this->insertAd($ret);
+
+        return $ret;
     }
 }
