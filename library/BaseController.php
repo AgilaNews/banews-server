@@ -194,7 +194,9 @@ class BaseController extends Controller{
         $param["os"] = $this->os;
         $param["os-version"] = $this->os_version;
         $param["build"] = $this->build;
-        $param["abflag"] = $this->abflags; $this->eventlogger->info(json_encode($param)); }
+        $param["abflag"] = $this->abflags;
+        $this->eventlogger->info(json_encode($param));
+    }
 
 
     private function initAbFlag() {
