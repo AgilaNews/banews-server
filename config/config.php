@@ -71,6 +71,7 @@ $settings = array (
         'port' => '5034',
         'conn_timeout' => 300000,
         'call_timeout' => 1000000,
+        'suite_name' => 'agila_timeline',
     ),
     'logger' => array (
                        'banews' => array (
