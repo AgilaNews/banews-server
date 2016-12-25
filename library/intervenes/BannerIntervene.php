@@ -9,13 +9,13 @@
 
 use Phalcon\DI;
 
-define('BANNER_IMAGE_SIGN_NEW', 'bannernew');
-define('BANNER_IMAGE_SIGN_ANDROID', 'Android_banner_old');
-define('BANNER_IMAGE_SIGN_IOS', 'iOS_banner_old');
+//define('BANNER_IMAGE_SIGN_NEW', 'bannernew');
+define('BANNER_IMAGE_SIGN_ANDROID', 'CherryMobilexAgilaBuzz');
+define('BANNER_IMAGE_SIGN_IOS', 'CherryMobilexAgilaBuzz');
 define('BANNER_WIDTH', 720);
 define('BANNER_HEIGHT', 250); //200
 define("BANNER_INTERVENE_KEY", "BANNER_INTERVENE_%s_%s_%s");
-define("BANNER_INTERVENE_TTL", 14400);
+define("BANNER_INTERVENE_TTL", 86400);
 
 class BannerIntervene extends BaseIntervene {
     public function render(){
@@ -25,19 +25,23 @@ class BannerIntervene extends BaseIntervene {
 
         if ($this->isDeviceUsed($news_id, $device_id, $operating_id)) {
             return null;
-        } else {
+        } elseif (Features::Enabled(Features::LARGE_IMG_FEATURE, 
+                                $this->context["client_version"], 
+                                $this->context["os"])) {
             $news_model = News::getBySign($news_id);
             $ret = $this->serializeNewsCell($news_model);
             
             $this->setDeviceUsed($news_id, $device_id, $operating_id);
             return $ret;
         }
+        return null;
     }
 
     protected function serializeNewsCell($news_model) {
         $ret = RenderLib::GetPublicData($news_model);
         $quality = RenderLib::GetImageQuality($this->context["net"]);
 
+        /*
         if (Features::Enabled(Features::BANNER_FEATURE, 
                                 $this->context["client_version"], 
                                 $this->context["os"])) {
@@ -50,7 +54,7 @@ class BannerIntervene extends BaseIntervene {
                 "pattern" => sprintf(LARGE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_NEW, 
                     "{w}", "{h}", $quality),
                 );
-        } else {
+        } else { //*/
             if ($this->context["os"] == "android") {
                 $ret["imgs"][] = array(
                     "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, BANNER_IMAGE_SIGN_ANDROID, 
@@ -71,7 +75,7 @@ class BannerIntervene extends BaseIntervene {
                     );
             }
             $ret["tpl"] = NEWS_LIST_TPL_LARGE_IMG;
-        }
+        //}
 
         return $ret;
     }
@@ -90,11 +94,6 @@ class BannerIntervene extends BaseIntervene {
     }
 
     protected function isDeviceUsed($news_id, $device_id, $operating_id){
-        if (Features::Enabled(Features::BANNER_FEATURE, 
-            $this->context["client_version"], $this->context["os"])) {
-            return false;
-        }
-
         $cache = DI::getDefault()->get('cache');
         if (!$cache) {
             return true;

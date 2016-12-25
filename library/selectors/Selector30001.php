@@ -41,6 +41,13 @@ class Selector30001 extends BaseNewsSelector {
             return $popularNewsLst;
         }
 
+        $abservice = DI::getDefault()->get('abtest');
+        $t = $abservice->getTag("video_random_policy");
+
+        if ($t == "video_exp") {
+            $randomPolicy = new VideoExpDecayListPolicy($this->_di);
+        }
+        
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, self::MAX_NEWS_COUNT, 
             3, $prefer, $options);
