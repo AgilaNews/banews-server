@@ -70,6 +70,7 @@ define('CACHE_TOPIC_NEWS_PREFIX', 'BS_TOPIC_NEWS_');
 define('CACHE_TOPIC_NEWS_TTL', 14400);
 define('CACHE_TOPIC_REPFIX', 'BS_TOPIC_');
 define('CACHE_TOPIC_TTL', 14400);
+defien('CACHE_CHANNEL_VIDEO_PREFIX', "YoutubeChannelVideos_");
 
 //used for redis device map
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
@@ -153,8 +154,7 @@ define('DETAIL_AD_TPL_MEDIUM', 5001);
 define("VIDEO_DESCRIPTION_LIMIT", 1500);
 
 define("OPERATING_CHRISTMAS", 1);
-define("CHRISTMAS_NEWS_ID", "PETxVxMAoow=");
-define('BANNER_NEWS_ID', 'PETxVxMAoow=');
+define('BANNER_NEWS_ID', 'v4D53FzvWzI=');
 define('CACHE_NO_RECOMMEND_NEWS', 'BS_NO_RECOMMEND');
 
 define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');

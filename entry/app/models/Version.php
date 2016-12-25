@@ -62,10 +62,11 @@ class Version extends BaseModel {
 
         $ret = array();
 
+        /*
         usort($models, function($a, $b) {
                 return version_compare($a->client_version, $b->client_version);
             });
-        
+        */
         foreach ($models as $model) {
             if (version_compare($model->client_version, $client_version, "<")) {
                 $ret []= $model;

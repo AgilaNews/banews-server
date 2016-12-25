@@ -12,7 +12,7 @@ class NewsRedis {
         $start = 0;
         $end = $start + $step;
         $ret = array();
-        $tmp = $this->_redis->zRange($key, $start, $end, true);
+        $tmp = $this->_redis->zRevRange($key, $start, $end, true);
 
         foreach ($tmp as $id=>$weight) {
             $ret []= array("id" => $id, "weight"=>$weight);
