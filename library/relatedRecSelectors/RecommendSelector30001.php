@@ -21,7 +21,10 @@ class RecommendSelector30001 extends BaseRecommendNewsSelector {
             $this->_device_id, $this->_user_id, $myself, 
             DEFAULT_RECOMMEND_NEWS_COUNT * 2);
 
-        $models = News::batchGet($relatedNewsLst);
+        $models = array();
+        if (!$relatedNewsLst) {
+            $models = News::batchGet($relatedNewsLst);
+        }
         foreach ($models as $sign => $model) {
             if (!$model || ($sign == $myself) || 
                 array_key_exists($model->content_sign, $cs)) {

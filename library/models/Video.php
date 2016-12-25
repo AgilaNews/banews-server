@@ -267,7 +267,7 @@ class Video extends BaseModel {
         $ret = self::_getVideosByAuthorFromCache($youtube_channel_id, $pn);
         if (!$ret) {
             $ret = self::_getVideosByAuthorFromDB($youtube_channel_id, $pn);
-            self::_saveVideosByAuthorToCache($youtube_channel_id, $videos);
+            self::_saveVideosByAuthorToCache($youtube_channel_id, $ret);
         }
         shuffle($ret);
         return array_slice($ret, 0, $pn);
@@ -305,7 +305,7 @@ class Video extends BaseModel {
             $key = CACHE_CHANNEL_VIDEO_PREFIX . $youtube_channel_id;
             $cache->multi();
             $cache->delete($key);
-            foreach($videos as $vide) {
+            foreach($videos as $video) {
                 $cache->lpush($video);
             }
             $cache->expire($key, CACHE_CHANNEL_VIDEO_TTL);

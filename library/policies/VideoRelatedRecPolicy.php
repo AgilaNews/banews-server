@@ -27,6 +27,6 @@ class VideoRelatedRecPolicy extends BaseRecommendPolicy {
     public function sampling($channel_id, $device_id, $user_id, $myself, 
         $pn=3, $day_till_now=7, array $options=null) {
         $resLst = $this->getRecommendNews($myself, $pn, 0);
-        return $resIdLst;
+        return $resLst;
     }
 }
