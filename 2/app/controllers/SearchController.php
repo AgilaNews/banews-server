@@ -20,15 +20,19 @@ class SearchController extends BaseController {
         $size = $this->get_request_param("from", "int", false, 10);
         $cache = $this->di->get("cache");
         $hotwords = $cache->hGetAll(REDIS_HOT_WORD_KEY);
-        arsort($hotwords);
-        $cnt = 0;
-        foreach ($hotwords as $key => $value) {
-            if ($cnt >= $size){
-                break;
+        $res = array();
+        if(!empty($hotwords)){
+            arsort($hotwords);
+            $cnt = 0;
+            foreach ($hotwords as $key => $value) {
+                if ($cnt >= $size){
+                    break;
+                }
+                $res [] = $key;
+                $cnt += 1;
             }
-            $res [] = $key;
-            $cnt += 1;
         }
+        $this->logger->info(sprintf("[Hotwords][count:%s]",count(($res))));
         $this->setJsonResponse(array(
                                      "hotwords" => $res,
                                     ));
@@ -135,6 +139,8 @@ class SearchController extends BaseController {
         $source = $this->get_request_param("source", "int", false, "searchbox");
         $words = $this->get_request_param("words", "string", true);
         $words = urldecode($words);
+        
+        $this->logger->info(sprintf("[Search][words:%s]", $words));
         $esClient = $this->di->get('elasticsearch');
         $dispatch_id = substr(md5($words . $channel_id . $this->deviceId . time()), 16);
         if ($from + $size >= 200){
@@ -166,6 +172,8 @@ class SearchController extends BaseController {
                                                 "size"=>$size,
                                                 "words"=>$words,
                                                 ));
+
+        $this->logger->info(sprintf("[count:%s]", $count($models)));
         $this->setJsonResponse($ret);
         return $this->response;
     }
