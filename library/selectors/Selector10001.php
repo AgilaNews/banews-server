@@ -168,7 +168,7 @@ class Selector10001 extends BaseNewsSelector{
             if (array_key_exists($selected_news_list[$i], $models)) {
                 $ret []= $models[$selected_news_list[$i]];
                 $filter []= $models[$selected_news_list[$i]]->url_sign;
-                if (count($ret) >= $required) {
+                if (count($ret) >= $sample_count) {
                     break;
                 }
             }
