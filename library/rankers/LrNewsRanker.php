@@ -48,7 +48,7 @@ class LrNewsRanker extends BaseNewsRanker {
         return MIN_FEATURE_VALUE;
     }
 
-    public function getMetaFeatures($models, $featureDct) {
+    public function getMetaFeatures($models, &$featureDct) {
         foreach ($models as $newsObj) {
             $newsId = $newsObj->url_sign;
             $curFeatureDct = array();
@@ -72,15 +72,19 @@ class LrNewsRanker extends BaseNewsRanker {
         }
     }
 
-    protected function getActionFeature($models, $featureDct) {
+    protected function getActionFeature($models, &$featureDct) {
         $newsDisplayDct = News::batchGetActionFromCache(
             $models, CACHE_FEATURE_DISPLAY_PREFIX);
         $newsClickDct = News::batchGetActionFromCache(
             $models, CACHE_FEATURE_CLICK_PREFIX);
-        $newsCommentDct = Comment::getCount(
-            array_map(function($newsObj) {
-                    return $newsObj->url_sign;
-                }, $models));
+        $newsIdLst = array();
+        foreach ($models as $newsObj) {
+            if (in_array($newsObj->url_sign, $newsIdLst)) {
+                continue;
+            }
+            $newsIdLst[] = $newsObj->url_sign;
+        }
+        $newsCommentDct = Comment::getCount($newsIdLst);
         foreach ($models as $newsObj) {
             $newsId = $newsObj->url_sign;
             $curFeatureDct = array();
