@@ -23,6 +23,9 @@ class InterestController extends BaseController {
     protected function addInterests() {
         $param = $this->request->getJsonRawBody(true);
         $interests = $param["interests"];
+        if (!$interests) {
+            throw new HttpException(ERR_KEY, "interests not set");
+        }
 
         $this->logger->info("[AddInterests]");
         foreach ($interests as $interest) {

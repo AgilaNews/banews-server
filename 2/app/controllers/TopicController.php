@@ -38,8 +38,11 @@ class TopicController extends BaseController {
             "news" => array(),
             );
         $topic = Topic::getByTopicId($topic_id);
+
         if ($topic) {
             $ret = $this->formatTopic($topic);
+            $dispatch_id = substr(md5($topic_id . $this->deviceId . time()), 16);
+            $ret["dispatch_id"] = $dispatch_id;
 
             $news = TopicNews::GetNewsOfTopic($topic_id, $from, $pn);
             $ret["news"] = array();
@@ -48,11 +51,13 @@ class TopicController extends BaseController {
                 $render = new RenderTopicNews($this);
                 $ret["news"] = $render->render($models);
             }
-            $this->logger->info(sprintf("[Detail][Topic:%s][news:%d]", $topic_id, count($news)));
+            $this->logger->info(sprintf("[Detail][Topic:%s][news:%d][dispatch_id:%s]",
+                $topic_id, count($news), $dispatch_id));
 
             $this->logEvent(EVENT_TOPIC_DETAIL, array(
                                                "topic_id"=> $topic_id,
                                                "news"=> $news,
+                                               "dispatch_id" => $dispatch_id,
                                                 ));
         }
         $this->setJsonResponse($ret);
