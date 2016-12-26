@@ -70,7 +70,7 @@ class SearchController extends BaseController {
         $newskey = array_keys($newslist);
         $models = News::batchGet($newskey);
         foreach ($models as $urlsign=>$model){
-             if(!$model){
+             if(!$model or $model->is_visible != 1){
                 unset($models[$urlsign]);
                 continue;
             }
