@@ -166,14 +166,15 @@ class Selector10001 extends BaseNewsSelector{
         
         $ret = array();
         $filter = array();
-        for ($i = 0; $i < count($selected_news_list); $i++) {
-            if (array_key_exists($selected_news_list[$i], $newsObjDct)) {
-                $ret []= $newsObjDct[$selected_news_list[$i]];
-                $filter []= $newsObjDct[$selected_news_list[$i]]->url_sign;
-                if (count($ret) >= $sample_count) {
-                    break;
-                }
+        foreach ($newsObjDct as $newsId => $newsObj) {
+            if (count($ret) >= $sample_count) {
+                break;
             }
+            if (in_array($newsId, $filter)) {
+                $filter[] = $newsId;
+            }
+            $filter[] = $newsId;
+            $ret[] = $newsObj;
         }
         
         //*
