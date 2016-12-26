@@ -2,8 +2,6 @@
 
 use Phalcon\Logger;
 
-define("LIBRARY_PATH", APP_PATH . "../library");
-
 $settings = array (
     "appdirs" => array (
         "libraryDir" => LIBRARY_PATH,
@@ -20,8 +18,7 @@ $settings = array (
     'db_w' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-#            'host' => '10.8.6.7',
-            'host' => '127.0.0.1',
+            'host' => '10.8.6.7',
             'username' => 'banews_w',
             'password' => 'MhxzKhl-Happy!@#',
             'dbname' => 'banews',
@@ -33,9 +30,8 @@ $settings = array (
     'db_r' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-#            'host' => '10.8.6.7',       
-            'host' => '127.0.0.1',
-            'username' => 'root',
+            'host' => '10.8.6.7',
+            'username' => 'banews_r',
             'password' => 'MhxzKhl-Happy!@#',
             'dbname' => 'banews',
             "options" => array(
@@ -46,8 +42,8 @@ $settings = array (
     'comment' => array(
         'host' => '127.0.0.1',
         'port' => '6087',
-        'conn_timeout' => 30,
-        'call_timeout' => 100,
+        'conn_timeout' => 30000,
+        'call_timeout' => 1000000,
         'product_key' => 'agilanews',
     ),
     'abtest' => array(
@@ -70,6 +66,13 @@ $settings = array (
         'conn_timeout' => 30000,
         'call_timeout' => 100000,
     ),
+    'sphinx' => array(
+        'host' => '127.0.0.1',
+        'port' => 5034,
+        'conn_timeout'=> 30000,
+        'call_timeout' => 500000,
+        'suite_name' => 'agila_timeline',
+    ),
     'logger' => array (
                        'banews' => array (
                                           'path' => "/home/work/logs/banews.log",
@@ -83,8 +86,7 @@ $settings = array (
                        ),
     'cache' => array (
                       "redis" => array (
-            #                            "host" => "10.8.14.136",
-                                        "host" => "127.0.0.1",
+                                        "host" => "10.8.14.136",
                                         "port" => 6379,
                                         ),
                       ),
