@@ -68,7 +68,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['FETCH_TIMESTAMP_INTERVAL'] = 
                     $this->calcSpan($newsObj->fetch_time); 
             $curFeatureDct['POST_TIMESTAMP_INTERTVAL'] = 
-                    $this->calcSpan($newsObj->public_time);
+                    $this->calcSpan($newsObj->publish_time);
         }
     }
 
@@ -77,6 +77,10 @@ class LrNewsRanker extends BaseNewsRanker {
             $models, CACHE_FEATURE_DISPLAY_PREFIX);
         $newsClickDct = News::batchGetActionFromCache(
             $models, CACHE_FEATURE_CLICK_PREFIX);
+        $newsCommentDct = Comment::getCount(
+            array_map(function($newsObj) {
+                    return $newsObj->url_sign;
+                }, $models));
         foreach ($models as $newsObj) {
             $newsId = $newsObj->url_sign;
             $curFeatureDct = array();
@@ -105,8 +109,10 @@ class LrNewsRanker extends BaseNewsRanker {
                     $clickCnt;
             $curFeatureDct['HISTORY_READ_DISPLAY_RATIO'] = 
                     $clickCnt/$displayCnt;
-            $commentArr = Comment::getCount(array($newsObj->url_sign));
-            $commentCnt = $commentArr[$newsObj->url_sign];
+            $commentCnt = 0;
+            if (array_key_exists($newsId, $newsCommentDct)) {
+                $commenCnt = $newsCommentDct[$newsId];
+            }
             $curFeatureDct['HISTORY_COMMENT_COUNT'] = 
                     $commentCnt; 
             $curFeatureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = 
