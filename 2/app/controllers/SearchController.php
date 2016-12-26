@@ -173,7 +173,7 @@ class SearchController extends BaseController {
                                                 "words"=>$words,
                                                 ));
 
-        $this->logger->info(sprintf("[count:%s]", $count($models)));
+        $this->logger->info(sprintf("[count:%s]", count($models)));
         $this->setJsonResponse($ret);
         return $this->response;
     }
