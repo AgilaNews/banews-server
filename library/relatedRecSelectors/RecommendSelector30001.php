@@ -18,8 +18,7 @@ class RecommendSelector30001 extends BaseRecommendNewsSelector {
         $cs = array(); //content sign
         $relatedPolicy = new VideoRelatedRecPolicy($this->_di); 
         $relatedNewsLst = $relatedPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $myself, 
-            DEFAULT_RECOMMEND_NEWS_COUNT * 2);
+            $this->_device_id, $this->_user_id, $myself, 2);
 
         $models = array();
         if ($relatedNewsLst) {
