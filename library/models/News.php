@@ -243,7 +243,7 @@ class News extends BaseModel {
         return 0;
     }
 
-    public function batchGetActionFromCache($models, $prefixKey) {
+    public static function batchGetActionFromCache($models, $prefixKey) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
             $keys = array();

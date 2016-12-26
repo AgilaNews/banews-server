@@ -43,7 +43,7 @@ class LrNewsRanker extends BaseNewsRanker {
     protected function calcSpan($timestamp) {
         $now = time();
         if ($timestamp < $now) {
-            return floatval($curTimestamp - $pubTimestamp) / HOUR; 
+            return floatval($now - $timestamp) / HOUR; 
         }
         return MIN_FEATURE_VALUE;
     }
@@ -66,9 +66,9 @@ class LrNewsRanker extends BaseNewsRanker {
             $imgs = NewsImage::getImagesOfNews($newsObj->url_sign);
             $curFeatureDct['PICTURE_COUNT'] = count($imgs);
             $curFeatureDct['FETCH_TIMESTAMP_INTERVAL'] = 
-                    calcSpan($newsObj->fetch_time); 
+                    $this->calcSpan($newsObj->fetch_time); 
             $curFeatureDct['POST_TIMESTAMP_INTERTVAL'] = 
-                    calcSpan($newsObj->public_time);
+                    $this->calcSpan($newsObj->public_time);
         }
     }
 
@@ -118,8 +118,8 @@ class LrNewsRanker extends BaseNewsRanker {
         $predictReq = new iface\PredictRequest();
         $featureDct = array(); 
         $filterNewsIdLst = array();
-        getMetaFeatures($newsObjLst, $featureDct);
-        getActionFeature($newsObjLst, $featureDct);
+        $this->getMetaFeatures($newsObjLst, $featureDct);
+        $this->getActionFeature($newsObjLst, $featureDct);
         foreach ($featureDct as $newsId => $curFeatureDct) {
             $formatedFeatureLst = array();
             $sampleObj = new iface\Sample();
@@ -181,8 +181,8 @@ class LrNewsRanker extends BaseNewsRanker {
 
     public function ranking($channelId, $deviceId, $newsObjLst, 
             $prefer, $sampleCnt, array $options=array()) {
-        if (count($newsIdLst) > MAX_RANKER_NEWS_CNT) {
-            $newsIdLst = array_slice($newsIdLst, 0, 
+        if (count($newsObjLst) > MAX_RANKER_NEWS_CNT) {
+            $newsObjLst = array_slice($newsObjLst, 0, 
                 MAX_RANKER_NEWS_CNT);
         }
         // user & news feature collection
