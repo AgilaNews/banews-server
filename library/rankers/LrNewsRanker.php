@@ -209,6 +209,6 @@ class LrNewsRanker extends BaseNewsRanker {
             }    
             $sortedNewsObjLst[$newsId] = $newsObjDct[$newsId];
         }
-        return $sortedNewsObjLst;
+        return array($sortedNewsObjLst, $featureDct);
     }
 }

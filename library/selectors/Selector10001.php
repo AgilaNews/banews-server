@@ -155,11 +155,13 @@ class Selector10001 extends BaseNewsSelector{
         $newsObjDct = $this->removeDup($newsObjDct);
 
         // add ranking according to user group
+        $lrRanker = new LrNewsRanker($this->_di); 
+        list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
+            $this->_channel_id, $this->_device_id, $newsObjDct, 
+            $prefer, $sample_count);
         $strategyTag = $this->getPolicyTag();
         if ($strategyTag == "10001_lrRanker") {
-            $lrRanker = new LrNewsRanker($this->_di); 
-            $newsObjDct = $lrRanker->ranking($this->_channel_id,
-                $this->_device_id, $newsObjDct, $prefer, $sample_count);
+            $newsObjDct = $sortedNewsObjDct;
         }
         
         $ret = array();
@@ -180,10 +182,10 @@ class Selector10001 extends BaseNewsSelector{
             if ($cache->exists("BS_BANNER_SWITCH"))
                 $this->InsertBanner($ret);
         }
-        //*/
+        //
         $this->insertAd($ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
-        return $ret;
+        return array($ret, $newsFeatureDct);
     }
 
     protected function InsertBanner(&$ret) {

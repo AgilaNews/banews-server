@@ -13,6 +13,7 @@ use Phalcon\Mvc\Model\Query;
 class NewsController extends BaseController {
     const HotVideNum = 1;
     const VideoChannel = "30001";
+    private $featureChannelLst = array(10001);
 
     public function DetailAction() {
         if (!$this->request->isGet()){
@@ -194,7 +195,13 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $dispatch_models = $selector->select($prefer);
+        $newsFeatureDct = array();
+        if (in_array($channel_id, $featureChannelLst)) {
+            list($dispatch_models, $newsFeatureDct) = 
+                $selector->select($prefer);
+        } else {
+            $dispatch_models = $selector->select($prefer);
+        }
         $dispatch_ids = array();
 
         foreach ($dispatch_models as $dispatch_model) {
@@ -202,6 +209,9 @@ class NewsController extends BaseController {
                 $dispatch_ids []= $dispatch_model->url_sign;
             }
         }
+        News::batchSaveActionToCache($dispatch_models, 
+            CACHE_FEATURE_DISPLAY_PREFIX, 
+            CACHE_FEATURE_DISPLAY_TTL);
         
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
@@ -237,6 +247,13 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
+        if (in_array($channel_id, $featureChannelLst)) {
+            foreach ($dispatch_ids as $newsId) {
+                if (array_key_exists($newsId, $newsFeatureDct)) {
+                    $this->logFeature($dispatch_id, $newsFeatureDct[$newsId]);
+                }
+            }
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }
