@@ -168,7 +168,7 @@ class Selector10001 extends BaseNewsSelector{
             }
         }
         
-        //*
+        /*
         if ($prefer == 'later') {
             $cache = $this->_di->get('cache');
             if ($cache->exists("BS_BANNER_SWITCH"))
@@ -183,9 +183,6 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     protected function InsertInterests(&$ret) {
-        if (mt_rand(1, 10) > 1) {
-            return;
-        } 
         $this->interveneAt($ret, new InterestsIntervene(
             array(
                 "device_id" => $this->_device_id,
