@@ -48,51 +48,41 @@ class LrNewsRanker extends BaseNewsRanker {
         return MIN_FEATURE_VALUE;
     }
 
-    public function getMetaFeatures($models, &$featureDct) {
-        foreach ($models as $newsObj) {
-            $newsId = $newsObj->url_sign;
+    public function getMetaFeatures($newsObjDct, &$featureDct) {
+        foreach ($newsObjDct as $newsId => $newsObj) {
             $curFeatureDct = array();
-            if (array_key_exists($newsId, $featureDct)) {
-                $curFeatureDct = $featureDct[$newsId];
-            } else {
-                $featureDct[$newsId] = $curFeatureDct;
-            }
             $title = $newsObj->title;
             $curFeatureDct['TITLE_LENGTH'] = count(explode(" ", $title));
             $content = $newsObj->json_text;
             $curFeatureDct['CONTENT_LENGTH'] = count(explode(" ", $content));
-            $videos = NewsYoutubeVideo::getVideosOfNews($newsObj->url_sign);
+            $videos = NewsYoutubeVideo::getVideosOfNews($newsId);
             $curFeatureDct['VIDEO_COUNT'] = count($videos);
-            $imgs = NewsImage::getImagesOfNews($newsObj->url_sign);
+            $imgs = NewsImage::getImagesOfNews($newsId);
             $curFeatureDct['PICTURE_COUNT'] = count($imgs);
             $curFeatureDct['FETCH_TIMESTAMP_INTERVAL'] = 
                     $this->calcSpan($newsObj->fetch_time); 
             $curFeatureDct['POST_TIMESTAMP_INTERTVAL'] = 
                     $this->calcSpan($newsObj->publish_time);
-        }
-    }
-
-    protected function getActionFeature($models, &$featureDct) {
-        $newsDisplayDct = News::batchGetActionFromCache(
-            $models, CACHE_FEATURE_DISPLAY_PREFIX);
-        $newsClickDct = News::batchGetActionFromCache(
-            $models, CACHE_FEATURE_CLICK_PREFIX);
-        $newsIdLst = array();
-        foreach ($models as $newsObj) {
-            if (in_array($newsObj->url_sign, $newsIdLst)) {
-                continue;
-            }
-            $newsIdLst[] = $newsObj->url_sign;
-        }
-        $newsCommentDct = Comment::getCount($newsIdLst);
-        foreach ($models as $newsObj) {
-            $newsId = $newsObj->url_sign;
-            $curFeatureDct = array();
             if (array_key_exists($newsId, $featureDct)) {
-                $curFeatureDct = $featureDct[$newsId];
+                foreach ($curFeatureDct as $key => $val) {
+                    $featureDct[$newsId][$key] = $val;
+                }
             } else {
                 $featureDct[$newsId] = $curFeatureDct;
             }
+
+        }
+    }
+
+    protected function getActionFeature($newsObjDct, &$featureDct) {
+        $newsDisplayDct = News::batchGetActionFromCache(
+            $newsObjDct, CACHE_FEATURE_DISPLAY_PREFIX);
+        $newsClickDct = News::batchGetActionFromCache(
+            $newsObjDct, CACHE_FEATURE_CLICK_PREFIX);
+        $newsIdLst = array_keys($newsObjDct);
+        $newsCommentDct = Comment::getCount($newsIdLst);
+        foreach ($newsObjDct as $newsId => $newsObj) {
+            $curFeatureDct = array();
             $displayCnt = MIN_FEATURE_VALUE;
             if (array_key_exists($newsId, $newsDisplayDct)) {
                 $displayCnt = $newsDisplayDct[$newsId];
@@ -121,15 +111,22 @@ class LrNewsRanker extends BaseNewsRanker {
                     $commentCnt; 
             $curFeatureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = 
                     $commentCnt/$displayCnt;
+            if (array_key_exists($newsId, $featureDct)) {
+                foreach ($curFeatureDct as $key => $val) {
+                    $featureDct[$newsId][$key] = $val;
+                }
+            } else {
+                $featureDct[$newsId] = $curFeatureDct;
+            }
         }
     }
 
-    protected function getNewsFeatures($newsObjLst) {
+    protected function getNewsFeatures($newsObjDct) {
         $predictReq = new iface\PredictRequest();
         $featureDct = array(); 
         $filterNewsIdLst = array();
-        $this->getMetaFeatures($newsObjLst, $featureDct);
-        $this->getActionFeature($newsObjLst, $featureDct);
+        $this->getMetaFeatures($newsObjDct, $featureDct);
+        $this->getActionFeature($newsObjDct, $featureDct);
         foreach ($featureDct as $newsId => $curFeatureDct) {
             $formatedFeatureLst = array();
             $sampleObj = new iface\Sample();
@@ -186,19 +183,16 @@ class LrNewsRanker extends BaseNewsRanker {
         return $newsIdScoArr;
     }
 
-    public function dumpFeature() {
-    }
-
-    public function ranking($channelId, $deviceId, $newsObjLst, 
+    public function ranking($channelId, $deviceId, $newsObjDct, 
             $prefer, $sampleCnt, array $options=array()) {
-        if (count($newsObjLst) > MAX_RANKER_NEWS_CNT) {
-            $newsObjLst = array_slice($newsObjLst, 0, 
+        if (count($newsObjDct) > MAX_RANKER_NEWS_CNT) {
+            $newsObjDct = array_slice($newsObjDct, 0, 
                 MAX_RANKER_NEWS_CNT);
         }
         // user & news feature collection
         // TODO: Realtime features logging & aggregating
         list($filterNewsIdLst, $predictReq, $featureDct) = 
-                $this->getNewsFeatures($newsObjLst);
+                $this->getNewsFeatures($newsObjDct);
         if (!$predictReq->hasSamples()) {
             return array();
         }
@@ -207,17 +201,13 @@ class LrNewsRanker extends BaseNewsRanker {
         $newsScoArr = $this->getScores($filterNewsIdLst, $predictReq);
 
         // post-filter & sorting
-        $newsIdObjDct = array();
-        foreach ($newsObjLst as $newsObj) {
-            $newsIdObjDct[$newsObj->url_sign] = $newsObj;
-        }
         $sortedNewsObjLst = array();
         arsort($newsScoArr, SORT_NUMERIC);
         foreach ($newsScoArr as $newsId => $sco) {
             if (count($sortedNewsObjLst) > $sampleCnt) {
                 break;
             }    
-            $sortedNewsObjLst[] = $newsIdObjDct[$newsId];
+            $sortedNewsObjLst[$newsId] = $newsObjDct[$newsId];
         }
         return $sortedNewsObjLst;
     }

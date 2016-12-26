@@ -216,14 +216,14 @@ class News extends BaseModel {
         }
     }
 
-    public function batchSaveActionToCache($models, $prefixKey, $ttlKey, $cnt=1) {
+    public function batchSaveActionToCache($newsObjDct, $prefixKey, $ttlKey, $cnt=1) {
         $cache = DI::getDefault()->get('cache');
         $cache->multi();
-        foreach ($models as $model) {
-            if (!$model) {
+        foreach ($newsObjDct as $newsId => $newsObj) {
+            if (!$newsObj) {
                 continue;
             }
-            $key = $prefixKey . $model->url_sign;
+            $key = $prefixKey . $newsId;
             $cache->incrBy($key, $cnt);
             $cache->expire($key, $ttlKey);
         }
@@ -243,12 +243,12 @@ class News extends BaseModel {
         return 0;
     }
 
-    public static function batchGetActionFromCache($models, $prefixKey) {
+    public static function batchGetActionFromCache($newsObjDct, $prefixKey) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
             $keys = array();
-            foreach ($models as $model) {
-                $keys[] = $prefixKey . $model->url_sign;
+            foreach ($newsObjDct as $newsId => $newsObj) {
+                $keys[] = $prefixKey . $newsId;
             }
             $newsArr = $cache->mGet($keys);
             if (empty($newsArr)) {

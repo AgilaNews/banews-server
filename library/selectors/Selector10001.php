@@ -150,24 +150,24 @@ class Selector10001 extends BaseNewsSelector{
         $selected_news_list = $this->sampling($sample_count, 
             $prefer);
         $selected_news_list = $this->newsFilter($selected_news_list);
-        $models = News::BatchGet($selected_news_list);
-        $models = $this->removeInvisible($models);
-        $models = $this->removeDup($models);
+        $newsObjDct = News::BatchGet($selected_news_list);
+        $newsObjDct = $this->removeInvisible($newsObjDct);
+        $newsObjDct = $this->removeDup($newsObjDct);
 
         // add ranking according to user group
         $strategyTag = $this->getPolicyTag();
         if ($strategyTag == "10001_lrRanker") {
             $lrRanker = new LrNewsRanker($this->_di); 
-            $models = $lrRanker->ranking($this->_channel_id,
-                $this->_device_id, $models, $prefer, $sample_count);
+            $newsObjDct = $lrRanker->ranking($this->_channel_id,
+                $this->_device_id, $newsObjDct, $prefer, $sample_count);
         }
         
         $ret = array();
         $filter = array();
         for ($i = 0; $i < count($selected_news_list); $i++) {
-            if (array_key_exists($selected_news_list[$i], $models)) {
-                $ret []= $models[$selected_news_list[$i]];
-                $filter []= $models[$selected_news_list[$i]]->url_sign;
+            if (array_key_exists($selected_news_list[$i], $newsObjDct)) {
+                $ret []= $newsObjDct[$selected_news_list[$i]];
+                $filter []= $newsObjDct[$selected_news_list[$i]]->url_sign;
                 if (count($ret) >= $sample_count) {
                     break;
                 }
