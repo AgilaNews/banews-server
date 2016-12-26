@@ -196,20 +196,20 @@ class NewsController extends BaseController {
         }
 
         $newsFeatureDct = array();
-        if (in_array($channel_id, $featureChannelLst)) {
+        if (in_array($channel_id, $this->featureChannelLst)) {
             list($dispatch_models, $newsFeatureDct) = 
                 $selector->select($prefer);
         } else {
             $dispatch_models = $selector->select($prefer);
         }
-        $dispatch_ids = array();
 
+        $dispatch_ids = array();
         foreach ($dispatch_models as $dispatch_model) {
             if (isset($dispatch_model->url_sign)) {
                 $dispatch_ids []= $dispatch_model->url_sign;
             }
         }
-        News::batchSaveActionToCache($dispatch_models, 
+        News::batchSaveActionToCache($dispatch_ids, 
             CACHE_FEATURE_DISPLAY_PREFIX, 
             CACHE_FEATURE_DISPLAY_TTL);
         
@@ -247,7 +247,7 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
-        if (in_array($channel_id, $featureChannelLst)) {
+        if (in_array($channel_id, $this->featureChannelLst)) {
             foreach ($dispatch_ids as $newsId) {
                 if (array_key_exists($newsId, $newsFeatureDct)) {
                     $this->logFeature($dispatch_id, $newsFeatureDct[$newsId]);

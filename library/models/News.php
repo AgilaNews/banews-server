@@ -216,11 +216,11 @@ class News extends BaseModel {
         }
     }
 
-    public static function batchSaveActionToCache($newsObjDct, 
+    public static function batchSaveActionToCache($newsIdLst, 
             $prefixKey, $ttlKey, $cnt=1) {
         $cache = DI::getDefault()->get('cache');
         $cache->multi();
-        foreach ($newsObjDct as $newsId => $newsObj) {
+        foreach ($newsIdLst as $newsId) {
             if (!$newsObj) {
                 continue;
             }
