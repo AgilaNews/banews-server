@@ -66,6 +66,12 @@ define('CACHE_VIDEOS_PREFIX', "BS_VIDEOS_");
 define('CACHE_VIDEOS_TTL', 14400);
 define('CACHE_AD_ID_KEY', "BS_AD_%s_%s"); // BS_AD_FB_deviceid
 define('CACHE_AD_ID_TTL', 172800);
+define('CACHE_TOPIC_NEWS_PREFIX', 'BS_TOPIC_NEWS_');
+define('CACHE_TOPIC_NEWS_TTL', 14400);
+define('CACHE_TOPIC_REPFIX', 'BS_TOPIC_');
+define('CACHE_TOPIC_TTL', 14400);
+define('CACHE_CHANNEL_VIDEO_PREFIX', "YoutubeChannelVideos_");
+define('CACHE_CHANNEL_VIDEO_TTL', 14400);
 
 //used for redis device map
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
@@ -131,9 +137,13 @@ define('NEWS_LIST_TPL_THREE_IMG', 3);
 define('NEWS_LIST_TPL_TEXT_IMG', 4);
 define('NEWS_LIST_TPL_RAW_TEXT', 5);
 define('NEWS_LIST_TPL_RAW_IMG', 6);
-define('NEWS_LIST_TPL_VIDEO', 7);
-define('NEWS_LIST_TPL_BIG_YOUTUBE', 10);
+define('NEWS_LIST_TPL_GIF', 7);
+define('NEWS_LIST_TPL_VIDEO_BIG', 10);
 define('NEWS_LIST_TPL_SMALL_YOUTUBE', 11);
+define('NEWS_LIST_TPL_VIDEO', 12);
+define('NEWS_LIST_TPL_VIDEO_SMALL', 13);
+define('NEWS_LIST_TOPIC', 14);
+define('NEWS_LIST_INTERESTS', 15);
 
 define('NEWS_LIST_TPL_NBA', 1000);
 define('NEWS_LIST_TPL_BANNER', 1001);
@@ -150,3 +160,4 @@ define('CACHE_NO_RECOMMEND_NEWS', 'BS_NO_RECOMMEND');
 
 define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');
 define('OPPO_DEVICE_KEY_TTL', 86400);
+define('VIDEO_CHANNEL_ID', 30001);

@@ -38,15 +38,16 @@ class RenderLib {
         $quality = RenderLib::GetImageQuality($net);
 
         $cell = array(
-            "src" => sprintf(BASE_CHANNEL_IMG_PATTERN, urlencode($url_sign), "225", "180", $quality), 
             "width" => $meta["width"], 
             "height" => $meta["height"], 
             );
         
         if ($large) {
             $cell["pattern"] = sprintf(LARGE_CHANNEL_IMG_PATTERN, $url_sign, "{w}", "{h}", $quality);
+            $cell["src"] = sprintf(LARGE_CHANNEL_IMG_PATTERN, urlencode($url_sign), "660", "410", $quality);
         } else {
             $cell["pattern"] = sprintf(BASE_CHANNEL_IMG_PATTERN, $url_sign, "{w}", "{h}", $quality);
+            $cell["src"] = sprintf(BASE_CHANNEL_IMG_PATTERN, urlencode($url_sign), "225", "180", $quality);
         }
 
         return $cell;

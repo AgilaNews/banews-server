@@ -26,6 +26,9 @@ class Render30001 extends BaseListRender {
         $comment_counts = Comment::getCount($keys);
 
         foreach ($models as $sign => $news_model) {
+            if (!$news_model) {
+                continue;
+            }
             $cell = $this->serializeNewsCell($news_model);
             if ($cell == null) {
                 continue;
@@ -50,7 +53,7 @@ class Render30001 extends BaseListRender {
             if (!$meta || 
                 !is_numeric($meta["width"]) || 
                 !is_numeric($meta["height"])) {
-                continue;
+                return null;
             }
 
             $ret["imgs"][] = RenderLib::LargeImageRender($this->_net, $video->cover_image_sign,

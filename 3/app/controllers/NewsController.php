@@ -7,7 +7,6 @@
  * @version $Id$
  */
 
-define ("VIDEO_CHANNEL_ID", 30001);
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
@@ -44,7 +43,7 @@ class NewsController extends BaseController {
     }
 
     private function getTPL($channel_id) {
-        if ($channel_id == 30001) {
+        if ($channel_id == VIDEO_CHANNEL_ID) {
             return 12;
         } else {
             return 5;
@@ -76,7 +75,7 @@ class NewsController extends BaseController {
 
     private function getImgs($newsSign, $channel_id) {
         $imgs = array();
-        if ($channel_id != 30001) {
+        if ($channel_id != VIDEO_CHANNEL_ID) {
             $imgs = NewsImage::getImagesOfNews($newsSign);
             $imgcell = array();
 
@@ -137,7 +136,7 @@ class NewsController extends BaseController {
 
     private function getVideos($newsSign, $channel_id) {
         $videocell = array();
-        if ($channel_id != 30001) {
+        if ($channel_id != VIDEO_CHANNEL_ID) {
             $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
             foreach($videos as $video) {
                 if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
@@ -300,7 +299,14 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
-        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+        $channel_id = $news_model->channel_id;
+        $cname = "RecommendSelector$channel_id";
+        if (class_exists($cname)) {
+            $recommend_selector = new $cname($news_model->channel_id, $this);
+        } else {
+            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+        }
+
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "RecommendRender" . $news_model->channel_id;
         if (class_exists($cname)) {

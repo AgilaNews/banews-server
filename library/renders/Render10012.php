@@ -64,7 +64,7 @@ class Render10012 extends BaseListRender {
             ))
         );
 
-        $ret["tpl"] = NEWS_LIST_TPL_VIDEO;
+        $ret["tpl"] = NEWS_LIST_TPL_GIF;
 
         return $ret;
     }
