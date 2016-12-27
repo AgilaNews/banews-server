@@ -228,14 +228,14 @@ class Selector10001 extends BaseNewsSelector{
                 return ;
             }
             $videoObjLst = array_values($videoIdObjDct);
-            array_splice($ret, 3, 0, $videObjLst);
+            array_splice($ret, 3, 0, $videoObjLst);
             $device_id = $this->_device_id;
             $bf_service = $this->_di->get("bloomfilter");
             $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
                              array_map(
                                        function($key) use ($device_id){
                                            return $device_id . "_" . $key;
-                                       }, $videos));
+                                       }, $videoIdLst));
         }
     }
 }
