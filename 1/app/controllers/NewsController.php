@@ -11,6 +11,9 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
+
+    private $featureChannelLst = array(10001);
+
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
@@ -145,6 +148,9 @@ class NewsController extends BaseController {
                                      $news_model->channel_id, count($ret["recommend_news"])));
         
         $this->setJsonResponse($ret);
+        News::saveActionToCache($newsSign, 
+            CACHE_FEATURE_CLICK_PREFIX,
+            CACHE_FEATURE_CLICK_TTL);
         return $this->response;
     }
 
@@ -177,6 +183,9 @@ class NewsController extends BaseController {
         foreach ($models as $sign => $model) {
             $dispatch_ids []= $sign;
         }
+        News::batchSaveActionToCache($dispatch_ids, 
+            CACHE_FEATURE_DISPLAY_PREFIX, 
+            CACHE_FEATURE_DISPLAY_TTL);
 
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
@@ -199,6 +208,16 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
+        if (in_array($channel_id, $this->featureChannelLst)) {
+            foreach ($dispatch_ids as $newsId) {
+                if (array_key_exists($newsId, $newsFeatureDct)) {
+                    $param = array();
+                    $param['news_id'] = $newsId;
+                    $param['features'] = json_encode($newsFeatureDct[$newsId]);
+                    $this->logFeature($dispatch_id, $param);
+                }
+            }
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }

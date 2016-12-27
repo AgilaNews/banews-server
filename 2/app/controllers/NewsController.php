@@ -169,6 +169,9 @@ class NewsController extends BaseController {
                                      $news_model->channel_id, count($ret["recommend_news"])));
         
         $this->setJsonResponse($ret);
+        News::saveActionToCache($newsSign, 
+            CACHE_FEATURE_CLICK_PREFIX,
+            CACHE_FEATURE_CLICK_TTL);
         return $this->response;
     }
 
@@ -250,7 +253,10 @@ class NewsController extends BaseController {
         if (in_array($channel_id, $this->featureChannelLst)) {
             foreach ($dispatch_ids as $newsId) {
                 if (array_key_exists($newsId, $newsFeatureDct)) {
-                    $this->logFeature($dispatch_id, $newsFeatureDct[$newsId]);
+                    $param = array();
+                    $param['news_id'] = $newsId;
+                    $param['features'] = json_encode($newsFeatureDct[$newsId]);
+                    $this->logFeature($dispatch_id, $param);
                 }
             }
         }

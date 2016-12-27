@@ -205,10 +205,11 @@ class News extends BaseModel {
 
     } 
 
-    public function saveActionToCache($model, $prefixKey, $ttlKey, $cnt=1) {
+    public static function saveActionToCache($newsId, 
+            $prefixKey, $ttlKey, $cnt=1) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
-            $key = $prefixKey . $model->url_sign; 
+            $key = $prefixKey . $newsId; 
             $cache->multi();
             $cache->incrBy($key, $cnt);
             $cache->expire($key, $ttlKey);
@@ -219,9 +220,12 @@ class News extends BaseModel {
     public static function batchSaveActionToCache($newsIdLst, 
             $prefixKey, $ttlKey, $cnt=1) {
         $cache = DI::getDefault()->get('cache');
+        if (empty($newsIdLst)) {
+            return ;
+        }
         $cache->multi();
         foreach ($newsIdLst as $newsId) {
-            if (!$newsObj) {
+            if (!$newsId) {
                 continue;
             }
             $key = $prefixKey . $newsId;

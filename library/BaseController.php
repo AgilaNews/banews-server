@@ -170,15 +170,12 @@ class BaseController extends Controller{
         $this->setResponseHeaders();
     }
 
-    protected function logFeature($dispatchId, $newsFeatureDct) {
+    protected function logFeature($dispatchId, $param) {
         if (!$this->featureLogger) {
             return;
         }
 
-        $param = array();
-
         $param['dispatchId'] = $dispatchId; 
-        $param['features'] = json_encode($newsFeatureDct);
         $param["session"] = $this->session;
         $param["ua"] = $this->ua;
         if ($this->userSign) {
