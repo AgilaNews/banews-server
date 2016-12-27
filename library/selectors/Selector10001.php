@@ -214,15 +214,21 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     protected function InsertVideo($prefer, &$ret) {
+        $popularPolicy = new PopularListPolicy($this->_di); 
         $options = array();
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
         if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, 
                 $this->_client_version, $this->_os)) {
-            $videos = $popularPolicy->sampling("30001", $this->_device_id,
+            $videoIdLst = $popularPolicy->sampling("30001", $this->_device_id,
                         $this->_user_id, 1, 3, $prefer, $options);
-            array_splice($ret, 3, 0, $videos);
+            $videoIdObjDct = News::BatchGet($videoIdLst);
+            if (empty($videoIdObjDct)) {
+                return ;
+            }
+            $videoObjLst = array_values($videoIdObjDct);
+            array_splice($ret, 3, 0, $videObjLst);
             $device_id = $this->_device_id;
             $bf_service = $this->_di->get("bloomfilter");
             $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
