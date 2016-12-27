@@ -140,13 +140,18 @@ class Selector10001 extends BaseNewsSelector{
         $newsObjDct = $this->removeDup($newsObjDct);
 
         // add ranking according to user group
-        $lrRanker = new LrNewsRanker($this->_di); 
-        list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
-            $this->_channel_id, $this->_device_id, $newsObjDct, 
-            $prefer, $sample_count);
-        $strategyTag = $this->getPolicyTag();
-        if ($strategyTag == "10001_lrRanker") {
-            $newsObjDct = $sortedNewsObjDct;
+        $newsFeatureDct = array();
+        $cache = $this->_di->get('cache');
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            $lrRanker = new LrNewsRanker($this->_di); 
+            list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
+                $this->_channel_id, $this->_device_id, $newsObjDct, 
+                $prefer, $sample_count);
+            $strategyTag = $this->getPolicyTag();
+            if ($strategyTag == "10001_lrRanker") {
+                $newsObjDct = $sortedNewsObjDct;
+            }
         }
         
         $ret = array();

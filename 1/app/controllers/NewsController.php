@@ -148,9 +148,12 @@ class NewsController extends BaseController {
                                      $news_model->channel_id, count($ret["recommend_news"])));
         
         $this->setJsonResponse($ret);
-        News::saveActionToCache($newsSign, 
-            CACHE_FEATURE_CLICK_PREFIX,
-            CACHE_FEATURE_CLICK_TTL);
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::batchSaveActionToCache($dispatch_ids, 
+                CACHE_FEATURE_DISPLAY_PREFIX, 
+                CACHE_FEATURE_DISPLAY_TTL);
+        }
         return $this->response;
     }
 
@@ -191,9 +194,12 @@ class NewsController extends BaseController {
             }
         }
         
-        News::batchSaveActionToCache($dispatch_ids, 
-            CACHE_FEATURE_DISPLAY_PREFIX, 
-            CACHE_FEATURE_DISPLAY_TTL);
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::batchSaveActionToCache($dispatch_ids, 
+                CACHE_FEATURE_DISPLAY_PREFIX, 
+                CACHE_FEATURE_DISPLAY_TTL);
+        }
 
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
@@ -216,7 +222,8 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
-        if (in_array($channel_id, $this->featureChannelLst)) {
+
+        if (in_array($channel_id, $this->featureChannelLst) and $isLrRanker) {
             foreach ($dispatch_ids as $newsId) {
                 if (array_key_exists($newsId, $newsFeatureDct)) {
                     $param = array();
