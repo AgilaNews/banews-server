@@ -125,6 +125,11 @@ class BaseNewsSelector {
     }
 
     protected function interveneAt(&$ret, $intervene, $pos) {
+        if ($intervene instanceof BaseIntervene) {
+            if ($intervene->isEmpty()) {
+                return ;
+            }
+        }
         array_splice($ret, $pos, 0, array($intervene));
     }
 
