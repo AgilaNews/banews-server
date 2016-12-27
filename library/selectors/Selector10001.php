@@ -127,21 +127,6 @@ class Selector10001 extends BaseNewsSelector{
             $recNewsLst = $this->emergence($sample_count, 
                 $recNewsLst, $options, $prefer);
         }
-
-        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, 
-                $this->_client_version, $this->_os)) {
-            $videos = $popularPolicy->sampling("30001", $this->_device_id,
-                        $this->_user_id, 1, 3, $prefer, $options);
-            array_splice($recNewsLst, 3, 0, $videos);
-
-            $device_id = $this->_device_id;
-            $bf_service = $this->_di->get("bloomfilter");
-            $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
-                             array_map(
-                                       function($key) use ($device_id){
-                                           return $device_id . "_" . $key;
-                                       }, $videos));
-        }
         return $recNewsLst;
     }
 
@@ -184,6 +169,7 @@ class Selector10001 extends BaseNewsSelector{
                 $this->InsertBanner($ret);
         }
         //*/
+        $this->InsertVideo($prefer, $ret);
         $this->insertTopic($ret);
         $this->InsertInterests($ret);
         $this->insertAd($ret);
@@ -225,5 +211,25 @@ class Selector10001 extends BaseNewsSelector{
                 "net" => $this->_net,
             )
         ), 0);
+    }
+
+    protected function InsertVideo($prefer, &$ret) {
+        $options = array();
+        if ($prefer == "later") {
+            $options["long_tail_weight"] = 0;
+        }
+        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, 
+                $this->_client_version, $this->_os)) {
+            $videos = $popularPolicy->sampling("30001", $this->_device_id,
+                        $this->_user_id, 1, 3, $prefer, $options);
+            array_splice($ret, 3, 0, $videos);
+            $device_id = $this->_device_id;
+            $bf_service = $this->_di->get("bloomfilter");
+            $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
+                             array_map(
+                                       function($key) use ($device_id){
+                                           return $device_id . "_" . $key;
+                                       }, $videos));
+        }
     }
 }
