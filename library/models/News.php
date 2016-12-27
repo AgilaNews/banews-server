@@ -252,8 +252,10 @@ class News extends BaseModel {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
             $keys = array();
+            $originalKeys = array();
             foreach ($newsObjDct as $newsId => $newsObj) {
                 $keys[] = $prefixKey . $newsId;
+                $originalKeys[] = $newsId;
             }
             $newsArr = $cache->mGet($keys);
             if (empty($newsArr)) {
@@ -262,9 +264,9 @@ class News extends BaseModel {
                 $ret = array();
                 foreach ($newsArr as $idx => $value) {
                     if (empty($value)) {
-                        $ret[$keys[$idx]] = 0; 
+                        $ret[$originalKeys[$idx]] = 0; 
                     } else {
-                        $ret[$keys[$idx]] = $value;
+                        $ret[$originalKeys[$idx]] = $value;
                     }
                 }
                 return $ret;
