@@ -173,10 +173,10 @@ class Selector10001 extends BaseNewsSelector{
                 $this->InsertBanner($ret);
         }
         //*/
-        $this->InsertVideo($prefer, $ret);
         $this->insertTopic($ret);
         $this->InsertInterests($ret);
         $this->insertAd($ret);
+        $this->InsertVideo($prefer, $ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
         return array($ret, $newsFeatureDct);
     }
@@ -201,7 +201,7 @@ class Selector10001 extends BaseNewsSelector{
                 "os" => $this->_os,
                 "client_version" => $this->_client_version,
                 )),
-            3);
+            0);
     }
 
     protected function InsertBanner(&$ret) {
