@@ -43,7 +43,7 @@ class LrNewsRanker extends BaseNewsRanker {
     protected function calcSpan($timestamp) {
         $now = time();
         if ($timestamp < $now) {
-            return floatval($now - $timestamp) / HOUR; 
+            return round(floatval($now - $timestamp) / HOUR, 2); 
         }
         return MIN_FEATURE_VALUE;
     }

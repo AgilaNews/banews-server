@@ -12,7 +12,6 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define('POPULAR_NEWS_CNT', 2);
-define('ALG_LR_SWITCH_KEY', 'ALG_LR_SWITCH_KEY');
 
 class Selector10001 extends BaseNewsSelector{
 
