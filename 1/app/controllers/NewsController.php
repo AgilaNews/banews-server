@@ -170,7 +170,6 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-
         $cname = "Selector$channel_id";
         if (class_exists($cname)) {
             $selector = new $cname($channel_id, $this); 
@@ -179,10 +178,20 @@ class NewsController extends BaseController {
         }
 
         $models = $selector->select($prefer);
-        
-        foreach ($models as $sign => $model) {
-            $dispatch_ids []= $sign;
+        $newsFeatureDct = array();
+        if (in_array($channel_id, $this->featureChannelLst)) {
+            list($dispatch_models, $newsFeatureDct) = 
+                $selector->select($prefer);
+        } else {
+            $dispatch_models = $selector->select($prefer);
         }
+        $dispatch_ids = array();
+        foreach ($dispatch_models as $dispatch_model) {
+            if (isset($dispatch_model->url_sign)) {
+                $dispatch_ids []= $dispatch_model->url_sign;
+            }
+        }
+        
         News::batchSaveActionToCache($dispatch_ids, 
             CACHE_FEATURE_DISPLAY_PREFIX, 
             CACHE_FEATURE_DISPLAY_TTL);
