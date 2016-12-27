@@ -13,6 +13,13 @@ define("TOPIC_INTERVENE_KEY", "TOPIC_INTERVENE_");
 define("TOPIC_INTERVENE_TTL", 86400);
 
 class TopicIntervene extends BaseIntervene {
+    public function __construct($context = array()) {
+        parent::__construct($context);
+        if (!$this->select()) {
+            $this->empty = true;
+        }
+    }
+
     public function select() {
         $topics = Topic::getValidTopic();
         $cache = DI::getDefault()->get('cache');

@@ -13,6 +13,15 @@ define("INTERESTS_INTERVENE_KEY", "INTERESTS_INTERVENE_");
 define("INTERESTS_INTERVENE_TTL", 86400);
 
 class InterestsIntervene extends BaseIntervene {
+    public function __construct($context = array()) {
+        parent::__construct($context);
+        if ($this->isDeviceUsed($context["device_id"])) {
+            $this->empty = true;
+        } else if ($this->tryBloomfilter($context["device_id"])) {
+            $this->empty = true;
+        }
+    }
+
     public function render() {
         if (!Features::Enabled(Features::INTERESTS_FEATURE, 
             $this->context["client_version"], 
