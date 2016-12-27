@@ -73,6 +73,13 @@ define('CACHE_TOPIC_TTL', 14400);
 define('CACHE_CHANNEL_VIDEO_PREFIX', "YoutubeChannelVideos_");
 define('CACHE_CHANNEL_VIDEO_TTL', 14400);
 
+// cache for feature dumping
+define ('CACHE_FEATURE_CLICK_PREFIX', 'BS_FEATURE_CLICK_');
+define ('CACHE_FEATURE_CLICK_TTL', 172800);
+define ('CACHE_FEATURE_DISPLAY_PREFIX', 'BS_FEATURE_DISPLAY_');
+define ('CACHE_FEATURE_DISPLAY_TTL', 172800);
+define('ALG_LR_SWITCH_KEY', 'ALG_LR_SWITCH_KEY');
+
 //used for redis device map
 define('DEVICEMAP_TOKEN_KEY', "PUSH_TOKEN_");
 define('DEVICEMAP_DEVICE_KEY', "PUSH_DEVICE_ID_");

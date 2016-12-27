@@ -18,6 +18,14 @@ define("BANNER_INTERVENE_KEY", "BANNER_INTERVENE_%s_%s_%s");
 define("BANNER_INTERVENE_TTL", 86400);
 
 class BannerIntervene extends BaseIntervene {
+    public function __construct($context = array()) {
+        parent::__construct($context);
+        if ($this->isDeviceUsed($context["news_id"], 
+            $context["device_id"], $context["operating_id"])) {
+            $this->empty = true;
+        }
+    }
+
     public function render(){
         $news_id = $this->context["news_id"];
         $device_id = $this->context["device_id"];

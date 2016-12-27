@@ -6,7 +6,6 @@ class Render10001 extends BaseListRender {
         parent::__construct($controller);
     }
 
-
     public function render($models) {
         $di = DI::getDefault();
         $comment_service = $di->get('comment');

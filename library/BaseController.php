@@ -24,6 +24,7 @@ class BaseController extends Controller{
     public function initialize(){
         $this->logger = $this->di->get('logger');
         $this->eventlogger = $this->di->get('eventlogger');
+        $this->featureLogger = $this->di->get('featureLogger');
 
         $this->logger->begin();
         $this->response = new Response();
@@ -172,6 +173,26 @@ class BaseController extends Controller{
         $this->setResponseHeaders();
     }
 
+    protected function logFeature($dispatchId, $param) {
+        if (!$this->featureLogger) {
+            return;
+        }
+
+        $param['dispatchId'] = $dispatchId; 
+        $param["session"] = $this->session;
+        $param["ua"] = $this->ua;
+        if ($this->userSign) {
+            $param["uid"] = $this->userSign;
+        }
+        $param["did"] = $this->deviceId;
+        $param["net"] = $this->net;
+        $param["lng"] = $this->lng;
+        $param["lat"] = $this->lat;
+        $param["time"] = round(microtime(true) * 1000);
+        $param["abflag"] = $this->abflags; 
+        $this->featureLogger->info(json_encode($param)); 
+    }
+
     protected function logEvent($event_id, $param) {
         if (!$this->eventlogger) {
             return;
@@ -197,8 +218,9 @@ class BaseController extends Controller{
         $param["os"] = $this->os;
         $param["os-version"] = $this->os_version;
         $param["build"] = $this->build;
-        $param["abflag"] = $this->abflags; $this->eventlogger->info(json_encode($param)); }
-
+        $param["abflag"] = $this->abflags; 
+        $this->eventlogger->info(json_encode($param)); 
+    }
 
     private function initAbFlag() {
         $ctx = RequestContext::GetCtxFromController($this);

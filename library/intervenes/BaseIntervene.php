@@ -11,7 +11,12 @@
 abstract class BaseIntervene {
     public function __construct($context = array()){
         $this->context = $context;
+        $this->empty = false;
     }
 
     abstract function render();
+
+    function isEmpty() {
+        return $this->empty;
+    }
 }

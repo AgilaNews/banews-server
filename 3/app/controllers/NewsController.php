@@ -11,6 +11,8 @@ use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
 
+    private $featureChannelLst = array(10001);
+
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
@@ -38,6 +40,12 @@ class NewsController extends BaseController {
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign
                                             ));
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::saveActionToCache($newsSign, 
+                CACHE_FEATURE_CLICK_PREFIX,
+                CACHE_FEATURE_CLICK_TTL);
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -192,12 +200,26 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $dispatch_models = $selector->select($prefer);
-        
+        $newsFeatureDct = array();
+        if (in_array($channel_id, $this->featureChannelLst)) {
+            list($dispatch_models, $newsFeatureDct) = 
+                $selector->select($prefer);
+        } else {
+            $dispatch_models = $selector->select($prefer);
+        }
+
+        $dispatch_ids = array();
         foreach ($dispatch_models as $dispatch_model) {
             if (isset($dispatch_model->url_sign)) {
                 $dispatch_ids []= $dispatch_model->url_sign;
             }
+        }
+        $cache = $this->di->get("cache");
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::batchSaveActionToCache($dispatch_ids, 
+                CACHE_FEATURE_DISPLAY_PREFIX, 
+                CACHE_FEATURE_DISPLAY_TTL);
         }
 
         $cname = "Render$channel_id";
@@ -232,6 +254,16 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
+        if (in_array($channel_id, $this->featureChannelLst) and $isLrRanker) {
+            foreach ($dispatch_ids as $newsId) {
+                if (array_key_exists($newsId, $newsFeatureDct)) {
+                    $param = array();
+                    $param['news_id'] = $newsId;
+                    $param['features'] = json_encode($newsFeatureDct[$newsId]);
+                    $this->logFeature($dispatch_id, $param);
+                }
+            }
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }
