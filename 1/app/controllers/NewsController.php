@@ -177,7 +177,6 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $models = $selector->select($prefer);
         $newsFeatureDct = array();
         if (in_array($channel_id, $this->featureChannelLst)) {
             list($dispatch_models, $newsFeatureDct) = 
@@ -204,7 +203,7 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret[$dispatch_id] = $render->render($models);
+        $ret[$dispatch_id] = $render->render($dispatch_models);
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
