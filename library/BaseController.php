@@ -180,7 +180,6 @@ class BaseController extends Controller{
 
         $param['dispatchId'] = $dispatchId; 
         $param["session"] = $this->session;
-        $param["ua"] = $this->ua;
         if ($this->userSign) {
             $param["uid"] = $this->userSign;
         }
