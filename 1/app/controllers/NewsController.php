@@ -194,6 +194,7 @@ class NewsController extends BaseController {
             }
         }
         
+        $cache = $this->di->get("cache");
         $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
         if ($isLrRanker) {
             News::batchSaveActionToCache($dispatch_ids, 
