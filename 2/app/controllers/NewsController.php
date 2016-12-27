@@ -156,6 +156,10 @@ class NewsController extends BaseController {
         }
         // ----------------- end -------TODO remove later---------------------------------------
 
+        if (!array_key_exists("ad", $ret)) {
+            $ret["add"] = array();
+        }
+
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
                                                "recommend"=> array(

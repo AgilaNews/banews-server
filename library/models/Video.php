@@ -210,10 +210,8 @@ class Video extends BaseModel {
                     $ret[$signs[$idx]]= null;
                 }
             }
-
             return $ret;
         }
-
         return array();
     }
 
@@ -263,6 +261,56 @@ class Video extends BaseModel {
             Video::_saveToCache($this);
         }
         return $ret;
+    }
 
-    } 
+    public static function getVideosByAuthor($youtube_channel_id, $pn) {
+        $ret = self::_getVideosByAuthorFromCache($youtube_channel_id, $pn);
+        if (!$ret) {
+            $ret = self::_getVideosByAuthorFromDB($youtube_channel_id, $pn);
+            self::_saveVideosByAuthorToCache($youtube_channel_id, $ret);
+        }
+        shuffle($ret);
+        return array_slice($ret, 0, $pn);
+    }
+
+    protected static function _getVideosByAuthorFromCache($youtube_channel_id, $pn) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = CACHE_CHANNEL_VIDEO_PREFIX . $youtube_channel_id;
+            $ret = $cache->lrange($key, 0, -1);
+            return $ret;
+        }
+        return null;
+    }
+
+    protected static function _getVideosByAuthorFromDB($youtube_channel_id, $pn) {
+        $crit = array(
+            "conditions" => "youtube_channel_id = ?1 and is_valid = 1 and status=1",
+
+            "bind" => array(
+                1 => $youtube_channel_id
+                ),
+            );
+        $video_models = Video::find($crit);
+
+        $ret = array();
+        foreach ($video_models as $video_model) {
+            $ret[] = $video_model->news_url_sign;
+        }
+        return $ret;
+    }
+
+    protected static function _saveVideosByAuthorToCache($youtube_channel_id, $videos) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = CACHE_CHANNEL_VIDEO_PREFIX . $youtube_channel_id;
+            $cache->multi();
+            $cache->delete($key);
+            foreach($videos as $video) {
+                $cache->lpush($key, $video);
+            }
+            $cache->expire($key, CACHE_CHANNEL_VIDEO_TTL);
+            $cache->exec();
+        }
+    }
 }

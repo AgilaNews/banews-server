@@ -27,6 +27,9 @@ class Render10001 extends BaseListRender {
         $comment_counts = Comment::getCount($keys);
         
         foreach ($models as $news_model) {
+            if (!$news_model) {
+                continue;
+            }
             $cell = null;
             if ($news_model instanceof TempTopIntervene) {
                 $m = $news_model->render();
@@ -79,7 +82,7 @@ class Render10001 extends BaseListRender {
         $video = Video::getByNewsSign($news_model->url_sign);
         if ($video) {
             $ret = RenderLib::GetPublicData($news_model);
-            $ret["tpl"] = 10;
+            $ret["tpl"] = NEWS_LIST_TPL_VIDEO_BIG;
             $ret["views"] = $video->view;
             $meta = json_decode($video->cover_meta, true);
             if (!$meta || 

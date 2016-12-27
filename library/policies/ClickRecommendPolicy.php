@@ -50,7 +50,7 @@ class ClickRecommendPolicy extends BaseListPolicy {
         }
 
         $searchParams = array(
-            'index' => 'banews-article',
+            'index' => 'banews',
             'type' => 'article',
             'body' => array(
                 'query' => array(
@@ -84,7 +84,7 @@ class ClickRecommendPolicy extends BaseListPolicy {
                         }
                         $curArr = array("id" => $curNews["_id"], 
                             "score" => $curNews["_score"], 
-                            "fetch_timestamp" => $curNews["_source"]["fetch_timestamp"]);
+                            "fetch_timestamp" => $curNews["_source"]["fetch_timestamp"]/1000);
                         $resLst[] = $curArr;
                         if (count($resLst) > $pn)
                             break;

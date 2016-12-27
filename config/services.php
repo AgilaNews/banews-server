@@ -14,9 +14,11 @@ use Elasticsearch\ClientBuilder;
 $di = new FactoryDefault();
 
 require(ROOT_PATH . "/library/pb/comment.php");
+require(ROOT_PATH . "/library/pb/requests.php");
 require(ROOT_PATH . "/library/pb/abtest.php");
 require(ROOT_PATH . "/library/pb/classify.php");
 require(ROOT_PATH . "/library/pb/bloomfilter.php");
+require(ROOT_PATH . "/library/pb/sphinx.php");
 
 $di->set('dispatcher', function () {
     $em = new EventsManager();
@@ -99,6 +101,25 @@ $di->set('comment', function() use ($config) {
     }
     
     return $client;
+    }, true);
+
+$di->set('sphinx', function() use ($config) {
+        $client = new iface\SphinxServiceClient(sprintf("%s:%s", $config->sphinx->host, $config->sphinx->port), 
+                                                [
+                                                'credentials' => Grpc\ChannelCredentials::createInsecure(),
+                                                'timeout' => $config->sphinx->conn_timeout,
+                                                ]);
+        try {
+            $client->waitForReady($config->sphinx->conn_timeout);
+        } catch (\Exception $e){
+            return false;
+        }
+
+        if ($client) {
+            return new SphinxService($client);
+        } else {
+            return false;
+        }
     }, true);
 
 $di->set('abtest', function() use ($config) {

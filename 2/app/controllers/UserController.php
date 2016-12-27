@@ -166,8 +166,14 @@ class UserController extends BaseController {
                 "id" => $resp->getCommentId(),
                 "time" => time(),
                 );
-            if (in_array($newsSign, self::AnimationNews)) {
-                $ret["Animation"] = 1;
+            //merry christmas comment
+            $cache = $this->di->get("cache");
+            $keywords = $cache->lrange("MERRY_CHRISTMAS_ANIMOTION_WORDS", 0, -1);
+            foreach ($keywords as $keyword) {
+                if (strpos(strtolower($detail), $keyword) !== false) {
+                    $ret["Animation"] = 1;
+                    break;
+                }
             }
             $this->setJsonResponse($ret);
         } else {
