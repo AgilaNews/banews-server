@@ -150,9 +150,9 @@ class NewsController extends BaseController {
         $this->setJsonResponse($ret);
         $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
         if ($isLrRanker) {
-            News::batchSaveActionToCache($newsSign, 
-                CACHE_FEATURE_DISPLAY_PREFIX, 
-                CACHE_FEATURE_DISPLAY_TTL);
+            News::saveActionToCache($newsSign, 
+                CACHE_FEATURE_CLICK_PREFIX,
+                CACHE_FEATURE_CLICK_TTL);
         }
         return $this->response;
     }
