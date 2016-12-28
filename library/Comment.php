@@ -146,7 +146,7 @@ class Comment{
 
              if ($ref_user) {
                  $cell["reply"]["user_name"] = $ref_user->name;
-                 $cell["reply"]["user_portrait_url"] = $this->getPortraitUrl($ref_user);
+                 $cell["reply"]["user_portrait_url"] = self::getPortraitUrl($ref_user);
              }
              $sign = $ref_comment->getDocId();
              $cell["news_id"] = $sign;
@@ -175,7 +175,7 @@ class Comment{
         $user_model = User::getBySign($comment->getUserId());
         if ($user_model) {
             $cell["user_name"] = $user_model->name;
-            $cell["user_portrait_url"] = $this->getPortraitUrl($user_model);
+            $cell["user_portrait_url"] = self::getPortraitUrl($user_model);
         }
         
         $ref_comment = $comment->getRefComment();
@@ -198,14 +198,14 @@ class Comment{
             
             if ($ref_user) {
                 $cell["reply"]["user_name"] = $ref_user->name;
-                $cell["reply"]["user_portrait_url"] = $this->getPortraitUrl($ref_user);
+                $cell["reply"]["user_portrait_url"] = self::getPortraitUrl($ref_user);
             }
         }
         
         return $cell;
     }
 
-    private function getPortraitUrl($model) {
+    private static function getPortraitUrl($model) {
         $ret = $model->portrait_url;
         if (!$ret) {
             $ret = $model->portrait_srcurl;
