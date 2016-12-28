@@ -175,7 +175,7 @@ class Comment{
         $user_model = User::getBySign($comment->getUserId());
         if ($user_model) {
             $cell["user_name"] = $user_model->name;
-            $cell["user_portrait_url"] = $user_model->portrait_url;
+            $cell["user_portrait_url"] = $user_model->portrait_url || $user_model->portrait_srcurl;
         }
         
         $ref_comment = $comment->getRefComment();
@@ -198,7 +198,7 @@ class Comment{
             
             if ($ref_user) {
                 $cell["reply"]["user_name"] = $ref_user->name;
-                $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
+                $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url || $ref_user->portrait_srcurl;
             }
         }
         
