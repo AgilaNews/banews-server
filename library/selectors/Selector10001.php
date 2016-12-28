@@ -166,7 +166,7 @@ class Selector10001 extends BaseNewsSelector{
             $ret[] = $newsObj;
         }
         
-        //*
+        /*
         if ($prefer == 'later') {
             $cache = $this->_di->get('cache');
             if ($cache->exists("BS_BANNER_SWITCH"))
