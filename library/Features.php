@@ -27,6 +27,10 @@ class Features {
 
     const BANNER_FEATURE = 9;
 
+    const INTERESTS_FEATURE = 10;
+
+    const TOPIC_FEATURE = 11;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
@@ -64,6 +68,14 @@ class Features {
                                          self::BANNER_FEATURE => array(
                                                                         "ios" => "1.2.3",
                                                                         "android" => "1.2.6"
+                                                                        ),
+                                         self::INTERESTS_FEATURE => array(
+                                                                        "ios" => "1.2.6",
+                                                                        "android" => "1.2.7"
+                                                                        ),
+                                         self::TOPIC_FEATURE => array(
+                                                                        "ios" => "1.2.6",
+                                                                        "android" => "1.2.7"
                                                                         ),
                                          );
                                    

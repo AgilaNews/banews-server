@@ -79,11 +79,15 @@ $settings = array (
                                           'level' => Logger::INFO,
                                           'format' => "[%date%][%type%]: %message%",
                                         ),
-                       "event" => array(
+                       "event" => array (
                                         "addr" => "tcp://127.0.0.1:7070",
                                         "category" => "useraction",
                                         ),
-                       ),
+                       "feature" => array (
+                                        "addr" => "tcp://127.0.0.1:7070",
+                                        "category" => "samplefeature",
+                                        ),
+                      ),
     'cache' => array (
                       "redis" => array (
                                         "host" => "10.8.14.136",

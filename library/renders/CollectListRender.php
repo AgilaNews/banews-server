@@ -19,6 +19,9 @@ class CollectListRender extends BaseListRender {
         $comment_counts = Comment::getCount($signs);
 
         foreach ($news_model_list as $sign => $news_model) {
+            if (!$news_model) {
+                continue;
+            }
             $cell = "";
             if ($news_model->channel_id == "30001") {
                 $cell = $this->video_render->serializeNewsCell($news_model);
@@ -27,6 +30,7 @@ class CollectListRender extends BaseListRender {
                 }
             } else {
                 $cell = $this->serializeNewsCell($news_model);
+                unset($cell["filter_tags"]);
             }
             $collect = $collects[$news_model->url_sign];
             $cell["collect_id"] = $collect->id;

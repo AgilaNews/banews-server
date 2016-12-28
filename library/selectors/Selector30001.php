@@ -21,7 +21,6 @@ class Selector30001 extends BaseNewsSelector {
             $options["long_tail_weight"] = 1;
         }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
-        $popularNewsCnt = 2; //TODO just test one hot, added by zgx
         $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, $popularNewsCnt, 
             3, $prefer, $options);
@@ -47,7 +46,7 @@ class Selector30001 extends BaseNewsSelector {
         if ($t == "video_exp") {
             $randomPolicy = new VideoExpDecayListPolicy($this->_di);
         }
-        
+
         $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
             $this->_device_id, $this->_user_id, self::MAX_NEWS_COUNT, 
             3, $prefer, $options);
@@ -71,9 +70,9 @@ class Selector30001 extends BaseNewsSelector {
 
     public function selectWithCount($prefer, $count) {
         $selected_news_list = $this->sampling($count, $prefer);
+        $selected_news_list = array_unique($selected_news_list);
         $models = News::BatchGet($selected_news_list);
         $models = $this->removeInvisible($models);
-        $models = $this->removeDup($models);
 
         $ret = array();
         $filter = array();

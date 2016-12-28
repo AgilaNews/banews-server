@@ -12,7 +12,6 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define('POPULAR_NEWS_CNT', 2);
-define('ALG_LR_SWITCH_KEY', 'ALG_LR_SWITCH_KEY');
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -102,7 +101,7 @@ class Selector10001 extends BaseNewsSelector{
             }
         } else {
             // combine popular & topic recommend recall with rerank
-            $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
+            $recNewsLst = $popularPolicy->sampling($this->_channel_id, 
                 $this->_device_id, $this->_user_id, 50, 3, $prefer, 
                 $options);
             $topicNewsLst = $personalTopicPolicy->sampling(
@@ -110,17 +109,14 @@ class Selector10001 extends BaseNewsSelector{
                 10, 3, $prefer, $options);
             // merge news from different strategy without duplicate
             foreach ($topicNewsLst as $curNewsId) {
-                if (!in_array($curNewsId, $popularNewsLst)) {
-                    $popularNewsLst[] = $curNewsId;
+                if (!in_array($curNewsId, $recNewsLst)) {
+                    $recNewsLst[] = $curNewsId;
                 }
             }
-            if (count($popularNewsLst) == 0) {
-                $popularNewsLst = $this->emergence(30, $recNewsLst, 
+            if (count($recNewsLst) == 0) {
+                $recNewsLst = $this->emergence(30, $recNewsLst, 
                     $options, $prefer);
             }
-            $lrRanker = new LrNewsRanker($this->_di); 
-            $recNewsLst = $lrRanker->ranking($this->_channel_id,
-                $this->_device_id, $popularNewsLst, $prefer, $sample_count);
         }
         $logger->info("====>channel 10001 strategy: " . $strategyTag .
             ". deviceId:" . $this->_device_id . ". newsCnt:" 
@@ -130,42 +126,44 @@ class Selector10001 extends BaseNewsSelector{
             $recNewsLst = $this->emergence($sample_count, 
                 $recNewsLst, $options, $prefer);
         }
-
-        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, 
-                $this->_client_version, $this->_os)) {
-            $videos = $popularPolicy->sampling("30001", $this->_device_id,
-                        $this->_user_id, 1, 3, $prefer, $options);
-            array_splice($recNewsLst, 3, 0, $videos);
-
-            $device_id = $this->_device_id;
-            $bf_service = $this->_di->get("bloomfilter");
-            $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
-                             array_map(
-                                       function($key) use ($device_id){
-                                           return $device_id . "_" . $key;
-                                       }, $videos));
-        }
         return $recNewsLst;
     }
 
     public function select($prefer) {
-        $required = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
-        $selected_news_list = $this->sampling($required, $prefer);
+        $sample_count = mt_rand(MIN_NEWS_COUNT, MAX_NEWS_COUNT);
+        $selected_news_list = $this->sampling($sample_count, 
+            $prefer);
         $selected_news_list = $this->newsFilter($selected_news_list);
-        $models = News::BatchGet($selected_news_list);
-        $models = $this->removeInvisible($models);
-        $models = $this->removeDup($models);
+        $newsObjDct = News::BatchGet($selected_news_list);
+        $newsObjDct = $this->removeInvisible($newsObjDct);
+        $newsObjDct = $this->removeDup($newsObjDct);
 
+        // add ranking according to user group
+        $newsFeatureDct = array();
+        $cache = $this->_di->get('cache');
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            $lrRanker = new LrNewsRanker($this->_di); 
+            list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
+                $this->_channel_id, $this->_device_id, $newsObjDct, 
+                $prefer, $sample_count);
+            $strategyTag = $this->getPolicyTag();
+            if ($strategyTag == "10001_lrRanker") {
+                $newsObjDct = $sortedNewsObjDct;
+            }
+        }
+        
         $ret = array();
         $filter = array();
-        for ($i = 0; $i < count($selected_news_list); $i++) {
-            if (array_key_exists($selected_news_list[$i], $models)) {
-                $ret []= $models[$selected_news_list[$i]];
-                $filter []= $models[$selected_news_list[$i]]->url_sign;
-                if (count($ret) >= $required) {
-                    break;
-                }
+        foreach ($newsObjDct as $newsId => $newsObj) {
+            if (count($ret) >= $sample_count) {
+                break;
             }
+            if (in_array($newsId, $filter)) {
+                $filter[] = $newsId;
+            }
+            $filter[] = $newsId;
+            $ret[] = $newsObj;
         }
         
         //*
@@ -175,19 +173,73 @@ class Selector10001 extends BaseNewsSelector{
                 $this->InsertBanner($ret);
         }
         //*/
+        $this->insertTopic($ret);
+        $this->InsertInterests($ret);
         $this->insertAd($ret);
+        $this->InsertVideo($prefer, $ret);
         $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
-        return $ret;
+        return array($ret, $newsFeatureDct);
+    }
+
+    protected function InsertInterests(&$ret) {
+        $this->interveneAt($ret, new InterestsIntervene(
+            array(
+                "device_id" => $this->_device_id,
+                "os" => $this->_os,
+                "client_version" => $this->_client_version,
+                )
+            ), 4);
+    }
+
+    protected function InsertTopic(&$ret) {
+        $this->interveneAt($ret, new TopicIntervene(
+            array(
+                "device_id" => $this->_device_id,
+                "net" => $this->_net,
+                "screen_w" => $this->_screen_w,
+                "screen_h" => $this->_screen_h,
+                "os" => $this->_os,
+                "client_version" => $this->_client_version,
+                )),
+            0);
     }
 
     protected function InsertBanner(&$ret) {
-        $this->interveneAt($ret, new BannerIntervene(array(
-                                                      "device_id" => $this->_device_id,
-                                                      "operating_id" => OPERATING_CHRISTMAS,
-                                                      "news_id" => BANNER_NEWS_ID,
-                                                      "client_version" => $this->_client_version,
-                                                      "os" => $this->_os,
-                                                      "net" => $this->_net,
-                                                      )), 0);
+        $this->interveneAt($ret, 
+            new BannerIntervene(array(
+                "device_id" => $this->_device_id,
+                "operating_id" => OPERATING_CHRISTMAS,
+                "news_id" => BANNER_NEWS_ID,
+                "client_version" => $this->_client_version,
+                "os" => $this->_os,
+                "net" => $this->_net,
+            )
+        ), 0);
+    }
+
+    protected function InsertVideo($prefer, &$ret) {
+        $popularPolicy = new PopularListPolicy($this->_di); 
+        $options = array();
+        if ($prefer == "later") {
+            $options["long_tail_weight"] = 0;
+        }
+        if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, 
+                $this->_client_version, $this->_os)) {
+            $videoIdLst = $popularPolicy->sampling("30001", $this->_device_id,
+                        $this->_user_id, 1, 3, $prefer, $options);
+            $videoIdObjDct = News::BatchGet($videoIdLst);
+            if (empty($videoIdObjDct)) {
+                return ;
+            }
+            $videoObjLst = array_values($videoIdObjDct);
+            array_splice($ret, 3, 0, $videoObjLst);
+            $device_id = $this->_device_id;
+            $bf_service = $this->_di->get("bloomfilter");
+            $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
+                             array_map(
+                                       function($key) use ($device_id){
+                                           return $device_id . "_" . $key;
+                                       }, $videoIdLst));
+        }
     }
 }

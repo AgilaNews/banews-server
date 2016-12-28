@@ -11,6 +11,9 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
+
+    private $featureChannelLst = array(10001);
+
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
@@ -145,6 +148,12 @@ class NewsController extends BaseController {
                                      $news_model->channel_id, count($ret["recommend_news"])));
         
         $this->setJsonResponse($ret);
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::saveActionToCache($newsSign, 
+                CACHE_FEATURE_CLICK_PREFIX,
+                CACHE_FEATURE_CLICK_TTL);
+        }
         return $this->response;
     }
 
@@ -164,7 +173,6 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-
         $cname = "Selector$channel_id";
         if (class_exists($cname)) {
             $selector = new $cname($channel_id, $this); 
@@ -172,10 +180,26 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $models = $selector->select($prefer);
+        $newsFeatureDct = array();
+        if (in_array($channel_id, $this->featureChannelLst)) {
+            list($dispatch_models, $newsFeatureDct) = 
+                $selector->select($prefer);
+        } else {
+            $dispatch_models = $selector->select($prefer);
+        }
+        $dispatch_ids = array();
+        foreach ($dispatch_models as $dispatch_model) {
+            if (isset($dispatch_model->url_sign)) {
+                $dispatch_ids []= $dispatch_model->url_sign;
+            }
+        }
         
-        foreach ($models as $sign => $model) {
-            $dispatch_ids []= $sign;
+        $cache = $this->di->get("cache");
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::batchSaveActionToCache($dispatch_ids, 
+                CACHE_FEATURE_DISPLAY_PREFIX, 
+                CACHE_FEATURE_DISPLAY_TTL);
         }
 
         $cname = "Render$channel_id";
@@ -186,7 +210,7 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        $ret[$dispatch_id] = $render->render($models);
+        $ret[$dispatch_id] = $render->render($dispatch_models);
 
         $this->logger->info(sprintf("[List][dispatch_id:%s][policy:%s][pfer:%s][cnl:%d][sent:%d]",
                                     $dispatch_id, $selector->getPolicyTag(), $prefer, 
@@ -199,6 +223,17 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
+
+        if (in_array($channel_id, $this->featureChannelLst) and $isLrRanker) {
+            foreach ($dispatch_ids as $newsId) {
+                if (array_key_exists($newsId, $newsFeatureDct)) {
+                    $param = array();
+                    $param['news_id'] = $newsId;
+                    $param['features'] = json_encode($newsFeatureDct[$newsId]);
+                    $this->logFeature($dispatch_id, $param);
+                }
+            }
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }

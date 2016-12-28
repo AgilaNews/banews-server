@@ -24,6 +24,8 @@ class BaseNewsSelector {
         $this->_os = $controller->os;
         $this->_di = $controller->di;
         $this->_net = $controller->net;
+        $this->_screen_w = $controller->resolution_w;
+        $this->_screen_h = $controller->resolution_h;
     }
 
     protected function sampling($sample_count, $prefer){
@@ -123,6 +125,11 @@ class BaseNewsSelector {
     }
 
     protected function interveneAt(&$ret, $intervene, $pos) {
+        if ($intervene instanceof BaseIntervene) {
+            if ($intervene->isEmpty()) {
+                return ;
+            }
+        }
         array_splice($ret, $pos, 0, array($intervene));
     }
 
