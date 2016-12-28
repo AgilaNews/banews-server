@@ -137,7 +137,7 @@ class NewsController extends BaseController {
             if (!in_array($newsSign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
                 $ret["recommend_news"]= $render->render($models);
             } else {
-                unset($ret["ad"]);
+                $ret["ad"] = new stdClass();
             }
         }
 
@@ -156,10 +156,6 @@ class NewsController extends BaseController {
         }
         // ----------------- end -------TODO remove later---------------------------------------
 
-        $this->setJsonResponse($ret);
-        if (!array_key_exists("ad", $ret)) {
-            $ret["ad"] = new stdClass();
-        }
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
@@ -173,6 +169,7 @@ class NewsController extends BaseController {
         $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d]", $newsSign, count($ret["imgs"]),
                                      $news_model->channel_id, count($ret["recommend_news"])));
         
+        $this->setJsonResponse($ret);
         $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
         if ($isLrRanker) {
             News::saveActionToCache($newsSign, 
