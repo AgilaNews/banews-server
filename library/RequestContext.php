@@ -64,11 +64,13 @@ class RequestContext {
         $ctx->setScreenHeight($controller->resolution_h);
         $ctx->setDpi($controller->dpi);
 
-        foreach ($controller->abflags as $key => $value) {
-            $group = new \ipeninsula\RequestContext\AbGroupsEntry();
-            $group->setKey($key, $value);
+        if (property_exists($controller, "abflags")) 
+            foreach ($controller->abflags as $key => $value) {
+                $group = new \ipeninsula\RequestContext\AbGroupsEntry();
+                $group->setKey($key, $value);
             
-            $ctx->addAbGroups($group);
+                $ctx->addAbGroups($group);
+            }
         }
         
         return $ctx;
