@@ -146,7 +146,7 @@ class Comment{
 
              if ($ref_user) {
                  $cell["reply"]["user_name"] = $ref_user->name;
-                 $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
+                 $cell["reply"]["user_portrait_url"] = $this->getPortraitUrl($ref_user);
              }
              $sign = $ref_comment->getDocId();
              $cell["news_id"] = $sign;
@@ -175,7 +175,7 @@ class Comment{
         $user_model = User::getBySign($comment->getUserId());
         if ($user_model) {
             $cell["user_name"] = $user_model->name;
-            $cell["user_portrait_url"] = $user_model->portrait_url || $user_model->portrait_srcurl;
+            $cell["user_portrait_url"] = $this->getPortraitUrl($user_model);
         }
         
         $ref_comment = $comment->getRefComment();
@@ -192,16 +192,25 @@ class Comment{
                                    );
             if ($cell["reply"]["liked"] == null) {
                 $cell["reply"]["liked"] = 0;
-                }
+            }
             
             $ref_user = User::getBySign($ref_comment->getUserId());
             
             if ($ref_user) {
                 $cell["reply"]["user_name"] = $ref_user->name;
-                $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url || $ref_user->portrait_srcurl;
+                $cell["reply"]["user_portrait_url"] = $this->getPortraitUrl($ref_user);
             }
         }
         
         return $cell;
+    }
+
+    private function getPortraitUrl($model) {
+        $ret = $model->portrait_url;
+        if (!$ret) {
+            $ret = $model->portrait_srcurl;
+        }
+
+        return $ret;
     }
 }
