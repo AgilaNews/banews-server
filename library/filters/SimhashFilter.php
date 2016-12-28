@@ -4,12 +4,12 @@ define ('MAX_SIMILARITY_THRE', 0.9);
 
 class SimhashFilter extends BaseNewsFilter {
 
-    protected function calHammingDistance($pre, $lat) {
+    protected function calHammingDistance($preStr, $latStr) {
         $len = 0;
-        foreach ($pre as $idx=>$preVal) {
-            if ($preVal != $lat[$idx]) {
-                $len += 1;
-            }
+        for ($idx=0; $idx<strlen($preStr); $idx++) {
+            if ($preStr[$idx] != $latStr[$idx]) {
+                    $len += 1;
+                }
         }
         return $len;
     }
