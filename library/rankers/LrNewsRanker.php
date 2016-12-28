@@ -42,8 +42,9 @@ class LrNewsRanker extends BaseNewsRanker {
 
     protected function calcSpan($timestamp) {
         $now = time();
+        $timstamp = floatval($timestamp);
         if ($timestamp < $now) {
-            return round(floatval($now - $timestamp) / HOUR, 2); 
+            return round(floatval($now - $timestamp) / HOUR, 3); 
         }
         return MIN_FEATURE_VALUE;
     }
@@ -81,6 +82,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $newsObjDct, CACHE_FEATURE_CLICK_PREFIX);
         $newsIdLst = array_keys($newsObjDct);
         $newsCommentDct = Comment::getCount($newsIdLst);
+        $precision = 6;
         foreach ($newsObjDct as $newsId => $newsObj) {
             $curFeatureDct = array();
             $displayCnt = MIN_FEATURE_VALUE;
@@ -94,7 +96,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_LIKE_COUNT'] = 
                     $likeCnt;
             $curFeatureDct['HISTORY_LIKE_DISPLAY_RATIO'] = 
-                    round($likeCnt/$displayCnt, 6);
+                    round($likeCnt/$displayCnt, $precision);
             $clickCnt = 0;
             if (array_key_exists($newsId, $newsClickDct)) {
                 $clickCnt = $newsClickDct[$newsId];
@@ -102,15 +104,15 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_READ_COUNT'] = 
                     $clickCnt;
             $curFeatureDct['HISTORY_READ_DISPLAY_RATIO'] = 
-                    round($clickCnt/$displayCnt, 6);
+                    round($clickCnt/$displayCnt, $precision);
             $commentCnt = 0;
             if (array_key_exists($newsId, $newsCommentDct)) {
-                $commenCnt = $newsCommentDct[$newsId];
+                $commentCnt = $newsCommentDct[$newsId];
             }
             $curFeatureDct['HISTORY_COMMENT_COUNT'] = 
                     $commentCnt; 
             $curFeatureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = 
-                    round($commentCnt/$displayCnt, 6);
+                    round($commentCnt/$displayCnt, $precision);
             if (array_key_exists($newsId, $featureDct)) {
                 foreach ($curFeatureDct as $key => $val) {
                     $featureDct[$newsId][$key] = $val;
