@@ -46,7 +46,7 @@ class BaseRecommendNewsSelector {
             $myself, 
             DEFAULT_RECOMMEND_NEWS_COUNT * 2);
         array_unshift($esRelatedNewsLst, $myself);
-        $models = $this->removeDup($models);
+        $models = $this->removeDup($esRelatedNewsLst);
         $models = News::batchGet($esRelatedNewsLst);
         if (count($models) < DEFAULT_RECOMMEND_NEWS_COUNT) {
             $randomPolicy = new RandomRecommendPolicy($this->_di);
