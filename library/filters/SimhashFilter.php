@@ -37,13 +37,17 @@ class SimhashFilter extends BaseNewsFilter {
         $newsCnt = count($newsObjLst);
         $filterNewsObjLst = array();
         for ($i=$newsCnt-1; $i>=0; $i--) {
+            $isFilter = false;
             for ($j=$i-1; $j>=0; $j--) {
                 $preHashStr = $newsObjLst[$i]->related_sign;
                 $latHashStr = $newsObjLst[$j]->related_sign;
                 $sim = $this->calSimilarity($preHashStr, $latHashStr);
                 if ($sim > MAX_SIMILARITY_THRE) {
-                    continue;
+                    $isFilter = true;
+                    break;
                 }
+            }
+            if (!$isFilter) {
                 $filterNewsObjLst[] = $newsObjLst[$i];
             }
         }
