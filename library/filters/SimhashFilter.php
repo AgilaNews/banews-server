@@ -14,7 +14,7 @@ class SimhashFilter extends BaseNewsFilter {
         return $len;
     }
 
-    protected function gaussianDensity($val, $deviation=4) {
+    protected function gaussianDensity($val, $deviation=8) {
         $res = -(1/2) * pow($val/$deviation, 2);
         $res = (1/sqrt(2*pi())) * exp($res);
         return $res;
