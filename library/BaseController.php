@@ -15,13 +15,16 @@ define("EVENT_NEWS_LIKE", "020204");
 define("EVENT_NEWS_COLLECT", "020205");
 define("EVENT_NEWS_COMMENT", "020207");
 define("EVENT_NEWS_COMMENT_LIKE", "020208");
+define("EVENT_TOPIC_DETAIL", "021701");
 define("EVENT_NEWS_COLDSETTING", "030101");
 define("EVENT_NEWS_REFERRER", "040102");
+define("EVENT_SEARCH_LIST", "070101");
 
 class BaseController extends Controller{
     public function initialize(){
         $this->logger = $this->di->get('logger');
         $this->eventlogger = $this->di->get('eventlogger');
+        $this->featureLogger = $this->di->get('featureLogger');
 
         $this->logger->begin();
         $this->response = new Response();
@@ -34,6 +37,7 @@ class BaseController extends Controller{
     }
     
     public function onConstruct(){
+        $this->logid = mt_rand();
         $this->deviceId = $this->request->getHeader('X-USER-D');
         $this->userSign = $this->request->getHeader('X-USER-A');
         $this->density = $this->request->getHeader('X-DENSITY');
@@ -108,10 +112,19 @@ class BaseController extends Controller{
         }
     }
 
+    public function beforeExecuteRoute($dispatcher) {
+        if ($this->request->isOptions()) {
+            $this->setResponseHeaders();
+            return false;
+        }
+
+        return true;
+    }
+
     public function afterExecuteRoute($dispatcher) {
-        $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s][abflag:%s]",
+        $this->logger->info(sprintf("[di:%s][user:%s][density:%s][net:%s][isp:%s][tz:%s][gps:%sX%s][lang:%s][abflag:%s][logid:%s]",
                                     $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
-                                    $this->tz, $this->lat, $this->lng, $this->lang, json_encode($this->abflags)));
+                                    $this->tz, $this->lat, $this->lng, $this->lang, json_encode($this->abflags), $this->logid));
         $this->logger->info(sprintf("[cost:%sms]",
                                       round((microtime(true) - $this->_start_time) * 1000)));
         $this->logger->commit();
@@ -144,17 +157,39 @@ class BaseController extends Controller{
         }
     }
 
-    protected function setJsonResponse($arr, $options = 0) {
-        $content = json_encode($arr, $options);
-        $this->response->setContent($content);
-        $this->response->setHeader("Content-Length", strlen($content));
-        if (version_compare($this->client_version, "1.1.2", ">=")) {
-            $this->response->setHeader("Content-Type", "application/ph");
-        } else {
-            $this->response->setHeader("Content-Type", "application/json");
-        }
+    protected function setResponseHeaders(){
+        $this->response->setHeader("Content-Type", "application/ph");
         $this->response->setHeader("Cache-Control", "private, no-cache, no-store, must-revalidate, max-age=0");
         $this->response->setHeader("Pragma", "no-cache");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-ORIGIN", "*");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-METHODS", "GET,OPTIONS");
+        $this->response->setHeader("ACCESS-CONTROL-ALLOW-HEADERS", "X-USER-D,X-USER-A,AUTHORIZATION,DENSITY,X-SESSION");
+    }
+
+    protected function setJsonResponse($arr, $options = 0) {
+        $content = json_encode($arr, $options);
+        $this->response->setHeader("Content-Length", strlen($content));
+        $this->response->setContent($content);
+        $this->setResponseHeaders();
+    }
+
+    protected function logFeature($dispatchId, $param) {
+        if (!$this->featureLogger) {
+            return;
+        }
+
+        $param['dispatchId'] = $dispatchId; 
+        $param["session"] = $this->session;
+        if ($this->userSign) {
+            $param["uid"] = $this->userSign;
+        }
+        $param["did"] = $this->deviceId;
+        $param["net"] = $this->net;
+        $param["lng"] = $this->lng;
+        $param["lat"] = $this->lat;
+        $param["time"] = round(microtime(true) * 1000);
+        $param["abflag"] = $this->abflags; 
+        $this->featureLogger->info(json_encode($param)); 
     }
 
     protected function logEvent($event_id, $param) {
@@ -183,30 +218,11 @@ class BaseController extends Controller{
         $param["os-version"] = $this->os_version;
         $param["build"] = $this->build;
         $param["abflag"] = $this->abflags;
-
         $this->eventlogger->info(json_encode($param));
     }
 
-
     private function initAbFlag() {
-        $ctx = new iface\RequestContext();
-        
-        $ctx->UserId = $this->userSign;
-        $ctx->DeviceId = $this->deviceId;
-        $ctx->SessionId = $this->session;
-        $ctx->UserAgent = $this->ua;
-        $ctx->Net = $this->net;
-        $ctx->Isp = $this->isp;
-        $ctx->Language = $this->lang;
-        $ctx->ClientVersion = $this->client_version;
-        $ctx->Os = $this->os;
-        $ctx->OsVersion = $this->os_version;
-        $ctx->Longitude = $this->lng;
-        $ctx->Latitude = $this->lat;
-        $ctx->TimeZone = $this->tz;
-        $ctx->ScreenWidth = $this->resolution_w;
-        $ctx->ScreenHeight = $this->resolution_h;
-        $ctx->Dpi = $this->dpi;
+        $ctx = RequestContext::GetCtxFromController($this);
         
         $service = $this->di->get("abtest");
         $this->abflags = $service->requestFlags($this->config->abtest->product_key, $ctx);

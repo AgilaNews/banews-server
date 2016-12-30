@@ -13,6 +13,7 @@ define('MIN_NEWS_SEND_COUNT', 6);
 define('MAX_NEWS_SENT_COUNT', 8);
 define('MORE_NEWS_FACTOR', 1.5);
 define("DEFAULT_SAMPLING_DAY", 7);
+define('CACHE_NEWS_FILTER', 'BS_NEWS_FILTER');
 
 class BaseNewsSelector {
     public function __construct($channel_id, $controller) {
@@ -22,13 +23,15 @@ class BaseNewsSelector {
         $this->_client_version = $controller->client_version;
         $this->_os = $controller->os;
         $this->_di = $controller->di;
+        $this->_net = $controller->net;
+        $this->_screen_w = $controller->resolution_w;
+        $this->_screen_h = $controller->resolution_h;
     }
 
     protected function sampling($sample_count, $prefer){
         return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id, $this->_user_id,
                                             $sample_count, DEFAULT_SAMPLING_DAY, $prefer);
     }
-
 
     public function getPolicy() {
         if (!isset($this->_policy)) {
@@ -42,6 +45,22 @@ class BaseNewsSelector {
         return "expdecay";
     }
 
+    protected function newsFilter($newslist) {
+        $ret = array();
+
+        $cache = DI::getDefault()->get('cache');
+        $key = CACHE_NEWS_FILTER;
+        if ($cache && $cache->exists($key)) {
+            foreach ($newslist as $newsid) {
+                if (!($cache->sIsMember($key, $newsid))) {
+                    $ret[] = $newsid;
+                }
+            }
+        } else {
+            $ret = $newslist;
+        }
+        return $ret;
+    }
 
     protected function removeInvisible($models) {
         $ret = array();
@@ -51,7 +70,6 @@ class BaseNewsSelector {
                 $ret[$sign] = $news_model;
             }
         }
-
         return $ret;
     }
 
@@ -107,11 +125,16 @@ class BaseNewsSelector {
     }
 
     protected function interveneAt(&$ret, $intervene, $pos) {
+        if ($intervene instanceof BaseIntervene) {
+            if ($intervene->isEmpty()) {
+                return ;
+            }
+        }
         array_splice($ret, $pos, 0, array($intervene));
     }
 
     protected function insertAd(&$ret) {
-        if (version_compare($this->_client_version, AD_FEATURE, ">=") && count($ret) >= AD_INTERVENE_POS) {
+        if (Features::Enabled(Features::AD_FEATURE, $this->_client_version, $this->_os) && count($ret) >= AD_INTERVENE_POS) {
             $abservice = DI::getDefault()->get('abtest');
             $t = $abservice->getTag("timeline_ad_position");
             $device_md5 = md5($this->_device_id);
@@ -132,5 +155,29 @@ class BaseNewsSelector {
                 $this->interveneAt($ret, $ad_intervene, $pos);
             }
         }
+    }
+
+    protected function setDeviceSeenToBF($keys) {
+        switch ($this->_channel_id) {
+            case 10011:
+                $filterName = BloomFilterService::FILTER_FOR_IMAGE;
+                break;
+            case 10012:
+                $filterName = BloomFilterService::FILTER_FOR_GIF;
+                break;
+            case 30001:
+                $filterName = BloomFilterService::FILTER_FOR_VIDEO;
+                break;
+            default:
+                return;
+        }
+
+        $device_id = $this->_device_id;
+        $bf_service = $this->_di->get("bloomfilter");
+        $bf_service->add($filterName, 
+                         array_map(
+                                   function($key) use ($device_id){ 
+                                       return $device_id . "_" . $key;
+                                   }, $keys));
     }
 }

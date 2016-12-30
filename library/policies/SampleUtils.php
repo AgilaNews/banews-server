@@ -56,7 +56,11 @@ class SampleUtils {
         }
         $m = $ret[count($weights) - 1];
         for ($i = 0; $i < count($weights); $i++) {
-            $ret[$i] /= $m;
+            if ($m != 0) {
+                $ret[$i] /= $m;
+            } else {
+                $ret[$i] = 1.0 / count($weights);
+            }
         }
 
         return $ret;

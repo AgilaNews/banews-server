@@ -1,13 +1,31 @@
 <?php
+define("VIDEO_LENGTH", 3000);
 class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
+    }
+
+    public function getVideos() {
+        $key = "banews:ph:30001";
+        $step = VIDEO_LENGTH;
+        $count = $this->_redis->zCard($key);
+        $start = 0;
+        $end = $start + $step;
+        $ret = array();
+        $tmp = $this->_redis->zRevRange($key, $start, $end, true);
+
+        foreach ($tmp as $id=>$weight) {
+            $ret []= array("id" => $id, "weight"=>$weight);
+        }
+        return $ret;
     }
     
     public function getNewsOfChannel($channel_id, $day) {
         $image_gif_channel = array("10011", "10012");
         if (in_array($channel_id, $image_gif_channel)) {
             $key = "banews:ph:v2:$channel_id";
+        } else if ($channel_id == "30001") {
+            return $this->getVideos();
         } else {
             $key = "banews:ph:$channel_id";
         }
@@ -78,8 +96,6 @@ class NewsRedis {
         return CACHE_CLICK_QUEUE_PREFIX . $device_id;
     }
 
-
-
     public function getDeviceChannelCursor($device_id, $channel_id) {
         $key = $this->getDeviceChannelCursorKey($device_id, $channel_id);
         $value = $this->_redis->hGet(BACKUP_CHANNEL_CURSOR_KEY, $key);
@@ -113,46 +129,20 @@ class NewsRedis {
             $new_backup_idx = 0;
         }
         $this->setDeviceChannelCursor($device_id, $channel_id, $new_backup_idx);
+
         return $news_lst;
     }
 
-    public function registeNewDevice($device_id, $token, $client_version, $os = "", $os_version = "", $vendor = "", $imsi = ""){
-        $arr = array(
-                     "device_id" => $device_id,
-                     "token" => $token,
-                     "client_version" => $client_version,
-                     "vendor" => $vendor,
-                     "imsi" => $imsi,
-                     "os" => $os,
-                     "os_version"=> $os_version,
-                     );
-
-        $ret = $this->_redis->hget(DEVICEMAP_DEVICE_KEY, $device_id);
-        if ($ret) {
-            $obj = json_decode($ret, true);
-            if ($obj) {
-                //remove older one
-                $this->_redis->multi();
-                $this->_redis->hdel(DEVICEMAP_DEVICE_KEY, $device_id);
-                $this->_redis->hdel(DEVICEMAP_TOKEN_KEY, $obj["token"]);
-                $this->_redis->exec();
-            } else {
-                $this->_redis->hdel(DEVICEMAP_DEVICE_KEY);
-            }
-        }
-            
-        $saved = json_encode($arr, true);
-        $this->_redis->multi();
-        $this->_redis->hset("PUSH_TOKEN_", $token, $saved);
-        $this->_redis->hset("PUSH_DEVICE_ID_", $device_id, $saved);
-        $ret = $this->_redis->exec();
-    }
-
     public function getChannelTopPopularNews($channelId) {
-        $retLst = $this->_redis->lRange('BA_POPULAR_NEWS_' . $channelId, 0, -1);
-        if (!$retLst) {
+        $news_lst = $this->_redis->lRange('BA_POPULAR_NEWS_' . $channelId, 0, -1);
+        if (!$news_lst) {
             return array();
         }
-        return $retLst;
+
+        $ret = array();
+        foreach ($news_lst as $news) {
+            $ret []= array("id" => $news, "weight" => 1);
+        }
+        return $ret;
     }
 }

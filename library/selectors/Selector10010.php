@@ -1,4 +1,4 @@
 <?php
 
-class Selector10010 extends Selector10004 {
+class Selector10010 extends SphinxSelector {
 }

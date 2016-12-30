@@ -34,4 +34,3 @@ class RandomWithBackupPolicy extends BaseListPolicy {
         return $filter_news_lst;
     }
 }
-?>

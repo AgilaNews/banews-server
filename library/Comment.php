@@ -1,8 +1,31 @@
 <?php
 use Phalcon\DI;
 
-define('DEFAULT_HOT_LIKED_COUNT', 3);
+define('DEFAULT_HOT_LIKED_COUNT', 5);
+define('DEFAULT_SYSTEM_USER_NAME', "system notifcation");
 
+function getLikeNotifyMsg($LikeNum){
+    $msg = "";
+    if ($LikeNum == 1){
+        $msg = "Cool! Someone sent you 1 like to your wonderful comment!";
+    }
+    else if ($LikeNum == 5){
+        $msg = "Wow! You have received 5 likes till now!";
+    }
+    else if($LikeNum == 10){
+        $msg = "Great! 10 likes come to your comment!";
+    }
+    else if($LikeNum == 50){
+        $msg = "Amazing! Your wonderful comment has received 50 likes!";
+    }
+    else if($LikeNum == 100){
+        $msg = "Oh my god genius! Your comment has received 100 likes!! You are popular now!";
+    }
+    else{
+        $msg = "";
+    }
+    return $msg;
+}
 class Comment{
     public static function getCommentByFilter($deviceId, $newsSign, $last_id, $length, $filter) {
         $di = DI::getDefault();
@@ -95,6 +118,44 @@ class Comment{
         return $ret;
     }
 
+     public static function renderLikeComment($comment, $likeNum){
+         $cell = array("comment" => getLikeNotifyMsg($likeNum),
+             "time" => $comment->getTimeStamp(),
+             "user_name" => DEFAULT_SYSTEM_USER_NAME,
+             "news_id" => "",
+             "tpl"=> "",
+         );
+
+         $ref_comment = $comment->getRefComment();
+         if ($ref_comment) {
+             $cell["reply"] = array(
+                 "id" => $ref_comment->getCommentId(),
+                 "user_id" => $ref_comment->getUserId(),
+                 "user_name" => "anonymous",
+                 "user_portrait_url" => "",
+                 "liked" => $ref_comment->getLiked(),
+                 "device_liked" => $ref_comment->getDeviceLiked() || false,
+                 "comment" => $ref_comment->getCommentDetail(),
+                 "time" => $ref_comment->getTimeStamp(),
+             );
+             if ($cell["reply"]["liked"] == null) {
+                 $cell["reply"]["liked"] = 0;
+             }
+
+             $ref_user = User::getBySign($ref_comment->getUserId());
+
+             if ($ref_user) {
+                 $cell["reply"]["user_name"] = $ref_user->name;
+                 $cell["reply"]["user_portrait_url"] = self::getPortraitUrl($ref_user);
+             }
+             $sign = $ref_comment->getDocId();
+             $cell["news_id"] = $sign;
+         }
+
+        return $cell;
+     }
+
+
     public static function renderComment($comment){
         $cell = array("comment" => $comment->getCommentDetail(),
                       "id" => $comment->getCommentId(),
@@ -114,7 +175,7 @@ class Comment{
         $user_model = User::getBySign($comment->getUserId());
         if ($user_model) {
             $cell["user_name"] = $user_model->name;
-            $cell["user_portrait_url"] = $user_model->portrait_url;
+            $cell["user_portrait_url"] = self::getPortraitUrl($user_model);
         }
         
         $ref_comment = $comment->getRefComment();
@@ -131,16 +192,25 @@ class Comment{
                                    );
             if ($cell["reply"]["liked"] == null) {
                 $cell["reply"]["liked"] = 0;
-                }
+            }
             
             $ref_user = User::getBySign($ref_comment->getUserId());
             
             if ($ref_user) {
                 $cell["reply"]["user_name"] = $ref_user->name;
-                $cell["reply"]["user_portrait_url"] = $ref_user->portrait_url;
+                $cell["reply"]["user_portrait_url"] = self::getPortraitUrl($ref_user);
             }
         }
         
         return $cell;
+    }
+
+    private static function getPortraitUrl($model) {
+        $ret = $model->portrait_url;
+        if (!$ret) {
+            $ret = $model->portrait_srcurl;
+        }
+
+        return $ret;
     }
 }

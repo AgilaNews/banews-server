@@ -56,7 +56,7 @@ class Selector10011 extends BaseNewsSelector {
             }
         }
         
-        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+        $this->setDeviceSeenToBF($filter);
         return $ret;
     }
 }

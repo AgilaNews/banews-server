@@ -7,28 +7,22 @@ class PopularListPolicy extends BaseListPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $pn, 
         $day_till_now, $prefer, array $options = array()) {
-        $sentLst = $this->_cache->getDeviceSeen($device_id);
-
-        // channel's top popular news list
-        $channelPopularNewsLst = $this->_cache->getChannelTopPopularNews($channel_id); 
-        $filterChannelPopularNewsLst = $this->sentFilter($sentLst, 
-            $channelPopularNewsLst);         
-        if (!$filterChannelPopularNewsLst or (count($filterChannelPopularNewsLst) < $pn)) {
+        $news = $this->getAllUnsent($channel_id, $device_id, $day_till_now);
+        if (!$news) {
             return array();
+        }
+        $news_ids = array_map(function($news) {return $news["id"];}, $news);
+
+        if (!$news_ids) {
+            return array();
+        } else if (count($news_ids) < $pn) {
+            return $news_ids;
         } else {
-            return array_slice($filterChannelPopularNewsLst, 0, $pn);        
+            return array_slice($news_ids, 0, $pn);
         }
-
     }
 
-    protected function sentFilter($sentNewsLst, $newsLst) {
-        $filterNewsLst = array();
-        foreach ($newsLst as $news) {
-            if (!in_array($news, $sentNewsLst)) {
-                array_push($filterNewsLst, $news); 
-            }
-        }
-        return $filterNewsLst;
+    protected function getReadyNews($channel_id, $day_till_now) {
+        return $this->_cache->getChannelTopPopularNews($channel_id);
     }
-
 }

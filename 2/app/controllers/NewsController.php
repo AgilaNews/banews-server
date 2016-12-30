@@ -11,6 +11,10 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
+    const HotVideNum = 1;
+    const VideoChannel = "30001";
+    private $featureChannelLst = array(10001);
+
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
@@ -51,7 +55,7 @@ class NewsController extends BaseController {
 
         $device_md5 = md5($this->deviceId);
 
-        if (version_compare($this->client_version, AD_FEATURE, ">=")) {
+        if (Features::Enabled(Features::AD_FEATURE, $this->client_version, $this->os)) {
             $intervene = new AdIntervene(array(
                 "type" => DETAIL_AD_TPL_MEDIUM,
                 "device" => $this->deviceId,
@@ -62,8 +66,9 @@ class NewsController extends BaseController {
 
         $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
 
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
-            $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 3, "hot");
+        
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
+            $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 10, "hot");
             $ret["comments"] = array(
                                       "new" => $topNewComment,
                                       "hot" => $topHotComment,
@@ -96,7 +101,7 @@ class NewsController extends BaseController {
         }
         $ret["imgs"] = $imgcell;
 
-        if (version_compare($this->client_version, VIDEO_NEWS_FEATURE, ">=")) {
+        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->client_version, $this->os)) {
             foreach($videos as $video) {
                 if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
                     continue;
@@ -128,7 +133,14 @@ class NewsController extends BaseController {
             $render = new BaseListRender($this);
         }
 
-        $ret["recommend_news"]= $render->render($models);
+        if ($cache->exists(CACHE_NO_RECOMMEND_NEWS)) {
+            if (!in_array($newsSign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
+                $ret["recommend_news"]= $render->render($models);
+            } else {
+                $ret["ad"] = new stdClass();
+            }
+        }
+
         if ($this->userSign) {
             $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
         }
@@ -144,6 +156,7 @@ class NewsController extends BaseController {
         }
         // ----------------- end -------TODO remove later---------------------------------------
 
+
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
                                                "recommend"=> array(
@@ -157,6 +170,12 @@ class NewsController extends BaseController {
                                      $news_model->channel_id, count($ret["recommend_news"])));
         
         $this->setJsonResponse($ret);
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::saveActionToCache($newsSign, 
+                CACHE_FEATURE_CLICK_PREFIX,
+                CACHE_FEATURE_CLICK_TTL);
+        }
         return $this->response;
     }
 
@@ -183,13 +202,26 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $dispatch_models = $selector->select($prefer);
-        $dispatch_ids = array();
+        $newsFeatureDct = array();
+        if (in_array($channel_id, $this->featureChannelLst)) {
+            list($dispatch_models, $newsFeatureDct) = 
+                $selector->select($prefer);
+        } else {
+            $dispatch_models = $selector->select($prefer);
+        }
 
+        $dispatch_ids = array();
         foreach ($dispatch_models as $dispatch_model) {
             if (isset($dispatch_model->url_sign)) {
                 $dispatch_ids []= $dispatch_model->url_sign;
             }
+        }
+        $cache = $this->di->get("cache");
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::batchSaveActionToCache($dispatch_ids, 
+                CACHE_FEATURE_DISPLAY_PREFIX, 
+                CACHE_FEATURE_DISPLAY_TTL);
         }
         
         $cname = "Render$channel_id";
@@ -200,12 +232,14 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        if (version_compare($this->client_version, "1.2.4", ">=")) {
+        
+        if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
             $ret = array(
                 "dispatch_id" => $dispatch_id,
                 "news" => $render->render($dispatch_models),
                 "abflag" => json_encode($this->abflags),
             );
+
             if (in_array($channel_id, array(10001))) {
                 $ret["has_ad"] = 1;
             }
@@ -224,6 +258,16 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
+        if (in_array($channel_id, $this->featureChannelLst) and $isLrRanker) {
+            foreach ($dispatch_ids as $newsId) {
+                if (array_key_exists($newsId, $newsFeatureDct)) {
+                    $param = array();
+                    $param['news_id'] = $newsId;
+                    $param['features'] = json_encode($newsFeatureDct[$newsId]);
+                    $this->logFeature($dispatch_id, $param);
+                }
+            }
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -274,7 +318,6 @@ class NewsController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
     }
-
 
    protected function getImgCell($url_sign, $meta) {
        if ($this->net == "WIFI") {

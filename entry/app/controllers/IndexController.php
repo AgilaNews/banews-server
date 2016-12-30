@@ -54,7 +54,12 @@ class IndexController extends BaseController {
                 "preload" => AD_PRELOAD,
                 "expire" => AD_EXPIRE,
             ),
+            "splash_image" => 1,
         );
+
+        if (Features::Enabled(Features::LOG_V3_FEATURE, $this->client_version, $this->os)) {
+            $ret["interfaces"]["log"] = sprintf($this->config->entries->log, 3);
+        }
         
         if ($cur_model->server_version == 1) {
             $ret["categories"] = array();

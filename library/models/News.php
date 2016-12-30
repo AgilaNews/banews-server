@@ -51,7 +51,7 @@ class News extends BaseModel {
                     "ext_json_text",
                     "json_text",
                     "shared_url",
-                    "content_sign",
+                    //"content_sign",
                     "tag",
                     "related_sign",)
         );
@@ -121,7 +121,7 @@ class News extends BaseModel {
             foreach ($signs as $sign) {
                 $keys []= CACHE_NEWS_PREFIX . $sign;
             }
-            $rret = $cache->mget($keys);
+            $rret = $cache->mGet($keys);
             if (!$rret) {
                 return array();
             }
@@ -204,4 +204,74 @@ class News extends BaseModel {
         return $ret;
 
     } 
+
+    public static function saveActionToCache($newsId, 
+            $prefixKey, $ttlKey, $cnt=1) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = $prefixKey . $newsId; 
+            $cache->multi();
+            $cache->incrBy($key, $cnt);
+            $cache->expire($key, $ttlKey);
+            $cache->exec();
+        }
+    }
+
+    public static function batchSaveActionToCache($newsIdLst, 
+            $prefixKey, $ttlKey, $cnt=1) {
+        $cache = DI::getDefault()->get('cache');
+        if (empty($newsIdLst)) {
+            return ;
+        }
+        $cache->multi();
+        foreach ($newsIdLst as $newsId) {
+            if (!$newsId) {
+                continue;
+            }
+            $key = $prefixKey . $newsId;
+            $cache->incrBy($key, $cnt);
+            $cache->expire($key, $ttlKey);
+        }
+        $cache->exec();
+        return ;
+    }
+
+    public function getActionFromCache($model, $prefixKey) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $key = $prefixKey . $model->url_sign;  
+            $value = $cache->get($key);
+            if (!empty($value)) {
+                return $value;
+            }
+        }
+        return 0;
+    }
+
+    public static function batchGetActionFromCache($newsObjDct, $prefixKey) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $keys = array();
+            $originalKeys = array();
+            foreach ($newsObjDct as $newsId => $newsObj) {
+                $keys[] = $prefixKey . $newsId;
+                $originalKeys[] = $newsId;
+            }
+            $newsArr = $cache->mGet($keys);
+            if (empty($newsArr)) {
+                return array();
+            } else  {
+                $ret = array();
+                foreach ($newsArr as $idx => $value) {
+                    if (empty($value)) {
+                        $ret[$originalKeys[$idx]] = 0; 
+                    } else {
+                        $ret[$originalKeys[$idx]] = $value;
+                    }
+                }
+                return $ret;
+            }
+        }
+        return array();
+    }
 }

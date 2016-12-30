@@ -42,7 +42,7 @@ class UserController extends BaseController {
         $hot_length = $this->get_request_param("hot_pn", "int", false, 10);
         $length = $this->get_request_param("pn", "int", false, 20);
 
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             if ($length > 0) {
                 $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
             } else {
@@ -115,7 +115,7 @@ class UserController extends BaseController {
                                                   "anonymous" => $anonymous,
                                                   ));
         
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             $this->setJsonResponse(array(
                                          "message" => "ok",
                                          "id" => $resp->getCommentId(),
@@ -169,35 +169,32 @@ class UserController extends BaseController {
         }
 
         $news_ids = array();
-        $ret = array();
         
-        foreach ($req as $cell) {
-            $news_model = News::getBySign($cell["news_id"]);
-            if (!$news_model) {
-                throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
-            }
-            $news_ids []= $cell["news_id"];
-        
-            if(($saved_cid = Collect::getCollectId($this->userSign, $news_model->url_sign))) {
-                //                throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
-            } else {
-                $collect_model = new Collect();
-                $collect_model->user_sign = $this->userSign;
-                $collect_model->news_sign = $news_model->url_sign;
-                $collect_model->create_time = $cell["ctime"];
-                $result = $collect_model->save();
-                if (!$result) {
-                    throw new HttpException(ERR_INTERNAL_DB,
-                                            "save collect model error");
-                }
-                $saved_cid = $collect_model->id;
-            }
-
-            $ret []= array(
-                           "news_id" => $cell["news_id"],
-                           "collect_id" => $saved_cid,
-                           );
+        $news_model = News::getBySign($req["news_id"]);
+        if (!$news_model) {
+            throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
+        $news_ids []= $req["news_id"];
+        
+        if(($saved_cid = Collect::getCollectId($this->userSign, $news_model->url_sign))) {
+                //                throw new HttpException(ERR_COLLECT_CONFLICT, "user has collected this", array("collect_id" => $saved_cid));
+        } else {
+            $collect_model = new Collect();
+            $collect_model->user_sign = $this->userSign;
+            $collect_model->news_sign = $news_model->url_sign;
+            $collect_model->create_time = time();
+            $result = $collect_model->save();
+            if (!$result) {
+                throw new HttpException(ERR_INTERNAL_DB,
+                    "save collect model error");
+            }
+            $saved_cid = $collect_model->id;
+        }
+
+        $ret = array(
+         "news_id" => $req["news_id"],
+         "collect_id" => $saved_cid,
+         );
             
         $this->logEvent(EVENT_NEWS_COLLECT, array("news_id" => $news_ids));
         $this->logger->info(sprintf("[PostCollect][news:%s]",

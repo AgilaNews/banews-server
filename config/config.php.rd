@@ -2,14 +2,16 @@
 
 use Phalcon\Logger;
 
-define("LIBRARY_PATH",  "/home/work/banews-server/library/");
 $settings = array (
     "appdirs" => array (
         "libraryDir" => LIBRARY_PATH,
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models/",
+        "modelDirPub" => LIBRARY_PATH . "/models",
         "policyDir" => LIBRARY_PATH . "/policies/",
         "renderDir" => LIBRARY_PATH . "/renders/",
+        "rankerDir" => LIBRARY_PATH . "/rankers/",
+        "filterDir" => LIBRARY_PATH . "/filters/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
         "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
         "interveneDir" => LIBRARY_PATH . "/intervenes/",
@@ -18,8 +20,8 @@ $settings = array (
     'db_w' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-            'host' => 'localhost',
-            'username' => 'root',
+            'host' => '10.8.6.7',
+            'username' => 'banews_w',
             'password' => 'MhxzKhl-Happy!@#',
             'dbname' => 'banews',
             "options" => array(
@@ -30,8 +32,8 @@ $settings = array (
     'db_r' => array (
         'adapter' => 'Mysql',
         'conf' => array(
-            'host' => 'localhost',
-            'username' => 'root',
+            'host' => '10.8.6.7',
+            'username' => 'banews_r',
             'password' => 'MhxzKhl-Happy!@#',
             'dbname' => 'banews',
             "options" => array(
@@ -42,16 +44,36 @@ $settings = array (
     'comment' => array(
         'host' => '127.0.0.1',
         'port' => '6087',
-        'conn_timeout' => 30,
-        'call_timeout' => 100,
+        'conn_timeout' => 30000,
+        'call_timeout' => 1000000,
         'product_key' => 'agilanews',
     ),
     'abtest' => array(
         'host' => '127.0.0.1',
         'port' => '6097',
-        'conn_timeout' => 30,
-        'call_timeout' => 100,
+        'conn_timeout' => 30000,
+        'call_timeout' => 100000,
         'product_key' => 'agilanews',
+    ),
+    'lrRanker' => array(
+        'host' => '127.0.0.1',
+        'port' => '6077',
+        'conn_timeout' => 30000,
+        'call_timeout' => 100000,
+        'product_key' => 'agilanews',
+    ),
+    'bloomfilter' => array(
+        'host' => '127.0.0.1',
+        'port' => '6066',
+        'conn_timeout' => 30000,
+        'call_timeout' => 100000,
+    ),
+    'sphinx' => array(
+        'host' => '127.0.0.1',
+        'port' => 5034,
+        'conn_timeout'=> 30000,
+        'call_timeout' => 500000,
+        'suite_name' => 'agila_timeline',
     ),
     'logger' => array (
                        'banews' => array (
@@ -63,10 +85,14 @@ $settings = array (
                                         "addr" => "tcp://127.0.0.1:7070",
                                         "category" => "useraction",
                                         ),
+                       "feature" => array (
+                                        "addr" => "tcp://127.0.0.1:7070",
+                                        "category" => "samplefeature",
+                                        ),
                        ),
     'cache' => array (
                       "redis" => array (
-                                        "host" => "127.0.0.1",
+                                        "host" => "10.8.14.136",
                                         "port" => 6379,
                                         ),
                       ),

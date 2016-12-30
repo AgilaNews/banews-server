@@ -2,14 +2,16 @@
 
 use Phalcon\Logger;
 
-define("LIBRARY_PATH", "/home/work/banews-server/library");
 $settings = array (
     "appdirs" => array (
         "libraryDir" => LIBRARY_PATH,
         "controllerDir" => APP_PATH . "/app/controllers/",
         "modelDir" => APP_PATH . "/app/models",
+        "modelDirPub" => LIBRARY_PATH . "/models",
         "policyDir" => LIBRARY_PATH . "/policies",
         "renderDir" => LIBRARY_PATH . "/renders/",
+        "rankerDir" => LIBRARY_PATH . "/rankers/",
+        "filterDir" => LIBRARY_PATH . "/filters/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
         "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
         "interveneDir" => LIBRARY_PATH . "/intervenes/",
@@ -42,15 +44,35 @@ $settings = array (
         "host" => "10.8.91.237",
         "port" => "6087",
         'conn_timeout' => 30000,
-        'call_timeout' => 70000,
+        'call_timeout' => 300000,
         "product_key" => "agilanews",
     ),
     'abtest' => array(
         'host' => '10.8.91.237',
         'port' => '6097',
         'conn_timeout' => 30000,
+        'call_timeout' => 50000,
+        'product_key' => 'agilanews',
+    ),
+    'lrRanker' => array(
+        'host' => '10.8.91.237',
+        'port' => '6077',
+        'conn_timeout' => 30000,
         'call_timeout' => 70000,
         'product_key' => 'agilanews',
+    ),
+    'bloomfilter' => array(
+        'host' => "10.8.91.237",
+        'port' => '6066',
+        'conn_timeout' => 30000,
+        'call_timeout' => 100000,
+    ),
+    'sphinx' => array(
+        'host' => '10.8.69.141',
+        'port' => '5034',
+        'conn_timeout' => 300000,
+        'call_timeout' => 1000000,
+        'suite_name' => 'agila_timeline',
     ),
     'logger' => array (
                        'banews' => array (
@@ -61,6 +83,10 @@ $settings = array (
                        "event" => array(
                                         "addr" => "tcp://127.0.0.1:7070",
                                         "category" => "useraction",
+                                        ),
+                       "feature" => array (
+                                        "addr" => "tcp://127.0.0.1:7070",
+                                        "category" => "samplefeature",
                                         ),
                        ),
     'cache' => array (

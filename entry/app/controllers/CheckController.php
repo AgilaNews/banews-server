@@ -12,4 +12,21 @@ class CheckController extends BaseController {
 
         return $this->response;
     }
+
+    public function EarlierAction(){
+        $belows = Version::getAllVersionBelow($this->client_version);
+
+        if (!$belows) {
+            throw new HttpException(ERR_INTERNAL_DB, "internal error");
+        }
+        
+        $ret = array("belows" => array());
+
+        foreach ($belows as $below) {
+            $ret["belows"] []= "v" . $below->client_version;
+        }
+
+        $this->setJsonResponse($ret);
+        return $this->response;
+    }
 }

@@ -8,7 +8,18 @@
  * 
  * 
  */
+
+define('REPLY_COMMENT_NOTIFICATION_TYPE', 1);
+define('LIKE_NOTIFICATION_TYPE', 3);
+define('LIKE_NOTIFY_FEATURE', "1.2.5");
 class NotificationController extends BaseController {
+
+    public function IsLikeNotifyVersion(){
+        if ($this->os == "android" and version_compare($this->client_version, LIKE_NOTIFY_FEATURE, "<")) {
+            return False;
+        }  
+        return True;
+    }
     public function IndexAction(){
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
@@ -35,9 +46,36 @@ class NotificationController extends BaseController {
         $ret = array();
 
         foreach ($resp->getNotifications() as $notify) {
-            $cell = Comment::renderComment($notify->getComment());
+            $notiType = $notify->getType();
+            if ($notiType == REPLY_COMMENT_NOTIFICATION_TYPE){ 
+                $replyMsg = $notify->getReplyMsg();
+                $cell = Comment::renderComment($replyMsg->getComment());
+            }
+            else if ($notiType == LIKE_NOTIFICATION_TYPE){
+                if (!$this->IsLikeNotifyVersion()){
+                    continue;
+                }
+                $LikeMsg = $notify->getLikeMsg();
+                $cell = Comment::renderLikeComment($LikeMsg->getComment(), $LikeMsg->getLikeNumber());
+                //!!ugly code to judge tpl, reconstrut it later
+                $sign = $cell["news_id"];
+                $news_model = News::getBySign($sign);
+                $channel_id = $news_model->channel_id;
+                $cname = "Render$channel_id";
+                if (class_exists($cname)) {
+                    $render = new $cname($this);
+                } else {
+                    $render = new BaseListRender($this);
+                }
+                $news_cell = $render->render(array($sign => $news_model))[0];
+                $cell["tpl"] = $news_cell["tpl"];
+            }
+            else{
+                continue;
+            }
             $cell["notify_id"] = $notify->getNotificationId();
             $cell["status"] = $notify->getStatus();
+            $cell["type"] = $notiType;
             if ($cell["status"] == null) {
                 $cell["status"] = 0;
             }
@@ -102,6 +140,62 @@ class NotificationController extends BaseController {
         }
 
         $this->setJsonResponse($ret);
+        return $this->response;
+    }
+    public function checkAction(){
+        if (!$this->request->isGet()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+        $this->check_user_and_device();
+        $latest_id = $this->get_request_param("latest_id", "int", false, 0);
+        
+        $comment_service = $this->di->get('comment');
+        $req = new iface\CheckNotificationRequest();
+        
+        $req->setProductId($this->config->comment->product_key);
+        $req->setDeviceId($this->deviceId);
+        $req->setUserId($this->userSign);
+        $req->setLatestId($latest_id);
+
+        list($resp, $status) = $comment_service->CheckNotification($req)->wait();
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    json_encode($status->details, true));
+        }
+        $result = $resp->getHasNew();
+        if($result == null){
+            $result = 0;
+        }
+        $ret = array(
+            "status"=>strval($result)
+        );
+        $this->setJsonResponse($ret);
+        return $this->response;
+    }
+    public function readAction(){
+        if (!$this->request->isGet()) {
+            throw new HttpException(ERR_INVALID_METHOD, "not supported method");
+        }
+        $this->check_user_and_device();
+        $notification_id = $this->get_request_param("notification_id", "int", false, 0);
+        $comment_service = $this->di->get('comment');
+        $req = new iface\ReadNotificationRequest();
+        $req->setProductId($this->config->comment->product_key);
+        $req->setDeviceId($this->deviceId);
+        $req->setUserId($this->userSign);
+        $req->setNotificationId($notification_id);
+        list($resp, $status) = $comment_service->ReadNotification($req)->wait();
+        if ($status->code != 0) {
+            throw new HttpException(ERR_INTERNAL_BG,
+                                    json_encode($status->details, true));
+        }
+        $result = $resp->getStatus();
+        if($result == 0){
+            $this->setJsonResponse(array("message" => "ok"));
+        }
+        else{
+            $this->setJsonResponse(array("message" => "fail"));
+        }
         return $this->response;
     }
 }

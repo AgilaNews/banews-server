@@ -7,10 +7,11 @@
  * @version $Id$
  */
 
-define ("VIDEO_CHANNEL_ID", 30001);
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
+
+    private $featureChannelLst = array(10001);
 
     public function DetailAction() {
         if (!$this->request->isGet()){
@@ -39,12 +40,18 @@ class NewsController extends BaseController {
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign
                                             ));
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::saveActionToCache($newsSign, 
+                CACHE_FEATURE_CLICK_PREFIX,
+                CACHE_FEATURE_CLICK_TTL);
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }
 
     private function getTPL($channel_id) {
-        if ($channel_id == 30001) {
+        if ($channel_id == VIDEO_CHANNEL_ID) {
             return 12;
         } else {
             return 5;
@@ -76,7 +83,7 @@ class NewsController extends BaseController {
 
     private function getImgs($newsSign, $channel_id) {
         $imgs = array();
-        if ($channel_id != 30001) {
+        if ($channel_id != VIDEO_CHANNEL_ID) {
             $imgs = NewsImage::getImagesOfNews($newsSign);
             $imgcell = array();
 
@@ -137,7 +144,7 @@ class NewsController extends BaseController {
 
     private function getVideos($newsSign, $channel_id) {
         $videocell = array();
-        if ($channel_id != 30001) {
+        if ($channel_id != VIDEO_CHANNEL_ID) {
             $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
             foreach($videos as $video) {
                 if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
@@ -193,12 +200,26 @@ class NewsController extends BaseController {
             $selector = new BaseNewsSelector($channel_id, $this);
         }
 
-        $dispatch_models = $selector->select($prefer);
-        
+        $newsFeatureDct = array();
+        if (in_array($channel_id, $this->featureChannelLst)) {
+            list($dispatch_models, $newsFeatureDct) = 
+                $selector->select($prefer);
+        } else {
+            $dispatch_models = $selector->select($prefer);
+        }
+
+        $dispatch_ids = array();
         foreach ($dispatch_models as $dispatch_model) {
             if (isset($dispatch_model->url_sign)) {
                 $dispatch_ids []= $dispatch_model->url_sign;
             }
+        }
+        $cache = $this->di->get("cache");
+        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
+        if ($isLrRanker) {
+            News::batchSaveActionToCache($dispatch_ids, 
+                CACHE_FEATURE_DISPLAY_PREFIX, 
+                CACHE_FEATURE_DISPLAY_TTL);
         }
 
         $cname = "Render$channel_id";
@@ -209,7 +230,7 @@ class NewsController extends BaseController {
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
-        if (version_compare($this->client_version, "1.2.4", ">=")) {
+        if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
             $ret = array(
                 "dispatch_id" => $dispatch_id,
                 "news" => $render->render($dispatch_models),
@@ -233,6 +254,16 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
+        if (in_array($channel_id, $this->featureChannelLst) and $isLrRanker) {
+            foreach ($dispatch_ids as $newsId) {
+                if (array_key_exists($newsId, $newsFeatureDct)) {
+                    $param = array();
+                    $param['news_id'] = $newsId;
+                    $param['features'] = json_encode($newsFeatureDct[$newsId]);
+                    $this->logFeature($dispatch_id, $param);
+                }
+            }
+        }
         $this->setJsonResponse($ret);
         return $this->response;
     }
@@ -300,7 +331,14 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
-        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+        $channel_id = $news_model->channel_id;
+        $cname = "RecommendSelector$channel_id";
+        if (class_exists($cname)) {
+            $recommend_selector = new $cname($news_model->channel_id, $this);
+        } else {
+            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+        }
+
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "RecommendRender" . $news_model->channel_id;
         if (class_exists($cname)) {
@@ -327,10 +365,6 @@ class NewsController extends BaseController {
 
     private function addView($newsSign) {
         $video_model = Video::getByNewsSign($newsSign);
-        if (!$video_model) {
-            throw new HttpException(ERR_NEWS_NON_EXISTS, "news $newsSign non exists");
-        }
-
         if (!$video_model) {
             return 0;
         }

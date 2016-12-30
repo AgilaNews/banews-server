@@ -30,7 +30,7 @@ class CommentController extends BaseController {
         $hot_length = $this->get_request_param("hot_pn", "int", false, 10);
         $length = $this->get_request_param("pn", "int", false, 20);
 
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
             if ($length > 0) {
                 $ret["new"] = Comment::getCommentByFilter($this->deviceId, $newsSign, $last_id, $length, "new");
             } else {
@@ -113,12 +113,16 @@ class CommentController extends BaseController {
                                                   "anonymous" => $anonymous,
                                                   ));
         
-        if (version_compare($this->client_version, RICH_COMMENT_FEATURE, ">=")) {
-            $this->setJsonResponse(array(
-                                         "message" => "ok",
-                                         "id" => $resp->getCommentId(),
-                                         "time" => time(),
-                                         ));
+        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
+            $ret = array(
+                "message" => "ok",
+                "id" => $resp->getCommentId(),
+                "time" => time(),
+                );
+            if (in_array($newsSign, self::AnimationNews)) {
+                $ret["Animation"] = 1;
+            }
+            $this->setJsonResponse($ret);
         } else {
             $this->setJsonResponse(array(
                                          "message" => "ok",
@@ -175,6 +179,9 @@ class CommentController extends BaseController {
             $this->logger->warning("communicate to comment server error");
         } else {
             $currentLiked = $resp->getCurrentLiked();
+            if (!$currentLiked) {
+                $currentLiked = 0;
+            }
             
             $this->logEvent(EVENT_NEWS_COMMENT_LIKE, array(
                                                            "comment_id" => $comment_id,
