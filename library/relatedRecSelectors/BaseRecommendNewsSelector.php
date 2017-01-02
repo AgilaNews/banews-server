@@ -55,7 +55,7 @@ class BaseRecommendNewsSelector {
                 $this->_device_id, 
                 $this->_user_id, 
                 $myself, 
-                DEFAULT_RECOMMEND_NEWS_COUNT);
+                DEFAULT_RECOMMEND_NEWS_COUNT * 2);
             $randomModels = News::batchGet($randomNewsLst);
             foreach ($randomModels as $sign => $model) {
                 if (empty($model)) {
