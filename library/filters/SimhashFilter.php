@@ -1,6 +1,7 @@
 <?php
 
 define ('MAX_SIMILARITY_THRE', 0.9);
+define ('SIMHASH_DEFAULT_VALUE', 0.0);
 
 class SimhashFilter extends BaseNewsFilter {
 
@@ -21,10 +22,14 @@ class SimhashFilter extends BaseNewsFilter {
     } 
 
     protected function calSimilarity($preStr, $latStr) {
+        if (empty($preStr) || empty($latStr)) {
+            return SIMHASH_DEFAULT_VALUE;
+        }
         if (strlen($preStr) != strlen($latStr)) {
             $this->_logger->warning(sprintf(
                 'The simhash values have different sizes (%s bits and %s bits).', 
                 strlen($preStr), strlen($latStr)));
+            return SIMHASH_DEFAULT_VALUE;
         }
         $len = $this->calHammingDistance($preStr, $latStr);
         $sim = $this->gaussianDensity($len) / 
