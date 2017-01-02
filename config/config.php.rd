@@ -14,8 +14,7 @@ $settings = array (
         "filterDir" => LIBRARY_PATH . "/filters/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
         "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
-        "interveneDir" => LIBRARY_PATH . "/intervenes/",
-        "simhashDir" => LIBRARY_PATH . "/filter/simhash",
+        "interveneDir" => LIBRARY_PATH . "/intervenes/"
     ),
     'db_w' => array (
         'adapter' => 'Mysql',
