@@ -18,49 +18,68 @@ class BaseRecommendNewsSelector {
         return "esRelatedRec";
     }
 
-    public function select($myself) {
+    protected function removeDup($models) {
         $ret = array();
-        $cs = array(); //content sign
+        $uniq = array();
+
+        foreach ($models as $sign => $news_model) { 
+            if (!empty($news_model)) {
+                continue;
+            }
+            if (array_key_exists($news_model->content_sign, $uniq) 
+            ) {
+                //content sign dup continue
+                continue;
+            }
+            $ret [$sign] = $news_model;
+            $uniq[$news_model->content_sign] = $news_model;
+        }
+        return $ret;
+    }
+
+    public function select($myself) {
         $esRelatedPolicy = new EsRelatedRecPolicy($this->_di); 
-        $esRelatedNewsLst = $esRelatedPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $myself, 
+        $esRelatedNewsLst = $esRelatedPolicy->sampling(
+            $this->_channel_id, 
+            $this->_device_id, 
+            $this->_user_id, 
+            $myself, 
             DEFAULT_RECOMMEND_NEWS_COUNT * 2);
-
+        array_unshift($esRelatedNewsLst, $myself);
+        $models = $this->removeDup($esRelatedNewsLst);
         $models = News::batchGet($esRelatedNewsLst);
-        foreach ($models as $sign => $model) {
-            if (!$model || ($sign == $myself) || 
-                array_key_exists($model->content_sign, $cs)) {
-                continue;
-            }
-            $ret[$sign]= $model;
-            $cs[$model->content_sign] = $model; 
-
-            if (count($ret) >= DEFAULT_RECOMMEND_NEWS_COUNT) {
-                return $ret;
-            }
-        }
-
-        $randomPolicy = new RandomRecommendPolicy($this->_di);
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-                                                 $this->_device_id, $this->_user_id, 
-                                                 $myself, 
-                                                 DEFAULT_RECOMMEND_NEWS_COUNT - count($ret) + 2);
-        
-
-        $randomModels = News::batchGet($randomNewsLst);
-        foreach ($randomModels as $sign => $model) {
-            if (!$model || ($sign == $myself) || 
-                array_key_exists($model->content_sign, $cs)) {
-                continue;
-            }
-
-            $cs[$model->content_sign] = $model; 
-            $ret [$sign] = $model;
-            if (count($ret) >= DEFAULT_RECOMMEND_NEWS_COUNT) {
-                return $ret;
+        if (count($models) < DEFAULT_RECOMMEND_NEWS_COUNT * 2) {
+            $randomPolicy = new RandomRecommendPolicy($this->_di);
+            $randomNewsLst = $randomPolicy->sampling(
+                $this->_channel_id, 
+                $this->_device_id, 
+                $this->_user_id, 
+                $myself, 
+                DEFAULT_RECOMMEND_NEWS_COUNT * 2);
+            $randomModels = News::batchGet($randomNewsLst);
+            foreach ($randomModels as $sign => $model) {
+                if (empty($model)) {
+                    continue;
+                }
+                $models[$model->url_sign] = $model; 
             }
         }
 
+        // post filter after ranking
+        $models = array_values($models);
+        $simhashFilter = new SimhashFilter($this->_di);
+        $models = $simhashFilter->filtering($this->_channel_id,
+            $this->_device_id, $models);
+        $ret = array();
+        foreach ($models as $newsObj) {
+            if ($newsObj->url_sign == $myself) {
+                continue;
+            }
+            if (count($ret) >= DEFAULT_RECOMMEND_NEWS_COUNT) {
+                break;
+            }
+            $ret[$newsObj->url_sign] = $newsObj;
+        }
         return $ret;
     } 
 }

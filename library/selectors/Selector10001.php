@@ -138,7 +138,7 @@ class Selector10001 extends BaseNewsSelector{
         $newsObjDct = $this->removeInvisible($newsObjDct);
         $newsObjDct = $this->removeDup($newsObjDct);
 
-        // add ranking according to user group
+        // rerank news from recall step
         $newsFeatureDct = array();
         $cache = $this->_di->get('cache');
         $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
@@ -165,8 +165,12 @@ class Selector10001 extends BaseNewsSelector{
             $filter[] = $newsId;
             $ret[] = $newsObj;
         }
-        
-        /*
+        // post filter after ranking
+        $simhashFilter = new SimhashFilter($this->_di);
+        $ret = $simhashFilter->filtering($this->_channel_id,
+            $this->_device_id, $ret);
+
+        //*
         if ($prefer == 'later') {
             $cache = $this->_di->get('cache');
             if ($cache->exists("BS_BANNER_SWITCH"))
