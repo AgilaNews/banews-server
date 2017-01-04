@@ -119,9 +119,6 @@ class CommentController extends BaseController {
                 "id" => $resp->getCommentId(),
                 "time" => time(),
                 );
-            if (in_array($newsSign, self::AnimationNews)) {
-                $ret["Animation"] = 1;
-            }
             $this->setJsonResponse($ret);
         } else {
             $this->setJsonResponse(array(
