@@ -8,14 +8,15 @@ define('MAX_HOT_TAG', 2);
 define('HOT_LIKE_THRESHOLD', 3);
 class BaseListRender {
     public function __construct($controller) {
-        $this->_device_id = $controller->deviceId;
-        $this->_screen_w = $controller->resolution_w;
-        $this->_screen_h = $controller->resolution_h;
-        $this->_net = $controller->net;
-        $this->_os = $controller->os;
-        $this->_client_version = $controller->client_version;
-        $this->_large_img_count = 0;
+        $this->device_id = $controller->deviceId;
+        $this->screen_w = $controller->resolution_w;
+        $this->screen_h = $controller->resolution_h;
+        $this->net = $controller->net;
+        $this->os = $controller->os;
+        $this->client_version = $controller->client_version;
+        $this->large_img_count = 0;
     }
+    
     public function render($models) {
         $di = DI::getDefault();
         $comment_service = $di->get('comment');
