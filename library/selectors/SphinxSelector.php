@@ -19,9 +19,11 @@ class SphinxSelector extends BaseNewsSelector {
         $sphinx = DI::getDefault()->get('sphinx');
         $required = mt_rand(MIN_NEWS_SEND_COUNT, MAX_NEWS_SENT_COUNT);
 
-        $selected_news_list = $sphinx->select($this->ctx, $this->_channel_id, $prefer, $required);
+        $selected_news_list = $sphinx->select($this->ctx, 
+            $this->_channel_id, $prefer, $required);
         if ($selected_news_list === null) {
             //TODO
+            return array();
         }
 
         $models = News::BatchGet($selected_news_list);

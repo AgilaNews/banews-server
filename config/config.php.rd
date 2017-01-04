@@ -11,9 +11,10 @@ $settings = array (
         "policyDir" => LIBRARY_PATH . "/policies/",
         "renderDir" => LIBRARY_PATH . "/renders/",
         "rankerDir" => LIBRARY_PATH . "/rankers/",
+        "filterDir" => LIBRARY_PATH . "/filters/",
         "selectorDir" => LIBRARY_PATH . "/selectors/",
         "relatedRecSelectorDir" => LIBRARY_PATH . "/relatedRecSelectors/",
-        "interveneDir" => LIBRARY_PATH . "/intervenes/",
+        "interveneDir" => LIBRARY_PATH . "/intervenes/"
     ),
     'db_w' => array (
         'adapter' => 'Mysql',

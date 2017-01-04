@@ -136,7 +136,7 @@ class SearchController extends BaseController {
         $channel_id = $this->get_request_param("channel_id", "int", true);
         $from = $this->get_request_param("from", "int", true);
         $size = $this->get_request_param("size", "int", true);
-        $source = $this->get_request_param("source", "int", false, "searchbox");
+        $source = $this->get_request_param("source", "string", false, "searchbox");
         $words = $this->get_request_param("words", "string", true);
         $words = urldecode($words);
         
@@ -171,6 +171,7 @@ class SearchController extends BaseController {
                                                 "from"=>$from,
                                                 "size"=>$size,
                                                 "words"=>$words,
+                                                "source"=>$source,
                                                 ));
 
         $this->logger->info(sprintf("[count:%s]", count($models)));

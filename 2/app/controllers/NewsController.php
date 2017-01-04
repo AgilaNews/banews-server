@@ -137,7 +137,7 @@ class NewsController extends BaseController {
             if (!in_array($newsSign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
                 $ret["recommend_news"]= $render->render($models);
             } else {
-                unset($ret["ad"]);
+                $ret["ad"] = new stdClass();
             }
         }
 
@@ -156,9 +156,6 @@ class NewsController extends BaseController {
         }
         // ----------------- end -------TODO remove later---------------------------------------
 
-        if (!array_key_exists("ad", $ret)) {
-            $ret["ad"] = array();
-        }
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
