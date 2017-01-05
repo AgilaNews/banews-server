@@ -50,6 +50,10 @@ class TopicIntervene extends BaseIntervene {
         $device_id = $this->context["device_id"];
         $topic_model = Topic::GetByTopicId($topic_id);
         $ret = $this->serializeNewsCell($topic_model);
+        $this->logEvent(
+            EVENT_TOPIC_INTERVENE, array(
+                "topic_id"=> $topic_id,
+                ));
         $this->setDeviceUsed($topic_id, $device_id);
         return $ret;
     }
