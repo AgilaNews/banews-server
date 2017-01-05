@@ -8,6 +8,8 @@ class Render10011 extends BaseListRender {
     public function render($models) {
         $ret = array();
 
+        $comment_counts = Comment::getCount($models);
+        
         foreach ($models as $news_model) {
             if (!$news_model) {
                 continue;
@@ -16,6 +18,11 @@ class Render10011 extends BaseListRender {
             if (count($cell["imgs"]) == 0) {
                 continue;
             }
+
+            if (array_key_exists($news_model->url_sign, $comment_counts)) {
+                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+            }
+            
             $ret []= $cell;
         }
 
