@@ -47,7 +47,7 @@ class Render30001 extends BaseListRender {
         $video = Video::getByNewsSign($news_model->url_sign);
         if ($video) {
             $ret = RenderLib::GetPublicData($news_model);
-            $ret["tpl"] = 12;
+            $ret["tpl"] = RenderLib::GetTimelineTpl($news_model->channel_id, null, false, null, $video);
             $ret["views"] = $video->view;
             $meta = json_decode($video->cover_meta, true);
             if (!$meta || 

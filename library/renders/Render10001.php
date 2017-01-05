@@ -79,9 +79,9 @@ class Render10001 extends BaseListRender {
 
     protected function serializeVideoCell($news_model) {
         $video = Video::getByNewsSign($news_model->url_sign);
+        
         if ($video) {
             $ret = RenderLib::GetPublicData($news_model);
-            $ret["tpl"] = NEWS_LIST_TPL_VIDEO_BIG;
             $ret["views"] = $video->view;
             $meta = json_decode($video->cover_meta, true);
             if (!$meta || 

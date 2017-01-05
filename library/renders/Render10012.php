@@ -34,38 +34,33 @@ class Render10012 extends BaseListRender {
         $duration = $meta["duration"];
         $oh = $meta["height"];
         $ow = $meta["width"];
-        if ($this->_os == "ios") {
-            $aw = (int) ($this->_screen_w - 44);
+        if ($this->os == "ios") {
+            $aw = (int) ($this->screen_w - 44);
         } else {
-            $aw = (int) ($this->_screen_w * 11 / 12);
+            $aw = (int) ($this->screen_w * 11 / 12);
         }
-        $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
+        $ah = (int) min($this->screen_h * 0.9, $aw * $oh / $ow);
 
 
-        $ret = array(
-            "title" => $news_model->title,
-            "news_id" => $news_model->url_sign,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-            "likedCount" => $news_model->liked,
-            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
-            "imgs" => array(array(
-                "src" => sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign),
-                "width" => $aw,
-                "height" => $ah,
-                )),
-            "videos" => array(array(
-                "src" => sprintf(GIF_CHANNEL_PATTERN, $gif_model->gif_url_sign),
-                "width" => $aw,
-                "height" => $ah,
-                "duration" => $duration,
-                "size" => $size,
-            ))
-        );
+        $ret = RenderLib::GetPublicData($news_model);
+        $ret["imgs"] = array(array(
+                                   "src" => sprintf(GIF_COVER_PATTERN, $gif_model->gif_url_sign),
+                                   "width" => $aw,
+                                   "height" => $ah,
+                                   ),
+                             );
+        $ret["videos"] = array(array(
+                                     "src" => sprintf(GIF_CHANNEL_PATTERN, $gif_model->gif_url_sign),
+                                     "width" => $aw,
+                                     "height" => $ah,
+                                     "duration" => $duration,
+                                     "size" => $size,
+                                     ),
+                               );
 
-        $ret["tpl"] = NEWS_LIST_TPL_GIF;
-
+        $ret["tpl"] = RenderLib::GetTimelineTpl($news_model);
+        RenderLib::AddCommentsCount(array($ret));
+        
         return $ret;
     }
 }

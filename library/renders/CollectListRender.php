@@ -16,7 +16,6 @@ class CollectListRender extends BaseListRender {
         }
 
         $news_model_list = News::batchGet($signs);
-        $comment_counts = Comment::getCount($signs);
 
         foreach ($news_model_list as $sign => $news_model) {
             if (!$news_model) {
@@ -25,9 +24,6 @@ class CollectListRender extends BaseListRender {
             $cell = "";
             if ($news_model->channel_id == "30001") {
                 $cell = $this->video_render->serializeNewsCell($news_model);
-                if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
-                }
             } else {
                 $cell = $this->serializeNewsCell($news_model);
                 unset($cell["filter_tags"]);
@@ -37,6 +33,8 @@ class CollectListRender extends BaseListRender {
             $cell["public_time"] = $collect->create_time;
             $ret []= $cell;
         }
+
+        RenderLib::AddCommentsCount(c)
 
         return $ret;
     }

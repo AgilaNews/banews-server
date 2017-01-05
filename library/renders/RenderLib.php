@@ -6,7 +6,7 @@
  * @date    2016-12-04 17:45:14
  * @version $Id$
  */
-
+use Phalcon\DI;
 class RenderLib {
     /*
       时间线的新闻样式定义
@@ -81,6 +81,14 @@ class RenderLib {
 
     // GIF详情页模板
     const NEWS_DETAIL_GIF_NEWS = 3;
+
+    // 列表页左下角, tag 相关
+    const MAX_HOT_TAG =  2;
+    const HOT_LIKE_THRESHOLD = 20;
+
+    const PLACEMENT_TIMELINE = 1;
+
+    const PLACEMENT_RECOMMEND = 2;
     
     public static function GetPublicData($news_model) {
         $ret = array(
@@ -91,11 +99,57 @@ class RenderLib {
             "public_time" => $news_model->publish_time,
             "likedCount" => $news_model->liked,
             "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
-            "commentCount" => 0,
             "imgs" => array(),
             "videos" => array(),
             );
         return $ret;
+    }
+
+    public static function FillCommentsCount($keys, &$ret) {
+        $di = DI::getDefault();
+        
+        $keys = array();
+        foreach ($news_models as $news_model) {
+            if (!$this->isIntervened($model)) {
+                $keys []= $news_model->url_sign;
+            }
+        }
+
+        foreach ($ret as &$cell) {
+            if(array_key_exists($news_model->url_sign, $comment_counts)) {
+                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+            } else {
+                $cell["commentCount"] = 0;
+            }
+        }
+        
+        $comment_counts = Comment::getCount($keys);
+    }
+
+    public static function FillTags(&$ret) {
+        $hot_tags = 0;
+        
+        foreach ($ret as &$cell) {
+            if ($hot_tags < self::MAX_HOT_TAG && $cell["likedCount"] >= self::HOT_LIKE_THRESHOLD) {
+                $cell["tag"] = "Hot";
+                $hot_tags++;
+            } else {
+                $cell["tag"] = "";
+            }
+        }
+    }
+
+    public static function FillTpl(&$ret, $type) {
+        switch ($type) {
+        case self::PLACEMENT_RECOMMEND:
+            break;
+        case self::PLACEMENT_TIMELINE:
+            foreach ($ret as $cell) {
+                if (!array_key_exists($cell, "tpl")) {
+                    $cell["tpl"] = self::getTimelineTpl($cell);
+                }
+            }
+        }
     }
 
     public static function GetImageQuality($net) {
@@ -108,14 +162,14 @@ class RenderLib {
         }
     }
 
-    public static function ImageRender($net, $url_sign, $meta, $large) {
+    public static function ImageRender($net, $url_sign, $meta, $large, $) {
         $quality = RenderLib::GetImageQuality($net);
 
         $cell = array(
             "width" => $meta["width"], 
             "height" => $meta["height"], 
             );
-        
+
         if ($large) {
             $cell["pattern"] = sprintf(LARGE_CHANNEL_IMG_PATTERN, $url_sign, "{w}", "{h}", $quality);
             $cell["src"] = sprintf(LARGE_CHANNEL_IMG_PATTERN, urlencode($url_sign), "660", "410", $quality);
@@ -193,5 +247,33 @@ class RenderLib {
             "description" => mb_substr($video->description, 0, VIDEO_DESCRIPTION_LIMIT, "UTF-8"),
             "display" => 0
             );
+    }
+
+    private static function getTimelineTpl($cell) {
+        if ($cell["channel_id"] == 10012) {
+            return self::NEWS_LIST_TPL_GIF;
+        }
+        if ($youtube_videos) {
+            if ($cell["channel_id"] == 30001) {
+                return self::NEWS_LIST_TPL_VIDEO;
+            } else {
+                return self::NEWS_LIST_TPL_VIDEO_BIG;
+            }
+        }
+
+        if ($cell["__large_image"]) {
+            unset($cell["__large_image"]);
+            return self::NEWS_LIST_TPL_LARGE_IMG;
+        }
+
+        if (count($ret["imgs"]) == 0) {
+            return self::NEWS_LIST_TPL_RAW_TEXT;
+        } else if (count($ret["imgs"]) <= 2) {
+            return self::NEWS_LIST_TPL_TEXT_IMG;
+        } else if (count($ret["imgs"]) >= 3) {
+            return self::NEWS_LIST_TPL_THREE_IMG;
+        }
+
+        return self::NEWS_LIST_TPL_RAW_TEXT;
     }
 }

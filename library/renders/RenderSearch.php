@@ -7,10 +7,6 @@ class RenderSearch extends BaseListRender {
     }
 
     public function render($models) {
-        $di = DI::getDefault();
-        $comment_service = $di->get('comment');
-        $config = $di->get('config');
-        
         $ret = array();
         $max_quality = 0.0;
         $news_sign = "";
@@ -27,6 +23,7 @@ class RenderSearch extends BaseListRender {
             if (!$news_model){
                 return null;
             }
+            
             $cell = null;
             if ($news_model->channel_id == VIDEO_CHANNEL_ID) {
                 $cell = $this->serializeVideoCell($news_model);
@@ -36,16 +33,6 @@ class RenderSearch extends BaseListRender {
                 $cell["tag"] = "Video";
             } else {
                 $cell = $this->serializeNewsCell($news_model);
-                /*           
-                if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
-                    if (mt_rand() % 3 == 0) {
-                        $cell["tag"] = "Hot";
-                    }
-                    $hot_tags++;
-                } else {
-                    $cell["tag"] = "";
-                }
-                */
             }
 
 
