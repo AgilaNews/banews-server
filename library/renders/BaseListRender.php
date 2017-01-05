@@ -35,8 +35,13 @@ class BaseListRender {
             }
         }
 
-        $keys = array_map(function($news_model) {return $news_model->url_sign;}, $models);
-
+        $keys = array();
+        foreach ($models as $news_model) {
+            if ($news_model instanceof News) {
+                $keys []= $news_model->url_sign;
+            }
+        }
+        
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);

@@ -140,7 +140,7 @@ class BaseNewsSelector {
             $device_md5 = md5($this->_device_id);
 
             $ad_intervene = new AdIntervene(array(
-                                                  "type" => NEWS_LIST_TPL_AD_FB_MEDIUM,
+                                                  "type" => RenderLib::NEWS_LIST_TPL_AD_FB_MEDIUM,
                                                   "device" => $this->_device_id,
                                                   ));
 
