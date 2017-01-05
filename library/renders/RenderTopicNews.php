@@ -6,7 +6,7 @@ class RenderTopicNews extends BaseListRender {
         parent::__construct($controller);
     }
 
-    public function render($models) {
+    public function render($models, $from) {
         $di = DI::getDefault();
         $comment_service = $di->get('comment');
         $config = $di->get('config');
@@ -25,12 +25,14 @@ class RenderTopicNews extends BaseListRender {
         
         $comment_counts = Comment::getCount($keys);
 
-        $first_medel = array_shift($models);
-        $cell = $this->serializeNewsCell($first_medel, true);
-        if(array_key_exists($first_medel->url_sign, $comment_counts)) {
-            $cell["commentCount"] = $comment_counts[$first_medel->url_sign];
+        if ($from == 0) {
+            $first_medel = array_shift($models);
+            $cell = $this->serializeNewsCell($first_medel, true);
+            if(array_key_exists($first_medel->url_sign, $comment_counts)) {
+                $cell["commentCount"] = $comment_counts[$first_medel->url_sign];
+            }
+            $ret[] = $cell;
         }
-        $ret[] = $cell;
         
         foreach ($models as $news_model) {
             $cell = null;
