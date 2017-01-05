@@ -162,7 +162,7 @@ class RenderLib {
         }
     }
 
-    public static function ImageRender($net, $url_sign, $meta, $large, $) {
+    public static function ImageRender($net, $url_sign, $meta, $large) {
         $quality = RenderLib::GetImageQuality($net);
 
         $cell = array(
