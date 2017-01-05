@@ -35,7 +35,7 @@ class BaseListRender {
             }
         }
 
-        $keys = array_map(function($news_model) {return $news_model->news_sign;}, $models);
+        $keys = array_map(function($news_model) {return $news_model->url_sign;}, $models);
 
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
