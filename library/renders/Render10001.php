@@ -31,10 +31,6 @@ class Render10001 extends BaseListRender {
                 if ($cell == null) {
                     continue;
                 }
-                if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
-                }
-                $cell["tag"] = "Video";
                 $ret[] = $cell;
                 continue;
             }
@@ -43,9 +39,6 @@ class Render10001 extends BaseListRender {
                 $cell = $this->serializeNewsCell($news_model);
             }
 
-            if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
-            }
             $ret[] = $cell;
         }
 
@@ -55,8 +48,10 @@ class Render10001 extends BaseListRender {
                 $keys []= $model->url_sign;
             }
         }
-        
 
+        RenderLib::FillTags($ret);
+        RenderLib::FillCommentsCount($ret);
+        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
         
         return $ret;
     }

@@ -68,7 +68,7 @@ class TopicIntervene extends BaseIntervene {
         $ret["imgs"][] = RenderLib::LargeImageRender($this->context["net"],
             $topic_model->image_sign, $meta, $this->context["screen_w"],
             $this->context["screen_h"], $this->context["os"]);
-        $ret["tpl"] = NEWS_LIST_TOPIC;
+        $ret["tpl"] = RenderLib::NEWS_LIST_TOPIC;
        
         return $ret;
     }
