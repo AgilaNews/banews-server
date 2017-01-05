@@ -7,18 +7,18 @@ class Render10012 extends BaseListRender {
     public function render($models) {
         $ret = array();
 
-        $comment_counts = Comment::getCount($models);
         foreach ($models as $news_model) {
             $cell = $this->serializeNewsCell($news_model);
             if (!$cell) {
                 continue;   
             }
-            if (array_key_exists($news_model->url_sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
-            }
 
             $ret []= $cell;
         }
+
+        RenderLib::FillTags($ret);
+        RenderLib::FillCommentsCount($ret);
+        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
 
         return $ret;
     } 
@@ -63,9 +63,6 @@ class Render10012 extends BaseListRender {
                                      ),
                                );
 
-        $ret["tpl"] = RenderLib::GetTimelineTpl($news_model);
-        RenderLib::AddCommentsCount(array($ret));
-        
         return $ret;
     }
 }

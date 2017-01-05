@@ -13,6 +13,7 @@ class Render10001 extends BaseListRender {
             if (!$news_model) {
                 continue;
             }
+            
             $cell = null;
             if ($news_model instanceof TempTopIntervene) {
                 $m = $news_model->render();
@@ -44,7 +45,7 @@ class Render10001 extends BaseListRender {
 
         $keys = array();
         foreach ($models as $model) {
-            if (!$this->isIntervened($model)) {
+            if ($model && !$this->isIntervened($model)) {
                 $keys []= $model->url_sign;
             }
         }
