@@ -264,8 +264,7 @@ class RenderLib {
             }
         }
 
-        if (array_key_exists("__large_image", $cell) &&
-            $cell["__large_image"]) {
+        if (array_key_exists("__large_image", $cell)) {
             unset($cell["__large_image"]);
             return self::NEWS_LIST_TPL_LARGE_IMG;
         }
