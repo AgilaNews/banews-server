@@ -130,7 +130,9 @@ class RenderLib {
         $hot_tags = 0;
         
         foreach ($ret as &$cell) {
-            if ($hot_tags < self::MAX_HOT_TAG && $cell["likedCount"] >= self::HOT_LIKE_THRESHOLD) {
+            if ($hot_tags < self::MAX_HOT_TAG &&
+                array_key_exists("likedCount", $cell) &&
+                $cell["likedCount"] >= self::HOT_LIKE_THRESHOLD) {
                 $cell["tag"] = "Hot";
                 $hot_tags++;
             } else {
