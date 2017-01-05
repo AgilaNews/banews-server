@@ -135,7 +135,7 @@ class RenderLib {
             $cell["tag"] = "";
             
             if (array_key_exists("channel_id", $cell) &&
-                self::isVideoChannel($cell["channel_id"]) {
+                self::isVideoChannel($cell["channel_id"])) {
                 $cell["tag"] = "Video";
                 continue;
             }
