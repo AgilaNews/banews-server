@@ -35,8 +35,8 @@ class BaseListRender {
             }
         }
 
-        RenderLib::AddTagsToCells($ret);
-        RenderLib::AddCommentsCount($ret);
+        RenderLib::FillTags($ret);
+        RenderLib::FillCommentsCount($ret);
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
         
         return $ret;

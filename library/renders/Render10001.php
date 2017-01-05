@@ -7,24 +7,8 @@ class Render10001 extends BaseListRender {
     }
 
     public function render($models) {
-        $di = DI::getDefault();
-        $comment_service = $di->get('comment');
-        $config = $di->get('config');
-        
         $ret = array();
-        $max_quality = 0.0;
-        $news_sign = "";
-        $hot_tags = 0;
 
-        $keys = array();
-        foreach ($models as $model) {
-            if (!$this->isIntervened($model)) {
-                $keys []= $model->url_sign;
-            }
-        }
-        
-        $comment_counts = Comment::getCount($keys);
-        
         foreach ($models as $news_model) {
             if (!$news_model) {
                 continue;
@@ -62,17 +46,17 @@ class Render10001 extends BaseListRender {
             if(array_key_exists($news_model->url_sign, $comment_counts)) {
                 $cell["commentCount"] = $comment_counts[$news_model->url_sign];
             }
-           
-            if ($hot_tags < MAX_HOT_TAG && $news_model->liked >= HOT_LIKE_THRESHOLD) {
-                if (mt_rand() % 3 == 0) {
-                    $cell["tag"] = "Hot";
-                }
-                $hot_tags++;
-            } else {
-                $cell["tag"] = "";
-            }
             $ret[] = $cell;
         }
+
+        $keys = array();
+        foreach ($models as $model) {
+            if (!$this->isIntervened($model)) {
+                $keys []= $model->url_sign;
+            }
+        }
+        
+
         
         return $ret;
     }
