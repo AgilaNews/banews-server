@@ -272,8 +272,10 @@ class RenderLib {
         if (count($cell["imgs"]) == 0) {
             return self::NEWS_LIST_TPL_RAW_TEXT;
         } else if (count($cell["imgs"]) <= 2) {
+            $cell["imgs"] = array_slice($cell["imgs"], 0, 1);
             return self::NEWS_LIST_TPL_TEXT_IMG;
         } else if (count($cell["imgs"]) >= 3) {
+            $cell["imgs"] = array_slice($cell["imgs"], 0, 3);
             return self::NEWS_LIST_TPL_THREE_IMG;
         }
 
