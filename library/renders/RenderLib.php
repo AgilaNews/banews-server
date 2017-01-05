@@ -159,6 +159,7 @@ class RenderLib {
                 case self::PLACEMENT_TIMELINE:
                     $cell["tpl"] = self::getTimelineTpl($cell["channel_id"], $cell);
                     break;
+                }
             }
         }
     }
