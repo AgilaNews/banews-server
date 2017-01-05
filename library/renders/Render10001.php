@@ -69,10 +69,10 @@ class Render10001 extends BaseListRender {
                 continue;
             }
 
-            $ret["imgs"][] = RenderLib::LargeImageRender($this->_net, $video->cover_image_sign,
-                $meta, $this->_screen_w, $this->_screen_h, $this->_os);
+            $ret["imgs"][] = RenderLib::LargeImageRender($this->net, $video->cover_image_sign,
+                $meta, $this->screen_w, $this->screen_h, $this->os);
             $ret["videos"][] = RenderLib::VideoRender($video, $meta, 
-                $this->_screen_w, $this->_screen_h, $this->_os);
+                $this->screen_w, $this->screen_h, $this->os);
             return $ret;
         } 
         return null;
