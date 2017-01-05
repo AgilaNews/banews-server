@@ -15,9 +15,9 @@ define("TOPIC_INTERVENE_TTL", 86400);
 class TopicIntervene extends BaseIntervene {
     public function __construct($context = array()) {
         parent::__construct($context);
-        
+
         $topic_id = $this->select();
-        if (!$topic_id {
+        if (!$topic_id) {
             $this->empty = true;
         } else {
             $this->flagSign = TOPIC_INTERVENE_KEY . $topic_id;
