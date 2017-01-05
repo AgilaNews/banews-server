@@ -25,7 +25,7 @@ class NbaIntervene extends BaseIntervene {
                                        "page" => "/nba/nba_standings.html",
                                        ),
                                  ),
-                           "tpl" => NEWS_LIST_TPL_NBA,
+                           "tpl" => RenderLib::NEWS_LIST_TPL_NBA,
                            "fix_top" => 1,
                            ));
     }

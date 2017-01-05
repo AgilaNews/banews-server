@@ -82,7 +82,7 @@ class BannerIntervene extends BaseIntervene {
                         "{w}", "{h}", $quality),
                     );
             }
-            $ret["tpl"] = NEWS_LIST_TPL_LARGE_IMG;
+            $ret["tpl"] = RenderLib::NEWS_LIST_TPL_LARGE_IMG;
         //}
 
         return $ret;
