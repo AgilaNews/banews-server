@@ -51,7 +51,7 @@ class TopicNews extends BaseModel {
         if ($cache) {
             $key = CACHE_TOPIC_NEWS_PREFIX . $topic_id;
             if($cache->exists($key)) {
-                return $cache->lRange($key, $start, $count);
+                return $cache->lRange($key, $start, $count + $start - 1);
             }
         }
         return null;
