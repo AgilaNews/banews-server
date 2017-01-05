@@ -58,6 +58,8 @@ class RenderLib {
     // facebook中图广告模板
     const NEWS_LIST_TPL_AD_FB_MEDIUM = 5000;
 
+    const DETAIL_AD_TPL_MEDIUM = 5001;
+
     /*
       推荐展位的模板定义
      */
