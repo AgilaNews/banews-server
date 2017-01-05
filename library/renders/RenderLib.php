@@ -139,7 +139,7 @@ class RenderLib {
         }
     }
 
-    public static function FillTpl(&$ret, $channel_id, $type) {
+    public static function FillTpl(&$ret, $type) {
         switch ($type) {
         case self::PLACEMENT_RECOMMEND:
             break;
