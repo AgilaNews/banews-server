@@ -144,7 +144,7 @@ class RenderLib {
             break;
         case self::PLACEMENT_TIMELINE:
             foreach ($ret as $cell) {
-                if (!array_key_exists($cell, "tpl")) {
+                if (!array_key_exists("tpl", $cell)) {
                     $cell["tpl"] = self::getTimelineTpl($cell);
                 }
             }
@@ -252,7 +252,8 @@ class RenderLib {
         if ($cell["channel_id"] == 10012) {
             return self::NEWS_LIST_TPL_GIF;
         }
-        if ($youtube_videos) {
+        
+        if (array_key_exists("videos", $cell) && $cell["videos"]) {
             if ($cell["channel_id"] == 30001) {
                 return self::NEWS_LIST_TPL_VIDEO;
             } else {
@@ -260,7 +261,8 @@ class RenderLib {
             }
         }
 
-        if ($cell["__large_image"]) {
+        if (array_key_exists("__large_image", $cell) &&
+            $cell["__large_image"]) {
             unset($cell["__large_image"]);
             return self::NEWS_LIST_TPL_LARGE_IMG;
         }
