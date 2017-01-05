@@ -105,25 +105,24 @@ class RenderLib {
         return $ret;
     }
 
-    public static function FillCommentsCount($keys, &$ret) {
-        $di = DI::getDefault();
-        
+    public static function FillCommentsCount(&$ret) {
         $keys = array();
-        foreach ($news_models as $news_model) {
-            if (!$this->isIntervened($model)) {
-                $keys []= $news_model->url_sign;
+
+        foreach ($ret as $cell) {
+            if (array_key_exists("news_id", $cell)) {
+                $keys []= $cell["news_id"];
             }
         }
+        $comment_counts = Comment::getCount($keys);
 
         foreach ($ret as &$cell) {
-            if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
+            if(array_key_exists("news_id", $cell) && 
+               array_key_exists($cell["news_id"], $comment_counts)) {
+                $cell["commentCount"] = $comment_counts[$cell["news_id"]];
             } else {
                 $cell["commentCount"] = 0;
             }
         }
-        
-        $comment_counts = Comment::getCount($keys);
     }
 
     public static function FillTags(&$ret) {

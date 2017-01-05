@@ -35,6 +35,8 @@ class BaseListRender {
             }
         }
 
+        $keys = array_map(function($news_model) {return $news_model->news_sign;}, $models);
+
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
