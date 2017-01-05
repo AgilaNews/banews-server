@@ -54,6 +54,10 @@ class TopicController extends BaseController {
             $this->logger->info(sprintf("[Detail][Topic:%s][news:%d][dispatch_id:%s]",
                 $topic_id, count($news), $dispatch_id));
 
+            $redis = $this->di->get('cache');
+            $cache = new NewsRedis($redis);
+            $cache->setDeviceSeen($this->deviceId, $news);
+
             $this->logEvent(EVENT_TOPIC_DETAIL, array(
                                                "topic_id"=> $topic_id,
                                                "news"=> $news,

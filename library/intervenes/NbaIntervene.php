@@ -9,6 +9,10 @@
  * 
  */
 class NbaIntervene extends BaseIntervene {
+    public function __construct($context = array()) {
+        parent::__construct($context);
+        $this->flagSign = "NBA_INTERVENE";
+    }
     public function render(){
         return array(array("data" =>
                            array(

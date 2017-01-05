@@ -15,8 +15,12 @@ define("TOPIC_INTERVENE_TTL", 86400);
 class TopicIntervene extends BaseIntervene {
     public function __construct($context = array()) {
         parent::__construct($context);
-        if (!$this->select()) {
+        
+        $topic_id = $this->select();
+        if (!$topic_id {
             $this->empty = true;
+        } else {
+            $this->flagSign = TOPIC_INTERVENE_KEY . $topic_id;
         }
     }
 
@@ -50,10 +54,6 @@ class TopicIntervene extends BaseIntervene {
         $device_id = $this->context["device_id"];
         $topic_model = Topic::GetByTopicId($topic_id);
         $ret = $this->serializeNewsCell($topic_model);
-        $this->logEvent(
-            EVENT_TOPIC_INTERVENE, array(
-                "topic_id"=> $topic_id,
-                ));
         $this->setDeviceUsed($topic_id, $device_id);
         return $ret;
     }

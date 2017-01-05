@@ -170,7 +170,7 @@ class Selector10001 extends BaseNewsSelector{
         $ret = $simhashFilter->filtering($this->_channel_id,
             $this->_device_id, $ret);
 
-        //*
+        /*
         if ($prefer == 'later') {
             $cache = $this->_di->get('cache');
             if ($cache->exists("BS_BANNER_SWITCH"))
