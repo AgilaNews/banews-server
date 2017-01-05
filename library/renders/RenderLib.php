@@ -89,6 +89,8 @@ class RenderLib {
     const PLACEMENT_TIMELINE = 1;
 
     const PLACEMENT_RECOMMEND = 2;
+
+    const PLACEMENT_NOTIFICATION_CENTER = 3;
     
     public static function GetPublicData($news_model) {
         $ret = array(
@@ -133,7 +135,7 @@ class RenderLib {
             $cell["tag"] = "";
             
             if (array_key_exists("channel_id", $cell) &&
-                $cell["channel_id"] == 30001) {
+                self::isVideoChannel($cell["channel_id"]) {
                 $cell["tag"] = "Video";
                 continue;
             }
@@ -148,14 +150,15 @@ class RenderLib {
     }
 
     public static function FillTpl(&$ret, $type) {
-        switch ($type) {
-        case self::PLACEMENT_RECOMMEND:
-            break;
-        case self::PLACEMENT_TIMELINE:
-            foreach ($ret as &$cell) {
-                if (!array_key_exists("tpl", $cell)) {
+        foreach ($ret as &$cell) {
+            if (!array_key_exists("tpl", $cell)) {
+                switch ($type) {
+                case self::PLACEMENT_RECOMMEND:
+                    $cell["tpl"] = self::getRecommendTpl($cell["channel_id"], $cell);
+                    break;
+                case self::PLACEMENT_TIMELINE:
                     $cell["tpl"] = self::getTimelineTpl($cell["channel_id"], $cell);
-                }
+                    break;
             }
         }
     }
@@ -263,7 +266,7 @@ class RenderLib {
         }
         
         if (array_key_exists("videos", $cell) && $cell["videos"]) {
-            if ($channel_id == 30001) {
+            if (self::isVideoChannel($channel_id)) {
                 return self::NEWS_LIST_TPL_VIDEO;
             } else {
                 return self::NEWS_LIST_TPL_VIDEO_BIG;
@@ -286,5 +289,46 @@ class RenderLib {
         }
 
         return self::NEWS_LIST_TPL_RAW_TEXT;
+    }
+
+    private static function getRecommendTpl($channel_id, $cell) {
+        if (array_key_exists("videos", $cell) && $cell["videos"]) {
+            return self::NEWS_LIST_RECOMMEND_SMALL_VIDEO;
+        }
+
+        if (count($cell["imgs"]) >= 1) {
+            $cell["imgs"] = array_slice($cell["imgs"], 0, 1);
+            return self::NEWS_LIST_RECOMMEND_SMALL_VIDEO;
+        }
+
+        return self::NEWS_LIST_RECOMMEND_RAW_TEXT;
+    }
+
+    private static function getNotificationTpl($cell) {
+        if (array_key_exists("news_id", $cell)) {
+            $news = News::getBySign($cell["news_id"]);
+            if ($news) {
+                if (self::isVideoChannel($news->channel_id)) {
+                    return self::NEWS_DETAIL_VIDEO_NEWS;
+                }
+                if (self::isGifChannel($news->channel_id)) {
+                    return self::NEWS_DETAIL_GIF_NEWS;
+                }
+            }
+        }
+        
+        return self::NEWS_DETAIL_RAW_NEWS;
+    }
+
+    private static function isVideoChannel($channel_id) {
+        return $channel_id == 30001;
+    }
+
+    private static function isGifChannel($channel_id) {
+        return $channel_id == 10012;
+    }
+
+    private static function isPhotoChannel($channel_id) {
+        return $channel_id == 10011;
     }
 }
