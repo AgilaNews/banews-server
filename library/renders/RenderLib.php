@@ -109,7 +109,7 @@ class RenderLib {
     public static function FillCommentsCount(&$ret) {
         $keys = array();
 
-        foreach ($ret as $cell) {
+        foreach ($ret as &$cell) {
             if (array_key_exists("news_id", $cell)) {
                 $keys []= $cell["news_id"];
             }
@@ -146,7 +146,7 @@ class RenderLib {
         case self::PLACEMENT_RECOMMEND:
             break;
         case self::PLACEMENT_TIMELINE:
-            foreach ($ret as $cell) {
+            foreach ($ret as &$cell) {
                 if (!array_key_exists("tpl", $cell)) {
                     $cell["tpl"] = self::getTimelineTpl($cell["channel_id"], $cell);
                 }
