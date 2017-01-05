@@ -49,7 +49,7 @@ class TopicController extends BaseController {
             if ($news) {
                 $models = News::BatchGet($news);
                 $render = new RenderTopicNews($this);
-                $ret["news"] = $render->render($models);
+                $ret["news"] = $render->render($models, $from);
             }
             $this->logger->info(sprintf("[Detail][Topic:%s][news:%d][dispatch_id:%s]",
                 $topic_id, count($news), $dispatch_id));
