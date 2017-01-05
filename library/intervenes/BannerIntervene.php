@@ -23,6 +23,8 @@ class BannerIntervene extends BaseIntervene {
         if ($this->isDeviceUsed($context["news_id"], 
             $context["device_id"], $context["operating_id"])) {
             $this->empty = true;
+        } else {
+            $this->flagSign = "BANNER_INTERVENE_" . $context["news_id"];
         }
     }
 

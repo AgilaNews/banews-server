@@ -11,6 +11,11 @@
 use Phalcon\DI;
 
 class AdIntervene extends BaseIntervene {
+    public function __construct($context = array()) {
+        parent::__construct($context);
+        $this->flagSign = "AD_INTERVENE";
+    }
+
     public function render(){
         switch ($this->context["type"]) {
         case NEWS_LIST_TPL_AD_FB_MEDIUM:

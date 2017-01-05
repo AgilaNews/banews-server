@@ -19,4 +19,11 @@ abstract class BaseIntervene {
     function isEmpty() {
         return $this->empty;
     }
+
+    function getSign() {
+        if ($this->empty) {
+            return null;
+        }
+        return $this->flagSign;
+    }
 }

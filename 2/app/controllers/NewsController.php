@@ -211,15 +211,22 @@ class NewsController extends BaseController {
         }
 
         $dispatch_ids = array();
+        $dispatch_news_ids = array();
         foreach ($dispatch_models as $dispatch_model) {
             if (isset($dispatch_model->url_sign)) {
-                $dispatch_ids []= $dispatch_model->url_sign;
+                $dispatch_news_ids[]= $dispatch_model->url_sign;
+                $dispatch_ids[] = $dispatch_model->url_sign;
+            } elseif ($dispatch_mode instanceof BaseIntervene) {
+                $sign = $dispatch_model->getSign();
+                if ($sign) {
+                    $dispatch_ids[] = $sign;
+                }
             }
         }
         $cache = $this->di->get("cache");
         $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
         if ($isLrRanker) {
-            News::batchSaveActionToCache($dispatch_ids, 
+            News::batchSaveActionToCache($dispatch_news_ids, 
                 CACHE_FEATURE_DISPLAY_PREFIX, 
                 CACHE_FEATURE_DISPLAY_TTL);
         }
@@ -259,7 +266,7 @@ class NewsController extends BaseController {
                                               "prefer" => $prefer,
                                               ));
         if (in_array($channel_id, $this->featureChannelLst) and $isLrRanker) {
-            foreach ($dispatch_ids as $newsId) {
+            foreach ($dispatch_news_ids as $newsId) {
                 if (array_key_exists($newsId, $newsFeatureDct)) {
                     $param = array();
                     $param['news_id'] = $newsId;

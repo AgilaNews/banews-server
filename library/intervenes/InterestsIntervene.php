@@ -19,6 +19,8 @@ class InterestsIntervene extends BaseIntervene {
             $this->empty = true;
         } else if ($this->tryBloomfilter($context["device_id"])) {
             $this->empty = true;
+        } else {
+            $this->flagSign = "INTERESTS_INTERVENE";
         }
     }
 
