@@ -216,7 +216,7 @@ class NewsController extends BaseController {
             if (isset($dispatch_model->url_sign)) {
                 $dispatch_news_ids[]= $dispatch_model->url_sign;
                 $dispatch_ids[] = $dispatch_model->url_sign;
-            } elseif ($dispatch_mode instanceof BaseIntervene) {
+            } elseif ($dispatch_model instanceof BaseIntervene) {
                 $sign = $dispatch_model->getSign();
                 if ($sign) {
                     $dispatch_ids[] = $sign;
