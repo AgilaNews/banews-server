@@ -138,14 +138,14 @@ class RenderLib {
         }
     }
 
-    public static function FillTpl(&$ret, $type) {
+    public static function FillTpl(&$ret, $channel_id, $type) {
         switch ($type) {
         case self::PLACEMENT_RECOMMEND:
             break;
         case self::PLACEMENT_TIMELINE:
             foreach ($ret as $cell) {
                 if (!array_key_exists("tpl", $cell)) {
-                    $cell["tpl"] = self::getTimelineTpl($cell);
+                    $cell["tpl"] = self::getTimelineTpl($channel_id, $cell);
                 }
             }
         }
@@ -248,13 +248,13 @@ class RenderLib {
             );
     }
 
-    private static function getTimelineTpl($cell) {
-        if ($cell["channel_id"] == 10012) {
+    private static function getTimelineTpl($channel_id, $cell) {
+        if ($channel_id == 10012) {
             return self::NEWS_LIST_TPL_GIF;
         }
         
         if (array_key_exists("videos", $cell) && $cell["videos"]) {
-            if ($cell["channel_id"] == 30001) {
+            if ($channel_id == 30001) {
                 return self::NEWS_LIST_TPL_VIDEO;
             } else {
                 return self::NEWS_LIST_TPL_VIDEO_BIG;
