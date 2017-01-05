@@ -267,11 +267,11 @@ class RenderLib {
             return self::NEWS_LIST_TPL_LARGE_IMG;
         }
 
-        if (count($ret["imgs"]) == 0) {
+        if (count($cell["imgs"]) == 0) {
             return self::NEWS_LIST_TPL_RAW_TEXT;
-        } else if (count($ret["imgs"]) <= 2) {
+        } else if (count($cell["imgs"]) <= 2) {
             return self::NEWS_LIST_TPL_TEXT_IMG;
-        } else if (count($ret["imgs"]) >= 3) {
+        } else if (count($cell["imgs"]) >= 3) {
             return self::NEWS_LIST_TPL_THREE_IMG;
         }
 
