@@ -98,6 +98,7 @@ class RenderLib {
             "source_url" => $news_model->source_url,
             "public_time" => $news_model->publish_time,
             "likedCount" => $news_model->liked,
+            "channel_id" => $news_model->channel_id,
             "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
             "imgs" => array(),
             "videos" => array(),
@@ -145,7 +146,7 @@ class RenderLib {
         case self::PLACEMENT_TIMELINE:
             foreach ($ret as $cell) {
                 if (!array_key_exists("tpl", $cell)) {
-                    $cell["tpl"] = self::getTimelineTpl($channel_id, $cell);
+                    $cell["tpl"] = self::getTimelineTpl($cell["channel_id"], $cell);
                 }
             }
         }
