@@ -27,7 +27,7 @@ class NotificationRender {
                 $replyMsg = $notify->getReplyMsg();
                 $cell = Comment::renderComment($replyMsg->getComment());
             } else if ($notiType == self::LIKE_NOTIFICATION_TYPE){
-                if (!Features::Enabled(Features::LIKE_NOTIFICATION_TYPE,
+                if (!Features::Enabled(Features::LIKE_NOTIFY_FEATURE,
                                        $this->client_version, $this->os)) {
                     continue;
                 }
