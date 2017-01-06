@@ -9,6 +9,9 @@
  * 
  */
 class NotificationRender {
+    const REPLY_COMMENT_NOTIFICATION_TYPE = 1;
+    const LIKE_NOTIFICATION_TYPE = 3;
+    
     public function __construct($controller) {
         $this->client_version = $controller->client_version;
         $this->os = $controller->os;
@@ -20,10 +23,10 @@ class NotificationRender {
         foreach ($notifications as $notify) {
             $notiType = $notify->getType();
             
-            if ($notiType == REPLY_COMMENT_NOTIFICATION_TYPE){ 
+            if ($notiType == self::REPLY_COMMENT_NOTIFICATION_TYPE){ 
                 $replyMsg = $notify->getReplyMsg();
                 $cell = Comment::renderComment($replyMsg->getComment());
-            } else if ($notiType == LIKE_NOTIFICATION_TYPE){
+            } else if ($notiType == self::LIKE_NOTIFICATION_TYPE){
                 if (!Features::Enabled(Features::LIKE_NOTIFICATION_TYPE,
                                        $this->client_version, $this->os)) {
                     continue;
