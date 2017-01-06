@@ -120,28 +120,28 @@ class Comment{
 
      public static function renderLikeComment($comment, $likeNum){
          $cell = array("comment" => getLikeNotifyMsg($likeNum),
-             "time" => $comment->getTimeStamp(),
-             "user_name" => DEFAULT_SYSTEM_USER_NAME,
-             "news_id" => "",
-             "tpl"=> "",
-         );
+                       "time" => $comment->getTimeStamp(),
+                       "user_name" => DEFAULT_SYSTEM_USER_NAME,
+                       "news_id" => "",
+                       "tpl"=> "",
+                       );
 
          $ref_comment = $comment->getRefComment();
          if ($ref_comment) {
              $cell["reply"] = array(
-                 "id" => $ref_comment->getCommentId(),
-                 "user_id" => $ref_comment->getUserId(),
-                 "user_name" => "anonymous",
-                 "user_portrait_url" => "",
-                 "liked" => $ref_comment->getLiked(),
-                 "device_liked" => $ref_comment->getDeviceLiked() || false,
-                 "comment" => $ref_comment->getCommentDetail(),
-                 "time" => $ref_comment->getTimeStamp(),
-             );
+                                    "id" => $ref_comment->getCommentId(),
+                                    "user_id" => $ref_comment->getUserId(),
+                                    "user_name" => "anonymous",
+                                    "user_portrait_url" => "",
+                                    "liked" => $ref_comment->getLiked(),
+                                    "device_liked" => $ref_comment->getDeviceLiked() || false,
+                                    "comment" => $ref_comment->getCommentDetail(),
+                                    "time" => $ref_comment->getTimeStamp(),
+                                    );
              if ($cell["reply"]["liked"] == null) {
                  $cell["reply"]["liked"] = 0;
              }
-
+             
              $ref_user = User::getBySign($ref_comment->getUserId());
 
              if ($ref_user) {

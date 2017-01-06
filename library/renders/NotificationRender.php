@@ -37,7 +37,7 @@ class NotificationRender {
             } else{
                 continue;
             }
-            
+
             $cell["notify_id"] = $notify->getNotificationId();
             $cell["status"] = $notify->getStatus();
             $cell["type"] = $notiType;
