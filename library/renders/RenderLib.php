@@ -84,6 +84,9 @@ class RenderLib {
     // GIF详情页模板
     const NEWS_DETAIL_GIF_NEWS = 3;
 
+    // 图片详情页模板
+    const NEWS_DETAIL_PHOTO_NEWS = 4;
+
     // 列表页左下角, tag 相关
     const MAX_HOT_TAG =  2;
     const HOT_LIKE_THRESHOLD = 20;
@@ -339,6 +342,9 @@ class RenderLib {
                 }
                 if (self::isGifChannel($news->channel_id)) {
                     return self::NEWS_DETAIL_GIF_NEWS;
+                }
+                if (self::isPhotoChannel($news->channel_id)) {
+                    return self::NEWS_DETAIL_PHOTO_NEWS;
                 }
             }
         }
