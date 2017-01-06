@@ -82,7 +82,7 @@ class BaseListRender {
             }
         } else {
             $ret["imgs"] = array();
-            $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
+            $imgs = NewsImage::getImagesOfNews($news_model->url_sign, 3);
             
             foreach ($imgs as $img) {
                 if (!$img || $img->is_deadlink == 1 || !$img->meta) {

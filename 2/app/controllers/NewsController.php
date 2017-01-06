@@ -30,135 +30,13 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
 
-        $commentCount = Comment::getCount(array($newsSign));
-
         $cache = $this->di->get("cache");
         $redis = new NewsRedis($cache);
         $redis->setDeviceClick(
                                $this->deviceId, $newsSign, time()); 
 
-        $ret = array(
-            "body" => $news_model->json_text,
-            "commentCount" => $commentCount[$newsSign],
-            "recommend_news" => array(),
-            "news_id" => $news_model->url_sign,
-            "title" => $news_model->title,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
-            "channel_id" => $news_model->channel_id,
-            "likedCount" => $news_model->liked,
-            "collect_id" => 0, 
-            "ad" => new stdClass(),
-        );
-
-        $device_md5 = md5($this->deviceId);
-
-        if (Features::Enabled(Features::AD_FEATURE, $this->client_version, $this->os)) {
-            $intervene = new AdIntervene(array(
-                "type" => DETAIL_AD_TPL_MEDIUM,
-                "device" => $this->deviceId,
-            ));
-
-            $ret["ad"] = $intervene->render();
-        }
-
-        $topNewComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 5, "new");
-
-        
-        if (Features::Enabled(Features::RICH_COMMENT_FEATURE, $this->client_version, $this->os)) {
-            $topHotComment = Comment::getCommentByFilter($this->deviceId, $newsSign, 0, 10, "hot");
-            $ret["comments"] = array(
-                                      "new" => $topNewComment,
-                                      "hot" => $topHotComment,
-                                      );
-        } else {
-            $ret["comments"] = $topNewComment;
-        }
-
-        $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
-        $imgs = NewsImage::getImagesOfNews($newsSign);
-        
-        $videocell = array();
-        $imgcell = array();
-
-        foreach ($imgs as $img) {
-            if (!$img || $img->is_deadlink == 1 || !$img->meta) {
-                continue;
-            }
-
-            if ($img->origin_url) {
-                $meta = json_decode($img->meta, true);
-                if (!$meta || !$meta["width"] || !$meta["height"]) {
-                    continue;
-                }
-            }
-    
-            $c = $this->getImgCell($img->url_sign, $meta);
-            $c["name"] = "<!--IMG" . $img->news_pos_id . "-->";
-            $imgcell[] = $c;
-        }
-        $ret["imgs"] = $imgcell;
-
-        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->client_version, $this->os)) {
-            foreach($videos as $video) {
-                if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
-                    continue;
-                }
-                
-                if ($video->cover_origin_url) {
-                    $cover_meta = json_decode($video->cover_meta, true);
-                    if (!$cover_meta || !$cover_meta["width"] || !$cover_meta["height"]) {
-                        continue;
-                    }
-                }
-
-                $c = $this->getImgCell($video->video_url_sign, $cover_meta, true);
-                $c["video_pattern"] = $c["pattern"];
-                $c["youtube_id"] = $video->youtube_video_id;
-                $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
-                $videocell []= $c;
-            }
-
-            $ret["youtube_videos"] = $videocell;
-        }
-        
-        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
-        $models = $recommend_selector->select($news_model->url_sign);
-        $cname = "Recommend" . $news_model->channel_id;
-        if (class_exists($cname)) {
-            $render = new $cname($this);
-        } else {
-            $render = new BaseListRender($this);
-        }
-
-        if ($cache->exists(CACHE_NO_RECOMMEND_NEWS)) {
-            if (!in_array($newsSign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
-                $ret["recommend_news"]= $render->render($models);
-            } else {
-                unset($ret["ad"]);
-            }
-        }
-
-        if ($this->userSign) {
-            $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
-        }
-
-        // ----------------- pseduo like, this feature should be removed later -----------------
-        $pseduoLike = mt_rand(1, 5);
-        if ($pseduoLike == 1 && ($news_model->channel_id == 10004 || $news_model->channel_id == 10006)) {
-            $news_model->liked++;
-            if (!$news_model->save()){
-                $this->logger->warning(sprintf("save error: %s", join(",",$news_model->getMessages())));
-            }
-            $this->logger->info(sprintf("[pseudo:%d]", $news_model->liked));
-        }
-        // ----------------- end -------TODO remove later---------------------------------------
-
-        if (!array_key_exists("ad", $ret)) {
-            $ret["ad"] = array();
-        }
+        $render = BaseDetailRender::getRenderByChannel($news_model->url_sign);
+        $ret = $render->render();
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
@@ -321,39 +199,4 @@ class NewsController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
     }
-
-    protected function getImgCell($url_sign, $meta, $add_play_sign = false) {
-       if ($this->net == "WIFI") {
-            $quality = IMAGE_HIGH_QUALITY;
-        } else if ($this->net == "2G") {
-            $quality = IMAGE_LOW_QUALITY;
-        } else {
-            $quality = IMAGE_NORMAL_QUALITY;
-        }
-        
-               
-       $ow = $meta["width"];
-       $oh = $meta["height"];
-
-       if ($this->os == "ios") {
-           $aw = (int) ($this->resolution_w  - 44);
-       } else {
-           $aw = (int) ($this->resolution_w * 11 / 12);
-       }
-
-       $ah = (int) ($aw * $oh / $ow);
-
-       $pattern = DETAIL_IMAGE_PATTERN;
-       
-       if ($add_play_sign) {
-           $pattern = $pattern . "|v=1";
-       }
-       
-       return array(
-                    "src" => sprintf($pattern, urlencode($url_sign), $aw, $quality),
-                    "pattern" => sprintf($pattern, urlencode($url_sign), "{w}", $quality),
-                    "width" => $aw,
-                    "height" => $ah,
-                    );
-   }
 }

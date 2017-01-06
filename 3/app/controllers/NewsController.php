@@ -113,35 +113,6 @@ class NewsController extends BaseController {
         return $imgcell;
     }
 
-    protected function getImgCell($url_sign, $meta) {
-       if ($this->net == "WIFI") {
-            $quality = IMAGE_HIGH_QUALITY;
-        } else if ($this->net == "2G") {
-            $quality = IMAGE_LOW_QUALITY;
-        } else {
-            $quality = IMAGE_NORMAL_QUALITY;
-        }
-        
-               
-       $ow = $meta["width"];
-       $oh = $meta["height"];
-
-       if ($this->os == "ios") {
-           $aw = (int) ($this->resolution_w  - 44);
-       } else {
-           $aw = (int) ($this->resolution_w * 11 / 12);
-       }
-
-       $ah = (int) ($aw * $oh / $ow);
-
-       return array(
-                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, $quality),
-                    "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
-                    "width" => $aw,
-                    "height" => $ah,
-                    );
-   }
-
     private function getVideos($newsSign, $channel_id) {
         $videocell = array();
         if ($channel_id != VIDEO_CHANNEL_ID) {
@@ -168,8 +139,6 @@ class NewsController extends BaseController {
             $video = Video::getByNewsSign($newsSign);
             $videocell [] = array(
                 "youtube_id" => $video->youtube_video_id,
-                //"width" => $aw,
-                //"height" => $ah,
                 "duration" => $video->duration,
                 "description" => $video->description,
                 "display" => 0

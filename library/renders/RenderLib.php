@@ -223,11 +223,16 @@ class RenderLib {
         return array($aw, $ah);
     }
 
-    public static function LargeImageRender($net, $url_sign, $meta, $screen_w, $screen_h, $os) {
+    public static function LargeImageRender($net, $url_sign, $meta, $screen_w, $screen_h, $os, $play_sign = false) {
         $quality = RenderLib::GetImageQuality($net);
         $scale = RenderLib::LargeImageScale($meta, $screen_w, $screen_h, $os);
 
-        $url = sprintf( LARGE_CHANNEL_IMG_PATTERN,
+        $pattern = LARGE_CHANNEL_IMG_PATTERN;
+        if ($play_sign) {
+            $pattern = $pattern . "|v=1";
+        }
+        
+        $url = sprintf( $pattern,
                         urlencode($url_sign),
                         $scale[0], $scale[1], $quality);
 
@@ -235,7 +240,7 @@ class RenderLib {
             "src" => $url,
             "width" => $scale[0],
             "height" => $scale[1],
-            "pattern" => sprintf(LARGE_CHANNEL_IMG_PATTERN,
+            "pattern" => sprintf($pattern,
                                  urlencode($url_sign),
                                  "{w}", "{h}", $quality),
             );
