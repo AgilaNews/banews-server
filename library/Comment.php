@@ -123,7 +123,6 @@ class Comment{
                        "time" => $comment->getTimeStamp(),
                        "user_name" => DEFAULT_SYSTEM_USER_NAME,
                        "news_id" => "",
-                       "tpl"=> "",
                        );
 
          $ref_comment = $comment->getRefComment();
