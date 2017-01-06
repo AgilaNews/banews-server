@@ -323,15 +323,15 @@ class RenderLib {
         return self::NEWS_DETAIL_RAW_NEWS;
     }
 
-    private static function isVideoChannel($channel_id) {
+    public static function isVideoChannel($channel_id) {
         return $channel_id == 30001;
     }
 
-    private static function isGifChannel($channel_id) {
+    public static function isGifChannel($channel_id) {
         return $channel_id == 10012;
     }
 
-    private static function isPhotoChannel($channel_id) {
+    public static function isPhotoChannel($channel_id) {
         return $channel_id == 10011;
     }
 }
