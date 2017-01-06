@@ -114,8 +114,8 @@ class NewsController extends BaseController {
                     }
                 }
 
-                $c = $this->getImgCell($video->video_url_sign, $cover_meta);
-                $c["video_pattern"] = $c["pattern"] . "|v=1";
+                $c = $this->getImgCell($video->video_url_sign, $cover_meta, true);
+                $c["video_pattern"] = $c["pattern"];
                 $c["youtube_id"] = $video->youtube_video_id;
                 $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
                 $videocell []= $c;
@@ -322,7 +322,7 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
-   protected function getImgCell($url_sign, $meta) {
+    protected function getImgCell($url_sign, $meta, $add_play_sign = false) {
        if ($this->net == "WIFI") {
             $quality = IMAGE_HIGH_QUALITY;
         } else if ($this->net == "2G") {
@@ -343,6 +343,11 @@ class NewsController extends BaseController {
 
        $ah = (int) ($aw * $oh / $ow);
 
+       $pattern = DETAIL_IMAGE_PATTERN;
+       if ($add_play_sign) {
+           $pattern = $pattern . "|v=1";
+       }
+       
        return array(
                     "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, $quality),
                     "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
