@@ -44,7 +44,7 @@ class Render10011 extends BaseListRender {
 
                 $ow = $meta["width"];
                 $oh = $meta["height"];
-                if ($this->_os == "ios") {
+                if ($this->os == "ios") {
                     $aw = (int) ($this->screen_w  - 44);
                 } else {
                     $aw = (int) ($this->screen_w * 11 / 12);
@@ -58,6 +58,9 @@ class Render10011 extends BaseListRender {
                                $aw, $aw, $ah, $quality);
                 
                 $ret["imgs"][] = array(
+                                       "pattern" => sprintf(IMAGE_CHANNEL_IMG_PATTERN,
+                                                            $img->url_sign,
+                                                            '{w}', '{w}', '{h}', $quality),
                                        "src" => $url, 
                                        "height" => $ah, 
                                        "width" => $aw);
