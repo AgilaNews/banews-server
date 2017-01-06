@@ -49,5 +49,7 @@ class NotificationRender {
         }
 
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_NOTIFICATION_CENTER);
+
+        return $ret;
     }
 }
