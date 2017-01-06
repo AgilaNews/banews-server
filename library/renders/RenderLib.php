@@ -170,6 +170,9 @@ class RenderLib {
                 case self::PLACEMENT_COLLECT:
                     $cell["tpl"] = self::getCollectTpl($cell["channel_id"], $cell);
                     break;
+                case self::PLACEMENT_NOTIFICATION_CENTER:
+                    $cell["tpl"] = self::getNotificationTpl($cell["channel_id"], $cell);
+                    break;
                 }
             }
         }

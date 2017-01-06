@@ -8,10 +8,6 @@
  * 
  * 
  */
-
-define('REPLY_COMMENT_NOTIFICATION_TYPE', 1);
-define('LIKE_NOTIFICATION_TYPE', 3);
-
 class NotificationController extends BaseController {
     public function IndexAction(){
         if (!$this->request->isGet()) {
