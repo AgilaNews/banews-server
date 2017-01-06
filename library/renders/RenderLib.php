@@ -279,8 +279,11 @@ class RenderLib {
 
     
     private static function getTimelineTpl($channel_id, $cell) {
-        if ($channel_id == 10012) {
+        if (self::isGifChannel($channel_id)) {
             return self::NEWS_LIST_TPL_GIF;
+        }
+        if (self::isPhotoChannel($channel_id)) {
+            return self::NEWS_LIST_TPL_RAW_IMG;
         }
         
         if (array_key_exists("videos", $cell) && $cell["videos"]) {
