@@ -124,7 +124,7 @@ define("IMAGE_LOW_QUALITY", 15);
 define("IMAGE_NORMAL_QUALITY", 30);
 
 define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX . 
-       "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=%d");
+       "/%s.jpg?p=s=%sX_w|c=%sX%s@0x0|q=%d");
 
 define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%sX_w|q=%d");
 
