@@ -64,13 +64,13 @@ class RenderLib {
       推荐展位的模板定义
      */
     // 纯文本
-    const NEWS_LIST_RECOMMEND_RAW_TEXT = NEWS_LIST_TPL_RAW_TEXT;
+    const NEWS_LIST_RECOMMEND_RAW_TEXT = self::NEWS_LIST_TPL_RAW_TEXT;
 
     // 单图
-    const NEWS_LIST_RECOMMEND_IMAGE_TEXT = NEWS_LIST_TPL_TEXT_IMG;
+    const NEWS_LIST_RECOMMEND_IMAGE_TEXT = self::NEWS_LIST_TPL_TEXT_IMG;
 
     // 单视频
-    const NEWS_LIST_RECOMMEND_SMALL_VIDEO = NEWS_LIST_TPL_VIDEO_SMALL;
+    const NEWS_LIST_RECOMMEND_SMALL_VIDEO = self::NEWS_LIST_TPL_VIDEO_SMALL;
 
     /*
       详情页模板
@@ -160,6 +160,9 @@ class RenderLib {
                     break;
                 case self::PLACEMENT_TIMELINE:
                     $cell["tpl"] = self::getTimelineTpl($cell["channel_id"], $cell);
+                    break;
+                case self::PLACEMENT_COLLECT:
+                    $cell["tpl"] = self::getCollectTpl($cell["channel_id"], $cell);
                     break;
                 }
             }
@@ -263,6 +266,10 @@ class RenderLib {
             );
     }
 
+    private static function getCollectTpl($channel_id, $cell) {
+
+    }
+    
     private static function getTimelineTpl($channel_id, $cell) {
         if ($channel_id == 10012) {
             return self::NEWS_LIST_TPL_GIF;
