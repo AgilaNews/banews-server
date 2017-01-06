@@ -88,11 +88,17 @@ class RenderLib {
     const MAX_HOT_TAG =  2;
     const HOT_LIKE_THRESHOLD = 20;
 
+    // 时间线展位
     const PLACEMENT_TIMELINE = 1;
 
+    // 推荐展位
     const PLACEMENT_RECOMMEND = 2;
 
+    // 通知中心展位
     const PLACEMENT_NOTIFICATION_CENTER = 3;
+
+    // 收藏展位
+    const PLACEMENT_COLLECT = 4;
     
     public static function GetPublicData($news_model) {
         $ret = array(
@@ -267,7 +273,7 @@ class RenderLib {
     }
 
     private static function getCollectTpl($channel_id, $cell) {
-
+        
     }
     
     private static function getTimelineTpl($channel_id, $cell) {
