@@ -243,7 +243,7 @@ class UserController extends BaseController {
                 $result = $collect_model->save();
                 if (!$result) {
                     throw new HttpException(ERR_INTERNAL_DB,
-                                            "save collect model error");
+                                            "save collect model error: " .  $collect_model->getMessages()[0]);
                 }
                 $saved_cid = $collect_model->id;
             }
