@@ -62,6 +62,7 @@ class Render10012 extends BaseListRender {
                                      "size" => $size,
                                      ),
                                );
+        $ret["views"] = $gif_model->liked * 3;
 
         return $ret;
     }
