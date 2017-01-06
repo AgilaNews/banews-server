@@ -344,6 +344,7 @@ class NewsController extends BaseController {
        $ah = (int) ($aw * $oh / $ow);
 
        $pattern = DETAIL_IMAGE_PATTERN;
+       
        if ($add_play_sign) {
            $pattern = $pattern . "|v=1";
        }

@@ -2,7 +2,7 @@
 class CollectListRender extends BaseListRender {
     public function __construct($controller) {
         parent::__construct($controller);
-        $this->video_render = new Render30001($controller);
+        $this->controller = $controller;
     }
 
     public function render($collect_models) {
@@ -21,13 +21,17 @@ class CollectListRender extends BaseListRender {
             if (!$news_model) {
                 continue;
             }
-            $cell = "";
-            if (RenderLib::isVideoChannel($news_model->channel_id)) {
-                $cell = $this->video_render->serializeNewsCell($news_model);
+            
+            $cname = "Render" . $news_model->channel_id;
+            if (class_exists($cname)) {
+                $render = new $cname($this->controller);
             } else {
-                $cell = $this->serializeNewsCell($news_model);
-                unset($cell["filter_tags"]);
+                $render = new BaseListRender($this->controller);
             }
+            
+            $cell = $render->serializeNewsCell($news_model);
+            unset($cell["filter_tags"]);
+            
             $collect = $collects[$news_model->url_sign];
             $cell["collect_id"] = $collect->id;
             $cell["public_time"] = $collect->create_time;
