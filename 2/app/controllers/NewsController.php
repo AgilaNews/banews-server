@@ -349,8 +349,8 @@ class NewsController extends BaseController {
        }
        
        return array(
-                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, $quality),
-                    "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
+                    "src" => sprintf($pattern, urlencode($url_sign), $aw, $quality),
+                    "pattern" => sprintf($pattern, urlencode($url_sign), "{w}", $quality),
                     "width" => $aw,
                     "height" => $ah,
                     );
