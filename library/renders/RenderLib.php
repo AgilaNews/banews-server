@@ -272,9 +272,11 @@ class RenderLib {
             );
     }
 
+    
     private static function getCollectTpl($channel_id, $cell) {
-        
+        return self::getTimelineTpl($channel_id, $cell);
     }
+
     
     private static function getTimelineTpl($channel_id, $cell) {
         if ($channel_id == 10012) {
@@ -307,6 +309,7 @@ class RenderLib {
         return self::NEWS_LIST_TPL_RAW_TEXT;
     }
 
+    
     private static function getRecommendTpl($channel_id, $cell) {
         if (array_key_exists("videos", $cell) && $cell["videos"]) {
             return self::NEWS_LIST_RECOMMEND_SMALL_VIDEO;
@@ -320,6 +323,7 @@ class RenderLib {
         return self::NEWS_LIST_RECOMMEND_RAW_TEXT;
     }
 
+    
     private static function getNotificationTpl($cell) {
         if (array_key_exists("news_id", $cell)) {
             $news = News::getBySign($cell["news_id"]);
@@ -336,10 +340,12 @@ class RenderLib {
         return self::NEWS_DETAIL_RAW_NEWS;
     }
 
+    
     public static function isVideoChannel($channel_id) {
         return $channel_id == 30001;
     }
 
+    
     public static function isGifChannel($channel_id) {
         return $channel_id == 10012;
     }
