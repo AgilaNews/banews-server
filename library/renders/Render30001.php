@@ -8,7 +8,6 @@
  */
 
 class Render30001 extends BaseListRender {
-
     public function __construct($controller) {
         parent::__construct($controller);
     }

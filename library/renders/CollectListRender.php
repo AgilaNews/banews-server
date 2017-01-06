@@ -22,7 +22,7 @@ class CollectListRender extends BaseListRender {
                 continue;
             }
             $cell = "";
-            if ($news_model->channel_id == "30001") {
+            if (RenderLib::isVideoChannel($news_model->channel_id)) {
                 $cell = $this->video_render->serializeNewsCell($news_model);
             } else {
                 $cell = $this->serializeNewsCell($news_model);
@@ -34,7 +34,8 @@ class CollectListRender extends BaseListRender {
             $ret []= $cell;
         }
 
-        RenderLib::AddCommentsCount(c)
+        RenderLib::FillCommentsCount($ret);
+        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_RECOMMEND);
 
         return $ret;
     }
