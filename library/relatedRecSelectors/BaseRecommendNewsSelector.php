@@ -3,15 +3,15 @@ define ("DEFAULT_RECOMMEND_NEWS_COUNT", 3);
 
 class BaseRecommendNewsSelector {
     public function __construct($channel_id, $controller) {
-        $this->_channel_id = $channel_id;
-        $this->_device_id = $controller->deviceId;
-        $this->_user_id = $controller->userSign;
-        $this->_client_version = $controller->client_version;
-        $this->_di = $controller->di;
+        $this->channel_id = $channel_id;
+        $this->device_id = $controller->deviceId;
+        $this->user_id = $controller->userSign;
+        $this->client_version = $controller->client_version;
+        $this->di = $controller->di;
     }
 
     protected function getPolicy() {
-        return new EsRelatedRecPolicy($this->_di);
+        return new EsRelatedRecPolicy($this->di);
     }
 
     public function getPolicyTag(){
@@ -21,9 +21,9 @@ class BaseRecommendNewsSelector {
     public function select($myself) {
         $ret = array();
         $cs = array(); //content sign
-        $esRelatedPolicy = new EsRelatedRecPolicy($this->_di); 
-        $esRelatedNewsLst = $esRelatedPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $myself, 
+        $esRelatedPolicy = new EsRelatedRecPolicy($this->di); 
+        $esRelatedNewsLst = $esRelatedPolicy->sampling($this->channel_id, 
+            $this->device_id, $this->user_id, $myself, 
             DEFAULT_RECOMMEND_NEWS_COUNT * 2);
 
         $models = News::batchGet($esRelatedNewsLst);
@@ -40,9 +40,9 @@ class BaseRecommendNewsSelector {
             }
         }
 
-        $randomPolicy = new RandomRecommendPolicy($this->_di);
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-                                                 $this->_device_id, $this->_user_id, 
+        $randomPolicy = new RandomRecommendPolicy($this->di);
+        $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
+                                                 $this->device_id, $this->user_id, 
                                                  $myself, 
                                                  DEFAULT_RECOMMEND_NEWS_COUNT - count($ret) + 2);
         

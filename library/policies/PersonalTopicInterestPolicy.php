@@ -115,7 +115,7 @@ class PersonalTopicInterestPolicy extends BaseListPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $pn, 
         $day_till_now, $prefer, array $options = array()) {
-        $sentLst = $this->_cache->getDeviceSeen($device_id);
+        $sentLst = $this->cache->getDeviceSeen($device_id);
         $sampleTopicLst = $this->combineTopicInterest($device_id); 
         $recNewsLst = $this->getNewsFromTopics($sampleTopicLst, 
                 $sentLst);  

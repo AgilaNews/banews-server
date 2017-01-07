@@ -11,8 +11,6 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
-    const HotVideNum = 1;
-    const VideoChannel = "30001";
     private $featureChannelLst = array(10001);
 
     public function DetailAction() {
@@ -32,16 +30,29 @@ class NewsController extends BaseController {
 
         $cache = $this->di->get("cache");
         $redis = new NewsRedis($cache);
-        $redis->setDeviceClick(
-                               $this->deviceId, $newsSign, time()); 
+        $redis->setDeviceClick($this->deviceId, $newsSign, time());
 
-        $render = BaseDetailRender::getRenderByChannel($news_model->url_sign);
-        $ret = $render->render();
+        $need_recommend = true;
+        $recommend_models = array();
+        if ($cache->exists(CACHE_NO_RECOMMEND_NEWS)) {
+            if (in_array($news_model->url_sign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
+                $ret["ad"] = new stdClass();
+                $need_recommend = true;
+            }
+        }
+
+        if ($need_recommend) {
+            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+            $recommend_models = $recommend_selector->select($news_model->url_sign);
+        }
+
+        $render = BaseDetailRender::getRenderByChannel($news_model->url_sign, $this);
+        $ret = $render->render($news_model, $recommend_models);
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,
                                                "recommend"=> array(
-                                                                   "news" => array_keys($models),
+                                                                   "news" => array_keys($recommend_models),
                                                                    "policy"=> "random",
                                                                    ),
                                                "ad" => $ret["ad"],
@@ -50,13 +61,11 @@ class NewsController extends BaseController {
         $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d]", $newsSign, count($ret["imgs"]),
                                      $news_model->channel_id, count($ret["recommend_news"])));
         
+        News::saveActionToCache($newsSign, 
+                                CACHE_FEATURE_CLICK_PREFIX,
+                                CACHE_FEATURE_CLICK_TTL);
+        
         $this->setJsonResponse($ret);
-        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
-        if ($isLrRanker) {
-            News::saveActionToCache($newsSign, 
-                CACHE_FEATURE_CLICK_PREFIX,
-                CACHE_FEATURE_CLICK_TTL);
-        }
         return $this->response;
     }
 

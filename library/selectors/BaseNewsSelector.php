@@ -17,27 +17,27 @@ define('CACHE_NEWS_FILTER', 'BS_NEWS_FILTER');
 
 class BaseNewsSelector {
     public function __construct($channel_id, $controller) {
-        $this->_channel_id = $channel_id;
-        $this->_device_id = $controller->deviceId;
-        $this->_user_id = $controller->userSign;
-        $this->_client_version = $controller->client_version;
-        $this->_os = $controller->os;
-        $this->_di = $controller->di;
-        $this->_net = $controller->net;
-        $this->_screen_w = $controller->resolution_w;
-        $this->_screen_h = $controller->resolution_h;
+        $this->channel_id = $channel_id;
+        $this->device_id = $controller->deviceId;
+        $this->user_id = $controller->userSign;
+        $this->client_version = $controller->client_version;
+        $this->os = $controller->os;
+        $this->di = $controller->di;
+        $this->net = $controller->net;
+        $this->screen_w = $controller->resolution_w;
+        $this->screen_h = $controller->resolution_h;
     }
 
     protected function sampling($sample_count, $prefer){
-        return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id, $this->_user_id,
+        return $this->getPolicy()->sampling($this->channel_id, $this->device_id, $this->user_id,
                                             $sample_count, DEFAULT_SAMPLING_DAY, $prefer);
     }
 
     public function getPolicy() {
-        if (!isset($this->_policy)) {
-            $this->_policy = new ExpDecayListPolicy($this->_di); 
+        if (!isset($this->policy)) {
+            $this->policy = new ExpDecayListPolicy($this->di); 
         }
-        return $this->_policy;
+        return $this->policy;
     }
 
     
@@ -120,7 +120,7 @@ class BaseNewsSelector {
         }
 
         $this->insertAd($ret);
-        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+        $this->getPolicy()->setDeviceSent($this->device_id, $filter);
         return $ret;
     }
 
@@ -134,14 +134,14 @@ class BaseNewsSelector {
     }
 
     protected function insertAd(&$ret) {
-        if (Features::Enabled(Features::AD_FEATURE, $this->_client_version, $this->_os) && count($ret) >= AD_INTERVENE_POS) {
+        if (Features::Enabled(Features::AD_FEATURE, $this->client_version, $this->os) && count($ret) >= AD_INTERVENE_POS) {
             $abservice = DI::getDefault()->get('abtest');
             $t = $abservice->getTag("timeline_ad_position");
-            $device_md5 = md5($this->_device_id);
+            $device_md5 = md5($this->device_id);
 
             $ad_intervene = new AdIntervene(array(
                                                   "type" => RenderLib::NEWS_LIST_TPL_AD_FB_MEDIUM,
-                                                  "device" => $this->_device_id,
+                                                  "device" => $this->device_id,
                                                   ));
 
             if ($t == "forth_pos") {
@@ -158,7 +158,7 @@ class BaseNewsSelector {
     }
 
     protected function setDeviceSeenToBF($keys) {
-        switch ($this->_channel_id) {
+        switch ($this->channel_id) {
             case 10011:
                 $filterName = BloomFilterService::FILTER_FOR_IMAGE;
                 break;
@@ -172,8 +172,8 @@ class BaseNewsSelector {
                 return;
         }
 
-        $device_id = $this->_device_id;
-        $bf_service = $this->_di->get("bloomfilter");
+        $device_id = $this->device_id;
+        $bf_service = $this->di->get("bloomfilter");
         $bf_service->add($filterName, 
                          array_map(
                                    function($key) use ($device_id){ 

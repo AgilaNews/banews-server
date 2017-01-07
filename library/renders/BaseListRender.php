@@ -45,8 +45,13 @@ class BaseListRender {
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
+        RenderLib::fillFilters($ret);
         
         return $ret;
+    }
+
+    protected function fillFilters(&$ret) {
+        $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
     }
     
     protected function serializeNewsCell($news_model) {
@@ -59,7 +64,6 @@ class BaseListRender {
         }
         
         $ret = RenderLib::GetPublicData($news_model);
-        $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
         
         if ($videos && $videos->count() != 0) {
             foreach ($videos as $v) {

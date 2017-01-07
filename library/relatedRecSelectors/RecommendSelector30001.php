@@ -6,7 +6,7 @@ class RecommendSelector30001 extends BaseRecommendNewsSelector {
     }
 
     protected function getPolicy() {
-        return new VideoRelatedRecPolicy($this->_di);
+        return new VideoRelatedRecPolicy($this->di);
     }
 
     public function getPolicyTag(){
@@ -16,9 +16,9 @@ class RecommendSelector30001 extends BaseRecommendNewsSelector {
     public function select($myself) {
         $ret = array();
         $cs = array(); //content sign
-        $relatedPolicy = new VideoRelatedRecPolicy($this->_di); 
-        $relatedNewsLst = $relatedPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $myself, 2);
+        $relatedPolicy = new VideoRelatedRecPolicy($this->di); 
+        $relatedNewsLst = $relatedPolicy->sampling($this->channel_id, 
+            $this->device_id, $this->user_id, $myself, 2);
 
         $models = array();
         if ($relatedNewsLst) {
@@ -37,9 +37,9 @@ class RecommendSelector30001 extends BaseRecommendNewsSelector {
             }
         }
 
-        $randomPolicy = new RandomRecommendPolicy($this->_di);
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-                                                 $this->_device_id, $this->_user_id, 
+        $randomPolicy = new RandomRecommendPolicy($this->di);
+        $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
+                                                 $this->device_id, $this->user_id, 
                                                  $myself, 
                                                  DEFAULT_RECOMMEND_NEWS_COUNT - count($ret) + 2);
         

@@ -154,7 +154,7 @@ class LrNewsRanker extends BaseNewsRanker {
     }
 
     protected function getScores($newsIdLst, $predictReq) {
-        $lrRankerClient = $this->_di->get('lrRanker');
+        $lrRankerClient = $this->di->get('lrRanker');
         if (empty($lrRankerClient)) {
             return array();
         }

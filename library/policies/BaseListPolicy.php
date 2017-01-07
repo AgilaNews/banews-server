@@ -1,27 +1,27 @@
 <?php
 abstract class BaseListPolicy {
     public function __construct($di) {
-        $this->_di = $di;
-        $redis = $this->_di->get('cache');
-        $this->_db = $this->_di->get('db_r');
-        $this->_logger = $this->_di->get('logger');
-        if (!$redis || !$this->_db || !$this->_logger) {
+        $this->di = $di;
+        $redis = $this->di->get('cache');
+        $this->db = $this->di->get('db_r');
+        $this->logger = $this->di->get('logger');
+        if (!$redis || !$this->db || !$this->logger) {
             throw new HttpException(ERR_INTERNAL_DB, "get services error");
         }
 
-        $this->_cache = new NewsRedis($redis);
+        $this->cache = new NewsRedis($redis);
     }
 
     abstract public function sampling($channel_id, $device_id, $user_id, $pn, $day_till_now, $prefer, 
                                       array $options = array());
 
     public function setDeviceSent($device_id, $news_ids, $max = CACHE_SENT_MASK_MAX, $ttl = CACHE_SENT_TTL) {
-        $this->_cache->setDeviceSeen($device_id, $news_ids, $max, $ttl); 
+        $this->cache->setDeviceSeen($device_id, $news_ids, $max, $ttl); 
     }
 
     protected function logPolicy($msg) {
-        if ($this->_logger) {
-            $this->_logger->info($msg);
+        if ($this->logger) {
+            $this->logger->info($msg);
         }
     }
 
@@ -40,7 +40,7 @@ abstract class BaseListPolicy {
             return null;
         }
         
-        $bf_service = $this->_di->get("bloomfilter");
+        $bf_service = $this->di->get("bloomfilter");
         $ret = $bf_service->filter(
                                    $filterName,
                                    $news_list,
@@ -54,7 +54,7 @@ abstract class BaseListPolicy {
     }
 
     protected function getReadyNews($channel_id, $day_till_now) {
-        return $this->_cache->getNewsOfChannel($channel_id, $day_till_now);
+        return $this->cache->getNewsOfChannel($channel_id, $day_till_now);
     }
     
     protected function getAllUnsent($channel_id, $device_id, $day_till_now) {
@@ -65,7 +65,7 @@ abstract class BaseListPolicy {
             return $ret;
         }
         
-        $sent = $this->_cache->getDeviceSeen($device_id);
+        $sent = $this->cache->getDeviceSeen($device_id);
         $valid_news_list = array();
 
         foreach ($ready_news_list as $ready_news) {

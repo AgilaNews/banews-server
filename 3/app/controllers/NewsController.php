@@ -10,143 +10,42 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
-
     private $featureChannelLst = array(10001);
-
+    
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
                 "read news must be get");
         }
+        $cache = $this->di->get("cache");
+        if (!$cache) {
+            throw new HttpException(ERR_INTERNAL_DB, "cache error");
+        }        
 
         $newsSign = $this->get_request_param("news_id", "string", true);
         $news_model = News::getBySign($newsSign);
         if (!$news_model) {
             throw new HttpException(ERR_NEWS_NON_EXISTS, "news not found");
         }
-        $this->addView($newsSign);
-        $cache = $this->di->get("cache");
-        if (!$cache) {
-            throw new HttpException(ERR_INTERNAL_DB, "cache error");
-            
-        }
         $redis = new NewsRedis($cache);
-        $redis->setDeviceClick(
-                               $this->deviceId, $newsSign, time()); 
-        $ret = $this->getPublic($newsSign, $news_model);
-        $ret["imgs"] = $this->getImgs($newsSign, $news_model->channel_id);
-        $ret["videos"] = $this->getVideos($newsSign, $news_model->channel_id);
-        $ret["tpl"] = $this->getTPL($news_model->channel_id);
+        $redis->setDeviceClick($this->deviceId, $newsSign, time());
+        $this->incrViewCount($newsSign);
+
+        $render = BaseDetailRender::getRenderByChannel($news_model->url_sign, $this);
+        $ret = $render->render($news_model, $recommend_models);
+
         $this->logEvent(EVENT_NEWS_DETAIL, array(
-                                               "news_id"=> $newsSign
-                                            ));
-        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
-        if ($isLrRanker) {
-            News::saveActionToCache($newsSign, 
-                CACHE_FEATURE_CLICK_PREFIX,
-                CACHE_FEATURE_CLICK_TTL);
-        }
+                                                 "news_id"=> $newsSign,
+                                                 "ad" => $ret["ad"],
+                                                 ));
+        
+        News::saveActionToCache($newsSign, 
+                                CACHE_FEATURE_CLICK_PREFIX,
+                                CACHE_FEATURE_CLICK_TTL);
         $this->setJsonResponse($ret);
         return $this->response;
     }
-
-    private function getTPL($channel_id) {
-        if ($channel_id == VIDEO_CHANNEL_ID) {
-            return 12;
-        } else {
-            return 5;
-        }
-    }
-
-    private function getPublic($newsSign, $news_model) {
-        $commentCount = Comment::getCount(array($newsSign));
-
-        $ret = array(
-            "body" => $news_model->json_text,
-            "commentCount" => $commentCount[$newsSign],
-            "news_id" => $news_model->url_sign,
-            "title" => $news_model->title,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
-            "channel_id" => $news_model->channel_id,
-            "likedCount" => $news_model->liked,
-            "collect_id" => 0, 
-        );
-
-        if ($this->userSign) {
-            $ret["collect_id"] = Collect::getCollectId($this->userSign, $newsSign);
-        }
-        return $ret;
-    }
-
-    private function getImgs($newsSign, $channel_id) {
-        $imgs = array();
-        if ($channel_id != VIDEO_CHANNEL_ID) {
-            $imgs = NewsImage::getImagesOfNews($newsSign);
-            $imgcell = array();
-
-            foreach ($imgs as $img) {
-                if (!$img || $img->is_deadlink == 1 || !$img->meta) {
-                    continue;
-                }
-
-                if ($img->origin_url) {
-                    $meta = json_decode($img->meta, true);
-                    if (!$meta || !$meta["width"] || !$meta["height"]) {
-                        continue;
-                    }
-                }
-        
-                $c = $this->getImgCell($img->url_sign, $meta);
-                $c["name"] = "<!--IMG" . $img->news_pos_id . "-->";
-                $imgcell[] = $c;
-            }
-        } else {
-            $video = Video::getByNewsSign($newsSign);
-            $imgcell[] = $this->getImgCell(
-                $video->cover_image_sign,
-                json_decode($video->cover_meta, true));
-        }
-
-        return $imgcell;
-    }
-
-    private function getVideos($newsSign, $channel_id) {
-        $videocell = array();
-        if ($channel_id != VIDEO_CHANNEL_ID) {
-            $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
-            foreach($videos as $video) {
-                if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
-                    continue;
-                }
-                    
-                if ($video->cover_origin_url) {
-                    $cover_meta = json_decode($video->cover_meta, true);
-                    if (!$cover_meta || !$cover_meta["width"] || !$cover_meta["height"]) {
-                        continue;
-                    }
-                }
-
-                $c = $this->getImgCell($video->video_url_sign, $cover_meta);
-                $c["video_pattern"] = $c["pattern"] . "|v=1";
-                $c["youtube_id"] = $video->youtube_video_id;
-                $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
-                $videocell []= $c;
-            }
-        } else {
-            $video = Video::getByNewsSign($newsSign);
-            $videocell [] = array(
-                "youtube_id" => $video->youtube_video_id,
-                "duration" => $video->duration,
-                "description" => $video->description,
-                "display" => 0
-            );
-        }
-        return $videocell;
-    }
-
+    
     public function ListAction() {
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
@@ -332,7 +231,7 @@ class NewsController extends BaseController {
     }
 
 
-    private function addView($newsSign) {
+    private function incrViewCount($newsSign) {
         $video_model = Video::getByNewsSign($newsSign);
         if (!$video_model) {
             return 0;

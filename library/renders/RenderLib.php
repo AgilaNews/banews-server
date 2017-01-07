@@ -331,7 +331,7 @@ class RenderLib {
 
         if (count($cell["imgs"]) >= 1) {
             $cell["imgs"] = array_slice($cell["imgs"], 0, 1);
-            return self::NEWS_LIST_RECOMMEND_SMALL_VIDEO;
+            return self::NEWS_LIST_RECOMMEND_IMAGE_TEXT;
         }
 
         return self::NEWS_LIST_RECOMMEND_RAW_TEXT;

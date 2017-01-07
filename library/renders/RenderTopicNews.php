@@ -67,7 +67,7 @@ class RenderTopicNews extends BaseListRender {
     }
 
     protected function serializeNewsCell($news_model, $largeimage = false) {
-        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->_client_version, $this->_os)) {
+        if (Features::Enabled(Features::VIDEO_NEWS_FEATURE, $this->client_version, $this->os)) {
             $videos = NewsYoutubeVideo::getVideosOfNews($news_model->url_sign);
         } else {
             $videos = null;
@@ -94,7 +94,7 @@ class RenderTopicNews extends BaseListRender {
                 $ret["imgs"] = array();
             } else {
                 $ret["tpl"] = NEWS_LIST_TPL_SMALL_YOUTUBE;
-                $cell = RenderLib::ImageRender($this->_net, $video->video_url_sign, $cover_meta, false);
+                $cell = RenderLib::ImageRender($this->net, $video->video_url_sign, $cover_meta, false);
                 $ret["imgs"] = array($cell);
             }
         } else {
@@ -114,13 +114,13 @@ class RenderTopicNews extends BaseListRender {
                     
                     if ($largeimage){
                         //replaced all imgs, only take the big one
-                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, true);
+                        $cell = RenderLib::ImageRender($this->net, $img->url_sign, $meta, true);
                         $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
                         $ret["imgs"] = array($cell);
                         $usedLarge = true;
                         break;
                     } else{
-                        $cell = RenderLib::ImageRender($this->_net, $img->url_sign, $meta, false);
+                        $cell = RenderLib::ImageRender($this->net, $img->url_sign, $meta, false);
                         $cell["name"] = "<!--IMG" . $img->news_pos_id . "-->";
                         $ret["imgs"] []= $cell;
                     }
@@ -158,10 +158,10 @@ class RenderTopicNews extends BaseListRender {
                 continue;
             }
 
-            $ret["imgs"][] = RenderLib::ImageRender($this->_net, $video->cover_image_sign,
+            $ret["imgs"][] = RenderLib::ImageRender($this->net, $video->cover_image_sign,
                 $meta, false);
             $ret["videos"][] = RenderLib::VideoRender($video, $meta, 
-                $this->_screen_w, $this->_screen_h, $this->_os);
+                $this->screen_w, $this->screen_h, $this->os);
             return $ret;
         } 
         return null;
