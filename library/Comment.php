@@ -1,7 +1,7 @@
 <?php
 use Phalcon\DI;
 
-define('DEFAULT_HOT_LIKED_COUNT', 5);
+define('DEFAULT_HOT_LIKED_COUNT', 4);
 define('DEFAULT_SYSTEM_USER_NAME', "system notifcation");
 
 function getLikeNotifyMsg($LikeNum){
@@ -26,6 +26,7 @@ function getLikeNotifyMsg($LikeNum){
     }
     return $msg;
 }
+
 class Comment{
     public static function getCommentByFilter($deviceId, $newsSign, $last_id, $length, $filter) {
         $di = DI::getDefault();
