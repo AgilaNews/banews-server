@@ -66,6 +66,8 @@ class Render10011 extends BaseListRender {
                                        "width" => $aw);
             }
         }
+
+        $ret["views"] = $news_model->liked * 3 + mt_rand() % 100;
         
         return $ret;
     }
