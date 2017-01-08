@@ -76,16 +76,16 @@ class RenderLib {
       详情页模板
      */
     // 纯新闻详情页模板
-    const NEWS_DETAIL_RAW_NEWS = 1;
+    const NEWS_DETAIL_RAW_NEWS = 2;
 
     // 视频详情页模板
-    const NEWS_DETAIL_VIDEO_NEWS = 2;
+    const NEWS_DETAIL_VIDEO_NEWS = 3;
 
     // GIF详情页模板
-    const NEWS_DETAIL_GIF_NEWS = 3;
+    const NEWS_DETAIL_GIF_NEWS = 4;
 
     // 图片详情页模板
-    const NEWS_DETAIL_PHOTO_NEWS = 4;
+    const NEWS_DETAIL_PHOTO_NEWS = 5;
 
     // 列表页左下角, tag 相关
     const MAX_HOT_TAG =  2;
