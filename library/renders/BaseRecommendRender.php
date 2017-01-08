@@ -10,13 +10,6 @@
 class BaseRecommendRender extends BaseListRender {
     public function render($models) {
         $ret = array();
-        $keys = array();
-        foreach ($models as $model) {
-            if ($model) {
-                $keys []= $model->url_sign;
-            }
-        }
-        
         foreach ($models as $news_model) {
             if(!$news_model) {
                 continue;
@@ -26,7 +19,7 @@ class BaseRecommendRender extends BaseListRender {
             $ret[] = $cell;
         }
 
-        RenderLib::FillCommentsCount($keys, $ret);
+        RenderLib::FillCommentsCount($ret);
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_RECOMMEND);
         
         return $ret;
