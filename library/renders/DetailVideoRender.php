@@ -12,30 +12,21 @@ class DetailVideoRender extends BaseDetailRender {
     public function render($news_model, $recommend_models = null) {
         $ret = parent::render($news_model, $recommend_models);
 
-        $ret["videos"] = array();
-        $view = 0;
-        
-        $videos = NewsYoutubeVideo::getVideosOfNews($newsSign);
-        foreach($videos as $video) {
-            if (!$video || $video->is_deadlink == 1 || !$video->cover_meta) {
-                continue;
+        $video = Video::getByNewsSign($news_model->url_sign);
+        if ($video) {
+            $ret["views"] = $video->view;
+            $meta = json_decode($video->cover_meta, true);
+            if ($meta &&
+                is_numeric($meta["width"]) && 
+                is_numeric($meta["height"])) {
+                $ret["imgs"][] = RenderLib::LargeImageRender(LARGE_CHANNEL_IMG_PATTERN,
+                                                             $this->c->net, $video->cover_image_sign,
+                                                             $meta, $this->c->resolution_w, $this->c->resolution_h,
+                                                             $this->c->os);
+                $ret["videos"][] = RenderLib::VideoRender($video, $meta, $this->c->resolution_w, $this->c->resolution_h,
+                                                          $this->c->os);
             }
-            
-            if ($video->cover_origin_url) {
-                $cover_meta = json_decode($video->cover_meta, true);
-                if (!$cover_meta || !$cover_meta["width"] || !$cover_meta["height"]) {
-                    continue;
-                }
-            }
-            
-            $c = $this->getImgCell($video->video_url_sign, $cover_meta);
-            $c["video_pattern"] = $c["pattern"] . "|v=1";
-            $c["youtube_id"] = $video->youtube_video_id;
-            $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
-            $view = $video->view;
-            $ret["videos"] []= $c;
         }
-        
         return $ret;
     }
 }
