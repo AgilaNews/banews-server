@@ -69,9 +69,9 @@ class TopicIntervene extends BaseIntervene {
 
         $meta = json_decode($topic_model->image_meta, true);
 
-        $ret["imgs"][] = RenderLib::LargeImageRender($this->context["net"],
-            $topic_model->image_sign, $meta, $this->context["screen_w"],
-            $this->context["screen_h"], $this->context["os"]);
+        $ret["imgs"][] = RenderLib::LargeImageRender(LARGE_CHANNEL_IMG_PATTERN, $this->context["net"],
+                                                     $topic_model->image_sign, $meta, $this->context["screen_w"],
+                                                     $this->context["screen_h"], $this->context["os"]);
         $ret["tpl"] = RenderLib::NEWS_LIST_TOPIC;
        
         return $ret;
