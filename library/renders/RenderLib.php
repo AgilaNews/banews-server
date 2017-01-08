@@ -145,6 +145,11 @@ class RenderLib {
         foreach ($ret as &$cell) {
             $cell["tag"] = "";
             
+            if ($cell["tpl"] == NEWS_LIST_TOPIC){
+                $cell["tag"] = "Topics";
+                continue;
+            }
+
             if (array_key_exists("channel_id", $cell) &&
                 self::isVideoChannel($cell["channel_id"])) {
                 $cell["tag"] = "Video";
