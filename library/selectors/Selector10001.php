@@ -166,9 +166,9 @@ class Selector10001 extends BaseNewsSelector{
             $ret[] = $newsObj;
         }
         // post filter after ranking
-        $simhashFilter = new SimhashFilter($this->_di);
-        $ret = $simhashFilter->filtering($this->_channel_id,
-            $this->_device_id, $ret);
+        $simhashFilter = new SimhashFilter($this->di);
+        $ret = $simhashFilter->filtering($this->channel_id,
+            $this->device_id, $ret);
 
         /*
         if ($prefer == 'later') {
