@@ -63,7 +63,7 @@ class Render10012 extends BaseListRender {
                                      ),
                                );
 
-        $ret["views"] = $news_model->liked * 3 + mt_rand() % 100;
+        $ret["views"] = $news_model->liked * 3;
 
         return $ret;
     }
