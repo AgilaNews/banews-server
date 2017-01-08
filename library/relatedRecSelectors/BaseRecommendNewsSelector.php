@@ -38,22 +38,22 @@ class BaseRecommendNewsSelector {
     }
 
     public function select($myself) {
-        $esRelatedPolicy = new EsRelatedRecPolicy($this->_di); 
+        $esRelatedPolicy = new EsRelatedRecPolicy($this->di); 
         $esRelatedNewsLst = $esRelatedPolicy->sampling(
-            $this->_channel_id, 
-            $this->_device_id, 
-            $this->_user_id, 
+            $this->channel_id, 
+            $this->device_id, 
+            $this->user_id, 
             $myself, 
             DEFAULT_RECOMMEND_NEWS_COUNT * 2);
         array_unshift($esRelatedNewsLst, $myself);
         $models = $this->removeDup($esRelatedNewsLst);
         $models = News::batchGet($esRelatedNewsLst);
         if (count($models) < DEFAULT_RECOMMEND_NEWS_COUNT * 2) {
-            $randomPolicy = new RandomRecommendPolicy($this->_di);
+            $randomPolicy = new RandomRecommendPolicy($this->di);
             $randomNewsLst = $randomPolicy->sampling(
-                $this->_channel_id, 
-                $this->_device_id, 
-                $this->_user_id, 
+                $this->channel_id, 
+                $this->device_id, 
+                $this->user_id, 
                 $myself, 
                 DEFAULT_RECOMMEND_NEWS_COUNT * 2);
             $randomModels = News::batchGet($randomNewsLst);
@@ -67,9 +67,9 @@ class BaseRecommendNewsSelector {
 
         // post filter after ranking
         $models = array_values($models);
-        $simhashFilter = new SimhashFilter($this->_di);
-        $models = $simhashFilter->filtering($this->_channel_id,
-            $this->_device_id, $models);
+        $simhashFilter = new SimhashFilter($this->di);
+        $models = $simhashFilter->filtering($this->channel_id,
+            $this->device_id, $models);
         $ret = array();
         foreach ($models as $newsObj) {
             if ($newsObj->url_sign == $myself) {
