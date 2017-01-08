@@ -37,7 +37,7 @@ class NewsController extends BaseController {
         if ($cache->exists(CACHE_NO_RECOMMEND_NEWS)) {
             if (in_array($news_model->url_sign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
                 $ret["ad"] = new stdClass();
-                $need_recommend = true;
+                $need_recommend = false;
             }
         }
 

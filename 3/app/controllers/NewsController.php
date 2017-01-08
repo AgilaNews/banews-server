@@ -31,7 +31,21 @@ class NewsController extends BaseController {
         $redis->setDeviceClick($this->deviceId, $newsSign, time());
         $this->incrViewCount($newsSign);
 
-        $render = BaseDetailRender::getRenderByChannel($news_model->url_sign, $this);
+        $need_recommend = true;
+        $recommend_models = array();
+        if ($cache->exists(CACHE_NO_RECOMMEND_NEWS)) {
+            if (in_array($news_model->url_sign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
+                $ret["ad"] = new stdClass();     
+                $need_recommend = false; 
+            }
+        }
+                                
+        if ($need_recommend) {  
+            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+            $recommend_models = $recommend_selector->select($news_model->url_sign);
+        }
+
+        $render = BaseDetailRender::getRenderByChannel($news_model->channel_id, $this);
         $ret = $render->render($news_model, $recommend_models);
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
@@ -39,6 +53,9 @@ class NewsController extends BaseController {
                                                  "ad" => $ret["ad"],
                                                  ));
         
+        $this->logger->info(sprintf("[Detail][news:%s][imgs:%d][channel:%d][recommend:%d]", $newsSign, count($ret["imgs"]),
+                                     $news_model->channel_id, count($ret["recommend_news"])));
+
         News::saveActionToCache($newsSign, 
                                 CACHE_FEATURE_CLICK_PREFIX,
                                 CACHE_FEATURE_CLICK_TTL);
