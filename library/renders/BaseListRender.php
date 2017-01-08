@@ -107,7 +107,7 @@ class BaseListRender {
             }
         }
 
-        $ret["filter_tags"] = RenderLib->GetFilter($news_model->source_name);
+        $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
 
         return $ret;
     } 
