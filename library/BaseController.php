@@ -29,7 +29,7 @@ class BaseController extends Controller{
         $this->logger->begin();
         $this->response = new Response();
         $this->filter = new Filter();
-        $this->_start_time = microtime(true);
+        $this->start_time = microtime(true);
         $this->logger->info(sprintf("[%s:%s]",
                                       $_SERVER["REQUEST_METHOD"],
                                       $_SERVER["REQUEST_URI"]));
@@ -126,7 +126,7 @@ class BaseController extends Controller{
                                     $this->deviceId, $this->userSign, $this->density, $this->net, $this->isp, 
                                     $this->tz, $this->lat, $this->lng, $this->lang, json_encode($this->abflags), $this->logid));
         $this->logger->info(sprintf("[cost:%sms]",
-                                      round((microtime(true) - $this->_start_time) * 1000)));
+                                      round((microtime(true) - $this->start_time) * 1000)));
         $this->logger->commit();
     }
     
