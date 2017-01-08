@@ -35,16 +35,9 @@ class NewsController extends BaseController {
         $need_recommend = true;
         $recommend_models = array();
         if ($cache->exists(CACHE_NO_RECOMMEND_NEWS)) {
-<<<<<<< HEAD
-            if (!in_array($newsSign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
-                $ret["recommend_news"]= $render->render($models);
-            } else {
-                $ret["ad"] = new stdClass();
-=======
             if (in_array($news_model->url_sign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
                 $ret["ad"] = new stdClass();
                 $need_recommend = false;
->>>>>>> v1.2.8-dev
             }
         }
 
@@ -53,11 +46,8 @@ class NewsController extends BaseController {
             $recommend_models = $recommend_selector->select($news_model->url_sign);
         }
 
-<<<<<<< HEAD
-=======
         $render = BaseDetailRender::getRenderByChannel($news_model->url_sign, $this);
         $ret = $render->render($news_model, $recommend_models);
->>>>>>> v1.2.8-dev
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                "news_id"=> $newsSign,

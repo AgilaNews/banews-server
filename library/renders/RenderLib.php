@@ -290,7 +290,6 @@ class RenderLib {
     private static function getCollectTpl($channel_id, $cell) {
         return self::getTimelineTpl($channel_id, $cell);
     }
-
     
     private static function getTimelineTpl($channel_id, $cell) {
         if (self::isGifChannel($channel_id)) {
