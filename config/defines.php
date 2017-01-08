@@ -124,7 +124,7 @@ define("IMAGE_LOW_QUALITY", 15);
 define("IMAGE_NORMAL_QUALITY", 30);
 
 define("IMAGE_CHANNEL_IMG_PATTERN", IMAGE_PREFIX . 
-       "/%s.jpg?p=s=%dX_w|c=%dX%d@0x0|q=%d");
+       "/%s.jpg?p=s=%sX_w|c=%sX%s@0x0|q=%d");
 
 define("DETAIL_IMAGE_PATTERN", IMAGE_PREFIX . "/%s.jpg?p=s=%sX_w|q=%d");
 
@@ -138,23 +138,6 @@ define("LARGE_CHANNEL_IMG_PATTERN",
 
 define('GIF_COVER_PATTERN', 
         IMAGE_PREFIX . "/%s_cover.jpg");
-
-define('NEWS_LIST_TPL_LARGE_IMG', 2);
-define('NEWS_LIST_TPL_THREE_IMG', 3);
-define('NEWS_LIST_TPL_TEXT_IMG', 4);
-define('NEWS_LIST_TPL_RAW_TEXT', 5);
-define('NEWS_LIST_TPL_RAW_IMG', 6);
-define('NEWS_LIST_TPL_GIF', 7);
-define('NEWS_LIST_TPL_VIDEO_BIG', 10);
-define('NEWS_LIST_TPL_SMALL_YOUTUBE', 11);
-define('NEWS_LIST_TPL_VIDEO', 12);
-define('NEWS_LIST_TPL_VIDEO_SMALL', 13);
-define('NEWS_LIST_TOPIC', 14);
-define('NEWS_LIST_INTERESTS', 15);
-
-define('NEWS_LIST_TPL_NBA', 1000);
-define('NEWS_LIST_TPL_BANNER', 1001);
-define('NEWS_LIST_TPL_AD_FB_MEDIUM', 5000);
 
 define("INTERVENE_TPL_CELL_PREFIX", "INTERVENE_TPL_CELL_");
 

@@ -240,10 +240,13 @@ class UserController extends BaseController {
                 $collect_model->user_sign = $this->userSign;
                 $collect_model->news_sign = $news_model->url_sign;
                 $collect_model->create_time = $cell["ctime"];
+                if (!$collect_model->create_time) {
+                    $collect_model->create_time = time();
+                }
                 $result = $collect_model->save();
                 if (!$result) {
                     throw new HttpException(ERR_INTERNAL_DB,
-                                            "save collect model error");
+                                            "save collect model error: " .  $collect_model->getMessages()[0]);
                 }
                 $saved_cid = $collect_model->id;
             }

@@ -8,18 +8,7 @@
  * 
  * 
  */
-
-define('REPLY_COMMENT_NOTIFICATION_TYPE', 1);
-define('LIKE_NOTIFICATION_TYPE', 3);
-define('LIKE_NOTIFY_FEATURE', "1.2.5");
 class NotificationController extends BaseController {
-
-    public function IsLikeNotifyVersion(){
-        if ($this->os == "android" and version_compare($this->client_version, LIKE_NOTIFY_FEATURE, "<")) {
-            return False;
-        }  
-        return True;
-    }
     public function IndexAction(){
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
@@ -38,50 +27,13 @@ class NotificationController extends BaseController {
 
         $comment_service = $this->di->get('comment');
         list($resp, $status) = $comment_service->GetNotifications($req)->wait();
-                if ($status->code != 0) {
+        if ($status->code != 0) {
             throw new HttpException(ERR_INTERNAL_BG,
                                     "get comment error:" . json_encode($status->details, true));
         }
-        
-        $ret = array();
 
-        foreach ($resp->getNotifications() as $notify) {
-            $notiType = $notify->getType();
-            if ($notiType == REPLY_COMMENT_NOTIFICATION_TYPE){ 
-                $replyMsg = $notify->getReplyMsg();
-                $cell = Comment::renderComment($replyMsg->getComment());
-            }
-            else if ($notiType == LIKE_NOTIFICATION_TYPE){
-                if (!$this->IsLikeNotifyVersion()){
-                    continue;
-                }
-                $LikeMsg = $notify->getLikeMsg();
-                $cell = Comment::renderLikeComment($LikeMsg->getComment(), $LikeMsg->getLikeNumber());
-                //!!ugly code to judge tpl, reconstrut it later
-                $sign = $cell["news_id"];
-                $news_model = News::getBySign($sign);
-                $channel_id = $news_model->channel_id;
-                $cname = "Render$channel_id";
-                if (class_exists($cname)) {
-                    $render = new $cname($this);
-                } else {
-                    $render = new BaseListRender($this);
-                }
-                $news_cell = $render->render(array($sign => $news_model))[0];
-                $cell["tpl"] = $news_cell["tpl"];
-            }
-            else{
-                continue;
-            }
-            $cell["notify_id"] = $notify->getNotificationId();
-            $cell["status"] = $notify->getStatus();
-            $cell["type"] = $notiType;
-            if ($cell["status"] == null) {
-                $cell["status"] = 0;
-            }
-            $ret []= $cell;
-        }
-        
+        $render = new NotificationRender($this);
+        $ret = $render->render($resp->getNotifications());
 
         $this->setJsonResponse($ret);
         return $this->response;
@@ -142,6 +94,7 @@ class NotificationController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
     }
+    
     public function checkAction(){
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
@@ -172,6 +125,7 @@ class NotificationController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
     }
+    
     public function readAction(){
         if (!$this->request->isGet()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");

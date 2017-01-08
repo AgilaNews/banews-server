@@ -14,18 +14,18 @@ class Selector10004 extends BaseNewsSelector {
     } 
 
     public function sampling($sample_count, $prefer) {
-        $randomPolicy = new ExpDecayListPolicy($this->_di);
-        $popularPolicy = new PopularListPolicy($this->_di);
+        $randomPolicy = new ExpDecayListPolicy($this->di);
+        $popularPolicy = new PopularListPolicy($this->di);
         $options = array();
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
-        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $popularNewsCnt, 
+        $popularNewsLst = $popularPolicy->sampling($this->channel_id, 
+            $this->device_id, $this->user_id, $popularNewsCnt, 
             3, $prefer, $options);
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, MAX_NEWS_COUNT, 
+        $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
+            $this->device_id, $this->user_id, MAX_NEWS_COUNT, 
             3, $prefer, $options);
 
         foreach($randomNewsLst as $randomNews) {
@@ -60,7 +60,7 @@ class Selector10004 extends BaseNewsSelector {
         }
         
         $this->insertAd($ret);        
-        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+        $this->getPolicy()->setDeviceSent($this->device_id, $filter);
         return $ret;
     }
 }

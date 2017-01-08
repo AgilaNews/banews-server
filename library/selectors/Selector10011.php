@@ -8,10 +8,10 @@ class Selector10011 extends BaseNewsSelector {
     }
 
     public function getPolicy() {
-        if (!isset($this->_policy)) {
-            $this->_policy = new RandomWithBackupPolicy($this->_di); 
+        if (!isset($this->policy)) {
+            $this->policy = new RandomWithBackupPolicy($this->di); 
         }
-        return $this->_policy;
+        return $this->policy;
     }
 
     public function removeDup($models) {
@@ -33,8 +33,8 @@ class Selector10011 extends BaseNewsSelector {
     }
 
     public function sampling($sampling_count, $prefer) {
-        return $this->getPolicy()->sampling($this->_channel_id, $this->_device_id,
-                                 $this->_user_id, $sampling_count, null, $prefer);
+        return $this->getPolicy()->sampling($this->channel_id, $this->device_id,
+                                 $this->user_id, $sampling_count, null, $prefer);
     }
 
     public function select($prefer) {

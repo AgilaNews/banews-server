@@ -7,7 +7,6 @@ class Render10011 extends BaseListRender {
 
     public function render($models) {
         $ret = array();
-
         foreach ($models as $news_model) {
             if (!$news_model) {
                 continue;
@@ -16,27 +15,20 @@ class Render10011 extends BaseListRender {
             if (count($cell["imgs"]) == 0) {
                 continue;
             }
+            
             $ret []= $cell;
         }
-
+        
+        RenderLib::FillTags($ret);
+        RenderLib::FillCommentsCount($ret);
+        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
         return $ret;
     } 
 
     protected function serializeNewsCell($news_model){
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
+        $ret = RenderLib::GetPublicData($news_model);
         
-        $ret = array(
-            "title" => $news_model->title,
-            "news_id" => $news_model->url_sign,
-            "source" => $news_model->source_name,
-            "source_url" => $news_model->source_url,
-            "public_time" => $news_model->publish_time,
-            "likedCount" => $news_model->liked,
-            "share_url" => sprintf(SHARE_TEMPLATE, urlencode($news_model->url_sign)),
-            "imgs" => array(),
-        );
-
-        $ret["tpl"] = NEWS_LIST_TPL_RAW_IMG;
         foreach($imgs as $img) {
             if (!$img || $img->is_deadlink == 1 || !$img->meta) {
                 continue;
@@ -52,32 +44,29 @@ class Render10011 extends BaseListRender {
 
                 $ow = $meta["width"];
                 $oh = $meta["height"];
-                if ($this->_os == "ios") {
-                    $aw = (int) ($this->_screen_w  - 44);
+                if ($this->os == "ios") {
+                    $aw = (int) ($this->screen_w  - 44);
                 } else {
-                    $aw = (int) ($this->_screen_w * 11 / 12);
+                    $aw = (int) ($this->screen_w * 11 / 12);
                 }
                 
-                $ah = (int) min($this->_screen_h * 0.9, $aw * $oh / $ow);
-
-                if ($this->_net == "WIFI") {
-                    $quality = IMAGE_HIGH_QUALITY;
-                } else if ($this->_net == "2G") {
-                    $quality = IMAGE_LOW_QUALITY;
-                }else {
-                    $quality = IMAGE_NORMAL_QUALITY;
-                }
+                $ah = (int) min($this->screen_h * 0.9, $aw * $oh / $ow);
+                $quality = RenderLib::GetImageQuality($this->net);
                 
-                $url =  sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
-                                $img->url_sign, 
-                                $aw, $aw, $ah, $quality);
+                $url = sprintf(IMAGE_CHANNEL_IMG_PATTERN, 
+                               $img->url_sign, 
+                               $aw, $aw, $ah, $quality);
+                
                 $ret["imgs"][] = array(
-                    "src" => $url, 
-                    "height" => $ah, 
-                    "width" => $aw);
+                                       "pattern" => sprintf(IMAGE_CHANNEL_IMG_PATTERN,
+                                                            $img->url_sign,
+                                                            '{w}', '{w}', '{h}', $quality),
+                                       "src" => $url, 
+                                       "height" => $ah, 
+                                       "width" => $aw);
             }
         }
-
+        
         return $ret;
     }
 }

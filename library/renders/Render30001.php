@@ -8,7 +8,6 @@
  */
 
 class Render30001 extends BaseListRender {
-
     public function __construct($controller) {
         parent::__construct($controller);
     }
@@ -18,12 +17,10 @@ class Render30001 extends BaseListRender {
 
         $keys = array();
         foreach ($models as $model) {
-            if (!$this->isIntervened($model)) {
+            if ($model && !$this->isIntervened($model)) {
                 $keys []= $model->url_sign;
             }
         }
-        
-        $comment_counts = Comment::getCount($keys);
 
         foreach ($models as $sign => $news_model) {
             if (!$news_model) {
@@ -33,13 +30,11 @@ class Render30001 extends BaseListRender {
             if ($cell == null) {
                 continue;
             }
-
-            if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                $cell["commentCount"] = $comment_counts[$news_model->url_sign];
-            }
             $ret []= $cell;
         }
 
+        RenderLib::FillCommentsCount($ret);
+        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
         return $ret;
     } 
 
@@ -47,7 +42,6 @@ class Render30001 extends BaseListRender {
         $video = Video::getByNewsSign($news_model->url_sign);
         if ($video) {
             $ret = RenderLib::GetPublicData($news_model);
-            $ret["tpl"] = 12;
             $ret["views"] = $video->view;
             $meta = json_decode($video->cover_meta, true);
             if (!$meta || 
@@ -56,10 +50,11 @@ class Render30001 extends BaseListRender {
                 return null;
             }
 
-            $ret["imgs"][] = RenderLib::LargeImageRender($this->_net, $video->cover_image_sign,
-                $meta, $this->_screen_w, $this->_screen_h, $this->_os);
-            $ret["videos"][] = RenderLib::VideoRender($video, $meta, $this->_screen_w, 
-                $this->_screen_h, $this->_os);
+            $ret["imgs"][] = RenderLib::LargeImageRender(LARGE_CHANNEL_IMG_PATTERN,
+                                                         $this->net, $video->cover_image_sign,
+                                                         $meta, $this->screen_w, $this->screen_h, $this->os);
+            $ret["videos"][] = RenderLib::VideoRender($video, $meta, $this->screen_w, 
+                                                      $this->screen_h, $this->os);
             return $ret;
         }
         return null;

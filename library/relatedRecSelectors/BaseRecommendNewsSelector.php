@@ -3,15 +3,15 @@ define ("DEFAULT_RECOMMEND_NEWS_COUNT", 3);
 
 class BaseRecommendNewsSelector {
     public function __construct($channel_id, $controller) {
-        $this->_channel_id = $channel_id;
-        $this->_device_id = $controller->deviceId;
-        $this->_user_id = $controller->userSign;
-        $this->_client_version = $controller->client_version;
-        $this->_di = $controller->di;
+        $this->channel_id = $channel_id;
+        $this->device_id = $controller->deviceId;
+        $this->user_id = $controller->userSign;
+        $this->client_version = $controller->client_version;
+        $this->di = $controller->di;
     }
 
     protected function getPolicy() {
-        return new EsRelatedRecPolicy($this->_di);
+        return new EsRelatedRecPolicy($this->di);
     }
 
     public function getPolicyTag(){

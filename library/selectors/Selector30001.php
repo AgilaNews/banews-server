@@ -14,21 +14,21 @@ class Selector30001 extends BaseNewsSelector {
     } 
 
     public function sampling($sample_count, $prefer) {
-        $randomPolicy = new RandomListPolicy($this->_di);
-        $popularPolicy = new PopularListPolicy($this->_di);
+        $randomPolicy = new RandomListPolicy($this->di);
+        $popularPolicy = new PopularListPolicy($this->di);
         $options = array();
         if ($prefer == "later") {
             $options["long_tail_weight"] = 1;
         }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
-        $popularNewsLst = $popularPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, $popularNewsCnt, 
+        $popularNewsLst = $popularPolicy->sampling($this->channel_id, 
+            $this->device_id, $this->user_id, $popularNewsCnt, 
             3, $prefer, $options);
 
         //* hack for oppo phone
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
-            $key = sprintf(OPPO_DEVICE_KEY, $this->_device_id);
+            $key = sprintf(OPPO_DEVICE_KEY, $this->device_id);
             if($cache->exists($key)) {
                 $popularNewsLst = array();
                 $popularNewsCnt = 0;
@@ -44,11 +44,11 @@ class Selector30001 extends BaseNewsSelector {
         $t = $abservice->getTag("video_random_policy");
 
         if ($t == "video_exp") {
-            $randomPolicy = new VideoExpDecayListPolicy($this->_di);
+            $randomPolicy = new VideoExpDecayListPolicy($this->di);
         }
 
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-            $this->_device_id, $this->_user_id, self::MAX_NEWS_COUNT, 
+        $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
+            $this->device_id, $this->user_id, self::MAX_NEWS_COUNT, 
             3, $prefer, $options);
         
         foreach($randomNewsLst as $randomNews) {

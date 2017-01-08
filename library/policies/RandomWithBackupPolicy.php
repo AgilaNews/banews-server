@@ -18,7 +18,7 @@ class RandomWithBackupPolicy extends BaseListPolicy {
         }
         $alr_cnt = count($filter_news_lst);
         if ($alr_cnt < $pn) {
-            $append_news_lst = $this->_cache->getDeviceBackupNews(
+            $append_news_lst = $this->cache->getDeviceBackupNews(
                 $device_id, $channel_id, $pn - $alr_cnt);
             foreach($append_news_lst as $cur_news) {
                 array_push($filter_news_lst, $cur_news);

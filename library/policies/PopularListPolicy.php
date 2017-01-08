@@ -23,6 +23,6 @@ class PopularListPolicy extends BaseListPolicy {
     }
 
     protected function getReadyNews($channel_id, $day_till_now) {
-        return $this->_cache->getChannelTopPopularNews($channel_id);
+        return $this->cache->getChannelTopPopularNews($channel_id);
     }
 }

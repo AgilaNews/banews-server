@@ -2,7 +2,7 @@
 class CollectListRender extends BaseListRender {
     public function __construct($controller) {
         parent::__construct($controller);
-        $this->video_render = new Render30001($controller);
+        $this->controller = $controller;
     }
 
     public function render($collect_models) {
@@ -16,27 +16,30 @@ class CollectListRender extends BaseListRender {
         }
 
         $news_model_list = News::batchGet($signs);
-        $comment_counts = Comment::getCount($signs);
 
         foreach ($news_model_list as $sign => $news_model) {
             if (!$news_model) {
                 continue;
             }
-            $cell = "";
-            if ($news_model->channel_id == "30001") {
-                $cell = $this->video_render->serializeNewsCell($news_model);
-                if(array_key_exists($news_model->url_sign, $comment_counts)) {
-                    $cell["commentCount"] = $comment_counts[$news_model->url_sign];
-                }
+            
+            $cname = "Render" . $news_model->channel_id;
+            if (class_exists($cname)) {
+                $render = new $cname($this->controller);
             } else {
-                $cell = $this->serializeNewsCell($news_model);
-                unset($cell["filter_tags"]);
+                $render = new BaseListRender($this->controller);
             }
+            
+            $cell = $render->serializeNewsCell($news_model);
+            unset($cell["filter_tags"]);
+            
             $collect = $collects[$news_model->url_sign];
             $cell["collect_id"] = $collect->id;
             $cell["public_time"] = $collect->create_time;
             $ret []= $cell;
         }
+
+        RenderLib::FillCommentsCount($ret);
+        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_COLLECT);
 
         return $ret;
     }

@@ -105,8 +105,8 @@ class ClickRecommendPolicy extends BaseListPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $pn, 
         $day_till_now, $prefer, array $options = array()) {
-        $sentLst = $this->_cache->getDeviceSeen($device_id);
-        $clickedLst = $this->_cache->getDeviceClick($device_id);
+        $sentLst = $this->cache->getDeviceSeen($device_id);
+        $clickedLst = $this->cache->getDeviceClick($device_id);
         if (count($clickedLst)==0){
             return array();
         }

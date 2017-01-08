@@ -26,7 +26,7 @@ class EditorRecPolicy extends BaseListPolicy {
     }
 
     protected function getReadyNews($channel_id, $day_till_now) {
-        $cache = $this->_di->get('cache');
+        $cache = $this->di->get('cache');
         $newsScoLst = $cache->zRevRange(ALG_EDITOR_REC_KEY, 
             0, 300, TRUE);
         $resArr = array();

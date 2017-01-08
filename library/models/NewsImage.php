@@ -20,8 +20,8 @@ class NewsImage extends BaseModel {
 
     public $update_time;
 
-    public static function getImagesOfNews($news_sign){
-        $key = CACHE_IMAGES_PREFIX . $news_sign;
+    public static function getImagesOfNews($news_sign, $limit=0){
+        $key = CACHE_IMAGES_PREFIX . $news_sign . $limit;
         
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
@@ -38,6 +38,10 @@ class NewsImage extends BaseModel {
             "bind" => array(1 => $news_sign),
             "order" => "news_pos_id",
             );
+        
+        if ($limit > 0){
+            $crit["limit"] = $limit;
+        }
 
         $rs = NewsImage::find($crit);
         if ($cache) {

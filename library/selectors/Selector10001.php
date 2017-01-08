@@ -16,8 +16,8 @@ define('POPULAR_NEWS_CNT', 2);
 class Selector10001 extends BaseNewsSelector{
 
     public function getPolicyTag(){
-        $abService = $this->_di->get('abtest');
-        $experiment = 'channel_' . $this->_channel_id . '_strategy';
+        $abService = $this->di->get('abtest');
+        $experiment = 'channel_' . $this->channel_id . '_strategy';
         $tag = $abService->getTag($experiment);
         if (!in_array($tag, array("10001_popularRanking", 
                                  "10001_lrRanker",
@@ -25,7 +25,7 @@ class Selector10001 extends BaseNewsSelector{
             $tag = "10001_personalTopicRec";
         }
         # switch for lr model update
-        $cache = $this->_di->get('cache');
+        $cache = $this->di->get('cache');
         $isTopicAlg = $cache->get(ALG_LR_SWITCH_KEY);
         if (empty($isTopicAlg) and ($tag=="10001_lrRanker")) {
             $tag = "10001_personalTopicRec";
@@ -34,9 +34,9 @@ class Selector10001 extends BaseNewsSelector{
     }
 
     public function emergence($sample_count, $recNewsLst, $options, $prefer) {
-        $randomPolicy = new ExpDecayListPolicy($this->_di); 
-        $randomNewsLst = $randomPolicy->sampling($this->_channel_id, 
-                $this->_device_id, $this->_user_id, $sample_count, 
+        $randomPolicy = new ExpDecayListPolicy($this->di); 
+        $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
+                $this->device_id, $this->user_id, $sample_count, 
                 3, $prefer, $options);
         foreach ($randomNewsLst as $randomNews) {
             if (count($recNewsLst) >= $sample_count) {
@@ -58,21 +58,21 @@ class Selector10001 extends BaseNewsSelector{
         // divide whole user into two group, one combine popular & recommend, 
         // the other one only contain popular list 
         $strategyTag = $this->getPolicyTag();
-        $popularPolicy = new PopularListPolicy($this->_di); 
-        $personalTopicPolicy = new PersonalTopicInterestPolicy($this->_di);
+        $popularPolicy = new PopularListPolicy($this->di); 
+        $personalTopicPolicy = new PersonalTopicInterestPolicy($this->di);
         $recNewsLst = array();
-        $logger = $this->_di->get('logger');
+        $logger = $this->di->get('logger');
         if ($strategyTag == "10001_popularRanking") {
-            $recNewsLst = $popularPolicy->sampling($this->_channel_id, 
-                $this->_device_id, $this->_user_id, $sample_count, 
+            $recNewsLst = $popularPolicy->sampling($this->channel_id, 
+                $this->device_id, $this->user_id, $sample_count, 
                 3, $prefer, $options);
         } elseif ($strategyTag == "10001_personalTopicRec") {
             $recNewsLst = $personalTopicPolicy->sampling(
-                $this->_channel_id, $this->_device_id, $this->_user_id,
+                $this->channel_id, $this->device_id, $this->user_id,
                 $sample_count - POPULAR_NEWS_CNT, 3, $prefer, $options);
             if (count($recNewsLst) < $sample_count) {
-                $popNewsLst = $popularPolicy->sampling($this->_channel_id, 
-                    $this->_device_id, $this->_user_id, $sample_count, 
+                $popNewsLst = $popularPolicy->sampling($this->channel_id, 
+                    $this->device_id, $this->user_id, $sample_count, 
                     3, $prefer, $options);
                 foreach ($popNewsLst as $popNews) {
                     if (count($recNewsLst) >= $sample_count) {
@@ -85,14 +85,14 @@ class Selector10001 extends BaseNewsSelector{
                 }
             } 
         } elseif ($strategyTag == "10001_editorRec") {
-            $editorRecPolicy = new EditorRecPolicy($this->_di); 
+            $editorRecPolicy = new EditorRecPolicy($this->di); 
             $editorRecNewsCnt = 5;
             $recNewsLst = $editorRecPolicy->sampling(
-                $this->_channel_id, $this->_device_id, $this->_user_id,
+                $this->channel_id, $this->device_id, $this->user_id,
                 $editorRecNewsCnt, 3, $prefer, $options);
             $popularNewsCnt = max(0, $sample_count - $editorRecNewsCnt);
             $popularNewsLst = $popularPolicy->sampling(
-                $this->_channel_id, $this->_device_id, $this->_user_id, 
+                $this->channel_id, $this->device_id, $this->user_id, 
                 $popularNewsCnt, 3, $prefer,  $options);
             foreach ($popularNewsLst as $curNewsId) {
                 if (!in_array($curNewsId, $recNewsLst)) {
@@ -101,11 +101,11 @@ class Selector10001 extends BaseNewsSelector{
             }
         } else {
             // combine popular & topic recommend recall with rerank
-            $recNewsLst = $popularPolicy->sampling($this->_channel_id, 
-                $this->_device_id, $this->_user_id, 50, 3, $prefer, 
+            $recNewsLst = $popularPolicy->sampling($this->channel_id, 
+                $this->device_id, $this->user_id, 50, 3, $prefer, 
                 $options);
             $topicNewsLst = $personalTopicPolicy->sampling(
-                $this->_channel_id, $this->_device_id, $this->_user_id,
+                $this->channel_id, $this->device_id, $this->user_id,
                 10, 3, $prefer, $options);
             // merge news from different strategy without duplicate
             foreach ($topicNewsLst as $curNewsId) {
@@ -119,7 +119,7 @@ class Selector10001 extends BaseNewsSelector{
             }
         }
         $logger->info("====>channel 10001 strategy: " . $strategyTag .
-            ". deviceId:" . $this->_device_id . ". newsCnt:" 
+            ". deviceId:" . $this->device_id . ". newsCnt:" 
             . count($recNewsLst));
 
         if (count($recNewsLst) < $sample_count) {
@@ -140,12 +140,12 @@ class Selector10001 extends BaseNewsSelector{
 
         // rerank news from recall step
         $newsFeatureDct = array();
-        $cache = $this->_di->get('cache');
+        $cache = $this->di->get('cache');
         $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
         if ($isLrRanker) {
-            $lrRanker = new LrNewsRanker($this->_di); 
+            $lrRanker = new LrNewsRanker($this->di); 
             list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
-                $this->_channel_id, $this->_device_id, $newsObjDct, 
+                $this->channel_id, $this->device_id, $newsObjDct, 
                 $prefer, $sample_count);
             $strategyTag = $this->getPolicyTag();
             if ($strategyTag == "10001_lrRanker") {
@@ -172,7 +172,7 @@ class Selector10001 extends BaseNewsSelector{
 
         /*
         if ($prefer == 'later') {
-            $cache = $this->_di->get('cache');
+            $cache = $this->di->get('cache');
             if ($cache->exists("BS_BANNER_SWITCH"))
                 $this->InsertBanner($ret);
         }
@@ -181,16 +181,16 @@ class Selector10001 extends BaseNewsSelector{
         $this->InsertInterests($ret);
         $this->insertAd($ret);
         $this->InsertVideo($prefer, $ret);
-        $this->getPolicy()->setDeviceSent($this->_device_id, $filter);
+        $this->getPolicy()->setDeviceSent($this->device_id, $filter);
         return array($ret, $newsFeatureDct);
     }
 
     protected function InsertInterests(&$ret) {
         $this->interveneAt($ret, new InterestsIntervene(
             array(
-                "device_id" => $this->_device_id,
-                "os" => $this->_os,
-                "client_version" => $this->_client_version,
+                "device_id" => $this->device_id,
+                "os" => $this->os,
+                "client_version" => $this->client_version,
                 )
             ), 4);
     }
@@ -198,12 +198,12 @@ class Selector10001 extends BaseNewsSelector{
     protected function InsertTopic(&$ret) {
         $this->interveneAt($ret, new TopicIntervene(
             array(
-                "device_id" => $this->_device_id,
-                "net" => $this->_net,
-                "screen_w" => $this->_screen_w,
-                "screen_h" => $this->_screen_h,
-                "os" => $this->_os,
-                "client_version" => $this->_client_version,
+                "device_id" => $this->device_id,
+                "net" => $this->net,
+                "screen_w" => $this->screen_w,
+                "screen_h" => $this->screen_h,
+                "os" => $this->os,
+                "client_version" => $this->client_version,
                 )),
             0);
     }
@@ -211,34 +211,34 @@ class Selector10001 extends BaseNewsSelector{
     protected function InsertBanner(&$ret) {
         $this->interveneAt($ret, 
             new BannerIntervene(array(
-                "device_id" => $this->_device_id,
+                "device_id" => $this->device_id,
                 "operating_id" => OPERATING_CHRISTMAS,
                 "news_id" => BANNER_NEWS_ID,
-                "client_version" => $this->_client_version,
-                "os" => $this->_os,
-                "net" => $this->_net,
+                "client_version" => $this->client_version,
+                "os" => $this->os,
+                "net" => $this->net,
             )
         ), 0);
     }
 
     protected function InsertVideo($prefer, &$ret) {
-        $popularPolicy = new PopularListPolicy($this->_di); 
+        $popularPolicy = new PopularListPolicy($this->di); 
         $options = array();
         if ($prefer == "later") {
             $options["long_tail_weight"] = 0;
         }
         if (Features::Enabled(Features::VIDEO_SUPPORT_FEATURE, 
-                $this->_client_version, $this->_os)) {
-            $videoIdLst = $popularPolicy->sampling("30001", $this->_device_id,
-                        $this->_user_id, 1, 3, $prefer, $options);
+                $this->client_version, $this->os)) {
+            $videoIdLst = $popularPolicy->sampling("30001", $this->device_id,
+                        $this->user_id, 1, 3, $prefer, $options);
             $videoIdObjDct = News::BatchGet($videoIdLst);
             if (empty($videoIdObjDct)) {
                 return ;
             }
             $videoObjLst = array_values($videoIdObjDct);
             array_splice($ret, 3, 0, $videoObjLst);
-            $device_id = $this->_device_id;
-            $bf_service = $this->_di->get("bloomfilter");
+            $device_id = $this->device_id;
+            $bf_service = $this->di->get("bloomfilter");
             $bf_service->add(BloomFilterService::FILTER_FOR_VIDEO,
                              array_map(
                                        function($key) use ($device_id){

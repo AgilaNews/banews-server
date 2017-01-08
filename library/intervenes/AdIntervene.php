@@ -18,9 +18,9 @@ class AdIntervene extends BaseIntervene {
 
     public function render(){
         switch ($this->context["type"]) {
-        case NEWS_LIST_TPL_AD_FB_MEDIUM:
+        case RenderLib::NEWS_LIST_TPL_AD_FB_MEDIUM:
             return $this->renderFB();
-        case DETAIL_AD_TPL_MEDIUM:
+        case RenderLib::DETAIL_AD_TPL_MEDIUM:
             return $this->renderFBDetail();
         default:
             assert(false, "not implement ad type: " . $this->context["type"]);
@@ -29,16 +29,16 @@ class AdIntervene extends BaseIntervene {
 
     protected function renderFBDetail(){
         return array(
-            "tpl" => DETAIL_AD_TPL_MEDIUM,
-            "ad_id" =>  $this->getAdId(),
-        );
+                     "tpl" => RenderLib::DETAIL_AD_TPL_MEDIUM,
+                     "ad_id" =>  $this->getAdId(),
+                     );
     }
 
     protected function renderFB(){
         return array(
-            "tpl" => NEWS_LIST_TPL_AD_FB_MEDIUM,
-            "ad_id" => $this->getAdId(),
-        );
+                     "tpl" => RenderLib::NEWS_LIST_TPL_AD_FB_MEDIUM,
+                     "ad_id" => $this->getAdId(),
+                     );
     }
 
     protected function getAdId(){

@@ -31,6 +31,8 @@ class Features {
 
     const TOPIC_FEATURE = 11;
 
+    const LIKE_NOTIFY_FEATURE = 12;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
@@ -77,6 +79,10 @@ class Features {
                                                                         "ios" => "1.2.6",
                                                                         "android" => "1.2.7"
                                                                         ),
+                                         self::LIKE_NOTIFY_FEATURE => array(
+                                                                            "ios"=> "1.2.5",
+                                                                            "android" => "1.2.5",
+                                                                            ),
                                          );
                                    
     
