@@ -45,7 +45,7 @@ class BaseListRender {
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
-        RenderLib::fillFilters($ret);
+        $this->fillFilters($ret);
         
         return $ret;
     }
