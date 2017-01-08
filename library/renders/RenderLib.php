@@ -145,7 +145,7 @@ class RenderLib {
         foreach ($ret as &$cell) {
             $cell["tag"] = "";
             
-            if ($cell["tpl"] == NEWS_LIST_TOPIC){
+            if ($cell["tpl"] == self::NEWS_LIST_TOPIC){
                 $cell["tag"] = "Topics";
                 continue;
             }
