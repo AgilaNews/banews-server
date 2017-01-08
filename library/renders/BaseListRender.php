@@ -81,7 +81,7 @@ class BaseListRender {
             if (!$video || !$cover_meta) {
                 $ret["imgs"] = array();
             } else {
-                $cell = RenderLib::ImageRender($this->net, $video->video_url_sign, $cover_meta, false);
+                $cell = RenderLib::ImageRender($this->net, $video->video_url_sign, $cover_meta, false, true);
                 $ret["imgs"] = array($cell);
             }
         } else {

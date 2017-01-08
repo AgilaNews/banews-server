@@ -27,7 +27,7 @@ class Render10001 extends BaseListRender {
                     $ret [] = $r; 
                 }
                 continue; 
-            } else if ($news_model->channel_id == "30001") {
+            } else if (RenderLib::isVideoChannel($news_model->channel_id)) {
                 $cell = $this->serializeVideoCell($news_model);
                 if ($cell == null) {
                     continue;

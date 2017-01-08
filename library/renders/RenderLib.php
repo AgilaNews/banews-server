@@ -191,7 +191,7 @@ class RenderLib {
         }
     }
 
-    public static function ImageRender($net, $url_sign, $meta, $large) {
+    public static function ImageRender($net, $url_sign, $meta, $large, $play_sign = false) {
         $quality = RenderLib::GetImageQuality($net);
 
         $cell = array(
@@ -205,6 +205,10 @@ class RenderLib {
         } else {
             $cell["pattern"] = sprintf(BASE_CHANNEL_IMG_PATTERN, $url_sign, "{w}", "{h}", $quality);
             $cell["src"] = sprintf(BASE_CHANNEL_IMG_PATTERN, urlencode($url_sign), "225", "180", $quality);
+        }
+
+        if ($play_sign) {
+            $cell["pattern"] .= "|v=1";
         }
 
         return $cell;
