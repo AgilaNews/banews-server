@@ -45,11 +45,10 @@ class BaseListRender {
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
         RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
-        $ret["filter_tags"] = RenderLib::GetFilter($news_model->source_name);
-        
+
         return $ret;
     }
-    
+
     protected function serializeNewsCell($news_model) {
         $usedLarge = false;
 
@@ -107,6 +106,8 @@ class BaseListRender {
                 }
             }
         }
+
+        $ret["filter_tags"] = RenderLib->GetFilter($news_model->source_name);
 
         return $ret;
     } 
