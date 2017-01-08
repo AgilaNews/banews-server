@@ -214,7 +214,7 @@ class RenderLib {
         return $cell;
     }
 
-    protected static function LargeImageScale($meta, $screen_w, $screen_h, $os) {
+    protected  static function LargeImageScale($meta, $screen_w, $screen_h, $os) {
         $ow = $meta["width"];
         $oh = $meta["height"];
 
@@ -227,11 +227,10 @@ class RenderLib {
         return array($aw, $ah);
     }
 
-    public static function LargeImageRender($net, $url_sign, $meta, $screen_w, $screen_h, $os, $play_sign = false) {
+    public static function LargeImageRender($pattern, $net, $url_sign, $meta, $screen_w, $screen_h, $os, $play_sign = false) {
         $quality = RenderLib::GetImageQuality($net);
         $scale = RenderLib::LargeImageScale($meta, $screen_w, $screen_h, $os);
 
-        $pattern = LARGE_CHANNEL_IMG_PATTERN;
         if ($play_sign) {
             $pattern = $pattern . "|v=1";
         }

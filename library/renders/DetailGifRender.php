@@ -32,7 +32,8 @@ class DetailGifRender extends BaseDetailRender {
         $size= $meta["size"];
         $duration = $meta["duration"];
 
-        $img = RenderLib::LargeImageRender($this->c->net, $gif_model->gif_url_sign,
+        $img = RenderLib::LargeImageRender(GIF_COVER_PATTERN,
+                                           $this->c->net, $gif_model->gif_url_sign,
                                            $meta, $this->c->resolution_w, $this->c->resolution_h,
                                            $this->c->os);
         $cell = array(
