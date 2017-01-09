@@ -245,8 +245,8 @@ class RenderLib {
                         urlencode($url_sign),
                         $scale[0], $scale[1], $quality);
 
-        $w = "{w}"
-        $h = "{h}"
+        $w = "{w}";
+        $h = "{h}";
         if ($ensure_width) {
             $h = "";
         }
