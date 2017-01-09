@@ -54,7 +54,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
                     'more_like_this' => array(
                         'fields' => array('title', 'plain_text'),
                         'like' => array(
-                            '_index' => 'banews-article',
+                            '_index' => 'banews',
                             '_type' => 'article',
                             '_id' => $myself,
                         ),
