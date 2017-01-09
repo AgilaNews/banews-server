@@ -31,22 +31,8 @@ class NewsController extends BaseController {
         $redis->setDeviceClick($this->deviceId, $newsSign, time());
         $this->incrViewCount($newsSign);
 
-        $need_recommend = true;
-        $recommend_models = array();
-        if ($cache->exists(CACHE_NO_RECOMMEND_NEWS)) {
-            if (in_array($news_model->url_sign, $cache->lRange(CACHE_NO_RECOMMEND_NEWS, 0, -1))) {
-                $ret["ad"] = new stdClass();     
-                $need_recommend = false; 
-            }
-        }
-                                
-        if ($need_recommend) {  
-            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
-            $recommend_models = $recommend_selector->select($news_model->url_sign);
-        }
-
         $render = BaseDetailRender::getRenderByChannel($news_model->channel_id, $this);
-        $ret = $render->render($news_model, $recommend_models);
+        $ret = $render->render($news_model, null);
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
                                                  "news_id"=> $newsSign,
