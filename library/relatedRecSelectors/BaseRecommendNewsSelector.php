@@ -23,7 +23,7 @@ class BaseRecommendNewsSelector {
         $uniq = array();
 
         foreach ($models as $sign => $news_model) { 
-            if (!empty($news_model)) {
+            if (empty($news_model)) {
                 continue;
             }
             if (array_key_exists($news_model->content_sign, $uniq) 
@@ -46,8 +46,8 @@ class BaseRecommendNewsSelector {
             $myself, 
             DEFAULT_RECOMMEND_NEWS_COUNT * 2);
         array_unshift($esRelatedNewsLst, $myself);
-        $models = $this->removeDup($esRelatedNewsLst);
         $models = News::batchGet($esRelatedNewsLst);
+        $models = $this->removeDup($models);
         if (count($models) < DEFAULT_RECOMMEND_NEWS_COUNT * 2) {
             $randomPolicy = new RandomRecommendPolicy($this->_di);
             $randomNewsLst = $randomPolicy->sampling(
