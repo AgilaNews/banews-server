@@ -90,7 +90,7 @@ class BaseDetailRender {
 
                 $c = RenderLib::LargeImageRender(LARGE_CHANNEL_IMG_PATTERN,
                                                  $this->c->net, $video->video_url_sign, $cover_meta, $this->c->resolution_w,
-                                                 $this->c->resolution_h, $this->c->os, true);
+                                                 $this->c->resolution_h, $this->c->os, true, true);
                 $c["video_pattern"] = $c["pattern"];
                 $c["youtube_id"] = $video->youtube_video_id;
                 $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
