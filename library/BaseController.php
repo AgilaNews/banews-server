@@ -55,6 +55,7 @@ class BaseController extends Controller{
         $this->lng = $this->get_request_param("lng", "float");
         $this->lat = $this->get_request_param("lat", "float");
         $this->lang = $this->get_request_param("lang", "string");
+        $this->imei = $this->get_request_param("imei", "string");
         $this->client_version = $this->get_request_param("client_version", "string", false, "1.0.0");
         // we just need version code after 'v' character
         if ($this->client_version && strcasecmp(substr($this->client_version, 0, 1), "v") == 0) {
@@ -219,6 +220,7 @@ class BaseController extends Controller{
         $param["os-version"] = $this->os_version;
         $param["build"] = $this->build;
         $param["abflag"] = $this->abflags;
+        $param["imei"] = $this->imei;
         $this->eventlogger->info(json_encode($param));
     }
 
