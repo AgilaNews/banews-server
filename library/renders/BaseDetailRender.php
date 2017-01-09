@@ -88,7 +88,7 @@ class BaseDetailRender {
                     }
                 }
 
-                $c = RenderLib::LargeImageRender(LARGE_CHANNEL_IMG_PATTERN,
+                $c = RenderLib::LargeImageRender(DETAIL_IMAGE_PATTERN,
                                                  $this->c->net, $video->video_url_sign, $cover_meta, $this->c->resolution_w,
                                                  $this->c->resolution_h, $this->c->os, true, true);
                 $c["video_pattern"] = $c["pattern"];

@@ -302,7 +302,7 @@ class NewsController extends BaseController {
        $ah = (int) ($aw * $oh / $ow);
 
        return array(
-                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, $quality),
+                    "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, "", $quality),
                     "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
                     "width" => $aw,
                     "height" => $ah,
