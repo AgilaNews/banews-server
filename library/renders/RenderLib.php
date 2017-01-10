@@ -36,7 +36,7 @@ class RenderLib {
     const NEWS_LIST_TPL_SMALL_YOUTUBE = 11;
 
     // youtube视频资源模板，大图, 一般用于视频频道
-    const NEWS_LIST_TPL_VIDEO = 12;
+    const NEWS_LIST_TPL_IN_VIDEO_CHANNEL = 12;
 
     // 视频列表样式，小图
     const NEWS_LIST_TPL_VIDEO_SMALL = 13;
@@ -166,7 +166,7 @@ class RenderLib {
         }
     }
 
-    public static function FillTpl(&$ret, $type) {
+    public static function FillTpl(&$ret, $placement_id, $type) {
         foreach ($ret as &$cell) {
             if (!array_key_exists("tpl", $cell)) {
                 switch ($type) {
@@ -174,7 +174,7 @@ class RenderLib {
                     $cell["tpl"] = self::getRecommendTpl($cell["channel_id"], $cell);
                     break;
                 case self::PLACEMENT_TIMELINE:
-                    $cell["tpl"] = self::getTimelineTpl($cell["channel_id"], $cell);
+                    $cell["tpl"] = self::getTimelineTpl($cell["channel_id"], $placement_id, $cell);
                     break;
                 case self::PLACEMENT_COLLECT:
                     $cell["tpl"] = self::getCollectTpl($cell["channel_id"], $cell);
@@ -300,10 +300,10 @@ class RenderLib {
 
     
     private static function getCollectTpl($channel_id, $cell) {
-        return self::getTimelineTpl($channel_id, $cell);
+        return self::getTimelineTpl($channel_id, null, $cell);
     }
     
-    private static function getTimelineTpl($channel_id, $cell) {
+    private static function getTimelineTpl($channel_id, $placement_id, $cell) {
         if (self::isGifChannel($channel_id)) {
             return self::NEWS_LIST_TPL_GIF;
         }
@@ -312,8 +312,8 @@ class RenderLib {
         }
         
         if (array_key_exists("videos", $cell) && $cell["videos"]) {
-            if (self::isVideoChannel($channel_id)) {
-                return self::NEWS_LIST_TPL_VIDEO;
+            if (self::isVideoChannel($channel_id) && self::isVideoChannel($placement_id)) {
+                return self::NEWS_LIST_TPL_IN_VIDEO_CHANNEL;
             } else {
                 return self::NEWS_LIST_TPL_VIDEO_BIG;
             }

@@ -20,7 +20,7 @@ class BaseRecommendRender extends BaseListRender {
         }
 
         RenderLib::FillCommentsCount($ret);
-        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_RECOMMEND);
+        RenderLib::FillTpl($ret, null, RenderLib::PLACEMENT_RECOMMEND);
         
         return $ret;
     }

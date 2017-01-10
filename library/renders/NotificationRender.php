@@ -48,7 +48,7 @@ class NotificationRender {
             $ret []= $cell;
         }
 
-        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_NOTIFICATION_CENTER);
+        RenderLib::FillTpl($ret, null, RenderLib::PLACEMENT_NOTIFICATION_CENTER);
 
         return $ret;
     }

@@ -6,7 +6,7 @@ define('LARGE_IMAGE_MIN_WH_RATIO', 1.6);
 define('LARGE_IMAGE_MAX_WH_RATIO', 2.4);
 
 class BaseListRender {
-    public function __construct($controller) {
+    public function __construct($controller, $placement_id = null) {
         $this->device_id = $controller->deviceId;
         $this->screen_w = $controller->resolution_w;
         $this->screen_h = $controller->resolution_h;
@@ -14,6 +14,7 @@ class BaseListRender {
         $this->os = $controller->os;
         $this->client_version = $controller->client_version;
         $this->large_img_count = 0;
+        $this->placement_id = $placement_id;
     }
     
     public function render($models) {
@@ -44,7 +45,7 @@ class BaseListRender {
         
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
-        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
+        RenderLib::FillTpl($ret, $this->placement_id, RenderLib::PLACEMENT_TIMELINE);
 
         return $ret;
     }

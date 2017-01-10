@@ -123,9 +123,9 @@ class NewsController extends BaseController {
         
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
-            $render = new $cname($this);
+            $render = new $cname($this, $channel_id);
         } else {
-            $render = new BaseListRender($this);
+            $render = new BaseListRender($this, $channel_id);
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);

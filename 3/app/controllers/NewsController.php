@@ -10,8 +10,6 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
-    private $featureChannelLst = array(10001);
-    
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
@@ -48,6 +46,7 @@ class NewsController extends BaseController {
         $this->setJsonResponse($ret);
         return $this->response;
     }
+
     
     public function ListAction() {
         if (!$this->request->isGet()) {
@@ -95,9 +94,9 @@ class NewsController extends BaseController {
 
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
-            $render = new $cname($this);
+            $render = new $cname($this, $channel_id);
         } else {
-            $render = new BaseListRender($this);
+            $render = new BaseListRender($this, $channel_id);
         }
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
@@ -107,9 +106,6 @@ class NewsController extends BaseController {
                 "news" => $render->render($dispatch_models),
                 "abflag" => json_encode($this->abflags),
             );
-            if (in_array($channel_id, array(10001))) {
-                $ret["has_ad"] = 1;
-            }
         } else { 
             $ret[$dispatch_id] = $render->render($dispatch_models);
         }
@@ -139,6 +135,7 @@ class NewsController extends BaseController {
         return $this->response;
     }
 
+    
     public function LikeAction() {
         if (!$this->request->isPost()) {
             throw new HttpException(ERR_INVALID_METHOD, "not supported method");
