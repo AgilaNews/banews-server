@@ -117,7 +117,7 @@ class BaseDetailRender {
                 }
             }
             
-            $c = RenderLib::LargeImageRender(LARGE_CHANNEL_IMG_PATTERN,
+            $c = RenderLib::LargeImageRender(DETAIL_IMAGE_PATTERN,
                                              $this->c->net, $img->url_sign, $meta, $this->c->resolution_w,
                                              $this->c->resolution_h, $this->c->os);
             $c["name"] = "<!--IMG" . $img->news_pos_id . "-->";
