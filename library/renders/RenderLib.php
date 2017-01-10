@@ -70,7 +70,7 @@ class RenderLib {
     const NEWS_LIST_RECOMMEND_IMAGE_TEXT = self::NEWS_LIST_TPL_TEXT_IMG;
 
     // 单视频
-    const NEWS_LIST_RECOMMEND_SMALL_VIDEO = self::NEWS_LIST_TPL_VIDEO_SMALL;
+    const NEWS_LIST_RECOMMEND_SMALL_VIDEO = self::NEWS_LIST_TPL_IN_VIDEO_CHANNEL;
 
     /*
       详情页模板
