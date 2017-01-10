@@ -115,9 +115,9 @@ class NewsController extends BaseController {
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "Recommend" . $news_model->channel_id;
         if (class_exists($cname)) {
-            $render = new $cname($this, $channel_id);
+            $render = new $cname($this, $news_model->channel_id);
         } else {
-            $render = new BaseListRender($this, $channel_id);
+            $render = new BaseListRender($this, $news_model->channel_id);
         }
 
         $ret["recommend_news"]= $render->render($models);
