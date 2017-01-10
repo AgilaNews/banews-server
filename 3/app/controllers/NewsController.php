@@ -10,6 +10,7 @@
 use Phalcon\Mvc\Model\Query;
 
 class NewsController extends BaseController {
+    private $featureChannelLst = array(10001);
     public function DetailAction() {
         if (!$this->request->isGet()){
             throw new HttpException(ERR_INVALID_METHOD,
