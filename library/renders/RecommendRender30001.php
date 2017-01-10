@@ -8,4 +8,21 @@
  */
 
 class RecommendRender30001 extends Render30001 {
+    public function render($models) {
+        $ret = array();
+        foreach ($models as $sign => $news_model) {
+            if (!$news_model) {
+                continue;
+            }
+            $cell = $this->serializeNewsCell($news_model);
+            if ($cell == null) {
+                continue;
+            }
+            $ret []= $cell;
+        }
+
+        RenderLib::FillCommentsCount($ret);
+        RenderLib::FillTpl($ret, $this->placement_id, RenderLib::PLACEMENT_RECOMMEND);
+        return $ret;
+    } 
 }
