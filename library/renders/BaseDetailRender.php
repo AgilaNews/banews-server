@@ -106,7 +106,7 @@ class BaseDetailRender {
         if (!$widget || $widget->is_deadlink==1){
             return False;
         } 
-        if (!in_array($widget->type, $validtype)){
+        if (!in_array($widget->sns_type, $validtype)){
             return False;
         }
         if (empty($widget->screen_name) || empty($widget->icon_url)){
@@ -125,7 +125,7 @@ class BaseDetailRender {
     }
 
     protected function fillSnsWidget($news_model, &$ret) {
-        $widgets = NewsSnsWidget::getVideosOfNews($news_model->url_sign);
+        $widgets = NewsSnsWidget::getSnsWidgetOfNews($news_model->url_sign);
         $widgetcell = array();
 
         if (Features::Enabled(Features::SNS_WIDGET_NEWS_FEATURE, $this->c->client_version, $this->c->os)) {
@@ -141,17 +141,16 @@ class BaseDetailRender {
                 //have image
                 if (!empty($widget->image_url_sign)){
                     $img = RenderLib::LargeImageRender(DETAIL_IMAGE_PATTERN,
-                        $this->c->net, $widget->image_url_sign, $image_meta, $this->c->resolution_w,
-                        $this->c->resolution_h, $this->c->os, true, true);
+                        $this->c->net, $widget->image_url_sign, json_decode($widget->image_meta,true), $this->c->resolution_w,
+                        $this->c->resolution_h, $this->c->os, false, true);
                     $c["src"] = $img["src"];
                     $c["pattern"] = $img["pattern"];
                     $c["width"] = $img["width"];
                     $c["height"] = $img["height"];
                 }
-                $c["name"] = "<!--SNSWIDGET" . $video->news_pos_id . "-->";
+                $c["name"] = "<!--SNSWIDGET" . $widget->news_pos_id . "-->";
                 $widgetcell []= $c;
             }
-
             $ret["sns_widgets"] = $widgetcell;
         }
     }
@@ -207,6 +206,7 @@ class BaseDetailRender {
         $this->fillComment($news_model, $ret);
         $this->fillVideos($news_model, $ret);
         $this->fillImgs($news_model, $ret);
+        $this->fillSnsWidget($news_model, $ret);
         if ($recommend_models) {
             $this->fillRecommend($news_model, $recommend_models, $ret);
         }
