@@ -1,10 +1,6 @@
 <?php
 
 class Render10011 extends BaseListRender {
-    public function __construct($controller) {
-        parent::__construct($controller);
-    }
-
     public function render($models) {
         $ret = array();
         foreach ($models as $news_model) {
@@ -21,7 +17,7 @@ class Render10011 extends BaseListRender {
         
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
-        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
+        RenderLib::FillTpl($ret, $this->placement_id, RenderLib::PLACEMENT_TIMELINE);
         return $ret;
     } 
 

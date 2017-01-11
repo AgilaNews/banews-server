@@ -115,9 +115,9 @@ class NewsController extends BaseController {
         $models = $recommend_selector->select($news_model->url_sign);
         $cname = "Recommend" . $news_model->channel_id;
         if (class_exists($cname)) {
-            $render = new $cname($this);
+            $render = new $cname($this, $news_model->channel_id);
         } else {
-            $render = new BaseListRender($this);
+            $render = new BaseListRender($this, $news_model->channel_id);
         }
 
         $ret["recommend_news"]= $render->render($models);
@@ -303,7 +303,7 @@ class NewsController extends BaseController {
 
        return array(
                     "src" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), $aw, "", $quality),
-                    "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", $quality),
+                    "pattern" => sprintf(DETAIL_IMAGE_PATTERN, urlencode($url_sign), "{w}", "", $quality),
                     "width" => $aw,
                     "height" => $ah,
                     );

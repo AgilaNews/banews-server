@@ -39,7 +39,7 @@ class CollectListRender extends BaseListRender {
         }
 
         RenderLib::FillCommentsCount($ret);
-        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_COLLECT);
+        RenderLib::FillTpl($ret, null, RenderLib::PLACEMENT_COLLECT);
 
         return $ret;
     }

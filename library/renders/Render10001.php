@@ -2,10 +2,6 @@
 
 use Phalcon\DI;
 class Render10001 extends BaseListRender {
-    public function __construct($controller) {
-        parent::__construct($controller);
-    }
-
     public function render($models) {
         $ret = array();
 
@@ -52,7 +48,7 @@ class Render10001 extends BaseListRender {
 
         RenderLib::FillTags($ret);
         RenderLib::FillCommentsCount($ret);
-        RenderLib::FillTpl($ret, RenderLib::PLACEMENT_TIMELINE);
+        RenderLib::FillTpl($ret, $this->placement_id, RenderLib::PLACEMENT_TIMELINE);
         
         return $ret;
     }
