@@ -90,7 +90,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_LIKE_COUNT'] = 
                     $likeCnt;
             $curFeatureDct['HISTORY_LIKE_DISPLAY_RATIO'] = 
-                    round($likeCnt/$displayCnt, $precision);
+                    min(1.0, round($likeCnt/$displayCnt, $precision));
             $clickCnt = 0;
             if (array_key_exists($newsId, $newsClickDct)) {
                 $clickCnt = $newsClickDct[$newsId];
@@ -98,7 +98,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_READ_COUNT'] = 
                     $clickCnt;
             $curFeatureDct['HISTORY_READ_DISPLAY_RATIO'] = 
-                    round($clickCnt/$displayCnt, $precision);
+                    min(1.0, round($clickCnt/$displayCnt, $precision));
             $commentCnt = 0;
             if (array_key_exists($newsId, $newsCommentDct)) {
                 $commentCnt = $newsCommentDct[$newsId];
@@ -106,7 +106,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_COMMENT_COUNT'] = 
                     $commentCnt; 
             $curFeatureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = 
-                    round($commentCnt/$displayCnt, $precision);
+                    min(1.0, round($commentCnt/$displayCnt, $precision));
             if (array_key_exists($newsId, $featureDct)) {
                 foreach ($curFeatureDct as $key => $val) {
                     $featureDct[$newsId][$key] = $val;
