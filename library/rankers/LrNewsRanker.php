@@ -7,8 +7,6 @@ define ("MAX_RANKER_NEWS_CNT", 100);
 define ("ORIGINAL_FEATURE_CNT", 93);
 define ("HOUR", 60 * 60);
 define ("MIN_FEATURE_VALUE", 0.001);
-define ("ALG_NEWS_TOPIC_CNT", 80);
-define ("ALG_NEWS_TOPIC_START_IDX", 14);
 
 class LrNewsRanker extends BaseNewsRanker {
 
@@ -29,10 +27,6 @@ class LrNewsRanker extends BaseNewsRanker {
             "FETCH_TIMESTAMP_INTERVAL" => 12,
             "POST_TIMESTAMP_INTERTVAL" => 13
         );
-        for ($idx=0; $idx<ALG_NEWS_TOPIC_CNT; $idx++) {
-            $this->FEATURE_MAPPING['TOPIC_' . $idx] = 
-                    ALG_NEWS_TOPIC_START_IDX + $idx;  
-        }
         $this->logger = $di->get("logger");
     }
 

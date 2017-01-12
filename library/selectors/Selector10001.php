@@ -118,9 +118,6 @@ class Selector10001 extends BaseNewsSelector{
                     $options, $prefer);
             }
         }
-        $logger->info("====>channel 10001 strategy: " . $strategyTag .
-            ". deviceId:" . $this->device_id . ". newsCnt:" 
-            . count($recNewsLst));
 
         if (count($recNewsLst) < $sample_count) {
             $recNewsLst = $this->emergence($sample_count, 
@@ -137,6 +134,10 @@ class Selector10001 extends BaseNewsSelector{
         $newsObjDct = News::BatchGet($selected_news_list);
         $newsObjDct = $this->removeInvisible($newsObjDct);
         $newsObjDct = $this->removeDup($newsObjDct);
+        $strategyTag = $this->getPolicyTag();
+        $logger->info(sprintf("[di:%s][channel:%s][strategy:%s][recall news:%s]",
+            $this->device_id, $this->channel_id, $strategyTag, 
+            count($newsObjDct)));
 
         // rerank news from recall step
         $newsFeatureDct = array();
@@ -147,9 +148,15 @@ class Selector10001 extends BaseNewsSelector{
             list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
                 $this->channel_id, $this->device_id, $newsObjDct, 
                 $prefer, $sample_count);
-            $strategyTag = $this->getPolicyTag();
             if ($strategyTag == "10001_lrRanker") {
                 $newsObjDct = $sortedNewsObjDct;
+                $newsIdStr = "";
+                foreach ($newsObjDct as $newsObj) {
+                    $newsIdStr = $newsIdStr . $newsObj->url_sign . ", ";
+                }
+                $logger->info(sprintf("[di:%s][channel:%s][strategy:%s]" .
+                    "[rerank newsId:%s]", $this->device_id, 
+                    $this->channel_id, $strategyTag, $newsIdStr));
             }
         }
         
