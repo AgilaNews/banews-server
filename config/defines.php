@@ -151,3 +151,6 @@ define('CACHE_NO_RECOMMEND_NEWS', 'BS_NO_RECOMMEND');
 define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');
 define('OPPO_DEVICE_KEY_TTL', 86400);
 define('VIDEO_CHANNEL_ID', 30001);
+
+
+define('AD_IMAGE_PATTERN', IMAGE_PREFIX . "%s.jpg?t={w}x{h}");
