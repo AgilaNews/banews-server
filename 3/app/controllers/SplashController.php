@@ -27,7 +27,7 @@ class SplashController extends BaseController {
         if ($this->os == "android") {
             $ret["ads"][0]["image"] = sprintf(AD_IMAGE_PATTERN, "/ad/tcl/Android-01.jpg");
         } else {
-            $ret["ads"][0]["image"] = sprintf(AD_IMAGE_PATTERN, "/ad/tcl/Ios-01.jpg.jpg");
+            $ret["ads"][0]["image"] = sprintf(AD_IMAGE_PATTERN, "/ad/tcl/Ios-01.jpg");
         }
         
         $this->setJsonResponse($ret);
