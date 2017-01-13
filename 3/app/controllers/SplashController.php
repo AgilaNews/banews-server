@@ -19,6 +19,7 @@ class SplashController extends BaseController {
                      "ads" => array(
                                     array(
                                           "dataid" => 1,
+                                          "display" => 3,
                                           ),
                                     ),
                      );
