@@ -153,4 +153,4 @@ define('OPPO_DEVICE_KEY_TTL', 86400);
 define('VIDEO_CHANNEL_ID', 30001);
 
 
-define('AD_IMAGE_PATTERN', IMAGE_PREFIX . "%s.jpg?t={w}x{h}");
+define('AD_IMAGE_PATTERN', "http" . IMAGE_SERVER_NAME . "%s.jpg?t={w}x{h}");
