@@ -7,16 +7,22 @@ class NewsRedis {
 
     public function getVideos() {
         $key = "banews:ph:30001";
-        $step = VIDEO_LENGTH;
-        $count = $this->_redis->zCard($key);
-        $start = 0;
-        $end = $start + $step;
-        $ret = array();
-        $tmp = $this->_redis->zRevRange($key, $start, $end, true);
 
-        foreach ($tmp as $id=>$weight) {
+        $ret = array();
+        $top = $this->_redis->zRevRange($key, 0, 999, true);
+
+        foreach ($top as $id=>$weight) {
             $ret []= array("id" => $id, "weight"=>$weight);
         }
+
+        $other = $this->_redis->zRevRange($key, 1000, -1, true);
+        shuffle($other);
+
+        $less = array_slice($other, 0, 1999);
+        foreach ($less as $id => $weight) {
+            $ret []= array("id" => $id, "weight"=>$weight);
+        }
+
         return $ret;
     }
     
