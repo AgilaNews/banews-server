@@ -53,9 +53,21 @@ class IndexController extends BaseController {
             "ad" => array(
                 "preload" => AD_PRELOAD,
                 "expire" => AD_EXPIRE,
+                "splash" => array(
+                                  "on" => 0,
+                                  "slot" => 3,
+                                  "stay_time" => 3,
+                                  "ad_time" => 3,
+                                  "ad_ttl" => 3600,
+                                  "reboot_time" => 3600,
+                                  ),
             ),
-            "splash_image" => 1,
         );
+
+        $abservice = $this->di->get("abtest");
+        if ($abservice->getTag("splash_ads") == "on") {
+            $ret["ad"]["splash"]["on"] = 1;
+        }
 
         if (Features::Enabled(Features::LOG_V3_FEATURE, $this->client_version, $this->os)) {
             $ret["interfaces"]["log"] = sprintf($this->config->entries->log, 3);

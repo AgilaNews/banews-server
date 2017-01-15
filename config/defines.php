@@ -154,8 +154,10 @@ define('OPPO_DEVICE_KEY', 'OPPO_DEVICE_%s');
 define('OPPO_DEVICE_KEY_TTL', 86400);
 define('VIDEO_CHANNEL_ID', 30001);
 
-
 define('WIDGET_FACEBOOK_TYPE', 1);
 define('WIDGET_TWITTER_TYPE', 2);
 define('WIDGET_INSTAGRAM_TYPE',3);
+
+
+define('AD_IMAGE_PATTERN', "http://" . IMAGE_SERVER_NAME . "%s?t={w}x{h}");
 
