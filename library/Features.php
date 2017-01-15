@@ -33,6 +33,8 @@ class Features {
 
     const LIKE_NOTIFY_FEATURE = 12;
 
+    const SNS_WIDGET_NEWS_FEATURE = 13;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
@@ -83,6 +85,10 @@ class Features {
                                                                             "ios"=> "1.2.5",
                                                                             "android" => "1.2.5",
                                                                             ),
+                                         self::SNS_WIDGET_NEWS_FEATURE => array(
+                                                                        "ios" => "1.2.7",          
+                                                                        "android" => "1.2.8",          
+                                                                        ),
                                          );
                                    
     

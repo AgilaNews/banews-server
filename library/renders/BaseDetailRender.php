@@ -101,6 +101,60 @@ class BaseDetailRender {
         }
     }
 
+    protected function checkSnsWidget($widget){
+        $validtype = array(WIDGET_FACEBOOK_TYPE, WIDGET_TWITTER_TYPE, WIDGET_INSTAGRAM_TYPE);
+        if (!$widget || $widget->is_deadlink==1){
+            return False;
+        } 
+        if (!in_array($widget->sns_type, $validtype)){
+            return False;
+        }
+        if (empty($widget->screen_name) || empty($widget->icon_url)){
+            return False;
+        }
+        if (empty($widget->content) && empty($widget->image_url_sign)){
+            return False;
+        }
+        if (!empty($widget->image_url_sign)){
+            $image_meta = json_decode($widget->image_meta, true);
+            if (!$image_meta || !$image_meta["width"] || !$image_meta["height"]) {
+                return False;
+            }
+        }
+        return True;
+    }
+
+    protected function fillSnsWidget($news_model, &$ret) {
+        $widgets = NewsSnsWidget::getSnsWidgetOfNews($news_model->url_sign);
+        $widgetcell = array();
+
+        if (Features::Enabled(Features::SNS_WIDGET_NEWS_FEATURE, $this->c->client_version, $this->c->os)) {
+            foreach($widgets as $widget) {
+                if (!$this->checkSnsWidget($widget)) {
+                    continue;
+                }
+                $c = array();
+                $c["sns_type"] = $widget->sns_type;
+                $c["sns_name"] = $widget->screen_name; 
+                $c["sns_icon"] = $widget->icon_url;
+                $c["sns_content"] = $widget->content;
+                //have image
+                if (!empty($widget->image_url_sign)){
+                    $img = RenderLib::LargeImageRender(DETAIL_IMAGE_PATTERN,
+                        $this->c->net, $widget->image_url_sign, json_decode($widget->image_meta,true), $this->c->resolution_w,
+                        $this->c->resolution_h, $this->c->os, false, true);
+                    $c["src"] = $img["src"];
+                    $c["pattern"] = $img["pattern"];
+                    $c["width"] = $img["width"];
+                    $c["height"] = $img["height"];
+                }
+                $c["name"] = "<!--SNSWIDGET" . $widget->news_pos_id . "-->";
+                $widgetcell []= $c;
+            }
+            $ret["sns_widgets"] = $widgetcell;
+        }
+    }
+
     protected function fillImgs($news_model, &$ret) {
         $imgs = NewsImage::getImagesOfNews($news_model->url_sign);
         $imgcell = array();
@@ -152,6 +206,7 @@ class BaseDetailRender {
         $this->fillComment($news_model, $ret);
         $this->fillVideos($news_model, $ret);
         $this->fillImgs($news_model, $ret);
+        $this->fillSnsWidget($news_model, $ret);
         if ($recommend_models) {
             $this->fillRecommend($news_model, $recommend_models, $ret);
         }
