@@ -103,7 +103,7 @@ class Video extends BaseModel {
     }
 
     protected static function _getFromDB($sign) {
-        $crit = array ("conditions" => "news_url_sign = ?1",
+        $crit = array ("conditions" => "news_url_sign = ?1 and status >= 0",
                        "bind" => array (1 => $sign),
                       );
 
@@ -161,7 +161,7 @@ class Video extends BaseModel {
             return array();
         }
 
-        $crit = array("conditions" => "news_url_sign IN ({signs:array})",
+        $crit = array("conditions" => "news_url_sign IN ({signs:array}) and status >= 0",
                       "bind" => array("signs" => $signs));
 
         $ret = Video::find($crit);
