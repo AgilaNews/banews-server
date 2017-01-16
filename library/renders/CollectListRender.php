@@ -30,6 +30,9 @@ class CollectListRender extends BaseListRender {
             }
             
             $cell = $render->serializeNewsCell($news_model);
+            if (!$cell) {
+                continue;
+            }
             unset($cell["filter_tags"]);
             
             $collect = $collects[$news_model->url_sign];
