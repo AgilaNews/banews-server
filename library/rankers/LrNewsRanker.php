@@ -7,8 +7,6 @@ define ("MAX_RANKER_NEWS_CNT", 100);
 define ("ORIGINAL_FEATURE_CNT", 93);
 define ("HOUR", 60 * 60);
 define ("MIN_FEATURE_VALUE", 0.001);
-define ("ALG_NEWS_TOPIC_CNT", 80);
-define ("ALG_NEWS_TOPIC_START_IDX", 14);
 
 class LrNewsRanker extends BaseNewsRanker {
 
@@ -29,10 +27,6 @@ class LrNewsRanker extends BaseNewsRanker {
             "FETCH_TIMESTAMP_INTERVAL" => 12,
             "POST_TIMESTAMP_INTERTVAL" => 13
         );
-        for ($idx=0; $idx<ALG_NEWS_TOPIC_CNT; $idx++) {
-            $this->FEATURE_MAPPING['TOPIC_' . $idx] = 
-                    ALG_NEWS_TOPIC_START_IDX + $idx;  
-        }
         $this->logger = $di->get("logger");
     }
 
@@ -96,7 +90,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_LIKE_COUNT'] = 
                     $likeCnt;
             $curFeatureDct['HISTORY_LIKE_DISPLAY_RATIO'] = 
-                    round($likeCnt/$displayCnt, $precision);
+                    min(1.0, round($likeCnt/$displayCnt, $precision));
             $clickCnt = 0;
             if (array_key_exists($newsId, $newsClickDct)) {
                 $clickCnt = $newsClickDct[$newsId];
@@ -104,7 +98,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_READ_COUNT'] = 
                     $clickCnt;
             $curFeatureDct['HISTORY_READ_DISPLAY_RATIO'] = 
-                    round($clickCnt/$displayCnt, $precision);
+                    min(1.0, round($clickCnt/$displayCnt, $precision));
             $commentCnt = 0;
             if (array_key_exists($newsId, $newsCommentDct)) {
                 $commentCnt = $newsCommentDct[$newsId];
@@ -112,7 +106,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $curFeatureDct['HISTORY_COMMENT_COUNT'] = 
                     $commentCnt; 
             $curFeatureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = 
-                    round($commentCnt/$displayCnt, $precision);
+                    min(1.0, round($commentCnt/$displayCnt, $precision));
             if (array_key_exists($newsId, $featureDct)) {
                 foreach ($curFeatureDct as $key => $val) {
                     $featureDct[$newsId][$key] = $val;

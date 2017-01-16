@@ -113,13 +113,10 @@ class NewsController extends BaseController {
                 }
             }
         }
-        $cache = $this->di->get("cache");
-        $isLrRanker = $cache->get(ALG_LR_SWITCH_KEY);
-        if ($isLrRanker) {
-            News::batchSaveActionToCache($dispatch_news_ids, 
-                CACHE_FEATURE_DISPLAY_PREFIX, 
-                CACHE_FEATURE_DISPLAY_TTL);
-        }
+        # increment news' history display count
+        News::batchSaveActionToCache($dispatch_news_ids, 
+            CACHE_FEATURE_DISPLAY_PREFIX, 
+            CACHE_FEATURE_DISPLAY_TTL);
         
         $cname = "Render$channel_id";
         if (class_exists($cname)) {
@@ -155,7 +152,8 @@ class NewsController extends BaseController {
                                               "channel_id" => $channel_id,
                                               "prefer" => $prefer,
                                               ));
-        if (in_array($channel_id, $this->featureChannelLst) and $isLrRanker) {
+        # dumping realtime sample features
+        if (in_array($channel_id, $this->featureChannelLst)) {
             foreach ($dispatch_news_ids as $newsId) {
                 if (array_key_exists($newsId, $newsFeatureDct)) {
                     $param = array();
