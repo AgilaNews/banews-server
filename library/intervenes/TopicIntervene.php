@@ -63,6 +63,7 @@ class TopicIntervene extends BaseIntervene {
             "title" => $topic_model->title,
             "news_id" => $topic_model->topic_id,
             "public_time" => $topic_model->publish_time,
+            "source" => "AgilaBuzz",
             "imgs" => array(),
             );
 
