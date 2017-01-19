@@ -66,7 +66,9 @@ class IndexController extends BaseController {
 
         $abservice = $this->di->get("abtest");
         if ($abservice->getTag("splash_ads") == "on") {
-            $ret["ad"]["splash"]["on"] = 1;
+            if ($this->os == "android"){
+                $ret["ad"]["splash"]["on"] = 1;
+            }
         }
 
         if (Features::Enabled(Features::LOG_V3_FEATURE, $this->client_version, $this->os)) {
