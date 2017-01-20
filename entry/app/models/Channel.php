@@ -22,6 +22,7 @@ class Channel extends BaseModel {
 
     public static function getAllVisible($client_version){
         $cache = DI::getDefault()->get('cache');
+        $channels = null;
 
         if ($cache) {
             $value = $cache->get(CACHE_CHANNELS_KEY);

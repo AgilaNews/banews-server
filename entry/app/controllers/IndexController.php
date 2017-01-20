@@ -65,7 +65,8 @@ class IndexController extends BaseController {
         );
 
         $abservice = $this->di->get("abtest");
-        if ($abservice->getTag("splash_ads") == "on") {
+        if ($this->os == "ios" &&
+            $abservice->getTag("splash_ads") == "on") {
             if ($this->os == "android"){
                 $ret["ad"]["splash"]["on"] = 1;
             }
