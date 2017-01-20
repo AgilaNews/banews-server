@@ -94,6 +94,10 @@ class BaseDetailRender {
                 $c["video_pattern"] = $c["pattern"];
                 $c["youtube_id"] = $video->youtube_video_id;
                 $c["name"] = "<!--YOUTUBE" . $video->news_pos_id . "-->";
+                //hack for ios 1.2.7 and after, remove it later
+                if ($this->c->os == "ios"){
+                    $c["width"] = $c["width"] * 2;
+                }
                 $videocell []= $c;
             }
 
@@ -147,6 +151,10 @@ class BaseDetailRender {
                     $c["pattern"] = $img["pattern"];
                     $c["width"] = $img["width"];
                     $c["height"] = $img["height"];
+                    //hack for ios 1.2.7 and after, remove it later
+                    if ($this->c->os == "ios"){
+                        $c["width"] = $img["width"] * 2;
+                    }
                 }
                 $c["name"] = "<!--SNSWIDGET" . $widget->news_pos_id . "-->";
                 $widgetcell []= $c;
