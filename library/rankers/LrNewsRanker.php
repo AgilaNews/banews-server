@@ -64,9 +64,11 @@ class LrNewsRanker extends BaseNewsRanker {
 
     protected function getTitleFeature($newsObj, &$featureDct, 
             &$discreteFeatureLst) {
+        $title = strtolower($newsObj->title);
+        $title = preg_replace("/[:punct:]+/", "", $title);
         $featureDct['TITLE'] = $newsObj->title;
         $titleWordLst = explode(" ", $newsObj->title);
-        $titleCntFeature = $this->discreteIntFeatures('TITLE_COUNT',
+        $titleCntFeature = $this->discreteGapFeatures('TITLE_COUNT',
             count($titleWordLst), array(5, 10, 15));
         $discreteFeatureLst[] = $titleCntFeature;
         foreach ($titleWordLst as $word) {
