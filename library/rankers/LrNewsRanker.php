@@ -40,8 +40,8 @@ class LrNewsRanker extends BaseNewsRanker {
     }
 
     public function discreteGapFeatures($featureName, $value, $sepValLst) {
-        $sortedSepValLst = sort($sepValLst);
-        foreach ($sortedSepValLst as $idx=>$sepVal) {
+        sort($sepValLst, SORT_NUMERIC);
+        foreach ($sepValLst as $idx=>$sepVal) {
             if ($value <= $sepVal) {
                 return $featureName . FEATURE_GAP . $idx; 
             }
@@ -65,7 +65,7 @@ class LrNewsRanker extends BaseNewsRanker {
     protected function getTitleFeature($newsObj, &$featureDct, 
             &$discreteFeatureLst) {
         $title = strtolower($newsObj->title);
-        $title = preg_replace("/[:punct:]+/", "", $title);
+        $title = preg_replace("/[[:punct:]]+/", "", $title);
         $featureDct['TITLE'] = $newsObj->title;
         $titleWordLst = explode(" ", $newsObj->title);
         $titleCntFeature = $this->discreteGapFeatures('TITLE_COUNT',
@@ -232,8 +232,8 @@ class LrNewsRanker extends BaseNewsRanker {
                 }
                 $featureIdxLst[] = $featureIdx;
             }
-            $sortedFeatureIdxLst = sort($featureIdxLst);
-            foreach ($sortedFeatureIdxLst as $featureIdx) {
+            sort($featureIdxLst, SORT_NUMERIC);
+            foreach ($featureIdxLst as $featureIdx) {
                 $featureObj = new iface\Feature();
                 $featureObj->setIndex($featureIdx);
                 $featureObj->setValue(1.0);
