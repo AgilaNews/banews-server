@@ -90,7 +90,7 @@ class LrNewsRanker extends BaseNewsRanker {
         $videoLst = NewsYoutubeVideo::getVideosOfNews($newsObj->url_sign);
         $featureDct['VIDEO_COUNT'] = count($videoLst);
         $discreteFeatureLst[] = $this->discreteBoolFeatures(
-            'PICTURE_COUNT', count($videoLst));
+            'VIDEO_COUNT', count($videoLst));
     }
 
     protected function getSourceFeature($newsObj, &$featureDct,
@@ -98,7 +98,8 @@ class LrNewsRanker extends BaseNewsRanker {
         $featureDct['SOURCE'] = $newsObj->source_name; 
         $sourceFeature = 'SOURCE' . FEATURE_GAP . 
             str_replace(' ', '-', $newsObj->source_name);
-        $discreteFeatureLst[] = $sourceFeature;
+        $discreteFeatureLst[] = $this->discreteBoolFeatures(
+            $sourceFeature, 1);
     }
 
     protected function getChannelFeature($newsObj, &$featureDct,
@@ -106,7 +107,8 @@ class LrNewsRanker extends BaseNewsRanker {
         $featureDct['CHANNEL_ID'] = $newsObj->channel_id;
         $channelFeature = 'CHANNEL_ID' . FEATURE_GAP . 
             $newsObj->channel_id;
-        $discreteFeatureLst[] = $channelFeature;
+        $discreteFeatureLst[] = $this->discreteBoolFeatures(
+            $channelFeature, 1);
     }
 
     protected function getDisplayFeature($newsObj, $newsDisplayDct, 
