@@ -173,8 +173,7 @@ class LrNewsRanker extends BaseNewsRanker {
             CACHE_FEATURE_DISPLAY_PREFIX);
         $newsClickDct = News::batchGetActionFromCache($newsObjDct, 
             CACHE_FEATURE_CLICK_PREFIX);
-        $newsIdLst = array_keys($newsObjDct);
-        $newsCommentDct = Comment::getCount($newsIdLst);
+        $newsCommentDct = Comment::getCount(array_keys($newsObjDct));
         $originalFeatureDct = array();
         $discreteFeatureDct = array();
         foreach ($newsObjDct as $newsId => $newsObj) {
@@ -198,18 +197,8 @@ class LrNewsRanker extends BaseNewsRanker {
                 $newsCommentDct, $curFeatureDct, $curDiscreteFeatureLst);
             $this->getLikeFeature($newsObj, $displayCnt, 
                 $curFeatureDct, $curDiscreteFeatureLst);
-            if (array_key_exists($newsId, $originalFeatureDct)) {
-                foreach ($curFeatureDct as $key => $val) {
-                    $originalFeatureDct[$newsId][$key] = $val;
-                }
-                foreach ($curDiscreteFeatureLst as $featureName) {
-                    $discreteFeatureDct[$newsId][] = $featureName;
-                }
-
-            } else {
-                $originalFeatureDct[$newsId] = $curFeatureDct;
-                $discreteFeatureDct[$newsId] = $curDiscreteFeatureLst;
-            }
+            $originalFeatureDct[$newsId] = $curFeatureDct;
+            $discreteFeatureDct[$newsId] = $curDiscreteFeatureLst;
         }
         return array($originalFeatureDct, $discreteFeatureDct);
     }
