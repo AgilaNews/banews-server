@@ -55,7 +55,7 @@ class LrNewsRanker extends BaseNewsRanker {
     }
 
     public function discreteBoolFeatures($featureName, $value) {
-        if (empty($value)) {
+        if (!empty($value)) {
             return $featureName . FEATURE_GAP . "1";
         } else {
             return $featureName . FEATURE_GAP . "0";
