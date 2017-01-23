@@ -34,7 +34,7 @@ class LrNewsRanker extends BaseNewsRanker {
             return -1;
         }
         $hashHex = hash('sha1', $featureName);
-        $hashDec = bcHexDec($hashHex);
+        $hashDec = $this->bcHexDec($hashHex);
         $hashMod = bcmod($hashDec, FEAFURE_SPACE_SIZE) + 1; 
         return $hashMod;
     }
