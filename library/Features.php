@@ -35,6 +35,8 @@ class Features {
 
     const SNS_WIDGET_NEWS_FEATURE = 13;
 
+    const SPLASH_ADS = 14;
+
     const NAN = "999.999.999";
 
     private static $_feature_map = array(self::RICH_COMMENT_FEATURE => array(
@@ -87,8 +89,12 @@ class Features {
                                                                             ),
                                          self::SNS_WIDGET_NEWS_FEATURE => array(
                                                                         "ios" => "1.2.7",          
-                                                                        "android" => "1.2.8",          
+                                                                        "android" => "1.2.8",
                                                                         ),
+                                         self::SPLASH_ADS => array(
+                                                                   "ios" => "1.2.9",
+                                                                   "android" => "1.2.8",
+                                                                   ),
                                          );
                                    
     
