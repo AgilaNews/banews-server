@@ -2,7 +2,7 @@
 
 require_once (LIBRARY_PATH . "/pb/classify.php"); 
 
-define ("MAX_RANKER_NEWS_CNT", 100);
+define ("MAX_RANKER_NEWS_CNT", 200);
 define ("MIN_FEATURE_VALUE", 0.001);
 define ("FEATURE_GAP", "_");
 define ("FEAFURE_SPACE_SIZE", "1000000");

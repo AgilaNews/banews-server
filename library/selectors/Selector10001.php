@@ -67,14 +67,14 @@ class Selector10001 extends BaseNewsSelector{
             $personalTopicPolicy = new PersonalTopicInterestPolicy($this->di);
             $topicNewsLst = $personalTopicPolicy->sampling(
                 $this->channel_id, $this->device_id, $this->user_id,
-                20, 3, $prefer, $options);
+                40, 3, $prefer, $options);
             $editorRecPolicy = new EditorRecPolicy($this->di); 
             $editorNewsLst = $editorRecPolicy->sampling(
                 $this->channel_id, $this->device_id, $this->user_id,
-                20, 3, $prefer, $options);
+                40, 3, $prefer, $options);
             $popularNewsLst = $popularPolicy->sampling(
                 $this->channel_id, $this->device_id, $this->user_id, 
-                20, 3, $prefer, $options);
+                100, 3, $prefer, $options);
             $recNewsLst = array_merge($popularNewsLst, $editorNewsLst,
                 $topicNewsLst);
             $recNewsLst = array_unique($recNewsLst);
