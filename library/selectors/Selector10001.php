@@ -12,6 +12,7 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define('RECENT_NEWS_COUNT', 2);
+define('ALG_SPECIAL_USER_SET', 'ALG_SPECIAL_USER_SET');
 
 class Selector10001 extends BaseNewsSelector{
 
@@ -24,6 +25,10 @@ class Selector10001 extends BaseNewsSelector{
         }
         # switch for lr model update
         $cache = $this->di->get('cache');
+        $specialUserLst = $cache->lRange(ALG_SPECIAL_USER_SET, 0, -1);
+        if (in_array($this->device_id, $specialUserLst)) {
+            $tag = "10001_lrRanker";
+        } 
         $lrRankerSwitch = $cache->get(ALG_LR_SWITCH_KEY);
         if (empty($lrRankerSwitch)) {
             $tag = "10001_popularRanking";
