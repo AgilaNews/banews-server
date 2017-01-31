@@ -86,7 +86,11 @@ class TopicIntervene extends BaseIntervene {
         $key = TOPIC_INTERVENE_KEY . $device_id;
         $cache->multi();
         $cache->sAdd($key, $topic_id);
-        $cache->expire($key, TOPIC_INTERVENE_TTL);
+        if ($topic_id == TOPIC_FOR_MISS_AGILA) {
+            $cache->expire($key, 3600);
+        } else {
+            $cache->expire($key, TOPIC_INTERVENE_TTL);
+        }
         $cache->exec();
     }
 }
