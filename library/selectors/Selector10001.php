@@ -108,17 +108,19 @@ class Selector10001 extends BaseNewsSelector{
         $newsFeatureDct = array();
         $cache = $this->di->get('cache');
         $lrRankerSwitch = $cache->get(ALG_LR_SWITCH_KEY);
-        if ($lrRankerSwitch && ($strategyTag=="10001_lrRanker")) {
+        if (!empty($lrRankerSwitch)) {
             $lrRanker = new LrNewsRanker($this->di); 
             list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
                 $this->channel_id, $this->device_id, $newsObjDct, 
                 $prefer, $sample_count);
-            $newsObjDct = $sortedNewsObjDct;
-            $newsIdStr = "";
-            foreach ($newsObjDct as $newsObj) {
-                $newsIdStr = $newsIdStr . $newsObj->url_sign . ", ";
+            if ($strategyTag == "10001_lrRanker") {
+                $newsObjDct = $sortedNewsObjDct;
+                $newsIdStr = "";
+                foreach ($newsObjDct as $newsObj) {
+                    $newsIdStr = $newsIdStr . $newsObj->url_sign . ", ";
+                }
+                $logger->info(sprintf("[rerank newsId:%s]", $newsIdStr));
             }
-            $logger->info(sprintf("[rerank newsId:%s]", $newsIdStr));
         }
         
         $ret = array();
