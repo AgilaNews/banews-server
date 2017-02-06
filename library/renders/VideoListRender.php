@@ -7,7 +7,7 @@
  * @version $Id$
  */
 
-class Render30001 extends BaseListRender {
+class VideoListRender extends BaseListRender {
     public function render($models) {
         $ret = array();
 

@@ -1,6 +1,6 @@
 <?php
 
-class Render10011 extends BaseListRender {
+class PhotoListRender extends BaseListRender {
     public function render($models) {
         $ret = array();
         foreach ($models as $news_model) {

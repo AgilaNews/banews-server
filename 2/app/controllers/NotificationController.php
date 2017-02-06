@@ -74,12 +74,7 @@ class NotificationController extends BaseController {
         $news_model = News::getBySign($sign);
 
         $channel_id = $news_model->channel_id;
-        $cname = "Render$channel_id";
-        if (class_exists($cname)) {
-            $render = new $cname($this);
-        } else {
-            $render = new BaseListRender($this);
-        }
+        $render = BaseListRender::getRender($this, $channel_id);
 
         $news_cell = $render->render(array($sign => $news_model))[0];
         $ret = array(

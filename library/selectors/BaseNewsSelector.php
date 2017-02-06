@@ -158,15 +158,17 @@ class BaseNewsSelector {
     }
 
     protected function setDeviceSeenToBF($keys) {
+        if (RenderLib::isVideoChannel($this->channel_id)) {
+            $filterName = BloomFilterService::FILTER_FOR_VIDEO;
+            return $filterName;
+        }
+
         switch ($this->channel_id) {
             case 10011:
                 $filterName = BloomFilterService::FILTER_FOR_IMAGE;
                 break;
             case 10012:
                 $filterName = BloomFilterService::FILTER_FOR_GIF;
-                break;
-            case 30001:
-                $filterName = BloomFilterService::FILTER_FOR_VIDEO;
                 break;
             default:
                 return;
@@ -181,33 +183,30 @@ class BaseNewsSelector {
                                    }, $keys));
     }
 
-    public static function getSelector($channel_id, $controller) {
-        $cname = "Selector" . $channel_id;
-        
-        if (class_exists("Selector$channel_id")) {
-            return new $cname($channel_id, $controller);
-        }
-        
+    public static function getSelector($controller, $channel_id) {
         if ($channel_id == "10001") {
-            return new HotSelector($channel_id, $controller);
+            return new HotSelector($controller, $channel_id);
+        }
+        if ($channel_id == "10013") {
+            return new NbaSelector($controller, $channel_id);
         }
 
         if (in_array($channel_id, array("10002", "10010"))){
-            return new SphinxSelector($channel_id, $controller);
+            return new SphinxSelector($controller, $channel_id);
         }
 
         if (in_array($channel_id, array("10003", "10004", "10005", "10006", "10007", "10008", "10009"))) {
-            return new PopularSelector($channel_id, $controller);
+            return new PopularSelector($controller, $channel_id);
         }
 
         if (in_array($channel_id, array("10011", "10012", "10015"))) {
-            return new RandomBackupSelector($channel_id, $controller);
+            return new RandomBackupSelector($controller, $channel_id);
         }
 
         if ((int)($channel_id / 10000) == 3) {
-            return new VideoSelector($channel_id, $controller);
+            return new VideoSelector($controller, $channel_id);
         }
 
-        return new BaseNewsSelector($channel_id, $controller);
+        return new BaseNewsSelector($controller, $channel_id);
     }
 }

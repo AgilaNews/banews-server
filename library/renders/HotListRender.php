@@ -1,7 +1,7 @@
 <?php
 
 use Phalcon\DI;
-class Render10001 extends BaseListRender {
+class HotListRender extends BaseListRender {
     public function render($models) {
         $ret = array();
 

@@ -191,12 +191,7 @@ class BaseDetailRender {
 
     protected function fillRecommend($news_model, $recommend_models, &$ret) {
         $cache = $this->c->di->get('cache');
-        $cname = "Recommend" . $news_model->channel_id;
-        if (class_exists($cname)) {
-            $render = new $cname($this->c);
-        } else {
-            $render = new BaseRecommendRender($this->c);
-        }
+        $render = BaseRecommendRender::getRecommendRender($this->c, $news_model->channel_id);
 
         $ret["recommend_news"] = $render->render($recommend_models);
         return $ret;

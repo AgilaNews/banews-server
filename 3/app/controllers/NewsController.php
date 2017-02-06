@@ -84,12 +84,7 @@ class NewsController extends BaseController {
                                      CACHE_FEATURE_DISPLAY_PREFIX, 
                                      CACHE_FEATURE_DISPLAY_TTL);
 
-        $cname = "Render$channel_id";
-        if (class_exists($cname)) {
-            $render = new $cname($this, $channel_id);
-        } else {
-            $render = new BaseListRender($this, $channel_id);
-        }
+        $render = BaseListRender::getRender($this, $channel_id);
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
@@ -192,20 +187,10 @@ class NewsController extends BaseController {
         }
 
         $channel_id = $news_model->channel_id;
-        $cname = "RecommendSelector$channel_id";
-        if (class_exists($cname)) {
-            $recommend_selector = new $cname($news_model->channel_id, $this);
-        } else {
-            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
-        }
+        $recommend_selector = BaseRecommendNewsSelector::getRecommendRender($this, $news_model->channel_id);
 
         $models = $recommend_selector->select($news_model->url_sign);
-        $cname = "RecommendRender" . $news_model->channel_id;
-        if (class_exists($cname)) {
-            $render = new $cname($this);
-        } else {
-            $render = new BaseListRender($this);
-        }
+        $render = BaseListRender::getRender($this, $news_model->channel->id);
 
         $ret["recommend_news"]= $render->render($models);
         $this->logEvent(EVENT_NEWS_RECOMMEND, array(
