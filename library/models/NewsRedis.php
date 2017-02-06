@@ -31,9 +31,9 @@ class NewsRedis {
     }
     
     public function getNewsOfChannel($channel_id, $day) {
-        if (in_array($channel_id, self::$image_gif_channel)) {
+        if (in_array($channel_id, $this->image_gif_channel)) {
             $key = "banews:ph:v2:$channel_id";
-        } else if (in_array($channel_id, self::$video_channel)) {
+        } else if (in_array($channel_id, $this->video_channel)) {
             return $this->getVideos($channel_id);
         } else {
             $key = "banews:ph:$channel_id";
