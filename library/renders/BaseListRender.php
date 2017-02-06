@@ -156,11 +156,6 @@ class BaseListRender {
         return $model instanceof BaseIntervene;
     }
 
-    protected function getRecommendRender($controller, $channel_id) {
-
-        return new BaseRecommendRender($controller, $channel_id);
-    }
-        
     public static function getRender($controller, $channel_id, $placement_id = null) {
         if (RenderLib::isVideoChannel($channel_id)) {
             return new VideoListRender($controller, $placement_id);
