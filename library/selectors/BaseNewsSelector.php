@@ -16,7 +16,7 @@ define("DEFAULT_SAMPLING_DAY", 7);
 define('CACHE_NEWS_FILTER', 'BS_NEWS_FILTER');
 
 class BaseNewsSelector {
-    public function __construct($channel_id, $controller) {
+    public function __construct($contoller, $channel_id) {
         $this->channel_id = $channel_id;
         $this->device_id = $controller->deviceId;
         $this->user_id = $controller->userSign;
