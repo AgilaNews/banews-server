@@ -1,31 +1,37 @@
 <?php
 define("VIDEO_LENGTH", 3000);
+define("TOP_VIDEO_LENGTH", 1000);
+
 class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
     }
 
-    public function getVideos() {
-        $key = "banews:ph:30001";
-        $step = VIDEO_LENGTH;
-        $count = $this->_redis->zCard($key);
-        $start = 0;
-        $end = $start + $step;
+    public function getVideos($channel_id) {
+        $key = "banews:ph:$channel_id";
         $ret = array();
-        $tmp = $this->_redis->zRevRange($key, $start, $end, true);
+        $top = $this->_redis->zRevRange($key, 0, TOP_VIDEO_LENGTH - 1, true);
 
-        foreach ($tmp as $id=>$weight) {
+        foreach ($top as $id=>$weight) {
             $ret []= array("id" => $id, "weight"=>$weight);
         }
+
+        $other = $this->_redis->zRevRange($key, TOP_VIDEO_LENGTH, -1, true);
+        shuffle($other);
+
+        $less = array_slice($other, 0, VIDEO_LENGTH - TOP_VIDEO_LENGTH - 1);
+        foreach ($less as $id=>$weight) {
+            $ret []= array("id" => $id, "weight"=>$weight);
+        }
+
         return $ret;
     }
     
     public function getNewsOfChannel($channel_id, $day) {
-        $image_gif_channel = array("10011", "10012");
-        if (in_array($channel_id, $image_gif_channel)) {
+        if (RenderLib::isGifChannel($channel_id) || RenderLib::isPhotoChannel($channel_id)) {
             $key = "banews:ph:v2:$channel_id";
-        } else if ($channel_id == "30001") {
-            return $this->getVideos();
+        } else if (RenderLib::isVideoChannel($channel_id)) {
+            return $this->getVideos($channel_id);
         } else {
             $key = "banews:ph:$channel_id";
         }
