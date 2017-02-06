@@ -64,7 +64,7 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        $selector = BaseNewsSelector::getSelector($channel_id, $this);
+        $selector = BaseNewsSelector::getSelector($this, $channel_id);
 
         $newsFeatureDct = array();
         if (in_array($channel_id, $this->featureChannelLst)) {
