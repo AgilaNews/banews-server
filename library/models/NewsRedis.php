@@ -3,9 +3,6 @@ define("VIDEO_LENGTH", 3000);
 define("TOP_VIDEO_LENGTH", 1000);
 
 class NewsRedis {
-    private $image_gif_channel = array("10011", "10012");
-    private $video_channel = array("30001");
-
     public function __construct($redis) {
         $this->_redis = $redis;
     }
@@ -31,9 +28,9 @@ class NewsRedis {
     }
     
     public function getNewsOfChannel($channel_id, $day) {
-        if (in_array($channel_id, $this->image_gif_channel)) {
+        if (RenderLib::isGifChannel($channel_id) || RenderLib::isPhotoChannel($channel_id)) {
             $key = "banews:ph:v2:$channel_id";
-        } else if (in_array($channel_id, $this->video_channel)) {
+        } else if (RenderLib::isVideoChannel($channel_id)) {
             return $this->getVideos($channel_id);
         } else {
             $key = "banews:ph:$channel_id";
