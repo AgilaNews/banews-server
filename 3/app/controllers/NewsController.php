@@ -190,7 +190,7 @@ class NewsController extends BaseController {
         $recommend_selector = BaseRecommendNewsSelector::getSelector($this, $news_model->channel_id);
 
         $models = $recommend_selector->select($news_model->url_sign);
-        $render = BaseListRender::getRender($this, $news_model->channel->id);
+        $render = BaseListRender::getRender($this, $news_model->channel_id);
 
         $ret["recommend_news"]= $render->render($models);
         $this->logEvent(EVENT_NEWS_RECOMMEND, array(
