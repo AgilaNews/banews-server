@@ -373,7 +373,7 @@ class RenderLib {
 
     
     public static function isVideoChannel($channel_id) {
-        return $channel_id == 30001;
+        return $channel_id >= 30001;
     }
 
     

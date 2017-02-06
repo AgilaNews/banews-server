@@ -99,9 +99,10 @@ class SearchController extends BaseController {
             ),
         );
         #we just fetch baseic news and require the news published in 60d
-        $typeFilter = array('term'=>array('content_type'=>0));
+        $typeFilter = array('terms'=>array('content_type'=>[0,3]));
         $timeFilter = array('range'=>array("post_timestamp"=>array("gte"=>"now-60d/d")));
         $queryFilter = array("bool"=>array("must"=>array($typeFilter, $timeFilter)));
+        $queryFilter = array("bool"=>array("must"=>array($typeFilter)));
         $query = 
             [
                 'filtered' => [
@@ -146,7 +147,6 @@ class SearchController extends BaseController {
         if ($from + $size >= 200){
             return $this->emptyResponse($dispatch_id);
         }
-        $typeFilter = array('term'=>array('content_type'=>0));
         $searchParams = $this->GenerateSearchParam($from, $size, $words, $source);
         try {
             $searchResult = $esClient->search($searchParams);
