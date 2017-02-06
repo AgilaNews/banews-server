@@ -30,7 +30,7 @@ class NewsController extends BaseController {
         $redis->setDeviceClick($this->deviceId, $newsSign, time());
         $this->incrViewCount($newsSign);
 
-        $render = BaseDetailRender::getRenderByChannel($news_model->channel_id, $this);
+        $render = BaseDetailRender::getRender($this, $news_model->channel_id);
         $ret = $render->render($news_model, null);
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(

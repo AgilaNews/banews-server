@@ -9,7 +9,7 @@
  * 
  */
 class BaseDetailRender {
-    public static function getRenderByChannel($channel_id, $controller) {
+    public static function getRender($controller, $channel_id) {
         if (RenderLib::isVideoChannel($channel_id)) {
             return new DetailVideoRender($controller);
         }

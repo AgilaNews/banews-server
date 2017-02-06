@@ -46,7 +46,7 @@ class NewsController extends BaseController {
             $recommend_models = $recommend_selector->select($news_model->url_sign);
         }
 
-        $render = BaseDetailRender::getRenderByChannel($news_model->url_sign, $this);
+        $render = BaseDetailRender::getRenderByChannel($this, $news_model->url_sign);
         $ret = $render->render($news_model, $recommend_models);
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
