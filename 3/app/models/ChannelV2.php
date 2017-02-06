@@ -62,7 +62,8 @@ class ChannelV2 extends BaseModel {
                      "home" => self::renderDispath(json_decode($cdm->content, true), $channel_map),
                      "video" => self::renderDispath(json_decode($cdm->video_content, true), $channel_map),
                      );
-
+        // hook video channel
+        $ret["video"][0]["name"] = "Hot";
 
         if ($cache) {
             $cache->multi();

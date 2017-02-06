@@ -170,12 +170,7 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        $cname = "Selector$channel_id";
-        if (class_exists($cname)) {
-            $selector = new $cname($channel_id, $this); 
-        } else {
-            $selector = new BaseNewsSelector($channel_id, $this);
-        }
+        $selector = BaseNewsSelector::getSelector($channel_id, $this);
 
         $newsFeatureDct = array();
         if (in_array($channel_id, $this->featureChannelLst)) {

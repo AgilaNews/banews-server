@@ -180,4 +180,34 @@ class BaseNewsSelector {
                                        return $device_id . "_" . $key;
                                    }, $keys));
     }
+
+    public static function getSelector($channel_id, $controller) {
+        $cname = "Selector" . $channel_id;
+        
+        if (class_exists("Selector$channel_id")) {
+            return new $cname($channel_id, $controller);
+        }
+        
+        if ($channel_id == "10001") {
+            return new HotSelector($channel_id, $controller);
+        }
+
+        if (in_array($channel_id, array("10002", "10010"))){
+            return new SphinxSelector($channel_id, $controller);
+        }
+
+        if (in_array($channel_id, array("10003", "10004", "10005", "10006", "10007", "10008", "10009"))) {
+            return new PopularSelector($channel_id, $controller);
+        }
+
+        if (in_array($channel_id, array("10011", "10012", "10015"))) {
+            return new RandomBackupSelector($channel_id, $controller);
+        }
+
+        if ((int)($channel_id / 10000) == 3) {
+            return new VideoSelector($channel_id, $controller);
+        }
+
+        return new BaseNewsSelector($channel_id, $controller);
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 define('NBA_LATELY_NEWS_COUNT', 6);
 
-class Selector10013 extends Selector10004 {
+class Selector10013 extends PopularSelector {
     public function getLatelyNewsCount(){
         return NBA_LATELY_NEWS_COUNT;
     }
