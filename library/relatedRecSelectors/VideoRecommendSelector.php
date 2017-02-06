@@ -1,10 +1,6 @@
 <?php
 
-class RecommendSelector30001 extends BaseRecommendNewsSelector {
-    public function __construct($channel_id, $controller) {
-        parent::__construct($channel_id, $controller);
-    }
-
+class VideoRecommendSelector extends BaseRecommendNewsSelector {
     protected function getPolicy() {
         return new VideoRelatedRecPolicy($this->di);
     }
