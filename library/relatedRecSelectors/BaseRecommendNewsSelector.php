@@ -2,7 +2,7 @@
 define ("DEFAULT_RECOMMEND_NEWS_COUNT", 3);
 
 class BaseRecommendNewsSelector {
-    public function __construct($channel_id, $controller) {
+    public function __construct($controller, $channel_id) {
         $this->channel_id = $channel_id;
         $this->device_id = $controller->deviceId;
         $this->user_id = $controller->userSign;
@@ -82,4 +82,12 @@ class BaseRecommendNewsSelector {
         }
         return $ret;
     } 
+
+    public static function getSelector($controller, $channel_id) {
+        if (RenderLib::isVideoChannel($channel_id)) {
+            return new VideoRecommendSelector($controller, $channel_id);
+        }
+
+        return new BaseRecommendNewsSelector($controller, $channel_id);
+    }
 }

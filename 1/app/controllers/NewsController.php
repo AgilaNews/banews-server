@@ -111,9 +111,8 @@ class NewsController extends BaseController {
         }
 
         
-        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+        $recommend_selector = BaseRecommendNewsSelector::getSelector($this, $news_model->channel_id);
         $models = $recommend_selector->select($news_model->url_sign);
-
         $render = BaseRecommendRender::getRecommendRender($this, $news_model->channel_id);
 
         $ret["recommend_news"]= $render->render($models);

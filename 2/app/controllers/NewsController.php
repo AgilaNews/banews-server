@@ -42,7 +42,7 @@ class NewsController extends BaseController {
         }
 
         if ($need_recommend) {
-            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+            $recommend_selector = BaseRecommendNewsSelector::getSelector($this, $news_model->channel_id);
             $recommend_models = $recommend_selector->select($news_model->url_sign);
         }
 
