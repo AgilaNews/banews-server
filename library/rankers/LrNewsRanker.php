@@ -150,9 +150,9 @@ class LrNewsRanker extends BaseNewsRanker {
         $commentRatio = min(1.0, round($commentCnt/$displayCnt, PRECISION));
         $featureDct['HISTORY_COMMENT_COUNT'] = $commentCnt;
         $featureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = $commentRatio;
-        //$discreteFeatureLst[] = $this->discreteGapFeatures(
-        //    'HISTORY_COMMENT_COUNT', $commentCnt, 
-        //    array(5, 10, 20, 50, 100));
+        $discreteFeatureLst[] = $this->discreteGapFeatures(
+            'HISTORY_COMMENT_COUNT', $commentCnt, 
+            array(5, 10, 20, 50, 100));
         //$discreteFeatureLst[] = $this->discreteIntFeatures(
         //    'HISTORY_COMMENT_DISPLAY_RATIO', $commentRatio, 1000);
     }
