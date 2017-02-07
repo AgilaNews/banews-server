@@ -14,7 +14,6 @@ class Selector30001 extends BaseNewsSelector {
     } 
 
     public function sampling($sample_count, $prefer) {
-        //        $randomPolicy = new RandomListPolicy($this->di);
         $popularPolicy = new PopularListPolicy($this->di);
         $options = array();
         if ($prefer == "later") {
@@ -39,9 +38,6 @@ class Selector30001 extends BaseNewsSelector {
         if (count($popularNewsLst) >= $sample_count) {
             return $popularNewsLst;
         }
-
-        $abservice = DI::getDefault()->get('abtest');
-        $t = $abservice->getTag("video_random_policy");
 
         $randomPolicy = new VideoExpDecayListPolicy($this->di);
         $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
