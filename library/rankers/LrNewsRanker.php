@@ -119,9 +119,9 @@ class LrNewsRanker extends BaseNewsRanker {
                 $displayCnt);
         }
         $featureDct['HISTORY_DISPLAY_COUNT'] = $displayCnt;
-        $discreteFeatureLst[] = $this->discreteGapFeatures(
-            'HISTORY_DISPLAY_COUNT', $displayCnt, 
-            array(100, 1000, 5000, 10000, 50000, 100000));
+        //$discreteFeatureLst[] = $this->discreteGapFeatures(
+        //    'HISTORY_DISPLAY_COUNT', $displayCnt, 
+        //    array(100, 1000, 5000, 10000, 50000, 100000));
         return $displayCnt;
     }
 
@@ -134,11 +134,11 @@ class LrNewsRanker extends BaseNewsRanker {
         $clickRatio = min(1.0, round($clickCnt/$displayCnt, PRECISION));
         $featureDct['HISTORY_READ_COUNT'] = $clickCnt;
         $featureDct['HISTORY_READ_DISPLAY_RATIO'] = $clickRatio;
-        $discreteFeatureLst[] = $this->discreteGapFeatures(
-            'HISTORY_READ_COUNT', $clickCnt, 
-            array(100, 1000, 5000, 10000));
-        $discreteFeatureLst[] = $this->discreteIntFeatures(
-            'HISTORY_READ_DISPLAY_RATIO', $clickRatio, 1000);
+        //$discreteFeatureLst[] = $this->discreteGapFeatures(
+        //    'HISTORY_READ_COUNT', $clickCnt, 
+        //    array(100, 1000, 5000, 10000));
+        //$discreteFeatureLst[] = $this->discreteIntFeatures(
+        //    'HISTORY_READ_DISPLAY_RATIO', $clickRatio, 1000);
     }
 
     protected function getCommentFeature($newsObj, $displayCnt,
@@ -150,11 +150,11 @@ class LrNewsRanker extends BaseNewsRanker {
         $commentRatio = min(1.0, round($commentCnt/$displayCnt, PRECISION));
         $featureDct['HISTORY_COMMENT_COUNT'] = $commentCnt;
         $featureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = $commentRatio;
-        $discreteFeatureLst[] = $this->discreteGapFeatures(
-            'HISTORY_COMMENT_COUNT', $commentCnt, 
-            array(5, 10, 20, 50, 100));
-        $discreteFeatureLst[] = $this->discreteIntFeatures(
-            'HISTORY_COMMENT_DISPLAY_RATIO', $commentRatio, 1000);
+        //$discreteFeatureLst[] = $this->discreteGapFeatures(
+        //    'HISTORY_COMMENT_COUNT', $commentCnt, 
+        //    array(5, 10, 20, 50, 100));
+        //$discreteFeatureLst[] = $this->discreteIntFeatures(
+        //    'HISTORY_COMMENT_DISPLAY_RATIO', $commentRatio, 1000);
     }
 
     protected function getLikeFeature($newsObj, $displayCnt,
@@ -163,11 +163,11 @@ class LrNewsRanker extends BaseNewsRanker {
         $likeRatio = min(1.0, round($likeCnt/$displayCnt, PRECISION));
         $featureDct['HISTORY_LIKE_COUNT'] = $likeCnt;
         $featureDct['HISTORY_LIKE_DISPLAY_RATIO'] = $likeRatio;
-        $discreteFeatureLst[] = $this->discreteGapFeatures(
-            'HISTORY_LIKE_COUNT', $likeCnt, 
-            array(10, 50, 100, 500, 1000));
-        $discreteFeatureLst[] = $this->discreteIntFeatures(
-            'HISTORY_LIKE_DISPLAY_RATIO', $likeRatio, 1000);
+        //$discreteFeatureLst[] = $this->discreteGapFeatures(
+        //    'HISTORY_LIKE_COUNT', $likeCnt, 
+        //    array(10, 50, 100, 500, 1000));
+        //$discreteFeatureLst[] = $this->discreteIntFeatures(
+        //    'HISTORY_LIKE_DISPLAY_RATIO', $likeRatio, 1000);
     }
 
     protected function extractNewsFeatures($newsObjDct) {
