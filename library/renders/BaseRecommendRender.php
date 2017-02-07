@@ -27,9 +27,9 @@ class BaseRecommendRender extends BaseListRender {
 
     public static function getRecommendRender($controller, $channel_id) {
         if (RenderLib::isVideoChannel($channel_id)) {
-            return new VideoRecommendRender($controller, $channel_id);
+            return new VideoRecommendRender($controller);
         }
 
-        return new BaseRecommendRender($controller, $channel_id);
+        return new BaseRecommendRender($controller);
     }
 }
