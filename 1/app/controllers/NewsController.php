@@ -185,7 +185,7 @@ class NewsController extends BaseController {
                                      CACHE_FEATURE_DISPLAY_PREFIX, 
                                      CACHE_FEATURE_DISPLAY_TTL);
 
-        $render = BaseListRender::getRender($this, $channel_id);
+        $render = BaseListRender::getRender($this, $channel_id, $channel_id);
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         $ret[$dispatch_id] = $render->render($dispatch_models);
