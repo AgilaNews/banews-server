@@ -1,6 +1,6 @@
 <?php
 
 use Phalcon\DI;
-class RenderSearch extends Render10001 {
+class RenderSearch extends HotListRender {
     
 }
