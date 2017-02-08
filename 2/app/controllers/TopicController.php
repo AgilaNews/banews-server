@@ -31,7 +31,8 @@ class TopicController extends BaseController {
 
     public function DetailAction() {
         $topic_id = $this->get_request_param("news_id", "string", true);
-        $pn = $this->get_request_param("pn", "int", false, 20);
+        #$pn = $this->get_request_param("pn", "int", false, 20);
+        $pn = 20;
         $from = $this->get_request_param("from", "int", false, 0);
 
         $ret = array(
