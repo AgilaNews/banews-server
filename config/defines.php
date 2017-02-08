@@ -162,3 +162,4 @@ define('WIDGET_INSTAGRAM_TYPE',3);
 
 define('AD_IMAGE_PATTERN', "http://" . IMAGE_SERVER_NAME . "%s?t={w}x{h}");
 
+define("TOPIC_FOR_MISS_AGILA", 'ORUzZpNB2j0=');

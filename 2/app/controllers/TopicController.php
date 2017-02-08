@@ -45,6 +45,11 @@ class TopicController extends BaseController {
             $ret["dispatch_id"] = $dispatch_id;
 
             $news = TopicNews::GetNewsOfTopic($topic_id, $from, $pn);
+            if ($topic_id == TOPIC_FOR_MISS_AGILA) {
+                $direction = array_shift($news);
+                shuffle($news);
+                array_unshift($news, $direction);
+            }
             $ret["news"] = array();
             if ($news) {
                 $models = News::BatchGet($news);
