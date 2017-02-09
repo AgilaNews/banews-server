@@ -46,7 +46,7 @@ class TopicController extends BaseController {
             $ret["dispatch_id"] = $dispatch_id;
 
             $news = TopicNews::GetNewsOfTopic($topic_id, $from, $pn);
-            if ($topic_id == TOPIC_FOR_MISS_AGILA) {
+            if ($topic_id == TOPIC_FOR_MISS_AGILA && $news) {
                 $direction = array_shift($news);
                 shuffle($news);
                 array_unshift($news, $direction);
