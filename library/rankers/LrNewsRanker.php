@@ -2,31 +2,16 @@
 
 require_once (LIBRARY_PATH . "/pb/classify.php"); 
 
-define ("ALG_NEWS_FEATURE_KEY", "ALG_NEWS_FEATURE_KEY_V2"); 
-define ("MAX_RANKER_NEWS_CNT", 100);
-define ("ORIGINAL_FEATURE_CNT", 93);
-define ("HOUR", 60 * 60);
+define ("MAX_RANKER_NEWS_CNT", 200);
 define ("MIN_FEATURE_VALUE", 0.001);
+define ("FEATURE_GAP", "_");
+define ("FEAFURE_SPACE_SIZE", "1000000");
+define ("PRECISION", 6);
 
 class LrNewsRanker extends BaseNewsRanker {
 
     public function __construct($di) {
         parent::__construct($di);
-        $this->FEATURE_MAPPING = array(
-            "HISTORY_DISPLAY_COUNT" => 1,
-            "HISTORY_READ_COUNT" => 2,
-            "HISTORY_LIKE_COUNT" => 3,
-            "HISTORY_COMMENT_COUNT" => 4,
-            "HISTORY_READ_DISPLAY_RATIO" => 5,
-            "HISTORY_LIKE_DISPLAY_RATIO" => 6,
-            "HISTORY_COMMENT_DISPLAY_RATIO" => 7,
-            "PICTURE_COUNT" => 8,
-            "VIDEO_COUNT" => 9,
-            "TITLE_LENGTH" => 10,
-            "CONTENT_LENGTH" => 11,
-            "FETCH_TIMESTAMP_INTERVAL" => 12,
-            "POST_TIMESTAMP_INTERTVAL" => 13
-        );
         $this->logger = $di->get("logger");
     }
 
@@ -34,109 +19,216 @@ class LrNewsRanker extends BaseNewsRanker {
         return "LrRanker";
     }
 
-    protected function calcSpan($timestamp) {
-        $now = time();
-        $timstamp = floatval($timestamp);
-        if ($timestamp < $now) {
-            return round(floatval($now - $timestamp) / HOUR, 3); 
+    public function bcHexDec($hex) {
+        $dec = 0;
+        $len = strlen($hex);
+        for ($i=1; $i<=$len; $i++) {
+            $dec = bcadd($dec, bcmul(strval(hexdec($hex[$i-1])), 
+                bcpow('16', strval($len - $i))));
         }
-        return MIN_FEATURE_VALUE;
+        return $dec;
     }
 
-    public function getMetaFeatures($newsObjDct, &$featureDct) {
+    public function featureHash($featureName) {
+        if (empty($featureName)) {
+            return -1;
+        }
+        $hashHex = hash('sha1', $featureName);
+        $hashDec = $this->bcHexDec($hashHex);
+        $hashMod = bcmod($hashDec, FEAFURE_SPACE_SIZE) + 1; 
+        return $hashMod;
+    }
+
+    public function discreteGapFeatures($featureName, $value, $sepValLst) {
+        sort($sepValLst, SORT_NUMERIC);
+        foreach ($sepValLst as $idx=>$sepVal) {
+            if ($value <= $sepVal) {
+                return $featureName . FEATURE_GAP . $idx; 
+            }
+        }
+        return $featureName . FEATURE_GAP . "MAX";
+    }
+
+    public function discreteIntFeatures($featureName, $value, $factor) {
+        $intValue = intval($value * $factor);
+        return $featureName . FEATURE_GAP . $intValue;
+    }
+
+    public function discreteBoolFeatures($featureName, $value) {
+        if (!empty($value)) {
+            return $featureName . FEATURE_GAP . "1";
+        } else {
+            return $featureName . FEATURE_GAP . "0";
+        }
+    }
+
+    protected function getTitleFeature($newsObj, &$featureDct, 
+            &$discreteFeatureLst) {
+        $title = strtolower(trim($newsObj->title));
+        $title = preg_replace("/[[:punct:]]+/", "", $title);
+        $featureDct['TITLE'] = $newsObj->title;
+        $titleWordLst = explode(" ", $title);
+        $titleCntFeature = $this->discreteGapFeatures('TITLE_COUNT',
+            count($titleWordLst), array(5, 10, 15));
+        $discreteFeatureLst[] = $titleCntFeature;
+        foreach ($titleWordLst as $word) {
+            $discreteFeatureLst[] = "WORD" . FEATURE_GAP . 
+                strtolower($word);
+        }
+    }
+
+    protected function getPictureFeature($newsObj, &$featureDct,
+            &$discreteFeatureLst) {
+        $imageLst = NewsImage::getImagesOfNews($newsObj->url_sign);
+        $featureDct['PICTURE_COUNT'] = count($imageLst);
+        $discreteFeatureLst[] = $this->discreteIntFeatures(
+            'PICTURE_COUNT', count($imageLst), 1);
+    }
+
+    protected function getVideoFeature($newsObj, &$featureDct,
+            &$discreteFeatureLst) {
+        $videoLst = NewsYoutubeVideo::getVideosOfNews($newsObj->url_sign);
+        $featureDct['VIDEO_COUNT'] = count($videoLst);
+        $discreteFeatureLst[] = $this->discreteBoolFeatures(
+            'VIDEO_COUNT', count($videoLst));
+    }
+
+    protected function getSourceFeature($newsObj, &$featureDct,
+            &$discreteFeatureLst) {
+        $featureDct['SOURCE'] = $newsObj->source_name; 
+        $sourceFeature = 'SOURCE' . FEATURE_GAP . 
+            str_replace(' ', '-', $newsObj->source_name);
+        $discreteFeatureLst[] = $this->discreteBoolFeatures(
+            $sourceFeature, 1);
+    }
+
+    protected function getChannelFeature($newsObj, &$featureDct,
+            &$discreteFeatureLst) {
+        $featureDct['CHANNEL_ID'] = $newsObj->channel_id;
+        $channelFeature = 'CHANNEL_ID' . FEATURE_GAP . 
+            $newsObj->channel_id;
+        $discreteFeatureLst[] = $this->discreteBoolFeatures(
+            $channelFeature, 1);
+    }
+
+    protected function getDisplayFeature($newsObj, $newsDisplayDct, 
+            &$featureDct, &$discreteFeatureLst) {
+        $displayCnt = MIN_FEATURE_VALUE;
+        if (array_key_exists($newsObj->url_sign, $newsDisplayDct)) {
+            $displayCnt = max($newsDisplayDct[$newsObj->url_sign], 
+                $displayCnt);
+        }
+        $featureDct['HISTORY_DISPLAY_COUNT'] = $displayCnt;
+        //$discreteFeatureLst[] = $this->discreteGapFeatures(
+        //    'HISTORY_DISPLAY_COUNT', $displayCnt, 
+        //    array(100, 1000, 5000, 10000, 50000, 100000));
+        return $displayCnt;
+    }
+
+    protected function getReadFeature($newsObj, $displayCnt,
+            $newsClickDct, &$featureDct, &$discreteFeatureLst) {
+        $clickCnt = 0;
+        if (array_key_exists($newsObj->url_sign, $newsClickDct)) {
+            $clickCnt = $newsClickDct[$newsObj->url_sign];
+        }
+        $clickRatio = min(1.0, round($clickCnt/$displayCnt, PRECISION));
+        $featureDct['HISTORY_READ_COUNT'] = $clickCnt;
+        $featureDct['HISTORY_READ_DISPLAY_RATIO'] = $clickRatio;
+        //$discreteFeatureLst[] = $this->discreteGapFeatures(
+        //    'HISTORY_READ_COUNT', $clickCnt, 
+        //    array(100, 1000, 5000, 10000));
+        //$discreteFeatureLst[] = $this->discreteIntFeatures(
+        //    'HISTORY_READ_DISPLAY_RATIO', $clickRatio, 1000);
+    }
+
+    protected function getCommentFeature($newsObj, $displayCnt,
+            $newsCommentDct, &$featureDct, &$discreteFeatureLst) {
+        $commentCnt = 0;
+        if (array_key_exists($newsObj->url_sign, $newsCommentDct)) {
+            $commentCnt = $newsCommentDct[$newsObj->url_sign];
+        }
+        $commentRatio = min(1.0, round($commentCnt/$displayCnt, PRECISION));
+        $featureDct['HISTORY_COMMENT_COUNT'] = $commentCnt;
+        $featureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = $commentRatio;
+        $discreteFeatureLst[] = $this->discreteGapFeatures(
+            'HISTORY_COMMENT_COUNT', $commentCnt, 
+            array(5, 10, 20, 50, 100));
+        //$discreteFeatureLst[] = $this->discreteIntFeatures(
+        //    'HISTORY_COMMENT_DISPLAY_RATIO', $commentRatio, 1000);
+    }
+
+    protected function getLikeFeature($newsObj, $displayCnt,
+            &$featureDct, &$discreteFeatureLst) {
+        $likeCnt = $newsObj->liked;
+        $likeRatio = min(1.0, round($likeCnt/$displayCnt, PRECISION));
+        $featureDct['HISTORY_LIKE_COUNT'] = $likeCnt;
+        $featureDct['HISTORY_LIKE_DISPLAY_RATIO'] = $likeRatio;
+        //$discreteFeatureLst[] = $this->discreteGapFeatures(
+        //    'HISTORY_LIKE_COUNT', $likeCnt, 
+        //    array(10, 50, 100, 500, 1000));
+        //$discreteFeatureLst[] = $this->discreteIntFeatures(
+        //    'HISTORY_LIKE_DISPLAY_RATIO', $likeRatio, 1000);
+    }
+
+    protected function extractNewsFeatures($newsObjDct) {
+        $newsDisplayDct = News::batchGetActionFromCache($newsObjDct, 
+            CACHE_FEATURE_DISPLAY_PREFIX);
+        $newsClickDct = News::batchGetActionFromCache($newsObjDct, 
+            CACHE_FEATURE_CLICK_PREFIX);
+        $newsCommentDct = Comment::getCount(array_keys($newsObjDct));
+        $originalFeatureDct = array();
+        $discreteFeatureDct = array();
         foreach ($newsObjDct as $newsId => $newsObj) {
             $curFeatureDct = array();
-            $title = $newsObj->title;
-            $curFeatureDct['TITLE_LENGTH'] = count(explode(" ", $title));
-            $content = $newsObj->json_text;
-            $curFeatureDct['CONTENT_LENGTH'] = count(explode(" ", $content));
-            $videos = NewsYoutubeVideo::getVideosOfNews($newsId);
-            $curFeatureDct['VIDEO_COUNT'] = count($videos);
-            $imgs = NewsImage::getImagesOfNews($newsId);
-            $curFeatureDct['PICTURE_COUNT'] = count($imgs);
-            $curFeatureDct['FETCH_TIMESTAMP_INTERVAL'] = 
-                    $this->calcSpan($newsObj->fetch_time); 
-            $curFeatureDct['POST_TIMESTAMP_INTERTVAL'] = 
-                    $this->calcSpan($newsObj->publish_time);
-            if (array_key_exists($newsId, $featureDct)) {
-                foreach ($curFeatureDct as $key => $val) {
-                    $featureDct[$newsId][$key] = $val;
-                }
-            } else {
-                $featureDct[$newsId] = $curFeatureDct;
-            }
-
+            $curDiscreteFeatureLst = array();
+            $this->getTitleFeature($newsObj, $curFeatureDct, 
+                $curDiscreteFeatureLst);
+            $this->getPictureFeature($newsObj, $curFeatureDct,
+                $curDiscreteFeatureLst);
+            $this->getVideoFeature($newsObj, $curFeatureDct,
+                $curDiscreteFeatureLst);
+            $this->getSourceFeature($newsObj, $curFeatureDct,
+                $curDiscreteFeatureLst);
+            $this->getChannelFeature($newsObj, $curFeatureDct,
+                $curDiscreteFeatureLst);
+            $displayCnt = $this->getDisplayFeature($newsObj, 
+                $newsDisplayDct, $curFeatureDct, $curDiscreteFeatureLst);
+            $this->getReadFeature($newsObj, $displayCnt, 
+                $newsClickDct, $curFeatureDct, $curDiscreteFeatureLst);
+            $this->getCommentFeature($newsObj, $displayCnt, 
+                $newsCommentDct, $curFeatureDct, $curDiscreteFeatureLst);
+            $this->getLikeFeature($newsObj, $displayCnt, 
+                $curFeatureDct, $curDiscreteFeatureLst);
+            $originalFeatureDct[$newsId] = $curFeatureDct;
+            $discreteFeatureDct[$newsId] = $curDiscreteFeatureLst;
         }
+        return array($originalFeatureDct, $discreteFeatureDct);
     }
 
-    protected function getActionFeature($newsObjDct, &$featureDct) {
-        $newsDisplayDct = News::batchGetActionFromCache(
-            $newsObjDct, CACHE_FEATURE_DISPLAY_PREFIX);
-        $newsClickDct = News::batchGetActionFromCache(
-            $newsObjDct, CACHE_FEATURE_CLICK_PREFIX);
-        $newsIdLst = array_keys($newsObjDct);
-        $newsCommentDct = Comment::getCount($newsIdLst);
-        $precision = 6;
-        foreach ($newsObjDct as $newsId => $newsObj) {
-            $curFeatureDct = array();
-            $displayCnt = MIN_FEATURE_VALUE;
-            if (array_key_exists($newsId, $newsDisplayDct)) {
-                $displayCnt = $newsDisplayDct[$newsId];
-            }
-            $displayCnt = max($displayCnt, MIN_FEATURE_VALUE);
-            $curFeatureDct['HISTORY_DISPLAY_COUNT'] = 
-                    $displayCnt;
-            $likeCnt = $newsObj->liked;
-            $curFeatureDct['HISTORY_LIKE_COUNT'] = 
-                    $likeCnt;
-            $curFeatureDct['HISTORY_LIKE_DISPLAY_RATIO'] = 
-                    min(1.0, round($likeCnt/$displayCnt, $precision));
-            $clickCnt = 0;
-            if (array_key_exists($newsId, $newsClickDct)) {
-                $clickCnt = $newsClickDct[$newsId];
-            }
-            $curFeatureDct['HISTORY_READ_COUNT'] = 
-                    $clickCnt;
-            $curFeatureDct['HISTORY_READ_DISPLAY_RATIO'] = 
-                    min(1.0, round($clickCnt/$displayCnt, $precision));
-            $commentCnt = 0;
-            if (array_key_exists($newsId, $newsCommentDct)) {
-                $commentCnt = $newsCommentDct[$newsId];
-            }
-            $curFeatureDct['HISTORY_COMMENT_COUNT'] = 
-                    $commentCnt; 
-            $curFeatureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = 
-                    min(1.0, round($commentCnt/$displayCnt, $precision));
-            if (array_key_exists($newsId, $featureDct)) {
-                foreach ($curFeatureDct as $key => $val) {
-                    $featureDct[$newsId][$key] = $val;
-                }
-            } else {
-                $featureDct[$newsId] = $curFeatureDct;
-            }
-        }
-    }
-
-    protected function getNewsFeatures($newsObjDct) {
+    protected function generateNewsSamples($newsObjDct) {
         $predictReq = new iface\PredictRequest();
-        $featureDct = array(); 
         $filterNewsIdLst = array();
-        $this->getMetaFeatures($newsObjDct, $featureDct);
-        $this->getActionFeature($newsObjDct, $featureDct);
-        foreach ($featureDct as $newsId => $curFeatureDct) {
-            $formatedFeatureLst = array();
+        // extract features of news, discrete feature through one hot
+        $resLst = $this->extractNewsFeatures($newsObjDct); 
+        $originalFeatureDct = $resLst[0];
+        $discreteFeatureDct = $resLst[1]; 
+        // hashing feature by sha1 method, form grpc sample
+        foreach ($discreteFeatureDct as $newsId => $featureNameLst) {
             $sampleObj = new iface\Sample();
-            foreach ($this->FEATURE_MAPPING as $featureName => $featureIdx) {
-                if (array_key_exists($featureName, $curFeatureDct)) {
-                    $featureVal = $curFeatureDct[$featureName];
-                    if (empty($featureVal)) {
-                        continue;
-                    }
-                    $featureObj = new iface\Feature();
-                    $featureObj->setIndex($featureIdx);
-                    $featureObj->setValue(floatval($featureVal));
-                    $sampleObj->addFeatures($featureObj);
+            $featureIdxLst = array();
+            foreach ($featureNameLst as $featureName) {
+                $featureIdx = $this->featureHash($featureName);  
+                if ($featureIdx <= 0) {
+                    continue;
                 }
+                $featureIdxLst[] = $featureIdx;
+            }
+            sort($featureIdxLst, SORT_NUMERIC);
+            foreach ($featureIdxLst as $featureIdx) {
+                $featureObj = new iface\Feature();
+                $featureObj->setIndex($featureIdx);
+                $featureObj->setValue(1.0);
+                $sampleObj->addFeatures($featureObj);
             }
             if (!$sampleObj->hasFeatures()) {
                 continue;
@@ -144,7 +236,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $filterNewsIdLst[] = $newsId;
             $predictReq->addSamples($sampleObj);
         }
-        return array($filterNewsIdLst, $predictReq, $featureDct);
+        return array($filterNewsIdLst, $predictReq, $originalFeatureDct);
     }
 
     protected function getScores($newsIdLst, $predictReq) {
@@ -188,9 +280,9 @@ class LrNewsRanker extends BaseNewsRanker {
         // user & news feature collection
         // TODO: Realtime features logging & aggregating
         list($filterNewsIdLst, $predictReq, $featureDct) = 
-                $this->getNewsFeatures($newsObjDct);
+                $this->generateNewsSamples($newsObjDct);
         if (!$predictReq->hasSamples()) {
-            return array();
+            return array(array(), array());
         }
 
         // calculate news score according to Logistic Regression Model

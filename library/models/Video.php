@@ -103,7 +103,7 @@ class Video extends BaseModel {
     }
 
     protected static function _getFromDB($sign) {
-        $crit = array ("conditions" => "news_url_sign = ?1 and is_valid = 1",
+        $crit = array ("conditions" => "news_url_sign = ?1 and status >= 0",
                        "bind" => array (1 => $sign),
                       );
 
@@ -111,69 +111,8 @@ class Video extends BaseModel {
         return $video_model;
     }
 
-    public static function getVideosByChannelName($youtube_channel_name, $limit, $basetime, $dir) {
-        if ($dir == "next") {
-            $crit = array (
-                "conditions" => "youtube_channel_name = ?1 and update_time < ?2 and status = 0 and is_valid = 1",
-                "bind" => array (
-                    1 => $youtube_channel_name,
-                    2 => $basetime
-                ),
-                "order" => "update_time desc",
-                "limit" => $limit,
-            );
-        } else if ($dir == "previous") {
-            $crit = array (
-                "conditions" => "youtube_channel_name = ?1 and update_time > ?2 and status = 0 and is_valid = 1",
-                "bind" => array (
-                    1 => $youtube_channel_name,
-                    2 => $basetime
-                ),
-                "order" => "update_time",
-                "limit" => $limit,
-            );
-        } else {
-            return null;
-        }
-        $videos = Video::find($crit);
-        return $videos;
-    }
-
-    public static function updateStatus($news_id, $status) {
-        $video = self::getByNewsSign($news_id);
-        $video->status = $status;
-        $video->save();
-    }
-
-    public static function getVideosByYoutubeIds($youtube_ids) {
-        $crit = array (
-            "conditions" => "youtube_video_id in ({youtube_ids:array})",
-                      "bind" => array("youtube_ids" => $youtube_ids));
-
-        $videos = Video::find($crit);
-        return $videos;
-    }
-
-    public static function getAuthorList($prefix) {
-        $crit = array (
-            "conditions" => "youtube_channel_name like ?1",
-            "bind" => array (1 => $prefix . "%"),
-            "columns" => "distinct youtube_channel_name",
-            "order" => "youtube_channel_name"
-        );
-
-        $authors = Video::find($crit);
-        $ret = array();
-        foreach ($authors as $author) {
-            $ret[] = $author->youtube_channel_name;
-        }
-        return $ret;
-    }
-
-
     protected static function _batchSaveToCache(array $models) {
         $cache = DI::getDefault()->get('cache');
-
         $cache->multi();
 
         foreach ($models as $sign => $model) {
@@ -215,13 +154,12 @@ class Video extends BaseModel {
         return array();
     }
 
-
     protected static function _batchGetFromDB($signs) {
         if (count($signs) == 0) {
             return array();
         }
 
-        $crit = array("conditions" => "news_url_sign IN ({signs:array})",
+        $crit = array("conditions" => "news_url_sign IN ({signs:array}) and status >= 0",
                       "bind" => array("signs" => $signs));
 
         $ret = Video::find($crit);
@@ -232,7 +170,6 @@ class Video extends BaseModel {
         self::_batchSaveToCache($models);
         return $models;
     }
-
 
     public static function batchGet(array $signs) {
         $ret = self::_batchGetFromCache($signs);
@@ -246,12 +183,11 @@ class Video extends BaseModel {
                 $left []= $sign;
             }
         }
-
+        
         if (count($left) != 0) {
             $left_models = self::_batchGetFromDB($left);
             $ret = array_merge($ret, $left_models);
         }
-
         return $ret;
     }
 
@@ -272,7 +208,6 @@ class Video extends BaseModel {
         shuffle($ret);
         return array_slice($ret, 0, $pn);
     }
-
     protected static function _getVideosByAuthorFromCache($youtube_channel_id, $pn) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
@@ -282,24 +217,20 @@ class Video extends BaseModel {
         }
         return null;
     }
-
     protected static function _getVideosByAuthorFromDB($youtube_channel_id, $pn) {
         $crit = array(
             "conditions" => "youtube_channel_id = ?1 and is_valid = 1 and status=1",
-
             "bind" => array(
                 1 => $youtube_channel_id
                 ),
             );
         $video_models = Video::find($crit);
-
         $ret = array();
         foreach ($video_models as $video_model) {
             $ret[] = $video_model->news_url_sign;
         }
         return $ret;
     }
-
     protected static function _saveVideosByAuthorToCache($youtube_channel_id, $videos) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {

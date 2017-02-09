@@ -12,6 +12,7 @@
 define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define('RECENT_NEWS_COUNT', 2);
+define('ALG_SPECIAL_USER_SET', 'ALG_SPECIAL_USER_SET');
 
 class HotSelector extends BaseNewsSelector{
     public function getPolicyTag(){
@@ -23,6 +24,10 @@ class HotSelector extends BaseNewsSelector{
         }
         # switch for lr model update
         $cache = $this->di->get('cache');
+        $specialUserLst = $cache->lRange(ALG_SPECIAL_USER_SET, 0, -1);
+        if (in_array($this->device_id, $specialUserLst)) {
+            $tag = "10001_lrRanker";
+        } 
         $lrRankerSwitch = $cache->get(ALG_LR_SWITCH_KEY);
         if (empty($lrRankerSwitch)) {
             $tag = "10001_popularRanking";
@@ -58,20 +63,20 @@ class HotSelector extends BaseNewsSelector{
         $popularPolicy = new PopularListPolicy($this->di); 
         $recNewsLst = array();
         if ($strategyTag == "10001_lrRanker") {
-            $personalTopicPolicy = new PersonalTopicInterestPolicy($this->di);
-            $topicNewsLst = $personalTopicPolicy->sampling(
-                $this->channel_id, $this->device_id, $this->user_id,
-                20, 3, $prefer, $options);
-            $editorRecPolicy = new EditorRecPolicy($this->di); 
-            $editorNewsLst = $editorRecPolicy->sampling(
-                $this->channel_id, $this->device_id, $this->user_id,
-                20, 3, $prefer, $options);
+            //$personalTopicPolicy = new PersonalTopicInterestPolicy($this->di);
+            //$topicNewsLst = $personalTopicPolicy->sampling(
+            //    $this->channel_id, $this->device_id, $this->user_id,
+            //    40, 3, $prefer, $options);
+            //$editorRecPolicy = new EditorRecPolicy($this->di); 
+            //$editorNewsLst = $editorRecPolicy->sampling(
+            //    $this->channel_id, $this->device_id, $this->user_id,
+            //    40, 3, $prefer, $options);
             $popularNewsLst = $popularPolicy->sampling(
                 $this->channel_id, $this->device_id, $this->user_id, 
-                20, 3, $prefer, $options);
-            $recNewsLst = array_merge($popularNewsLst, $editorNewsLst,
-                $topicNewsLst);
-            $recNewsLst = array_unique($recNewsLst);
+                180, 3, $prefer, $options);
+            //$recNewsLst = array_merge($popularNewsLst, $editorNewsLst,
+            //    $topicNewsLst);
+            $recNewsLst = array_unique($popularNewsLst);
         } else {
             $recNewsLst = $popularPolicy->sampling($this->channel_id, 
                 $this->device_id, $this->user_id, $sample_count, 
@@ -102,17 +107,19 @@ class HotSelector extends BaseNewsSelector{
         $newsFeatureDct = array();
         $cache = $this->di->get('cache');
         $lrRankerSwitch = $cache->get(ALG_LR_SWITCH_KEY);
-        if ($lrRankerSwitch && ($strategyTag=="10001_lrRanker")) {
+        if (!empty($lrRankerSwitch)) {
             $lrRanker = new LrNewsRanker($this->di); 
             list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
                 $this->channel_id, $this->device_id, $newsObjDct, 
                 $prefer, $sample_count);
-            $newsObjDct = $sortedNewsObjDct;
-            $newsIdStr = "";
-            foreach ($newsObjDct as $newsObj) {
-                $newsIdStr = $newsIdStr . $newsObj->url_sign . ", ";
+            if ($strategyTag == "10001_lrRanker") {
+                $newsObjDct = $sortedNewsObjDct;
+                $newsIdStr = "";
+                foreach ($newsObjDct as $newsObj) {
+                    $newsIdStr = $newsIdStr . $newsObj->url_sign . ", ";
+                }
+                $logger->info(sprintf("[rerank newsId:%s]", $newsIdStr));
             }
-            $logger->info(sprintf("[rerank newsId:%s]", $newsIdStr));
         }
         
         $ret = array();
