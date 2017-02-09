@@ -31,20 +31,16 @@ class NewsRedis {
         $ret = array();
         $top = $this->_redis->zRevRange($key, 0, TOP_VIDEO_LENGTH - 1, true);
 
-        $ret = array_merge($ret, $top);
-
-        #foreach ($top as $id=>$weight) {
-        #    $ret []= array("id" => $id, "weight"=>$weight);
-        #}
+        foreach ($top as $id=>$weight) {
+            $ret []= array("id" => $id, "weight"=>$weight);
+        }
 
         $other = $this->_redis->zRevRange($key, TOP_VIDEO_LENGTH, MAX_VIDEO_QUEUE_LENGTH, true);
         $less = $this->random_select_assoc($other, VIDEO_LENGTH - TOP_VIDEO_LENGTH);
 
-        $ret = array_merge($ret, $less);
-
-        #foreach ($less as $id=>$weight) {
-        #    $ret []= array("id" => $id, "weight"=>$weight);
-        #}
+        foreach ($less as $id=>$weight) {
+            $ret []= array("id" => $id, "weight"=>$weight);
+        }
 
         return $ret;
     }
