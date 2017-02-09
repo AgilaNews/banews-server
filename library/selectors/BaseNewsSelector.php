@@ -16,7 +16,7 @@ define("DEFAULT_SAMPLING_DAY", 7);
 define('CACHE_NEWS_FILTER', 'BS_NEWS_FILTER');
 
 class BaseNewsSelector {
-    public function __construct($channel_id, $controller) {
+    public function __construct($controller, $channel_id) {
         $this->channel_id = $channel_id;
         $this->device_id = $controller->deviceId;
         $this->user_id = $controller->userSign;
@@ -158,20 +158,21 @@ class BaseNewsSelector {
     }
 
     protected function setDeviceSeenToBF($keys) {
-        switch ($this->channel_id) {
+        if (RenderLib::isVideoChannel($this->channel_id)) {
+            $filterName = BloomFilterService::FILTER_FOR_VIDEO;
+        } else {
+            switch ($this->channel_id) {
             case 10011:
                 $filterName = BloomFilterService::FILTER_FOR_IMAGE;
                 break;
             case 10012:
                 $filterName = BloomFilterService::FILTER_FOR_GIF;
                 break;
-            case 30001:
-                $filterName = BloomFilterService::FILTER_FOR_VIDEO;
-                break;
             default:
                 return;
+            }
         }
-
+        
         $device_id = $this->device_id;
         $bf_service = $this->di->get("bloomfilter");
         $bf_service->add($filterName, 
@@ -179,5 +180,32 @@ class BaseNewsSelector {
                                    function($key) use ($device_id){ 
                                        return $device_id . "_" . $key;
                                    }, $keys));
+    }
+
+    public static function getSelector($controller, $channel_id) {
+        if ($channel_id == "10001") {
+            return new HotSelector($controller, $channel_id);
+        }
+        if ($channel_id == "10013") {
+            return new NbaSelector($controller, $channel_id);
+        }
+
+        if (in_array($channel_id, array("10002", "10010"))){
+            return new SphinxSelector($controller, $channel_id);
+        }
+
+        if (in_array($channel_id, array("10003", "10004", "10005", "10006", "10007", "10008", "10009"))) {
+            return new PopularSelector($controller, $channel_id);
+        }
+
+        if (in_array($channel_id, array("10011", "10012", "10015"))) {
+            return new RandomBackupSelector($controller, $channel_id);
+        }
+
+        if ((int)($channel_id / 10000) == 3) {
+            return new VideoSelector($controller, $channel_id);
+        }
+
+        return new BaseNewsSelector($controller, $channel_id);
     }
 }

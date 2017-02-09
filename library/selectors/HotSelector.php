@@ -1,6 +1,6 @@
 <?php
 /**
- * @file   BaseNewsSelecter.php
+ * @file   HotSelector.php
  * @author Gethin Zhang <zgxcassar@gmail.com>
  * @date   Thu Jun 30 13:49:16 2016
  * 
@@ -14,8 +14,7 @@ define('MAX_NEWS_COUNT', 10);
 define('RECENT_NEWS_COUNT', 2);
 define('ALG_SPECIAL_USER_SET', 'ALG_SPECIAL_USER_SET');
 
-class Selector10001 extends BaseNewsSelector{
-
+class HotSelector extends BaseNewsSelector{
     public function getPolicyTag(){
         $abService = $this->di->get('abtest');
         $experiment = 'channel_' . $this->channel_id . '_strategy';

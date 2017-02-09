@@ -26,18 +26,19 @@ abstract class BaseListPolicy {
     }
 
     protected function tryBloomfilter($channel_id, $device_id, $news_list) {
-        switch($channel_id){
-        case "30001":
+        if (RenderLib::isVideoChannel($channel_id)) {
             $filterName = BloomFilterService::FILTER_FOR_VIDEO;
-            break;
-        case "10011":
-            $filterName = BloomFilterService::FILTER_FOR_IMAGE;
-            break;
-        case "10012":
-            $filterName = BloomFilterService::FILTER_FOR_GIF;
-            break;
-        default:
-            return null;
+        } else {
+            switch($channel_id){
+                case "10011":
+                    $filterName = BloomFilterService::FILTER_FOR_IMAGE;
+                    break;
+                case "10012":
+                    $filterName = BloomFilterService::FILTER_FOR_GIF;
+                    break;
+                default:
+                    return null;
+            }
         }
         
         $bf_service = $this->di->get("bloomfilter");

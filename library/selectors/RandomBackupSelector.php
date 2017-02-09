@@ -2,7 +2,7 @@
 define("MIN_IMG_SEND_COUNT", 10);
 define("MAX_IMG_SEND_COUNT", 12);
 
-class Selector10011 extends BaseNewsSelector {
+class RandomBackupSelector extends BaseNewsSelector {
     public function getPolicyTag() {
         return "pure_random"; 
     }

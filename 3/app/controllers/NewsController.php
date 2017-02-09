@@ -30,7 +30,7 @@ class NewsController extends BaseController {
         $redis->setDeviceClick($this->deviceId, $newsSign, time());
         $this->incrViewCount($newsSign);
 
-        $render = BaseDetailRender::getRenderByChannel($news_model->channel_id, $this);
+        $render = BaseDetailRender::getRender($this, $news_model->channel_id);
         $ret = $render->render($news_model, null);
 
         $this->logEvent(EVENT_NEWS_DETAIL, array(
@@ -64,12 +64,7 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        $cname = "Selector$channel_id";
-        if (class_exists($cname)) {
-            $selector = new $cname($channel_id, $this); 
-        } else {
-            $selector = new BaseNewsSelector($channel_id, $this);
-        }
+        $selector = BaseNewsSelector::getSelector($this, $channel_id);
 
         $newsFeatureDct = array();
         if (in_array($channel_id, $this->featureChannelLst)) {
@@ -89,12 +84,7 @@ class NewsController extends BaseController {
                                      CACHE_FEATURE_DISPLAY_PREFIX, 
                                      CACHE_FEATURE_DISPLAY_TTL);
 
-        $cname = "Render$channel_id";
-        if (class_exists($cname)) {
-            $render = new $cname($this, $channel_id);
-        } else {
-            $render = new BaseListRender($this, $channel_id);
-        }
+        $render = BaseListRender::getRender($this, $channel_id, $channel_id);
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
@@ -197,20 +187,10 @@ class NewsController extends BaseController {
         }
 
         $channel_id = $news_model->channel_id;
-        $cname = "RecommendSelector$channel_id";
-        if (class_exists($cname)) {
-            $recommend_selector = new $cname($news_model->channel_id, $this);
-        } else {
-            $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
-        }
+        $recommend_selector = BaseRecommendNewsSelector::getSelector($this, $news_model->channel_id);
 
         $models = $recommend_selector->select($news_model->url_sign);
-        $cname = "RecommendRender" . $news_model->channel_id;
-        if (class_exists($cname)) {
-            $render = new $cname($this);
-        } else {
-            $render = new BaseListRender($this);
-        }
+        $render = BaseRecommendRender::getRecommendRender($this, $channel_id);
 
         $ret["recommend_news"]= $render->render($models);
         $this->logEvent(EVENT_NEWS_RECOMMEND, array(

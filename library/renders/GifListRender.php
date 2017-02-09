@@ -1,5 +1,5 @@
 <?php
-class Render10012 extends BaseListRender {
+class GifListRender extends BaseListRender {
     public function render($models) {
         $ret = array();
 

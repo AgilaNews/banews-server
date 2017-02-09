@@ -7,9 +7,17 @@
  * @version $Id$
  */
 
-class RecommendRender30001 extends BaseRecommendRender {
+class VideoListRender extends BaseListRender {
     public function render($models) {
         $ret = array();
+
+        $keys = array();
+        foreach ($models as $model) {
+            if ($model && !$this->isIntervened($model)) {
+                $keys []= $model->url_sign;
+            }
+        }
+
         foreach ($models as $sign => $news_model) {
             if (!$news_model) {
                 continue;
@@ -22,11 +30,11 @@ class RecommendRender30001 extends BaseRecommendRender {
         }
 
         RenderLib::FillCommentsCount($ret);
-        RenderLib::FillTpl($ret, $this->placement_id, RenderLib::PLACEMENT_RECOMMEND);
+        RenderLib::FillTpl($ret, $this->placement_id, RenderLib::PLACEMENT_TIMELINE);
         return $ret;
-    }
+    } 
 
-    protected function serializeNewsCell($news_model) {
+    public function serializeNewsCell($news_model) {
         $video = Video::getByNewsSign($news_model->url_sign);
         if ($video) {
             $ret = RenderLib::GetPublicData($news_model);
@@ -45,7 +53,6 @@ class RecommendRender30001 extends BaseRecommendRender {
                                                       $this->screen_h, $this->os);
             return $ret;
         }
-
         return null;
     }
 }

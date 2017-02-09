@@ -1,5 +1,5 @@
 <?php
-class Render10013 extends BaseListRender {
+class NbaListRender extends BaseListRender {
     public function __construct($controller){
         parent::__construct($controller);
     }

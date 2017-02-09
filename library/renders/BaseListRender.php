@@ -155,4 +155,26 @@ class BaseListRender {
     protected function isIntervened($model) {
         return $model instanceof BaseIntervene;
     }
+
+    public static function getRender($controller, $channel_id, $placement_id = null) {
+        if (RenderLib::isVideoChannel($channel_id)) {
+            return new VideoListRender($controller, $placement_id);
+        }
+        if (RenderLib::isGifChannel($channel_id)) {
+            return new GifListRender($controller, $placement_id);
+        }
+        if (RenderLib::isPhotoChannel($channel_id)) {
+            return new PhotoListRender($controller, $placement_id);
+        }
+
+        if ($channel_id == "10013") {
+            return new NbaListRender($controller, $placement_id);
+        }
+
+        if ($channel_id == "10001") {
+            return new HotListRender($controller, $placement_id);
+        }
+
+        return new BaseListRender($controller, $placement_id);
+    }
 }

@@ -111,14 +111,9 @@ class NewsController extends BaseController {
         }
 
         
-        $recommend_selector = new BaseRecommendNewsSelector($news_model->channel_id, $this);
+        $recommend_selector = BaseRecommendNewsSelector::getSelector($this, $news_model->channel_id);
         $models = $recommend_selector->select($news_model->url_sign);
-        $cname = "Recommend" . $news_model->channel_id;
-        if (class_exists($cname)) {
-            $render = new $cname($this, $news_model->channel_id);
-        } else {
-            $render = new BaseListRender($this, $news_model->channel_id);
-        }
+        $render = BaseRecommendRender::getRecommendRender($this, $news_model->channel_id);
 
         $ret["recommend_news"]= $render->render($models);
         if ($this->userSign) {
@@ -170,12 +165,7 @@ class NewsController extends BaseController {
             throw new HttpException(ERR_BODY, "'dir' error");
         }
 
-        $cname = "Selector$channel_id";
-        if (class_exists($cname)) {
-            $selector = new $cname($channel_id, $this); 
-        } else {
-            $selector = new BaseNewsSelector($channel_id, $this);
-        }
+        $selector = BaseNewsSelector::getSelector($this, $channel_id);
 
         $newsFeatureDct = array();
         if (in_array($channel_id, $this->featureChannelLst)) {
@@ -195,12 +185,7 @@ class NewsController extends BaseController {
                                      CACHE_FEATURE_DISPLAY_PREFIX, 
                                      CACHE_FEATURE_DISPLAY_TTL);
 
-        $cname = "Render$channel_id";
-        if (class_exists($cname)) {
-            $render = new $cname($this);
-        } else {
-            $render = new BaseListRender($this);
-        }
+        $render = BaseListRender::getRender($this, $channel_id, $channel_id);
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         $ret[$dispatch_id] = $render->render($dispatch_models);

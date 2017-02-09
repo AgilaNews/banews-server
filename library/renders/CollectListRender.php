@@ -22,13 +22,7 @@ class CollectListRender extends BaseListRender {
                 continue;
             }
             
-            $cname = "Render" . $news_model->channel_id;
-            if (class_exists($cname)) {
-                $render = new $cname($this->controller);
-            } else {
-                $render = new BaseListRender($this->controller);
-            }
-            
+            $render = BaseListRender::getRender($this->controller, $news_model->channel_id);
             $cell = $render->serializeNewsCell($news_model);
             if (!$cell) {
                 continue;
