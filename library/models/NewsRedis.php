@@ -1,10 +1,29 @@
 <?php
 define("VIDEO_LENGTH", 3000);
 define("TOP_VIDEO_LENGTH", 1000);
+define("MAX_VIDEO_QUEUE_LENGTH", 20000);
 
 class NewsRedis {
     public function __construct($redis) {
         $this->_redis = $redis;
+    }
+
+    public function random_select_assoc($list, $need) {
+        $ret = [];
+        if (!is_array($list)) {
+            return $ret;
+        }
+        $keys = array_keys($list);
+        shuffle($keys);
+        $count = 0;
+        foreach ($keys as $key){ 
+            if ($count >= $need){
+                break;
+            }
+            $ret[$key] = $list[$key]; 
+            $count += 1;
+        }
+        return $ret;
     }
 
     public function getVideos($channel_id) {
@@ -12,17 +31,20 @@ class NewsRedis {
         $ret = array();
         $top = $this->_redis->zRevRange($key, 0, TOP_VIDEO_LENGTH - 1, true);
 
-        foreach ($top as $id=>$weight) {
-            $ret []= array("id" => $id, "weight"=>$weight);
-        }
+        $ret = array_merge($ret, $top);
 
-        $other = $this->_redis->zRevRange($key, TOP_VIDEO_LENGTH, -1, true);
-        shuffle($other);
+        #foreach ($top as $id=>$weight) {
+        #    $ret []= array("id" => $id, "weight"=>$weight);
+        #}
 
-        $less = array_slice($other, 0, VIDEO_LENGTH - TOP_VIDEO_LENGTH - 1);
-        foreach ($less as $id=>$weight) {
-            $ret []= array("id" => $id, "weight"=>$weight);
-        }
+        $other = $this->_redis->zRevRange($key, TOP_VIDEO_LENGTH, MAX_VIDEO_QUEUE_LENGTH, true);
+        $less = $this->random_select_assoc($other, VIDEO_LENGTH - TOP_VIDEO_LENGTH);
+
+        $ret = array_merge($ret, $less);
+
+        #foreach ($less as $id=>$weight) {
+        #    $ret []= array("id" => $id, "weight"=>$weight);
+        #}
 
         return $ret;
     }

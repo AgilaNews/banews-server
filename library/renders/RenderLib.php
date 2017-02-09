@@ -197,7 +197,7 @@ class RenderLib {
         }
     }
 
-    public static function ImageRender($net, $url_sign, $meta, $large, $play_sign = false) {
+    public static function ImageRender($net, $url_sign, $meta, $large, $play_sign = false, $size = 1) {
         $quality = RenderLib::GetImageQuality($net);
 
         $cell = array(
@@ -214,7 +214,7 @@ class RenderLib {
         }
 
         if ($play_sign) {
-            $cell["pattern"] .= "|v=1";
+            $cell["pattern"] .= "|v=".$size;
         }
 
         return $cell;

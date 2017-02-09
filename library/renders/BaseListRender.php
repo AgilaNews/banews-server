@@ -77,7 +77,8 @@ class BaseListRender {
             if (!$video || !$cover_meta) {
                 $ret["imgs"] = array();
             } else {
-                $cell = RenderLib::ImageRender($this->net, $video->video_url_sign, $cover_meta, false, true);
+                //hardcode 58 for render play button in list, reconstruct later
+                $cell = RenderLib::ImageRender($this->net, $video->video_url_sign, $cover_meta, false, true, 58);
                 $ret["imgs"] = array($cell);
             }
         } else {
