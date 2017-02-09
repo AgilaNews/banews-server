@@ -64,20 +64,20 @@ class Selector10001 extends BaseNewsSelector{
         $popularPolicy = new PopularListPolicy($this->di); 
         $recNewsLst = array();
         if ($strategyTag == "10001_lrRanker") {
-            $personalTopicPolicy = new PersonalTopicInterestPolicy($this->di);
-            $topicNewsLst = $personalTopicPolicy->sampling(
-                $this->channel_id, $this->device_id, $this->user_id,
-                40, 3, $prefer, $options);
-            $editorRecPolicy = new EditorRecPolicy($this->di); 
-            $editorNewsLst = $editorRecPolicy->sampling(
-                $this->channel_id, $this->device_id, $this->user_id,
-                40, 3, $prefer, $options);
+            //$personalTopicPolicy = new PersonalTopicInterestPolicy($this->di);
+            //$topicNewsLst = $personalTopicPolicy->sampling(
+            //    $this->channel_id, $this->device_id, $this->user_id,
+            //    40, 3, $prefer, $options);
+            //$editorRecPolicy = new EditorRecPolicy($this->di); 
+            //$editorNewsLst = $editorRecPolicy->sampling(
+            //    $this->channel_id, $this->device_id, $this->user_id,
+            //    40, 3, $prefer, $options);
             $popularNewsLst = $popularPolicy->sampling(
                 $this->channel_id, $this->device_id, $this->user_id, 
-                100, 3, $prefer, $options);
-            $recNewsLst = array_merge($popularNewsLst, $editorNewsLst,
-                $topicNewsLst);
-            $recNewsLst = array_unique($recNewsLst);
+                180, 3, $prefer, $options);
+            //$recNewsLst = array_merge($popularNewsLst, $editorNewsLst,
+            //    $topicNewsLst);
+            $recNewsLst = array_unique($popularNewsLst);
         } else {
             $recNewsLst = $popularPolicy->sampling($this->channel_id, 
                 $this->device_id, $this->user_id, $sample_count, 

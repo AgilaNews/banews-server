@@ -282,7 +282,7 @@ class LrNewsRanker extends BaseNewsRanker {
         list($filterNewsIdLst, $predictReq, $featureDct) = 
                 $this->generateNewsSamples($newsObjDct);
         if (!$predictReq->hasSamples()) {
-            return array();
+            return array(array(), array());
         }
 
         // calculate news score according to Logistic Regression Model
