@@ -84,7 +84,7 @@ class NewsController extends BaseController {
                                      CACHE_FEATURE_DISPLAY_PREFIX, 
                                      CACHE_FEATURE_DISPLAY_TTL);
 
-        $render = BaseListRender::getRender($this, $channel_id);
+        $render = BaseListRender::getRender($this, $channel_id, $channel_id);
 
         $dispatch_id = substr(md5($prefer . $channel_id . $this->deviceId . time()), 16);
         if (Features::Enabled(Features::AB_FLAG_FEATURE, $this->client_version, $this->os)) {
@@ -190,7 +190,7 @@ class NewsController extends BaseController {
         $recommend_selector = BaseRecommendNewsSelector::getSelector($this, $news_model->channel_id);
 
         $models = $recommend_selector->select($news_model->url_sign);
-        $render = BaseListRender::getRender($this, $news_model->channel_id);
+        $render = BaseRecommendRender::getRecommendRender($this, $channel_id);
 
         $ret["recommend_news"]= $render->render($models);
         $this->logEvent(EVENT_NEWS_RECOMMEND, array(

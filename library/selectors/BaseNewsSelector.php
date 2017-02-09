@@ -160,10 +160,8 @@ class BaseNewsSelector {
     protected function setDeviceSeenToBF($keys) {
         if (RenderLib::isVideoChannel($this->channel_id)) {
             $filterName = BloomFilterService::FILTER_FOR_VIDEO;
-            return $filterName;
-        }
-
-        switch ($this->channel_id) {
+        } else {
+            switch ($this->channel_id) {
             case 10011:
                 $filterName = BloomFilterService::FILTER_FOR_IMAGE;
                 break;
@@ -172,8 +170,9 @@ class BaseNewsSelector {
                 break;
             default:
                 return;
+            }
         }
-
+        
         $device_id = $this->device_id;
         $bf_service = $this->di->get("bloomfilter");
         $bf_service->add($filterName, 
