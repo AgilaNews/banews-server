@@ -10,9 +10,9 @@
  */
 use Phalcon\DI;
 class SphinxSelector extends BaseNewsSelector {
-    public function __construct($channel_id, $controller) {
+    public function __construct($controller, $channel_id) {
         $this->ctx = RequestContext::GetCtxFromController($controller);
-        parent::__construct($channel_id, $controller);
+        parent::__construct($controller, $channel_id);
     }
 
     public function select($prefer) {
