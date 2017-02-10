@@ -79,7 +79,7 @@ class HotSelector extends BaseNewsSelector{
             $recNewsLst = array_unique($popularNewsLst);
         } else {
             $recNewsLst = $popularPolicy->sampling($this->channel_id, 
-                $this->device_id, $this->user_id, $sample_count, 
+                $this->device_id, $this->user_id, $sample_count * 3, 
                 3, $prefer, $options);
         }
             

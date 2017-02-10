@@ -81,8 +81,8 @@ class LrNewsRanker extends BaseNewsRanker {
             &$discreteFeatureLst) {
         $imageLst = NewsImage::getImagesOfNews($newsObj->url_sign);
         $featureDct['PICTURE_COUNT'] = count($imageLst);
-        $discreteFeatureLst[] = $this->discreteIntFeatures(
-            'PICTURE_COUNT', count($imageLst), 1);
+        $discreteFeatureLst[] = $this->discreteGapFeatures(
+            'PICTURE_COUNT', count($imageLst), array(0, 1, 3));
     }
 
     protected function getVideoFeature($newsObj, &$featureDct,
@@ -152,7 +152,7 @@ class LrNewsRanker extends BaseNewsRanker {
         $featureDct['HISTORY_COMMENT_DISPLAY_RATIO'] = $commentRatio;
         $discreteFeatureLst[] = $this->discreteGapFeatures(
             'HISTORY_COMMENT_COUNT', $commentCnt, 
-            array(5, 10, 20, 50, 100));
+            array(1, 5, 10, 20, 50, 100));
         //$discreteFeatureLst[] = $this->discreteIntFeatures(
         //    'HISTORY_COMMENT_DISPLAY_RATIO', $commentRatio, 1000);
     }
