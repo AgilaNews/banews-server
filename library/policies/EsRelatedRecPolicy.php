@@ -67,7 +67,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
                         'like' => array(
                             '_index' => 'banews',
                             '_type' => 'article',
-                            '_id' => 'txnvdbecihw=',
+                            '_id' => $myself,
                         ),
                         'max_query_terms' => 30,
                         'min_term_freq' => 1,
