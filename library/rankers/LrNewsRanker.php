@@ -39,6 +39,39 @@ class LrNewsRanker extends BaseNewsRanker {
         return $hashMod;
     }
 
+    public function multFeatureHash($featureNameLst) {
+        $cache = $this->di->get('cache');
+        if (empty($featureNameLst)) {
+            return array();
+        }
+        if ($cache) {
+            $keys = array();
+            foreach ($featureNameLst as $featureName) {
+                $keys[] = CACHE_ALG_FEATURE_HASH_KEY . $featureName;
+            }
+            $newsArr = $cache->mGet($keys);
+            $ret = array();
+            $cache->multi();
+            foreach ($newsArr as $idx => $featureIdx) {
+                if (empty($featureIdx)) {
+                    $featureName = $featureNameLst[$idx];
+                    $featureIdx = $this->featureHash($featureName);
+                    if ($featureIdx <= 0) {
+                        continue;
+                    }
+                    $cache->set(CACHE_ALG_FEATURE_HASH_KEY . $featureName, 
+                        $featureIdx);
+                    $cache->expire(CACHE_ALG_FEATURE_HASH_KEY . $featureName,
+                        CACHE_ALG_FEATURE_HASH_TTL);
+                }
+                $ret[] = $featureIdx;
+            }
+            $cache->exec();
+            return $ret;
+        }
+        return array();
+    }
+
     public function discreteGapFeatures($featureName, $value, $sepValLst) {
         sort($sepValLst, SORT_NUMERIC);
         foreach ($sepValLst as $idx=>$sepVal) {
@@ -215,14 +248,7 @@ class LrNewsRanker extends BaseNewsRanker {
         // hashing feature by sha1 method, form grpc sample
         foreach ($discreteFeatureDct as $newsId => $featureNameLst) {
             $sampleObj = new iface\Sample();
-            $featureIdxLst = array();
-            foreach ($featureNameLst as $featureName) {
-                $featureIdx = $this->featureHash($featureName);  
-                if ($featureIdx <= 0) {
-                    continue;
-                }
-                $featureIdxLst[] = $featureIdx;
-            }
+            $featureIdxLst = $this->multFeatureHash($featureNameLst);
             sort($featureIdxLst, SORT_NUMERIC);
             foreach ($featureIdxLst as $featureIdx) {
                 $featureObj = new iface\Feature();
