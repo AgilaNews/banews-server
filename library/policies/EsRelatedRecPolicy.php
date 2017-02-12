@@ -59,7 +59,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
 
     protected function genSearchParams($myself, $channel_id){
         $contentType = $this->getContentType($channel_id);
-        $typeFilter = array('term'=>array('content_type'=>$content_type));
+        $typeFilter = array('term'=>array('content_type'=>$contentType));
         $queryFilter = array("bool"=>array("must"=>array($typeFilter)));
         $moreLikeThisQuery = array(
                     'more_like_this' => array(
@@ -67,9 +67,9 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
                         'like' => array(
                             '_index' => 'banews',
                             '_type' => 'article',
-                            '_id' => $myself,
+                            '_id' => 'txnvdbecihw=',
                         ),
-                        'max_query_terms' => 0,
+                        'max_query_terms' => 30,
                         'min_term_freq' => 1,
                         'min_doc_freq' => 1,
                     ),
@@ -86,14 +86,12 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             [
                 'index' => 'banews',
                 'type'  => 'article',
-                'from' => $from,
-                'size' => $size,
-                //'_source'=> array("id","channel"),
                 'body' => [
                     "query"=>$query,
                 ]
             ];
-        return searchParams;
+
+        return $searchParams;
     } 
 
     protected function getRecommendNews($myself, $channel_id, $pn, $minThre=0.) {
@@ -102,27 +100,6 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
             return $recNewsLst;
         }
 
-        /*
-        $searchParams = array(
-            'index' => 'banews',
-            'type' => 'article',
-            'body' => array(
-                'query' => array(
-                    'more_like_this' => array(
-                        'fields' => array('title', 'plain_text'),
-                        'like' => array(
-                            '_index' => 'banews',
-                            '_type' => 'article',
-                            '_id' => $myself,
-                        ),
-                        'max_query_terms' => 30,
-                        'min_term_freq' => 1,
-                        'min_doc_freq' => 1,
-                    ),
-                ),
-            ),
-        );
-         */
         $searchParams = $this->genSearchParams($myself, $channel_id);
         try {
             $resLst = array();
