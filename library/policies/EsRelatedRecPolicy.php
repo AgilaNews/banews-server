@@ -1,6 +1,10 @@
 <?php
 
 use Phalcon\DI;
+define("TYPE_PLAIN_NEWS", 0);
+define("TYPE_IMAGE_NEWS", 1);
+define("TYPE_GIF_NEWS", 2);
+define("TYPE_VIDEO_NEWS", 3);
 
 class EsRelatedRecPolicy extends BaseRecommendPolicy {
     public function __construct($di) {
@@ -40,17 +44,24 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
         }
     }
 
-    protected function getRecommendNews($myself, $pn, $minThre=0.) {
-        $recNewsLst = self::_getRecFromCache($myself);
-        if ($recNewsLst) {
-            return $recNewsLst;
+    protected function getContentType($channel_id){
+        if (RenderLib::isVideoChannel($channel_id)){
+            return TYPE_VIDEO_NEWS;
         }
+        if (RenderLib::isPhotoChannel($channel_id)){
+            return TYPE_IMAGE_NEWS;
+        }
+        if (RenderLib::isGifChannel($channel_id)){
+            return TYPE_GIF_NEWS;
+        }
+        return TYPE_PLAIN_NEWS;
+    }
 
-        $searchParams = array(
-            'index' => 'banews',
-            'type' => 'article',
-            'body' => array(
-                'query' => array(
+    protected function genSearchParams($myself, $channel_id){
+        $contentType = $this->getContentType($channel_id);
+        $typeFilter = array('term'=>array('content_type'=>$contentType));
+        $queryFilter = array("bool"=>array("must"=>array($typeFilter)));
+        $moreLikeThisQuery = array(
                     'more_like_this' => array(
                         'fields' => array('title', 'plain_text'),
                         'like' => array(
@@ -62,9 +73,34 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
                         'min_term_freq' => 1,
                         'min_doc_freq' => 1,
                     ),
-                ),
-            ),
-        );
+                );
+        $query =
+            [
+                'filtered' => [
+                    'query' => $moreLikeThisQuery,
+                    'filter' => $queryFilter,
+                ]
+            ];
+
+        $searchParams =
+            [
+                'index' => 'banews',
+                'type'  => 'article',
+                'body' => [
+                    "query"=>$query,
+                ]
+            ];
+
+        return $searchParams;
+    } 
+
+    protected function getRecommendNews($myself, $channel_id, $pn, $minThre=0.) {
+        $recNewsLst = self::_getRecFromCache($myself);
+        if ($recNewsLst) {
+            return $recNewsLst;
+        }
+
+        $searchParams = $this->genSearchParams($myself, $channel_id);
         try {
             $resLst = array();
             $relatedNews = $this->esClient->search($searchParams);
@@ -97,7 +133,7 @@ class EsRelatedRecPolicy extends BaseRecommendPolicy {
 
     public function sampling($channel_id, $device_id, $user_id, $myself, 
         $pn=3, $day_till_now=7, array $options=null) {
-        $resLst = $this->getRecommendNews($myself, $pn, 0);
+        $resLst = $this->getRecommendNews($myself, $channel_id, $pn, 0);
         $resIdLst = array();
         foreach($resLst as $curRes) {
             $resIdLst[] = $curRes['id'];
