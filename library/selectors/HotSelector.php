@@ -109,16 +109,19 @@ class HotSelector extends BaseNewsSelector{
         $lrRankerSwitch = $cache->get(ALG_LR_SWITCH_KEY);
         if (!empty($lrRankerSwitch)) {
             $lrRanker = new LrNewsRanker($this->di); 
-            list($sortedNewsObjDct, $newsFeatureDct) = $lrRanker->ranking(
-                $this->channel_id, $this->device_id, $newsObjDct, 
-                $prefer, $sample_count);
             if ($strategyTag == "10001_lrRanker") {
+                list($sortedNewsObjDct, $newsFeatureDct) = 
+                    $lrRanker->ranking($this->channel_id, $this->device_id, 
+                    $newsObjDct, $prefer, $sample_count);
                 $newsObjDct = $sortedNewsObjDct;
                 $newsIdStr = "";
                 foreach ($newsObjDct as $newsObj) {
                     $newsIdStr = $newsIdStr . $newsObj->url_sign . ", ";
                 }
                 $logger->info(sprintf("[rerank newsId:%s]", $newsIdStr));
+            } else {
+                list($filterNewsIdLst, $predictReq, $newsFeatureDct) = 
+                    $this->generateNewsSamples($newsObjDct);
             }
         }
         
