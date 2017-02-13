@@ -32,7 +32,6 @@ class NewsImage extends BaseModel {
             }
         }
 
-
         $crit = array (
             "conditions" => "news_url_sign=?1",
             "bind" => array(1 => $news_sign),
@@ -52,6 +51,32 @@ class NewsImage extends BaseModel {
         }
 
         return $rs;
+    }
+
+    public static function batchGetImagesOfMultNews($newsIdLst) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $keys = array();
+            foreach ($newsIdLst as $newsId) {
+                $keys[] = CACHE_IMAGES_PREFIX . $newsId;
+            }
+            $newsArr = $cache->mGet($keys);
+            if (empty($newsArr)) {
+                return array();
+            } else  {
+                $ret = array();
+                foreach ($newsArr as $idx => $value) {
+                    $newsId = $newsIdLst[$idx];
+                    if (empty($value)) {
+                        $ret[$newsId] = NewsImage::getImagesOfNews($newsId); 
+                    } else {
+                        $ret[$newsId] = unserialize($value);
+                    }
+                }
+                return $ret;
+            }
+        }
+        return array();
     }
 
     public function getSource(){

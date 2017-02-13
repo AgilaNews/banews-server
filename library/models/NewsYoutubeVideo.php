@@ -57,5 +57,30 @@ class NewsYoutubeVideo extends BaseModel {
 
         return $rs;
     }
-    
+
+    public static function batchGetVideosOfMultNews($newsIdLst) {
+        $cache = DI::getDefault()->get('cache');
+        if ($cache) {
+            $keys = array();
+            foreach ($newsIdLst as $newsId) {
+                $keys[] = CACHE_YOUTUBE_VIDEO_PREFIX . $newsId;
+            }
+            $newsArr = $cache->mGet($keys);
+            if (empty($newsArr)) {
+                return array();
+            } else  {
+                $ret = array();
+                foreach ($newsArr as $idx => $value) {
+                    $newsId = $newsIdLst[$idx];
+                    if (empty($value)) {
+                        $ret[$newsId] = NewsYoutubeVideo::getVideosOfNews($newsId); 
+                    } else {
+                        $ret[$newsId] = unserialize($value);
+                    }
+                }
+                return $ret;
+            }
+        }
+        return array();
+    }
 }

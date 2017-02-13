@@ -2,10 +2,10 @@
 
 require_once (LIBRARY_PATH . "/pb/classify.php"); 
 
-define ("MAX_RANKER_NEWS_CNT", 200);
+define ("MAX_RANKER_NEWS_CNT", 500);
 define ("MIN_FEATURE_VALUE", 0.001);
 define ("FEATURE_GAP", "_");
-define ("FEAFURE_SPACE_SIZE", "1000000");
+define ("FEAFURE_SPACE_SIZE", 1000000);
 define ("PRECISION", 6);
 
 class LrNewsRanker extends BaseNewsRanker {
@@ -20,13 +20,20 @@ class LrNewsRanker extends BaseNewsRanker {
     }
 
     public function bcHexDec($hex) {
+        # in order to accelerate speed, divide 40 bits hexadecimal 
+        # number into 4 parts
         $dec = 0;
         $len = strlen($hex);
         for ($i=1; $i<=$len; $i++) {
             $dec = bcadd($dec, bcmul(strval(hexdec($hex[$i-1])), 
                 bcpow('16', strval($len - $i))));
         }
-        return $dec;
+        $dec = 0;
+        $dec += (hexdec(substr($hex, 0, 10)) % FEAFURE_SPACE_SIZE) * 344576;
+        $dec += (hexdec(substr($hex, 10, 10)) % FEAFURE_SPACE_SIZE) * 706176;
+        $dec += (hexdec(substr($hex, 20, 10)) % FEAFURE_SPACE_SIZE) * 627776;
+        $dec += (hexdec(substr($hex, 30, 10)) % FEAFURE_SPACE_SIZE);
+        return $dec % FEAFURE_SPACE_SIZE;
     }
 
     public function featureHash($featureName) {
@@ -34,42 +41,8 @@ class LrNewsRanker extends BaseNewsRanker {
             return -1;
         }
         $hashHex = hash('sha1', $featureName);
-        $hashDec = $this->bcHexDec($hashHex);
-        $hashMod = bcmod($hashDec, FEAFURE_SPACE_SIZE) + 1; 
+        $hashMod = $this->bcHexDec($hashHex) + 1;
         return $hashMod;
-    }
-
-    public function multFeatureHash($featureNameLst) {
-        $cache = $this->di->get('cache');
-        if (empty($featureNameLst)) {
-            return array();
-        }
-        if ($cache) {
-            $keys = array();
-            foreach ($featureNameLst as $featureName) {
-                $keys[] = CACHE_ALG_FEATURE_HASH_KEY . $featureName;
-            }
-            $newsArr = $cache->mGet($keys);
-            $ret = array();
-            $cache->multi();
-            foreach ($newsArr as $idx => $featureIdx) {
-                if (empty($featureIdx)) {
-                    $featureName = $featureNameLst[$idx];
-                    $featureIdx = $this->featureHash($featureName);
-                    if ($featureIdx <= 0) {
-                        continue;
-                    }
-                    $cache->set(CACHE_ALG_FEATURE_HASH_KEY . $featureName, 
-                        $featureIdx);
-                    $cache->expire(CACHE_ALG_FEATURE_HASH_KEY . $featureName,
-                        CACHE_ALG_FEATURE_HASH_TTL);
-                }
-                $ret[] = $featureIdx;
-            }
-            $cache->exec();
-            return $ret;
-        }
-        return array();
     }
 
     public function discreteGapFeatures($featureName, $value, $sepValLst) {
@@ -111,19 +84,25 @@ class LrNewsRanker extends BaseNewsRanker {
     }
 
     protected function getPictureFeature($newsObj, &$featureDct,
-            &$discreteFeatureLst) {
-        $imageLst = NewsImage::getImagesOfNews($newsObj->url_sign);
-        $featureDct['PICTURE_COUNT'] = count($imageLst);
+            $newsImageDct, &$discreteFeatureLst) {
+        $imageCnt = 0;
+        if (array_key_exists($newsObj->url_sign, $newsImageDct)) {
+            $imageCnt = $newsImageDct[$newsObj->url_sign];
+        }
+        $featureDct['PICTURE_COUNT'] = $imageCnt;
         $discreteFeatureLst[] = $this->discreteGapFeatures(
-            'PICTURE_COUNT', count($imageLst), array(0, 1, 3));
+            'PICTURE_COUNT', $imageCnt, array(0, 1, 3));
     }
 
     protected function getVideoFeature($newsObj, &$featureDct,
-            &$discreteFeatureLst) {
-        $videoLst = NewsYoutubeVideo::getVideosOfNews($newsObj->url_sign);
-        $featureDct['VIDEO_COUNT'] = count($videoLst);
+            $newsVideoDct, &$discreteFeatureLst) {
+        $videoCnt = 0; 
+        if (array_key_exists($newsObj->url_sign, $newsVideoDct)) {
+            $videoCnt = $newsVideoDct[$newsObj->url_sign];
+        }
+        $featureDct['VIDEO_COUNT'] = $videoCnt;
         $discreteFeatureLst[] = $this->discreteBoolFeatures(
-            'VIDEO_COUNT', count($videoLst));
+            'VIDEO_COUNT', $videoCnt);
     }
 
     protected function getSourceFeature($newsObj, &$featureDct,
@@ -208,6 +187,9 @@ class LrNewsRanker extends BaseNewsRanker {
             CACHE_FEATURE_DISPLAY_PREFIX);
         $newsClickDct = News::batchGetActionFromCache($newsObjDct, 
             CACHE_FEATURE_CLICK_PREFIX);
+        $newsIdLst = array_keys($newsObjDct);
+        $newsVideoDct = NewsYoutubeVideo::batchGetVideosOfMultNews($newsIdLst);
+        $newsImageDct = NewsImage::batchGetImagesOfMultNews($newsIdLst); 
         $newsCommentDct = Comment::getCount(array_keys($newsObjDct));
         $originalFeatureDct = array();
         $discreteFeatureDct = array();
@@ -217,9 +199,9 @@ class LrNewsRanker extends BaseNewsRanker {
             $this->getTitleFeature($newsObj, $curFeatureDct, 
                 $curDiscreteFeatureLst);
             $this->getPictureFeature($newsObj, $curFeatureDct,
-                $curDiscreteFeatureLst);
+                $newsImageDct, $curDiscreteFeatureLst);
             $this->getVideoFeature($newsObj, $curFeatureDct,
-                $curDiscreteFeatureLst);
+                $newsVideoDct, $curDiscreteFeatureLst);
             $this->getSourceFeature($newsObj, $curFeatureDct,
                 $curDiscreteFeatureLst);
             $this->getChannelFeature($newsObj, $curFeatureDct,
@@ -248,7 +230,14 @@ class LrNewsRanker extends BaseNewsRanker {
         // hashing feature by sha1 method, form grpc sample
         foreach ($discreteFeatureDct as $newsId => $featureNameLst) {
             $sampleObj = new iface\Sample();
-            $featureIdxLst = $this->multFeatureHash($featureNameLst);
+            $featureIdxLst = array();
+            foreach ($featureNameLst as $featureName) {
+                $featureIdx = $this->featureHash($featureName);
+                if ($featureIdx <= 0) {
+                    continue;
+                } 
+                $featureIdxLst[] = $featureIdx;
+            }
             sort($featureIdxLst, SORT_NUMERIC);
             foreach ($featureIdxLst as $featureIdx) {
                 $featureObj = new iface\Feature();
