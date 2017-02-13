@@ -93,8 +93,6 @@ define('CACHE_CLICK_QUEUE_PREFIX', "BA_UC_FIFO_");
 define('BACKUP_CHANNEL_CURSOR_KEY', 'BA_CH_CURSOR_KEY');
 define('CHANNEL_USER_CURSOR_PREFIX', 'CH_DEVICE_CURSOR_');
 define('BACKUP_CHANNEL_LIST_PREFIX', 'BA_CH_LIST_');
-define('CACHE_ALG_FEATURE_HASH_KEY', "ALG_FEATURE_HASH_");
-define('CACHE_ALG_FEATURE_HASH_TTL', 48 * 3600);
 
 //TODO if user grows, set this value lesser, this will absolutely consume more memory, we will consider bloomfilter to solve this problem
 define('CACHE_SENT_MASK_MAX', 1000); 
