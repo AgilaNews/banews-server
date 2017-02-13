@@ -238,7 +238,7 @@ class LrNewsRanker extends BaseNewsRanker {
         return array($originalFeatureDct, $discreteFeatureDct);
     }
 
-    protected function generateNewsSamples($newsObjDct) {
+    public function generateNewsSamples($newsObjDct) {
         $predictReq = new iface\PredictRequest();
         $filterNewsIdLst = array();
         // extract features of news, discrete feature through one hot
