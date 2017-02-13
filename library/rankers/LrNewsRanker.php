@@ -20,8 +20,13 @@ class LrNewsRanker extends BaseNewsRanker {
     }
 
     public function bcHexDec($hex) {
-        # in order to accelerate speed, divide 40 bits hexadecimal 
-        # number into 4 parts
+        # since final feature hash's range constrain in (0, 1,000,000],
+        # we can accelerate big number calculation by divide 40 bits 
+        # hexadecimal into 4 parts.
+        # Highest 30 to 40 bits: 16 ** 30 % 1,000,000 = 344576
+        # 20 to 30 bits: 16 ** 30 % 1,000,000 = 706176
+        # 10 to 20 bits: 16 ** 20 % 1,000,000 = 627776
+        # lowest 0 to 10 bits: 16 ** 0 % 1,000,000 = 1 
         $dec = 0;
         $dec += (hexdec(substr($hex, 0, 10)) % FEAFURE_SPACE_SIZE) * 344576;
         $dec += (hexdec(substr($hex, 10, 10)) % FEAFURE_SPACE_SIZE) * 706176;
