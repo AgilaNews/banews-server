@@ -53,12 +53,12 @@ class NewsImage extends BaseModel {
         return $rs;
     }
 
-    public static function batchGetImagesOfMultNews($newsIdLst) {
+    public static function batchGetImagesOfMultNews($newsIdLst, $limit=0) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
             $keys = array();
             foreach ($newsIdLst as $newsId) {
-                $keys[] = CACHE_IMAGES_PREFIX . $newsId;
+                $keys[] = CACHE_IMAGES_PREFIX . $newsId . $limit;
             }
             $newsArr = $cache->mGet($keys);
             if (empty($newsArr)) {
@@ -68,7 +68,7 @@ class NewsImage extends BaseModel {
                 foreach ($newsArr as $idx => $value) {
                     $newsId = $newsIdLst[$idx];
                     if (empty($value)) {
-                        $ret[$newsId] = NewsImage::getImagesOfNews($newsId); 
+                        $ret[$newsId] = NewsImage::getImagesOfNews($newsId, $limit); 
                     } else {
                         $ret[$newsId] = unserialize($value);
                     }

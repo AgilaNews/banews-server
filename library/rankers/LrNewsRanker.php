@@ -23,12 +23,6 @@ class LrNewsRanker extends BaseNewsRanker {
         # in order to accelerate speed, divide 40 bits hexadecimal 
         # number into 4 parts
         $dec = 0;
-        $len = strlen($hex);
-        for ($i=1; $i<=$len; $i++) {
-            $dec = bcadd($dec, bcmul(strval(hexdec($hex[$i-1])), 
-                bcpow('16', strval($len - $i))));
-        }
-        $dec = 0;
         $dec += (hexdec(substr($hex, 0, 10)) % FEAFURE_SPACE_SIZE) * 344576;
         $dec += (hexdec(substr($hex, 10, 10)) % FEAFURE_SPACE_SIZE) * 706176;
         $dec += (hexdec(substr($hex, 20, 10)) % FEAFURE_SPACE_SIZE) * 627776;
@@ -87,7 +81,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $newsImageDct, &$discreteFeatureLst) {
         $imageCnt = 0;
         if (array_key_exists($newsObj->url_sign, $newsImageDct)) {
-            $imageCnt = $newsImageDct[$newsObj->url_sign];
+            $imageCnt = count($newsImageDct[$newsObj->url_sign]);
         }
         $featureDct['PICTURE_COUNT'] = $imageCnt;
         $discreteFeatureLst[] = $this->discreteGapFeatures(
@@ -98,7 +92,7 @@ class LrNewsRanker extends BaseNewsRanker {
             $newsVideoDct, &$discreteFeatureLst) {
         $videoCnt = 0; 
         if (array_key_exists($newsObj->url_sign, $newsVideoDct)) {
-            $videoCnt = $newsVideoDct[$newsObj->url_sign];
+            $videoCnt = count($newsVideoDct[$newsObj->url_sign]);
         }
         $featureDct['VIDEO_COUNT'] = $videoCnt;
         $discreteFeatureLst[] = $this->discreteBoolFeatures(
