@@ -121,7 +121,7 @@ class HotSelector extends BaseNewsSelector{
                 $logger->info(sprintf("[rerank newsId:%s]", $newsIdStr));
             } else {
                 list($filterNewsIdLst, $predictReq, $newsFeatureDct) = 
-                    $this->generateNewsSamples($newsObjDct);
+                    $lrRanker->generateNewsSamples($newsObjDct);
             }
         }
         
