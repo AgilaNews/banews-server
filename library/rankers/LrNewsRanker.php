@@ -232,7 +232,8 @@ class LrNewsRanker extends BaseNewsRanker {
             $featureIdxLst = array();
             foreach ($featureNameLst as $featureName) {
                 $featureIdx = $this->featureHash($featureName);
-                if ($featureIdx <= 0) {
+                if (($featureIdx <= 0) || 
+                    in_array($featureIdx, $featureIdxLst)) {
                     continue;
                 } 
                 $featureIdxLst[] = $featureIdx;
