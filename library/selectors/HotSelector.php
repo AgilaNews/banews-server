@@ -14,6 +14,7 @@ define('MAX_NEWS_COUNT', 10);
 define('RECENT_NEWS_COUNT', 2);
 define('ALG_SPECIAL_USER_SET', 'ALG_SPECIAL_USER_SET');
 define ('STRATEGY_POPULAR_WITH_LR', '10001_popular_with_lr');
+define ('STRATEGY_SMALL_POPULAR_WITH_LR', '10001_small_popular_with_lr');
 define ('STRATEGY_POPULAR_WITHOUT_LR', '10001_popular_without_lr');
 define ('STRATEGY_RANDOM_WITH_LR', '10001_random_with_lr');
 define ('STRATEGY_RANDOM_WITHOUT_LR', '10001_random_without_lr');
@@ -35,7 +36,8 @@ class HotSelector extends BaseNewsSelector{
                 STRATEGY_POPULAR_WITH_LR,
                 STRATEGY_POPULAR_WITHOUT_LR,
                 STRATEGY_RANDOM_WITH_LR,
-                STRATEGY_RANDOM_WITHOUT_LR))) {
+                STRATEGY_RANDOM_WITHOUT_LR,
+                STRATEGY_SMALL_POPULAR_WITH_LR))) {
             $tag = STRATEGY_POPULAR_WITHOUT_LR;
         }
         return $tag;
@@ -83,7 +85,9 @@ class HotSelector extends BaseNewsSelector{
             //$recNewsLst = array_merge($popularNewsLst, $editorNewsLst,
             //    $topicNewsLst);
             $recNewsLst = array_unique($popularNewsLst);
-        } else if ($strategyTag == STRATEGY_POPULAR_WITHOUT_LR){
+        } else if (in_array($strategyTag, array(
+                STRATEGY_POPULAR_WITHOUT_LR,
+                STRATEGY_SMALL_POPULAR_WITH_LR))){
             $recNewsLst = $popularPolicy->sampling($this->channel_id, 
                 $this->device_id, $this->user_id, $sample_count * 3, 
                 3, $prefer, $options);
@@ -117,7 +121,8 @@ class HotSelector extends BaseNewsSelector{
             $lrRanker = new LrNewsRanker($this->di); 
             if (in_array($strategyTag, array(
                     STRATEGY_POPULAR_WITH_LR, 
-                    STRATEGY_RANDOM_WITH_LR))) {
+                    STRATEGY_RANDOM_WITH_LR,
+                    STRATEGY_SMALL_POPULAR_WITH_LR))) {
                 list($sortedNewsObjDct, $newsFeatureDct) = 
                     $lrRanker->ranking($this->channel_id, $this->device_id, 
                     $newsObjDct, $prefer, $sample_count);
