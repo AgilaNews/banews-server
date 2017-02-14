@@ -13,24 +13,30 @@ define('MIN_NEWS_COUNT', 8);
 define('MAX_NEWS_COUNT', 10);
 define('RECENT_NEWS_COUNT', 2);
 define('ALG_SPECIAL_USER_SET', 'ALG_SPECIAL_USER_SET');
+define ('STRATEGY_POPULAR_WITH_LR', '10001_popular_with_lr');
+define ('STRATEGY_POPULAR_WITHOUT_LR', '10001_popular_without_lr');
+define ('STRATEGY_RANDOM_WITH_LR', '10001_random_with_lr');
+define ('STRATEGY_RANDOM_WITHOUT_LR', '10001_random_without_lr');
 
 class HotSelector extends BaseNewsSelector{
     public function getPolicyTag(){
         $abService = $this->di->get('abtest');
         $experiment = 'channel_' . $this->channel_id . '_strategy';
         $tag = $abService->getTag($experiment);
-        if ($tag != "10001_popularRanking") {
-            $tag = "10001_lrRanker";
-        }
-        # switch for lr model update
         $cache = $this->di->get('cache');
+        # white user list
         $specialUserLst = $cache->lRange(ALG_SPECIAL_USER_SET, 0, -1);
         if (in_array($this->device_id, $specialUserLst)) {
-            $tag = "10001_lrRanker";
+            $tag = STRATEGY_POPULAR_WITH_LR;
         } 
+        # switch for lr model update
         $lrRankerSwitch = $cache->get(ALG_LR_SWITCH_KEY);
-        if (empty($lrRankerSwitch)) {
-            $tag = "10001_popularRanking";
+        if (empty($lrRankerSwitch) || !in_array($tag, array(
+                STRATEGY_POPULAR_WITH_LR,
+                STRATEGY_POPULAR_WITHOUT_LR,
+                STRATEGY_RANDOM_WITH_LR,
+                STRATEGY_RANDOM_WITHOUT_LR))) {
+            $tag = STRATEGY_POPULAR_WITHOUT_LR;
         }
         return $tag;
     }
@@ -62,7 +68,7 @@ class HotSelector extends BaseNewsSelector{
         $strategyTag = $this->getPolicyTag();
         $popularPolicy = new PopularListPolicy($this->di); 
         $recNewsLst = array();
-        if ($strategyTag == "10001_lrRanker") {
+        if ($strategyTag == STRATEGY_POPULAR_WITH_LR) {
             //$personalTopicPolicy = new PersonalTopicInterestPolicy($this->di);
             //$topicNewsLst = $personalTopicPolicy->sampling(
             //    $this->channel_id, $this->device_id, $this->user_id,
@@ -77,7 +83,7 @@ class HotSelector extends BaseNewsSelector{
             //$recNewsLst = array_merge($popularNewsLst, $editorNewsLst,
             //    $topicNewsLst);
             $recNewsLst = array_unique($popularNewsLst);
-        } else {
+        } else if ($strategyTag == STRATEGY_POPULAR_WITHOUT_LR){
             $recNewsLst = $popularPolicy->sampling($this->channel_id, 
                 $this->device_id, $this->user_id, $sample_count * 3, 
                 3, $prefer, $options);
@@ -109,7 +115,9 @@ class HotSelector extends BaseNewsSelector{
         $lrRankerSwitch = $cache->get(ALG_LR_SWITCH_KEY);
         if (!empty($lrRankerSwitch)) {
             $lrRanker = new LrNewsRanker($this->di); 
-            if ($strategyTag == "10001_lrRanker") {
+            if (in_array($strategyTag, array(
+                    STRATEGY_POPULAR_WITH_LR, 
+                    STRATEGY_RANDOM_WITH_LR))) {
                 list($sortedNewsObjDct, $newsFeatureDct) = 
                     $lrRanker->ranking($this->channel_id, $this->device_id, 
                     $newsObjDct, $prefer, $sample_count);
