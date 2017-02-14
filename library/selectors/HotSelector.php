@@ -90,7 +90,7 @@ class HotSelector extends BaseNewsSelector{
         }
             
         if (count($recNewsLst) < $sample_count) {
-            $recNewsLst = $this->emergence($sample_count * 20, 
+            $recNewsLst = $this->emergence($sample_count * 15, 
                 $recNewsLst, $options, $prefer);
         }
         return $recNewsLst;
