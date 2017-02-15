@@ -56,7 +56,7 @@ class IndexController extends BaseController {
                 "splash" => array(
                                   "on" => 0,
                                   "slot" => 3,
-                                  "stay_time" => 3,
+                                  "stay_time" => 1,
                                   "ad_time" => 3,
                                   "ad_ttl" => 3600,
                                   "reboot_time" => 3600,
