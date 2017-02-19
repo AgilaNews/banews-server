@@ -148,8 +148,8 @@ class LrNewsRanker extends BaseNewsRanker {
         //$discreteFeatureLst[] = $this->discreteGapFeatures(
         //    'HISTORY_READ_COUNT', $clickCnt, 
         //    array(100, 1000, 5000, 10000));
-        //$discreteFeatureLst[] = $this->discreteIntFeatures(
-        //    'HISTORY_READ_DISPLAY_RATIO', $clickRatio, 1000);
+        $discreteFeatureLst[] = $this->discreteIntFeatures(
+            'HISTORY_READ_DISPLAY_RATIO', $clickRatio, 1000);
     }
 
     protected function getCommentFeature($newsObj, $displayCnt,
@@ -164,8 +164,8 @@ class LrNewsRanker extends BaseNewsRanker {
         $discreteFeatureLst[] = $this->discreteGapFeatures(
             'HISTORY_COMMENT_COUNT', $commentCnt, 
             array(1, 5, 10, 20, 50, 100));
-        //$discreteFeatureLst[] = $this->discreteIntFeatures(
-        //    'HISTORY_COMMENT_DISPLAY_RATIO', $commentRatio, 1000);
+        $discreteFeatureLst[] = $this->discreteIntFeatures(
+            'HISTORY_COMMENT_DISPLAY_RATIO', $commentRatio, 1000);
     }
 
     protected function getLikeFeature($newsObj, $displayCnt,
@@ -177,8 +177,8 @@ class LrNewsRanker extends BaseNewsRanker {
         //$discreteFeatureLst[] = $this->discreteGapFeatures(
         //    'HISTORY_LIKE_COUNT', $likeCnt, 
         //    array(10, 50, 100, 500, 1000));
-        //$discreteFeatureLst[] = $this->discreteIntFeatures(
-        //    'HISTORY_LIKE_DISPLAY_RATIO', $likeRatio, 1000);
+        $discreteFeatureLst[] = $this->discreteIntFeatures(
+            'HISTORY_LIKE_DISPLAY_RATIO', $likeRatio, 1000);
     }
 
     protected function extractNewsFeatures($newsObjDct) {
