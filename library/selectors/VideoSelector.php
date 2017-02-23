@@ -8,6 +8,10 @@ class VideoSelector extends BaseNewsSelector {
     const LATELY_NEWS_COUNT = 2;
 
     public function getPolicyTag(){
+        return $this->policyTag;
+    }
+
+    protected function getAbflag(){
         if ($this->channel_id != '30001'){
             return POPULAR_POLICY;
         }
@@ -58,11 +62,17 @@ class VideoSelector extends BaseNewsSelector {
         if ($prefer == "later") {
             $options["long_tail_weight"] = 1;
         }
-        $policyTag = $this->getPolicyTag();
-        if ($policyTag == POPULAR_POLICY) {
+        $abflag = $this->getAbflag();
+        if ($abflag == POPULAR_POLICY) {
             $policyNewsLst = $this->getPopularVideo($sample_count, $prefer, $options);
-        } elseif ($policyTag == PERSONAL_INTEREST_POLICY) {
+            $this->policyTag = POPULAR_POLICY;
+        } elseif ($abflag == PERSONAL_INTEREST_POLICY) {
             $policyNewsLst = $this->getUserInterestVideo($sample_count, $prefer, $options);
+            if(count($policyNewsLst) > 0) {
+                $this->policyTag = PERSONAL_INTEREST_POLICY;
+            } else {
+                $this->policyTag = PERSONAL_INTEREST_POLICY . "_MISS";
+            }
         }
 
         $randomPolicy = new VideoExpDecayListPolicy($this->di);

@@ -53,15 +53,19 @@ class PersonalVideoInterestPolicy extends BaseListPolicy {
 
     private function samplingUserYoutubeChannel($userYoutubeInterests) {
         $youtubeChannelRatioLst = $this->getYoutubeChannelRatio();
-        $userYoutubeChannelLst = $userYoutubeInterests[0];
-        $totalClickCnt = $userYoutubeInterests[1];
+        if ($userYoutubeInterests) {
+            $userYoutubeChannelLst = $userYoutubeInterests[0];
+            $totalClickCnt = $userYoutubeInterests[1];
+        }
         $cache = DI::getDefault()->get('cache');
         $gravity = floatval($cache->get(ALG_YOUTUBE_CHANNEL_GRAVITY_KEY));
 
         $youtubeChannelLst = array();
         $weightLst = array();
         foreach ($youtubeChannelRatioLst as $youtubeChannelId => $score) {
-            if (array_key_exists($youtubeChannelId, $userYoutubeChannelLst)) {
+            if (!$userYoutubeInterests) {
+                $curWeight = $score;
+            } elseif (array_key_exists($youtubeChannelId, $userYoutubeChannelLst)) {
                 $curWeight = $userYoutubeChannelLst[$youtubeChannelId] * $score;
             } else {
                 $curWeight = ($gravity / ($gravity + $totalClickCnt)) * $score;
@@ -82,10 +86,6 @@ class PersonalVideoInterestPolicy extends BaseListPolicy {
 
     private function getUserInterestVideos($device_id) {
         $userYoutubeInterests = $this->getUserYoutubeInterests($device_id);
-        if (!$userYoutubeInterests) {
-            return array();
-        }
-
         $userYoutubeChannels = $this->samplingUserYoutubeChannel($userYoutubeInterests);
         $tmp = array();
         foreach ($userYoutubeChannels as $youtubeChannel) {
