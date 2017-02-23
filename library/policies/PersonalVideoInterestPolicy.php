@@ -98,18 +98,22 @@ class PersonalVideoInterestPolicy extends BaseListPolicy {
             $ret[] = array("id" => $video_id, "weight"=>1);
         }
         return $ret;
-        return $ret;
     }
 
     public function sampling($channel_id, $device_id, $user_id, $pn,
         $day_till_now, $prefer, array $options = array()) {
         $userInterestVideos = $this->getUserInterestVideos($device_id);
         $unsentVideos = $this->tryBloomfilter($channel_id, $device_id, $userInterestVideos);
-
-        if(count($unsentVideos) > $pn) {
-            shuffle($unsentVideos);
-            $unsentVideos = array_slice($unsentVideos, 0, $pn);
+        
+        $ret = array();
+        foreach($unsentVideos as $video) {
+            $ret[] = $video['id'];
         }
-        return $unsentVideos;
+
+        if(count($ret) > $pn) {
+            shuffle($ret);
+            $unsentVideos = array_slice($ret, 0, $pn);
+        }
+        return $ret;
     }
 }
