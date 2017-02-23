@@ -9,17 +9,18 @@
 
 use Phalcon\DI;
 
-define(ALG_USER_YOUTUBE_CHANNEL_KEY, 'ALG_USER_YOUTUBE_CHANNEL_KEY');
-define(ALG_YOUTUBE_CHANNEL_GRAVITY_KEY, 'ALG_YOUTUBE_CHANNEL_GRAVITY_KEY');
-define(ALG_YOUTUBE_CHANNEL_RATIO_KEY, 'ALG_YOUTUBE_CHANNEL_RATIO_KEY');
-define(SAMPLE_CHANNEL_CNT, 4);
+define('ALG_USER_YOUTUBE_CHANNEL_KEY', 'ALG_USER_YOUTUBE_CHANNEL_KEY');
+define('ALG_YOUTUBE_CHANNEL_GRAVITY_KEY', 'ALG_YOUTUBE_CHANNEL_GRAVITY_KEY');
+define('ALG_YOUTUBE_CHANNEL_RATIO_KEY', 'ALG_YOUTUBE_CHANNEL_RATIO_KEY');
+define('SAMPLE_CHANNEL_CNT', 10);
+define('MAX_VIDEO_ONE_CHANNEL', 2);
 
 class PersonalVideoInterestPolicy extends BaseListPolicy {
     private function getUserYoutubeInterests($device_id) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
             if ($cache->hExists(ALG_USER_YOUTUBE_CHANNEL_KEY, $device_id)) {
-                $valLst = json_decode($cache->hGet(ALG_USER_YOUTUBE_CHANNEL_KEY, 
+                $valLst = json_decode($cache->hGet(ALG_USER_YOUTUBE_CHANNEL_KEY,
                                                    $device_id));
                 if (count($valLst) == 2) {
                     $userTopicLst = $valLst[0];
@@ -30,7 +31,7 @@ class PersonalVideoInterestPolicy extends BaseListPolicy {
                     $clickCnt = $valLst[1];
                     return array($userTopicArr, $clickCnt);
                 }
-            } 
+            }
         }
         return array();
     }
@@ -55,7 +56,7 @@ class PersonalVideoInterestPolicy extends BaseListPolicy {
         $userYoutubeChannelLst = $userYoutubeInterests[0];
         $totalClickCnt = $userYoutubeInterests[1];
         $cache = DI::getDefault()->get('cache');
-        $gravity = floatval($cache->get(ALG_TOPIC_GRAVITY_KEY));
+        $gravity = floatval($cache->get(ALG_YOUTUBE_CHANNEL_GRAVITY_KEY));
 
         $youtubeChannelLst = array();
         $weightLst = array();
@@ -86,15 +87,21 @@ class PersonalVideoInterestPolicy extends BaseListPolicy {
         }
 
         $userYoutubeChannels = $this->samplingUserYoutubeChannel($userYoutubeInterests);
-        $ret = array();
+        $tmp = array();
         foreach ($userYoutubeChannels as $youtubeChannel) {
             $videos = Video::getVideosByAuthor($youtubeChannel);
-            $ret = array_merge($ret, $videos);
+            shuffle($videos);
+            $tmp = array_merge($tmp, array_slice($videos,0, MAX_VIDEO_ONE_CHANNEL));
         }
+        $ret = array();
+        foreach ($tmp as $video_id) {
+            $ret[] = array("id" => $video_id, "weight"=>1);
+        }
+        return $ret;
         return $ret;
     }
 
-    public function sampling($channel_id, $device_id, $user_id, $pn, 
+    public function sampling($channel_id, $device_id, $user_id, $pn,
         $day_till_now, $prefer, array $options = array()) {
         $userInterestVideos = $this->getUserInterestVideos($device_id);
         $unsentVideos = $this->tryBloomfilter($channel_id, $device_id, $userInterestVideos);

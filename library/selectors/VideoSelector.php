@@ -1,35 +1,34 @@
 <?php
 use Phalcon\DI;
+define('POPULAR_POLICY', 'popularRanking');
+define('PERSONAL_INTEREST_POLICY', 'personalInterest');
 class VideoSelector extends BaseNewsSelector {
     const MIN_NEWS_COUNT = 4;
     const MAX_NEWS_COUNT = 6;
     const LATELY_NEWS_COUNT = 2;
 
     public function getPolicyTag(){
-        if ($this->_channel_id != '30001'){
-            return 'popularRanking';
+        if ($this->channel_id != '30001'){
+            return POPULAR_POLICY;
         }
+        return 'personalInterest';
         $abService = $this->di->get('abtest');
         $tag = $abService->getTag("video_30001_strategy");
         if ($tag == "30001_personal_interest") {
-            return 'personalInterest';
+            return PERSONAL_INTEREST_POLICY;
         }
-        return 'popularRanking';
+        return POPULAR_POLLICY;
     }
 
     protected function getLatelyNewsCount(){
         return self::LATELY_NEWS_COUNT;
     }
 
-    private function getPopularVideo($sample_count, $prefer) {
+    private function getPopularVideo($sample_count, $prefer, $options) {
         $popularPolicy = new PopularListPolicy($this->di);
-        $options = array();
-        if ($prefer == "later") {
-            $options["long_tail_weight"] = 1;
-        }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
-        $popularNewsLst = $popularPolicy->sampling($this->channel_id, 
-            $this->device_id, $this->user_id, $popularNewsCnt, 
+        $popularNewsLst = $popularPolicy->sampling($this->channel_id,
+            $this->device_id, $this->user_id, $popularNewsCnt,
             3, $prefer, $options);
 
         //* hack for oppo phone
@@ -45,29 +44,33 @@ class VideoSelector extends BaseNewsSelector {
         return $popularNewsLst;
     }
 
-    private function getUserInterestVideo($sample_count, $prefer) {
+    private function getUserInterestVideo($sample_count, $prefer, $options) {
         $userInterestPolicy = new PersonalVideoInterestPolicy($this->di);
         $userInterestVideoCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
-        $userInterestVideoLst = $userInterestPolicy->sampling($this->channel_id, 
-            $this->device_id, $this->user_id, $popularNewsCnt, 
+        $userInterestVideoLst = $userInterestPolicy->sampling($this->channel_id,
+            $this->device_id, $this->user_id, $userInterestVideoCnt,
             3, $prefer, $options);
         return $userInterestVideoLst;
     }
 
     public function sampling($sample_count, $prefer) {
         $policyNewsLst = array();
+        $options = array();
+        if ($prefer == "later") {
+            $options["long_tail_weight"] = 1;
+        }
         $policyTag = $this->getPolicyTag();
-        if ($policyTag == 'popularRanking') {
-            $policyNewsLst = $this->getPopularVideo($sample_count, $prefer);
-        } elseif ($policyTag == 'personalInterest') {
-            $policyNewsLst = $this->getUserInterestVideo($sample_count, $prefer);
+        if ($policyTag == POPULAR_POLICY) {
+            $policyNewsLst = $this->getPopularVideo($sample_count, $prefer, $options);
+        } elseif ($policyTag == PERSONAL_INTEREST_POLICY) {
+            $policyNewsLst = $this->getUserInterestVideo($sample_count, $prefer, $options);
         }
 
         $randomPolicy = new VideoExpDecayListPolicy($this->di);
-        $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
-            $this->device_id, $this->user_id, self::MAX_NEWS_COUNT, 
+        $randomNewsLst = $randomPolicy->sampling($this->channel_id,
+            $this->device_id, $this->user_id, self::MAX_NEWS_COUNT,
             3, $prefer, $options);
-        
+
         foreach($randomNewsLst as $randomNews) {
             if (count($policyNewsLst) >= $sample_count) {
                 break;
