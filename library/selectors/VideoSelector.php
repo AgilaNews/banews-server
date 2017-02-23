@@ -11,7 +11,6 @@ class VideoSelector extends BaseNewsSelector {
         if ($this->channel_id != '30001'){
             return POPULAR_POLICY;
         }
-        return 'personalInterest';
         $abService = $this->di->get('abtest');
         $tag = $abService->getTag("video_30001_strategy");
         if ($tag == "30001_personal_interest") {
