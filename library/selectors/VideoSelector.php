@@ -16,7 +16,7 @@ class VideoSelector extends BaseNewsSelector {
         if ($tag == "30001_personal_interest") {
             return PERSONAL_INTEREST_POLICY;
         }
-        return POPULAR_POLLICY;
+        return POPULAR_POLICY;
     }
 
     protected function getLatelyNewsCount(){

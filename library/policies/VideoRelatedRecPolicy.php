@@ -22,7 +22,7 @@ class VideoRelatedRecPolicy extends BaseRecommendPolicy {
 
         $videos = Video::getVideosByAuthor($youtube_channel_id);
         shuffle($videos);
-        return arrat_slice($videos, 0, $pn);
+        return array_slice($videos, 0, $pn);
     }
 
     public function sampling($channel_id, $device_id, $user_id, $myself, 
