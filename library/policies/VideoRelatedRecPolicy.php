@@ -20,8 +20,9 @@ class VideoRelatedRecPolicy extends BaseRecommendPolicy {
         $video = Video::getByNewsSign($myself);
         $youtube_channel_id = $video->youtube_channel_id;
 
-        $videos = Video::getVideosByAuthor($youtube_channel_id, $pn);
-        return $videos;
+        $videos = Video::getVideosByAuthor($youtube_channel_id);
+        shuffle($videos);
+        return arrat_slice($videos, 0, $pn);
     }
 
     public function sampling($channel_id, $device_id, $user_id, $myself, 

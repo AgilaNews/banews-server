@@ -6,14 +6,22 @@ class VideoSelector extends BaseNewsSelector {
     const LATELY_NEWS_COUNT = 2;
 
     public function getPolicyTag(){
+        if ($this->_channel_id != '30001'){
+            return 'popularRanking';
+        }
+        $abService = $this->di->get('abtest');
+        $tag = $abService->getTag("video_30001_strategy");
+        if ($tag == "30001_personal_interest") {
+            return 'personalInterest';
+        }
         return 'popularRanking';
     }
 
     protected function getLatelyNewsCount(){
         return self::LATELY_NEWS_COUNT;
-    } 
+    }
 
-    public function sampling($sample_count, $prefer) {
+    private function getPopularVideo($sample_count, $prefer) {
         $popularPolicy = new PopularListPolicy($this->di);
         $options = array();
         if ($prefer == "later") {
@@ -34,9 +42,25 @@ class VideoSelector extends BaseNewsSelector {
             }
         }
         //*/
+        return $popularNewsLst;
+    }
 
-        if (count($popularNewsLst) >= $sample_count) {
-            return $popularNewsLst;
+    private function getUserInterestVideo($sample_count, $prefer) {
+        $userInterestPolicy = new PersonalVideoInterestPolicy($this->di);
+        $userInterestVideoCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
+        $userInterestVideoLst = $userInterestPolicy->sampling($this->channel_id, 
+            $this->device_id, $this->user_id, $popularNewsCnt, 
+            3, $prefer, $options);
+        return $userInterestVideoLst;
+    }
+
+    public function sampling($sample_count, $prefer) {
+        $policyNewsLst = array();
+        $policyTag = $this->getPolicyTag();
+        if ($policyTag == 'popularRanking') {
+            $policyNewsLst = $this->getPopularVideo($sample_count, $prefer);
+        } elseif ($policyTag == 'personalInterest') {
+            $policyNewsLst = $this->getUserInterestVideo($sample_count, $prefer);
         }
 
         $randomPolicy = new VideoExpDecayListPolicy($this->di);
@@ -45,15 +69,15 @@ class VideoSelector extends BaseNewsSelector {
             3, $prefer, $options);
         
         foreach($randomNewsLst as $randomNews) {
-            if (count($popularNewsLst) >= $sample_count) {
+            if (count($policyNewsLst) >= $sample_count) {
                 break;
             }
-            if (in_array($randomNews, $popularNewsLst)) {
+            if (in_array($randomNews, $policyNewsLst)) {
                 continue;
             }
-            $popularNewsLst[] = $randomNews;
+            $policyNewsLst[] = $randomNews;
         }
-        return $popularNewsLst;
+        return $policyNewsLst;
     }
 
     public function select($prefer) {

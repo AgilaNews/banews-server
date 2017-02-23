@@ -199,16 +199,15 @@ class Video extends BaseModel {
         return $ret;
     }
 
-    public static function getVideosByAuthor($youtube_channel_id, $pn) {
-        $ret = self::_getVideosByAuthorFromCache($youtube_channel_id, $pn);
+    public static function getVideosByAuthor($youtube_channel_id) {
+        $ret = self::_getVideosByAuthorFromCache($youtube_channel_id);
         if (!$ret) {
-            $ret = self::_getVideosByAuthorFromDB($youtube_channel_id, $pn);
+            $ret = self::_getVideosByAuthorFromDB($youtube_channel_id);
             self::_saveVideosByAuthorToCache($youtube_channel_id, $ret);
         }
-        shuffle($ret);
-        return array_slice($ret, 0, $pn);
+        return $ret;
     }
-    protected static function _getVideosByAuthorFromCache($youtube_channel_id, $pn) {
+    protected static function _getVideosByAuthorFromCache($youtube_channel_id) {
         $cache = DI::getDefault()->get('cache');
         if ($cache) {
             $key = CACHE_CHANNEL_VIDEO_PREFIX . $youtube_channel_id;
@@ -217,7 +216,7 @@ class Video extends BaseModel {
         }
         return null;
     }
-    protected static function _getVideosByAuthorFromDB($youtube_channel_id, $pn) {
+    protected static function _getVideosByAuthorFromDB($youtube_channel_id) {
         $crit = array(
             "conditions" => "youtube_channel_id = ?1 and is_valid = 1 and status=1",
             "bind" => array(
