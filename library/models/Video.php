@@ -218,7 +218,7 @@ class Video extends BaseModel {
     }
     protected static function _getVideosByAuthorFromDB($youtube_channel_id) {
         $crit = array(
-            "conditions" => "youtube_channel_id = ?1 and is_valid = 1 and status=1",
+            "conditions" => "youtube_channel_id = ?1 and is_valid = 1 and status>=1",
             "bind" => array(
                 1 => $youtube_channel_id
                 ),
