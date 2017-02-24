@@ -87,15 +87,11 @@ class PersonalVideoInterestPolicy extends BaseListPolicy {
     private function getUserInterestVideos($device_id) {
         $userYoutubeInterests = $this->getUserYoutubeInterests($device_id);
         $userYoutubeChannels = $this->samplingUserYoutubeChannel($userYoutubeInterests);
-        $tmp = array();
-        foreach ($userYoutubeChannels as $youtubeChannel) {
-            $videos = Video::getVideosByAuthor($youtubeChannel);
-            shuffle($videos);
-            $tmp = array_merge($tmp, array_slice($videos,0, MAX_VIDEO_ONE_CHANNEL));
-        }
+
+        $videos = Video::getVideosByChannels($userYoutubeChannels);
         $ret = array();
-        foreach ($tmp as $video_id) {
-            $ret[] = array("id" => $video_id, "weight"=>1);
+        foreach ($videos as $video) {
+            $ret[] = array("id" => $video->news_url_sign, "weight" => $video->update_time);
         }
         return $ret;
     }
