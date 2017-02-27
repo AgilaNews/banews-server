@@ -1,27 +1,37 @@
 <?php
 use Phalcon\DI;
+define('POPULAR_POLICY', 'popularRanking');
+define('PERSONAL_INTEREST_POLICY', 'personalInterest');
 class VideoSelector extends BaseNewsSelector {
     const MIN_NEWS_COUNT = 4;
     const MAX_NEWS_COUNT = 6;
     const LATELY_NEWS_COUNT = 2;
 
     public function getPolicyTag(){
-        return 'popularRanking';
+        return $this->policyTag;
+    }
+
+    protected function getAbflag(){
+        if ($this->channel_id != '30001'){
+            return POPULAR_POLICY;
+        }
+        $abService = $this->di->get('abtest');
+        $tag = $abService->getTag("video_30001_strategy");
+        if ($tag == "30001_personal_interest") {
+            return PERSONAL_INTEREST_POLICY;
+        }
+        return POPULAR_POLICY;
     }
 
     protected function getLatelyNewsCount(){
         return self::LATELY_NEWS_COUNT;
-    } 
+    }
 
-    public function sampling($sample_count, $prefer) {
+    private function getPopularVideo($sample_count, $prefer, $options) {
         $popularPolicy = new PopularListPolicy($this->di);
-        $options = array();
-        if ($prefer == "later") {
-            $options["long_tail_weight"] = 1;
-        }
         $popularNewsCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
-        $popularNewsLst = $popularPolicy->sampling($this->channel_id, 
-            $this->device_id, $this->user_id, $popularNewsCnt, 
+        $popularNewsLst = $popularPolicy->sampling($this->channel_id,
+            $this->device_id, $this->user_id, $popularNewsCnt,
             3, $prefer, $options);
 
         //* hack for oppo phone
@@ -34,26 +44,52 @@ class VideoSelector extends BaseNewsSelector {
             }
         }
         //*/
+        return $popularNewsLst;
+    }
 
-        if (count($popularNewsLst) >= $sample_count) {
-            return $popularNewsLst;
+    private function getUserInterestVideo($sample_count, $prefer, $options) {
+        $userInterestPolicy = new PersonalVideoInterestPolicy($this->di);
+        $userInterestVideoCnt = max($sample_count - $this->getLatelyNewsCount(), 1);
+        $userInterestVideoLst = $userInterestPolicy->sampling($this->channel_id,
+            $this->device_id, $this->user_id, $userInterestVideoCnt,
+            3, $prefer, $options);
+        return $userInterestVideoLst;
+    }
+
+    public function sampling($sample_count, $prefer) {
+        $policyNewsLst = array();
+        $options = array();
+        if ($prefer == "later") {
+            $options["long_tail_weight"] = 1;
+        }
+        $abflag = $this->getAbflag();
+        if ($abflag == POPULAR_POLICY) {
+            $policyNewsLst = $this->getPopularVideo($sample_count, $prefer, $options);
+            $this->policyTag = POPULAR_POLICY;
+        } elseif ($abflag == PERSONAL_INTEREST_POLICY) {
+            $policyNewsLst = $this->getUserInterestVideo($sample_count, $prefer, $options);
+            if(count($policyNewsLst) > 0) {
+                $this->policyTag = PERSONAL_INTEREST_POLICY;
+            } else {
+                $this->policyTag = PERSONAL_INTEREST_POLICY . "_MISS";
+            }
         }
 
         $randomPolicy = new VideoExpDecayListPolicy($this->di);
-        $randomNewsLst = $randomPolicy->sampling($this->channel_id, 
-            $this->device_id, $this->user_id, self::MAX_NEWS_COUNT, 
+        $randomNewsLst = $randomPolicy->sampling($this->channel_id,
+            $this->device_id, $this->user_id, self::MAX_NEWS_COUNT,
             3, $prefer, $options);
-        
+
         foreach($randomNewsLst as $randomNews) {
-            if (count($popularNewsLst) >= $sample_count) {
+            if (count($policyNewsLst) >= $sample_count) {
                 break;
             }
-            if (in_array($randomNews, $popularNewsLst)) {
+            if (in_array($randomNews, $policyNewsLst)) {
                 continue;
             }
-            $popularNewsLst[] = $randomNews;
+            $policyNewsLst[] = $randomNews;
         }
-        return $popularNewsLst;
+        return $policyNewsLst;
     }
 
     public function select($prefer) {
