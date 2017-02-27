@@ -190,9 +190,11 @@ class BaseNewsSelector {
             return new NbaSelector($controller, $channel_id);
         }
 
+        /*
         if (in_array($channel_id, array("10002", "10010"))){
             return new SphinxSelector($controller, $channel_id);
         }
+        */
 
         if (in_array($channel_id, array("10003", "10004", "10005", "10006", "10007", "10008", "10009"))) {
             return new PopularSelector($controller, $channel_id);
