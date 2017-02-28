@@ -204,7 +204,7 @@ class BaseDetailRender {
     }
 
     protected function fillArticleTags($news_model, &$ret) {
-        $ret["tags"] = array("Philippines", "Duterte", "LianZhan");
+        $ret["tags"] = array();
     }
     
     public function render($news_model, $recommend_models = null) {
