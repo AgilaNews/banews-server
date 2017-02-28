@@ -202,6 +202,10 @@ class BaseDetailRender {
             $ret["collect_id"] = Collect::getCollectId($this->c->userSign, $news_model->url_sign);
         }
     }
+
+    protected function fillArticleTags($news_model, &$ret) {
+        $ret["tags"] = array("Philippines", "Duterte", "LianZhan");
+    }
     
     public function render($news_model, $recommend_models = null) {
         $ret = $this->getPublic($news_model);
@@ -210,6 +214,7 @@ class BaseDetailRender {
         $this->fillVideos($news_model, $ret);
         $this->fillImgs($news_model, $ret);
         $this->fillSnsWidget($news_model, $ret);
+        $this->fillArticleTags($news_model, $ret);
         if ($recommend_models) {
             $this->fillRecommend($news_model, $recommend_models, $ret);
         }
