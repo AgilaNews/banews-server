@@ -18,7 +18,7 @@ class SplashController extends BaseController {
         $ret = array(
                      "ads" => array(
                                     array(
-                                          "dataid" => 1,
+                                          "dataid" => 3,
                                           "display" => 3,
                                           ),
                                     ),
