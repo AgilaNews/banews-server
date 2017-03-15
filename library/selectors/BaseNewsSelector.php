@@ -134,6 +134,7 @@ class BaseNewsSelector {
     }
 
     protected function insertAd(&$ret) {
+        return;
         if (Features::Enabled(Features::AD_FEATURE, $this->client_version, $this->os) && count($ret) >= AD_INTERVENE_POS) {
             $abservice = DI::getDefault()->get('abtest');
             $t = $abservice->getTag("timeline_ad_position");
