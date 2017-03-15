@@ -49,7 +49,7 @@ class BaseDetailRender {
                                                "device" => $this->c->deviceId,
                                                ));
 
-            $ret["ad"] = $intervene->render();
+            //$ret["ad"] = $intervene->render();
         }
 
         return $ret;
